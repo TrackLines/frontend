@@ -11,7 +11,7 @@
     "js-cookie": "^2.1.4",
     "lodash": "^4.17.4",
     "normalizr": "^3.2.3",
-    "offline-plugin": "^4.8.1",
+    "offline-plugin": "^5.0.7",
     "prop-types": "^15.5.10",
     "rapscallion": "^2.1.12",
     "react": "^15.6.1",
