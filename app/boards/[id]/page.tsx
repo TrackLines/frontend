@@ -35,7 +35,7 @@ export default function BoardPage() {
   return (
     <main className="flex min-h-screen flex-col">
       <header className="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b px-6 py-4">
-        <Link href="/boards" className="text-sm text-muted-foreground hover:underline">← Boards</Link>
+        <Link href={`/projects/${board.project_id}`} className="text-sm text-muted-foreground hover:underline">← Project</Link>
         <h1 className="text-2xl font-bold tracking-tight">{board.name}</h1>
         {board.description && <p className="w-full text-muted-foreground">{board.description}</p>}
       </header>
@@ -82,7 +82,7 @@ function Message({ title, body }: { title: string; body: string }) {
     <main className="mx-auto flex min-h-[60vh] max-w-md flex-col items-center justify-center gap-3 px-6 text-center">
       <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
       <p className="text-muted-foreground">{body}</p>
-      <Link href="/boards" className={buttonVariants({ variant: 'outline' })}>Back to boards</Link>
+      <Link href="/dashboard" className={buttonVariants({ variant: 'outline' })}>Back to projects</Link>
     </main>
   );
 }

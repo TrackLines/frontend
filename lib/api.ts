@@ -8,15 +8,20 @@ export type Visibility = 'public' | 'login_only' | 'team';
 export type Ticket = { id: string; column_id: string; title: string; description: string; position: number };
 export type Column = { id: string; name: string; position: number; tickets: Ticket[] };
 export type Board = {
-  id: string; owner_clerk_id: string; name: string; description: string;
+  id: string; project_id: string; owner_clerk_id: string; name: string; description: string;
   created_at: string; updated_at: string; columns?: Column[];
 };
 export type RoadmapItem = { id: string; title: string; description: string; target_date: string | null; position: number };
 export type Roadmap = {
-  id: string; title: string; description: string; visibility: Visibility;
+  id: string; project_id: string; title: string; description: string; visibility: Visibility;
   created_at: string; updated_at: string; items?: RoadmapItem[];
 };
-export type Subscription = { paid: boolean; board_limit: number }; // board_limit -1 = unlimited
+// A project holds a board per team plus its roadmaps; boards/roadmaps are only filled by projects.get.
+export type Project = {
+  id: string; name: string; description: string; created_at: string; updated_at: string;
+  boards?: Board[]; roadmaps?: Roadmap[];
+};
+export type Subscription = { paid: boolean; project_limit: number }; // project_limit -1 = unlimited
 
 export class ApiError extends Error {
   constructor(public status: number, message: string) {
@@ -70,11 +75,19 @@ export async function api<T>(path: string, { method = 'GET', body, token }: Opti
 
 type T = string | null | undefined;
 
-// One line per backend route (see backend/internal/*/http*.go).
+// One line per backend route (see backend/internal/service.go).
+export const projects = {
+  list: (token: T) => api<Project[]>('/projects', { token }),
+  get: (id: string, token: T) => api<Project>(`/projects/${id}`, { token }),
+  create: (p: { name: string; description?: string }, token: T) => api<Project>('/projects', { method: 'POST', body: p, token }),
+  update: (id: string, p: { name: string; description: string }, token: T) => api<void>(`/projects/${id}`, { method: 'PATCH', body: p, token }),
+  remove: (id: string, token: T) => api<void>(`/projects/${id}`, { method: 'DELETE', token }),
+};
+
 export const boards = {
-  list: (token: T) => api<Board[]>('/boards', { token }),
   get: (id: string, token: T) => api<Board>(`/boards/${id}`, { token }),
-  create: (b: { name: string; description?: string }, token: T) => api<Board>('/boards', { method: 'POST', body: b, token }),
+  create: (projectId: string, b: { name: string; description?: string }, token: T) =>
+    api<Board>(`/projects/${projectId}/boards`, { method: 'POST', body: b, token }),
   remove: (id: string, token: T) => api<void>(`/boards/${id}`, { method: 'DELETE', token }),
 };
 
@@ -98,8 +111,8 @@ export const roadmaps = {
   get: (id: string, token?: T) => api<Roadmap>(`/roadmaps/${id}`, { token }),
   // no public index: public roadmaps are reachable only by their /r/<id> link
   mine: (token: T) => api<Roadmap[]>('/roadmaps', { token }),
-  create: (r: { title: string; description?: string; visibility?: Visibility }, token: T) =>
-    api<Roadmap>('/roadmaps', { method: 'POST', body: r, token }),
+  create: (projectId: string, r: { title: string; description?: string; visibility?: Visibility }, token: T) =>
+    api<Roadmap>(`/projects/${projectId}/roadmaps`, { method: 'POST', body: r, token }),
   update: (id: string, r: { title: string; description: string; visibility: Visibility }, token: T) =>
     api<void>(`/roadmaps/${id}`, { method: 'PUT', body: r, token }),
   remove: (id: string, token: T) => api<void>(`/roadmaps/${id}`, { method: 'DELETE', token }),
