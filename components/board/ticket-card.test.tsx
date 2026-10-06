@@ -22,3 +22,8 @@ test('defaults stay quiet', () => {
   expect(html).not.toContain('data-slot="badge"');
   expect(html).toContain('Unassigned');
 });
+
+test('blocked tickets say so', () => {
+  expect(card({ type: 'task', priority: 'medium', blocked: true })).toContain('Blocked');
+  expect(card({ type: 'task', priority: 'medium', blocked: false })).not.toContain('Blocked');
+});

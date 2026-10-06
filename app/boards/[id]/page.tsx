@@ -11,6 +11,7 @@ import { TicketDialog } from '@/components/board/ticket-dialog';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { ApiError, boards, tickets, type Board, type Ticket } from '@/lib/api';
 import { useToken } from '@/lib/use-token';
+import { useAutoRefresh } from '@/lib/use-auto-refresh';
 
 function columnWidthPct(count: number): string {
   if (count === 0) return '100%';
@@ -29,12 +30,19 @@ export default function BoardPage() {
   const [editMode, setEditMode] = useState(false);
 
   const loaded = token !== null;
-  const load = () => boards.get(id, token).then(setBoard, (e) => setError(e instanceof ApiError ? e.status : 500));
+  const load = (background = false) => boards.get(id, token).then((next) => {
+    setBoard(next);
+    setError(null);
+  }, (e) => {
+    if (!background) setError(e instanceof ApiError ? e.status : 500);
+  });
   useEffect(() => {
     if (!loaded) return;
-    load();
+    void load();
     // load once per board; later token refreshes must not refetch and wipe local edits
   }, [id, loaded]);
+
+  useAutoRefresh(() => load(true), loaded && !editMode && !addingTo);
 
   // local edits: components call the API themselves and report back here
   const updateTickets = (columnId: string, fn: (ts: Ticket[]) => Ticket[]) =>

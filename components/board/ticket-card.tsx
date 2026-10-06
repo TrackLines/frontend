@@ -6,6 +6,7 @@ import { PencilIcon } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { personLabel } from '@/lib/people';
 import { PriorityBadge } from './priority-badge';
+import { BlockedBadge } from '@/components/ticket/blocked-badge';
 import { TypeBadge } from '@/components/ticket-type';
 import type { Ticket } from '@/lib/api';
 import { TicketDialog } from './ticket-dialog';
@@ -43,10 +44,11 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
             <PencilIcon className="size-3.5" aria-hidden />
           </Button>
         </div>
-        {((ticket.type && ticket.type !== 'task') || (ticket.priority && ticket.priority !== 'medium')) && (
+        {(ticket.blocked || (ticket.type && ticket.type !== 'task') || (ticket.priority && ticket.priority !== 'medium')) && (
           <div className="flex flex-wrap gap-1 px-3">
             {ticket.type && ticket.type !== 'task' && <TypeBadge type={ticket.type} />}
             <PriorityBadge priority={ticket.priority} hideDefault />
+            {ticket.blocked && <BlockedBadge />}
           </div>
         )}
         {ticket.description && (

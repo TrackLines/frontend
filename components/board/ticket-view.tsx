@@ -2,6 +2,7 @@
 
 import { CopyLink } from '@/components/copy-link';
 import { Attachments } from '@/components/ticket/attachments';
+import { TicketComments } from '@/components/ticket/comments';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -21,7 +22,10 @@ type Props = {
 export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, token, done }: Props) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-xl">
+      <DialogContent
+        className="max-h-[85vh] overflow-y-auto sm:max-w-xl"
+        onPointerDown={(event) => event.stopPropagation()}
+      >
         <DialogHeader>
           <DialogTitle className="pr-8">{ticket.title}</DialogTitle>
           <DialogDescription className="flex items-center gap-2">
@@ -42,6 +46,7 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
           )}
         </section>
         {open && token && <Attachments ticketId={ticket.id} token={token} locked={done} />}
+        {open && token && <TicketComments ticketId={ticket.id} token={token} />}
         <DialogFooter>
           <CopyLink path={`/tickets/${ticket.id}`} className="sm:mr-auto" />
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Close</Button>

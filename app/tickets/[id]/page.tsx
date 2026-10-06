@@ -5,6 +5,10 @@ import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { CopyLink } from '@/components/copy-link';
 import { Attachments } from '@/components/ticket/attachments';
+import { BlockedBadge } from '@/components/ticket/blocked-badge';
+import { AssigneeSelect } from '@/components/ticket/assignee-select';
+import { Dependencies } from '@/components/ticket/dependencies';
+import { TicketComments } from '@/components/ticket/comments';
 import { PriorityBadge } from '@/components/board/priority-badge';
 import { TypeBadge } from '@/components/ticket-type';
 import { Badge } from '@/components/ui/badge';
@@ -49,16 +53,25 @@ export default function TicketPage() {
           <TypeBadge type={t.type} />
           <PriorityBadge priority={t.priority} />
           {t.sprint_number != null && <Badge variant="secondary">Sprint {t.sprint_number}</Badge>}
+          {t.blocked && <BlockedBadge />}
         </div>
         <h1 className="text-3xl font-bold tracking-tight">{t.title}</h1>
         <p className="text-sm text-muted-foreground">
-          Created by {personLabel(t.created_by)}{t.assigned_to ? ` · assigned to ${personLabel(t.assigned_to)}` : ' · unassigned'}
+          Created by {personLabel(t.created_by)}{!token && (t.assigned_to ? ` · assigned to ${personLabel(t.assigned_to)}` : ' · unassigned')}
         </p>
+        {token && (
+          <label className="flex max-w-xs items-center gap-2 text-sm text-muted-foreground">
+            Assigned to
+            <AssigneeSelect ticketId={t.id} value={t.assigned_to} token={token} onChange={(nt) => setT({ ...t, assigned_to: nt.assigned_to })} />
+          </label>
+        )}
       </header>
       <section aria-label="Ticket details" className="rounded-xl border p-5 text-sm">
         {t.description ? <p className="whitespace-pre-wrap break-words">{t.description}</p> : <p className="text-muted-foreground">No details provided.</p>}
       </section>
+      {token && <Dependencies ticket={t} token={token} onChanged={() => tickets.get(id, token).then(setT)} />}
       {token && <Attachments ticketId={t.id} token={token} locked={t.done} />}
+      {token && <TicketComments ticketId={t.id} token={token} />}
       <div className="flex flex-wrap gap-2">
         {t.board_id && (
           <>

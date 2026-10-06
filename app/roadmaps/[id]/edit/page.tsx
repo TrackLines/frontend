@@ -35,7 +35,7 @@ export default function EditRoadmapPage() {
         </div>
       </div>
       <Details roadmap={roadmap} token={token} onSaved={setRoadmap} />
-      <ItemEditor roadmapId={roadmap.id} items={roadmap.items ?? []} token={token} />
+      <ItemEditor roadmapId={roadmap.id} projectId={roadmap.project_id} items={roadmap.items ?? []} token={token} />
       <DangerZone roadmap={roadmap} token={token} />
     </main>
   );

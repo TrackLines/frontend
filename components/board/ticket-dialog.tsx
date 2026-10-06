@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { AssigneeSelect } from '@/components/ticket/assignee-select';
 import { Attachments } from '@/components/ticket/attachments';
 import { attachAll, PendingAttachments, type PendingFile } from '@/components/ticket/pending-attachments';
 import { TypePicker } from '@/components/ticket-type';
@@ -130,6 +131,13 @@ export function TicketDialog({ open, onOpenChange, token, columnId, ticket, onSa
             Priority <span className="font-normal text-muted-foreground">(optional)</span>
             <PrioritySelect value={priority} onChange={setPriority} />
           </label>
+          {ticket && (
+            // saves straight away (not with the form) — same as claiming
+            <label className="grid gap-1.5 text-sm font-medium">
+              Assignee
+              <AssigneeSelect ticketId={ticket.id} value={ticket.assigned_to} token={token} onChange={(t) => onSaved({ ...ticket, assigned_to: t.assigned_to })} />
+            </label>
+          )}
           {ticket ? <Attachments ticketId={ticket.id} token={token} locked={done} /> : <PendingAttachments files={files} onChange={setFiles} />}
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           {confirmDelete && (

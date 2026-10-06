@@ -10,6 +10,7 @@ export type Ticket = {
   id: string; column_id: string; title: string; description: string; position: number;
   type?: TicketType; sprint_id?: string | null;
   created_by: string; assigned_to?: string | null; priority?: string;
+  blocked?: boolean; // waits on tickets that aren't done yet
 };
 // A project ticket not on any board or sprint yet.
 export type BacklogTicket = Omit<Ticket, 'column_id'> & { column_id: null; project_id: string; type: TicketType };
@@ -24,10 +25,21 @@ export type Board = {
   created_at: string; updated_at: string; columns?: Column[];
   sprint?: Sprint; // open sprint, absent when the board doesn't run sprints
 };
-export type RoadmapItem = { id: string; title: string; description: string; target_date: string | null; position: number };
+export type RoadmapItem = {
+  id: string; title: string; description: string; target_date: string | null; position: number;
+  start_date?: string | null; // Gantt bar start (YYYY-MM-DD)
+  manual_status?: 'not_started' | 'in_progress' | 'done';
+  status?: 'not_started' | 'in_progress' | 'done'; // derived when tickets are linked
+  progress?: { done: number; total: number }; // linked tickets done / total (everyone)
+  tickets?: { id: string; title: string; done: boolean }[]; // linked tickets (owner only)
+};
+export type TicketComment = {
+  id: string; ticket_id: string; parent_comment_id: string | null;
+  body: string; author: string; created_at: string;
+};
 export type Roadmap = {
   id: string; project_id: string; title: string; description: string; visibility: Visibility;
-  created_at: string; updated_at: string; items?: RoadmapItem[];
+  created_at: string; updated_at: string; progress?: { done: number; total: number }; items?: RoadmapItem[];
 };
 // A project holds a board per team plus its roadmaps; boards/roadmaps are only filled by projects.get.
 export type Project = {
@@ -112,21 +124,40 @@ export const columns = {
   reorder: (boardId: string, ids: string[], token: T) => api<void>(`/boards/${boardId}/columns/order`, { method: 'PUT', body: { column_ids: ids }, token }),
 };
 
+// A linked ticket under "blocked by" / "blocks".
+export type Dep = { id: string; title: string; done: boolean };
+
 // One ticket plus where it lives (board/column/sprint are null for backlog tickets) — /tickets/[id].
 export type TicketDetail = Omit<Ticket, 'column_id'> & {
   column_id: string | null; project_id: string; project_name: string; type: TicketType;
   board_id: string | null; board_name: string | null; column_name: string | null; sprint_number: number | null;
   done: boolean; // in the board's last column: attachments locked
+  blocked_by: Dep[]; blocks: Dep[];
 };
+
+export type Assignee = { id: string; label: string };
 
 export const tickets = {
   get: (id: string, token: T) => api<TicketDetail>(`/tickets/${id}`, { token }),
+  // assign hands a ticket to you (your user id) or an agent (API key name); null unassigns
+  assign: (id: string, assignee: string | null, token: T) => api<Ticket>(`/tickets/${id}/assignee`, { method: 'PUT', body: { assignee }, token }),
+  assignees: (token: T) => api<Assignee[]>('/assignees', { token }),
   create: (columnId: string, t: { title: string; description?: string; type?: TicketType; priority?: string }, token: T) =>
     api<Ticket>(`/columns/${columnId}/tickets`, { method: 'POST', body: t, token }),
   update: (id: string, t: { title: string; description: string; type?: TicketType; priority?: string }, token: T) => api<void>(`/tickets/${id}`, { method: 'PATCH', body: t, token }),
   remove: (id: string, token: T) => api<void>(`/tickets/${id}`, { method: 'DELETE', token }),
+  // dependencies: replace what ticket {id} waits on (same project, no loops); claim is refused while blocked
+  setBlockedBy: (id: string, ticketIds: string[], token: T) => api<void>(`/tickets/${id}/blocked-by`, { method: 'PUT', body: { ticket_ids: ticketIds }, token }),
   move: (id: string, columnId: string, position: number, token: T) =>
     api<void>(`/tickets/${id}/move`, { method: 'POST', body: { column_id: columnId, position }, token }),
+};
+
+export const ticketComments = {
+  list: (ticketId: string, token: T) => api<TicketComment[]>(`/tickets/${ticketId}/comments`, { token }),
+  create: (ticketId: string, body: string, token: T, parentCommentId?: string) =>
+    api<TicketComment>(`/tickets/${ticketId}/comments`, {
+      method: 'POST', body: { body, ...(parentCommentId ? { parent_comment_id: parentCommentId } : {}) }, token,
+    }),
 };
 
 export const roadmaps = {
@@ -138,8 +169,11 @@ export const roadmaps = {
   update: (id: string, r: { title: string; description: string; visibility: Visibility }, token: T) =>
     api<void>(`/roadmaps/${id}`, { method: 'PUT', body: r, token }),
   remove: (id: string, token: T) => api<void>(`/roadmaps/${id}`, { method: 'DELETE', token }),
-  setItems: (id: string, items: Pick<RoadmapItem, 'title' | 'description' | 'target_date'>[], token: T) =>
+  // send each existing item's id so it's updated in place and keeps its linked tickets; unknown ids are created
+  setItems: (id: string, items: (Pick<RoadmapItem, 'title' | 'description' | 'target_date' | 'start_date' | 'manual_status'> & { id?: string })[], token: T) =>
     api<void>(`/roadmaps/${id}/items`, { method: 'PUT', body: items, token }),
+  setItemTickets: (id: string, itemId: string, ticketIds: string[], token: T) =>
+    api<void>(`/roadmaps/${id}/items/${itemId}/tickets`, { method: 'PUT', body: { ticket_ids: ticketIds }, token }),
 };
 
 export const billing = {

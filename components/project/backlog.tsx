@@ -8,9 +8,11 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from '@/components/ui/input';
 import { TICKET_TYPES as TYPES, TypeBadge, TypePicker } from '@/components/ticket-type';
 import { TicketDialog } from '@/components/board/ticket-dialog';
+import { BlockedBadge } from '@/components/ticket/blocked-badge';
 import { attachAll, PendingAttachments, type PendingFile } from '@/components/ticket/pending-attachments';
 import { BACKLOG_CHANGED } from '@/components/quick-add-ticket';
 import { backlog, boards as boardsApi, tickets, type BacklogTicket, type Board, type Ticket, type TicketType } from '@/lib/api';
+import { useAutoRefresh } from '@/lib/use-auto-refresh';
 
 type Props = { projectId: string; boards: Board[]; token: string };
 
@@ -25,14 +27,28 @@ export function Backlog({ projectId, boards, token }: Props) {
   const [editing, setEditing] = useState<BacklogTicket | null>(null);
 
   useEffect(() => {
-    const load = () => backlog.list(projectId, token).then(setList, () => setFailed(true));
-    load();
-    const onChange = (e: Event) => { if ((e as CustomEvent).detail?.projectId === projectId) load(); };
+    const load = () => backlog.list(projectId, token).then((items) => {
+      setList(items);
+      setFailed(false);
+    }, () => setFailed(true));
+    void load();
+    const onChange = (e: Event) => { if ((e as CustomEvent).detail?.projectId === projectId) void load(); };
     window.addEventListener(BACKLOG_CHANGED, onChange);
     return () => window.removeEventListener(BACKLOG_CHANGED, onChange);
   }, [projectId]); // token refreshes must not refetch
 
-  const shown = (list ?? []).filter((t) => filter === 'all' || t.type === filter);
+  useAutoRefresh(async () => {
+    try {
+      setList(await backlog.list(projectId, token));
+      setFailed(false);
+    } catch {
+      // Keep already-rendered backlog data available during transient failures.
+      if (list === null) setFailed(true);
+    }
+  }, !adding && !editing && busy === null);
+
+  // ready tickets first, blocked ones after (stable within each group)
+  const shown = (list ?? []).filter((t) => filter === 'all' || t.type === filter).sort((a, b) => Number(!!a.blocked) - Number(!!b.blocked));
 
   async function moveTo(t: BacklogTicket, boardId: string) {
     setBusy(t.id);
@@ -97,6 +113,7 @@ export function Backlog({ projectId, boards, token }: Props) {
           {shown.map((t) => (
             <li key={t.id} className="flex flex-wrap items-center gap-x-3 gap-y-2 p-4">
               <TypeBadge type={t.type} />
+              {t.blocked && <BlockedBadge />}
               <div className="min-w-0 flex-1">
                 <Link href={`/tickets/${t.id}`} className="font-medium hover:underline">{t.title}</Link>
                 {t.description && <p className="line-clamp-1 text-sm text-muted-foreground">{t.description}</p>}

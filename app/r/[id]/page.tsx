@@ -64,7 +64,7 @@ export default async function RoadmapPage({ params }: Props) {
         <h1 className="mt-2 text-4xl font-bold tracking-tight">{r.title}</h1>
         {r.description && <p className="mt-4 whitespace-pre-line text-lg text-muted-foreground">{r.description}</p>}
       </header>
-      <Timeline items={r.items ?? []} />
+      <Timeline id={r.id} items={r.items ?? []} progress={r.progress} />
     </main>
   );
 }

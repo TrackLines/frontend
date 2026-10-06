@@ -3,21 +3,26 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { RoadmapItem } from '@/lib/api';
 import { roadmaps } from '@/lib/api';
+import { ItemTickets } from './item-tickets';
 
-type DraftItem = Pick<RoadmapItem, 'title' | 'description' | 'target_date'> & { key: string };
+type DraftItem = Pick<RoadmapItem, 'title' | 'description' | 'target_date' | 'start_date' | 'manual_status'> & { key: string };
 
 type Props = {
   roadmapId: string;
+  projectId: string; // for the linked-tickets picker
   items: RoadmapItem[];
   token: string;
 };
 
-export function ItemEditor({ roadmapId, items, token }: Props) {
-  const [drafts, setDrafts] = useState<DraftItem[]>(() =>
-    items.map(({ id, title, description, target_date }) => ({ key: id, title, description, target_date })),
-  );
+const toDrafts = (items: RoadmapItem[]): DraftItem[] =>
+  items.map(({ id, title, description, target_date, start_date, manual_status }) => ({ key: id, title, description, target_date, start_date, manual_status: manual_status ?? 'not_started' }));
+
+export function ItemEditor({ roadmapId, projectId, items, token }: Props) {
+  const [saved, setSaved] = useState<RoadmapItem[]>(items); // server copy: real ids + linked tickets
+  const [drafts, setDrafts] = useState<DraftItem[]>(() => toDrafts(items));
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -49,13 +54,19 @@ export function ItemEditor({ roadmapId, items, token }: Props) {
     try {
       await roadmaps.setItems(
         roadmapId,
-        drafts.map(({ title, description, target_date }) => ({
+        drafts.map(({ key, title, description, target_date, start_date, manual_status }) => ({
+          start_date: start_date || null, // carried through so saves never wipe it (input comes with T-032C)
+          manual_status,
+          id: key, // existing items keep their id (and linked tickets); new keys are created as new items
           title: title.trim(),
           description: description.trim(),
           target_date: target_date || null,
         })),
         token,
       );
+      const fresh = (await roadmaps.get(roadmapId, token)).items ?? [];
+      setSaved(fresh);
+      setDrafts(toDrafts(fresh));
       setMessage('Roadmap items saved.');
     } catch {
       setError('Could not save roadmap items. Check your connection and try again.');
@@ -73,7 +84,7 @@ export function ItemEditor({ roadmapId, items, token }: Props) {
         </div>
         <Button type="button" variant="outline" onClick={() => setDrafts((current) => [
           ...current,
-          { key: crypto.randomUUID(), title: '', description: '', target_date: null },
+          { key: crypto.randomUUID(), title: '', description: '', target_date: null, manual_status: 'not_started' },
         ])}>
           Add item
         </Button>
@@ -110,10 +121,41 @@ export function ItemEditor({ roadmapId, items, token }: Props) {
                   className="w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
                 />
               </label>
+              <div className="flex flex-wrap gap-3">
+                <label className="grid gap-1.5 text-sm font-medium">
+                  Start date <span className="font-normal text-muted-foreground">(optional)</span>
+                  <Input type="date" value={item.start_date ?? ''} max={item.target_date ?? undefined} onChange={(event) => update(index, { start_date: event.target.value || null })} />
+                </label>
+                <label className="grid gap-1.5 text-sm font-medium">
+                  Target date <span className="font-normal text-muted-foreground">(optional)</span>
+                  <Input type="date" value={item.target_date ?? ''} min={item.start_date ?? undefined} onChange={(event) => update(index, { target_date: event.target.value || null })} />
+                </label>
+              </div>
               <label className="grid max-w-xs gap-1.5 text-sm font-medium">
-                Target date <span className="font-normal text-muted-foreground">(optional)</span>
-                <Input type="date" value={item.target_date ?? ''} onChange={(event) => update(index, { target_date: event.target.value || null })} />
+                Manual status <span className="font-normal text-muted-foreground">(used when no tickets are linked)</span>
+                <Select
+                  items={{ not_started: 'Not started', in_progress: 'In progress', done: 'Done' }}
+                  value={item.manual_status ?? 'not_started'}
+                  onValueChange={(value) => value && update(index, { manual_status: String(value) as DraftItem['manual_status'] })}
+                >
+                  <SelectTrigger aria-label={`Manual status for milestone ${index + 1}`}>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="not_started">Not started</SelectItem>
+                    <SelectItem value="in_progress">In progress</SelectItem>
+                    <SelectItem value="done">Done</SelectItem>
+                  </SelectContent>
+                </Select>
               </label>
+              {(() => {
+                const s = saved.find((x) => x.id === item.key);
+                return s ? (
+                  <ItemTickets key={s.id} roadmapId={roadmapId} itemId={s.id} projectId={projectId} initial={s.tickets ?? []} token={token} />
+                ) : (
+                  <p className="text-sm text-muted-foreground">Save items to link tickets to this milestone.</p>
+                );
+              })()}
             </li>
           ))}
         </ol>
