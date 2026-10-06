@@ -12,7 +12,10 @@ async function forward(request: NextRequest, context: RouteContext): Promise<Res
   destination.search = request.nextUrl.search;
 
   const headers = new Headers(request.headers);
-  for (const name of ['host', 'connection', 'content-length', 'accept-encoding']) {
+  // This is a server-to-server request. Forwarding the browser's Origin makes
+  // the backend treat it as a cross-origin request and reject production POSTs
+  // because its CORS allowlist is for direct browser callers only.
+  for (const name of ['host', 'origin', 'connection', 'content-length', 'accept-encoding']) {
     headers.delete(name);
   }
 
