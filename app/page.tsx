@@ -22,6 +22,7 @@ export default async function Home() {
           <Link href="/sign-in" className={buttonVariants({ size: 'lg' })}>
             Sign in to get started
           </Link>
+          <p className="mt-1 text-sm text-muted-foreground">Already have an account? Sign in.</p>
           <p className="mt-3 text-sm text-muted-foreground">Roadmap creation and project boards are coming soon.</p>
         </div>
 

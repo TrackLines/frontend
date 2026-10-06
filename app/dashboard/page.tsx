@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { NameDialog } from '@/components/name-dialog';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ApiError, billing, projects, type Project } from '@/lib/api';
@@ -45,7 +45,11 @@ export default function Dashboard() {
     <main className="mx-auto max-w-5xl px-6 py-10">
       <header className="mb-8 flex items-center justify-between gap-4">
         <h1 className="text-3xl font-bold tracking-tight">Projects</h1>
-        <Button onClick={() => setCreating(true)}>New project</Button>
+        <div className="flex items-center gap-2">
+          <Link href="/roadmaps" className={buttonVariants({ variant: 'ghost' })}>Roadmaps</Link>
+          <Link href="/settings" className={buttonVariants({ variant: 'ghost' })}>Settings</Link>
+          <Button onClick={() => setCreating(true)}>New project</Button>
+        </div>
       </header>
       {list.length === 0 ? (
         <div className="rounded-xl border border-dashed p-10 text-center">

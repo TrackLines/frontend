@@ -1,7 +1,7 @@
 import { clerkMiddleware } from '@clerk/nextjs/server';
 
 function isProtectedPath(pathname: string): boolean {
-  return ['/dashboard', '/projects', '/boards', '/roadmaps', '/settings'].some(
+  return ['/dashboard', '/projects', '/boards', '/tickets', '/roadmaps', '/settings'].some(
     (base) => pathname === base || pathname.startsWith(`${base}/`),
   );
 }

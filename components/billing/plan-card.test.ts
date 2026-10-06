@@ -1,0 +1,10 @@
+import { expect, test } from 'bun:test';
+import { ApiError } from '@/lib/api';
+import { billingError } from './plan-card';
+
+test('billing errors are actionable', () => {
+  expect(billingError(new ApiError(503, 'billing is not configured'), 'checkout')).toBe('Billing isn’t set up on this server yet.');
+  expect(billingError(new ApiError(409, 'x'), 'checkout')).toContain('already subscribed');
+  expect(billingError(new ApiError(409, 'x'), 'portal')).toContain('upgrade first');
+  expect(billingError(new Error('network'), 'portal')).toBe('Couldn’t reach billing. Please try again.');
+});

@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { NameDialog } from '@/components/name-dialog';
+import { Backlog } from '@/components/project/backlog';
+import { RoadmapEditorForm } from '@/components/roadmap-editor-form';
 import { VisibilityBadge } from '@/components/roadmap/visibility';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -57,6 +59,8 @@ export default function ProjectPage() {
         )}
       </Section>
 
+      <Backlog projectId={project.id} boards={boardList} token={token} />
+
       <Section title="Roadmaps" hint="Public roadmaps are readable by anyone you send the link to." action={<Button variant="outline" onClick={() => setDialog('roadmap')}>New roadmap</Button>}>
         {roadmapList.length === 0 ? (
           <Empty>No roadmaps yet.</Empty>
@@ -79,16 +83,13 @@ export default function ProjectPage() {
           router.push(`/boards/${b.id}`);
         }}
       />
-      <NameDialog
+      <RoadmapEditorForm
         open={dialog === 'roadmap'}
         onOpenChange={(o) => !o && setDialog(null)}
-        title="New roadmap"
-        description="Starts public: anyone with the link can read it."
-        placeholder="e.g. 2027 plan"
-        submitLabel="Create roadmap"
-        onSubmit={async (title) => {
-          const r = await roadmaps.create(project.id, { title }, token).catch(() => { throw new Error('Couldn’t create the roadmap. Please try again.'); });
-          setProject((p) => p && { ...p, roadmaps: [r, ...(p.roadmaps ?? [])] });
+        projectId={project.id}
+        onSubmit={async (r) => {
+          const rm = await roadmaps.create(project.id, r, token).catch(() => { throw new Error('Couldn’t create the roadmap. Please try again.'); });
+          setProject((p) => p && { ...p, roadmaps: [rm, ...(p.roadmaps ?? [])] });
         }}
       />
     </main>
@@ -103,6 +104,7 @@ function RoadmapRow({ roadmap }: { roadmap: Roadmap }) {
       <span className="font-medium">{roadmap.title}</span>
       <VisibilityBadge value={roadmap.visibility} />
       <span className="ml-auto flex gap-2">
+        <Link href={`/roadmaps/${roadmap.id}/edit`} className={buttonVariants({ variant: 'ghost', size: 'sm' })}>Edit</Link>
         <Link href={`/r/${roadmap.id}`} className={buttonVariants({ variant: 'ghost', size: 'sm' })}>View</Link>
         <Button
           variant="ghost"

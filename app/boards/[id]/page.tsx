@@ -1,26 +1,38 @@
 'use client';
 
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { AddColumn, Column } from '@/components/board/column';
+import { BoardDnd, DroppableColumn, SortableTicket } from '@/components/board/board-dnd';
+import { SprintBar } from '@/components/board/sprint-bar';
 import { TicketCard } from '@/components/board/ticket-card';
 import { TicketDialog } from '@/components/board/ticket-dialog';
 import { Button, buttonVariants } from '@/components/ui/button';
-import { ApiError, boards, type Board, type Ticket } from '@/lib/api';
+import { ApiError, boards, tickets, type Board, type Ticket } from '@/lib/api';
 import { useToken } from '@/lib/use-token';
+
+function columnWidthPct(count: number): string {
+  if (count === 0) return '100%';
+  const raw = 100 / count;
+  // Round down to nearest 5 (gives 30% for 3 cols, 25% for 4, 10% for 7+).
+  return `${Math.floor(raw / 5) * 5}%`;
+}
 
 export default function BoardPage() {
   const { id } = useParams<{ id: string }>();
+  const focus = useSearchParams().get('ticket'); // /boards/<id>?ticket=<ticket> opens that ticket's modal
   const token = useToken();
   const [board, setBoard] = useState<Board | null>(null);
   const [error, setError] = useState<number | null>(null);
   const [addingTo, setAddingTo] = useState<string | null>(null); // column id for the "new ticket" dialog
+  const [editMode, setEditMode] = useState(false);
 
   const loaded = token !== null;
+  const load = () => boards.get(id, token).then(setBoard, (e) => setError(e instanceof ApiError ? e.status : 500));
   useEffect(() => {
     if (!loaded) return;
-    boards.get(id, token).then(setBoard, (e) => setError(e instanceof ApiError ? e.status : 500));
+    load();
     // load once per board; later token refreshes must not refetch and wipe local edits
   }, [id, loaded]);
 
@@ -38,32 +50,61 @@ export default function BoardPage() {
         <Link href={`/projects/${board.project_id}`} className="text-sm text-muted-foreground hover:underline">← Project</Link>
         <h1 className="text-2xl font-bold tracking-tight">{board.name}</h1>
         {board.description && <p className="w-full text-muted-foreground">{board.description}</p>}
+        <Button type="button" variant={editMode ? 'secondary' : 'outline'} size="sm" aria-pressed={editMode} onClick={() => setEditMode((editing) => !editing)}>
+          {editMode ? 'Done editing' : 'Edit board'}
+        </Button>
       </header>
+      {focus && !board.columns?.some((c) => c.tickets.some((t) => t.id === focus)) && (
+        <p role="status" className="border-b px-6 py-3 text-sm text-muted-foreground">
+          That ticket isn&apos;t on this board&apos;s current view (it may belong to a closed sprint or have moved).{' '}
+          <Link href={`/tickets/${focus}`} className="font-medium text-foreground hover:underline">Open the ticket</Link>
+        </p>
+      )}
+      {/* sprint start/close changes which tickets the board shows, so reload */}
+      <SprintBar board={board} token={token} onChanged={load} />
+      <BoardDnd
+        boardId={board.id}
+        columns={board.columns ?? []}
+        onChange={(cols) => setBoard((b) => b && { ...b, columns: cols })}
+        onMove={(ticketId, columnId, position) => tickets.move(ticketId, columnId, position, token)}
+      >
       <div className="flex flex-1 items-start gap-4 overflow-x-auto p-6">
-        {board.columns?.map((col) => (
-          <div key={col.id} className="w-72 shrink-0">
-            <Column column={col} token={token}>
-              {col.tickets.map((t) => (
-                <TicketCard
-                  key={t.id}
-                  ticket={t}
-                  token={token}
-                  onUpdated={(nt) => updateTickets(col.id, (ts) => ts.map((x) => (x.id === nt.id ? nt : x)))}
-                  onDeleted={(tid) => updateTickets(col.id, (ts) => ts.filter((x) => x.id !== tid))}
-                />
-              ))}
-              <Button variant="ghost" className="justify-start" onClick={() => setAddingTo(col.id)}>+ Add ticket</Button>
-            </Column>
+        {board.columns?.map((col) => {
+          const cols = board.columns ?? [];
+          const w = columnWidthPct(cols.length);
+          return (
+            <div key={col.id} style={{ width: w }} className="shrink-0">
+              <Column column={col} token={token} editMode={editMode}>
+                <DroppableColumn id={col.id} ticketIds={col.tickets.map((t) => t.id)}>
+                  {col.tickets.map((t) => (
+                    <SortableTicket key={t.id} id={t.id}>
+                      <TicketCard
+                        ticket={t}
+                        openOnLoad={t.id === focus ? { columnName: col.name } : undefined}
+                        done={col.id === board.columns?.at(-1)?.id}
+                        token={token}
+                        onUpdated={(nt) => updateTickets(col.id, (ts) => ts.map((x) => (x.id === nt.id ? nt : x)))}
+                        onDeleted={(tid) => updateTickets(col.id, (ts) => ts.filter((x) => x.id !== tid))}
+                      />
+                    </SortableTicket>
+                  ))}
+                </DroppableColumn>
+                <Button variant="ghost" className="justify-start" onClick={() => setAddingTo(col.id)}>+ Add ticket</Button>
+              </Column>
+            </div>
+          );
+        })}
+        {editMode && (
+          <div className="w-72 shrink-0">
+            <AddColumn
+              boardId={board.id}
+              token={token}
+              onCreated={(c) => setBoard((b) => b && { ...b, columns: [...(b.columns ?? []), { ...c, tickets: [] }] })}
+            />
           </div>
-        ))}
-        <div className="w-72 shrink-0">
-          <AddColumn
-            boardId={board.id}
-            token={token}
-            onCreated={(c) => setBoard((b) => b && { ...b, columns: [...(b.columns ?? []), { ...c, tickets: [] }] })}
-          />
-        </div>
+        )}
       </div>
+      </BoardDnd>
       {addingTo && (
         <TicketDialog
           open

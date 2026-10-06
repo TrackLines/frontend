@@ -5,11 +5,24 @@
 
 export type Visibility = 'public' | 'login_only' | 'team';
 
-export type Ticket = { id: string; column_id: string; title: string; description: string; position: number };
+export type TicketType = 'bug' | 'feature' | 'task';
+export type Ticket = {
+  id: string; column_id: string; title: string; description: string; position: number;
+  type?: TicketType; sprint_id?: string | null;
+  created_by: string; assigned_to?: string | null; priority?: string;
+};
+// A project ticket not on any board or sprint yet.
+export type BacklogTicket = Omit<Ticket, 'column_id'> & { column_id: null; project_id: string; type: TicketType };
+// A board's time box; the board shows only the open sprint's tickets.
+export type Sprint = {
+  id: string; board_id: string; number: number; length_days: number;
+  starts_at: string; ends_at: string; closed_at: string | null;
+};
 export type Column = { id: string; name: string; position: number; tickets: Ticket[] };
 export type Board = {
   id: string; project_id: string; owner_clerk_id: string; name: string; description: string;
   created_at: string; updated_at: string; columns?: Column[];
+  sprint?: Sprint; // open sprint, absent when the board doesn't run sprints
 };
 export type RoadmapItem = { id: string; title: string; description: string; target_date: string | null; position: number };
 export type Roadmap = {
@@ -21,6 +34,7 @@ export type Project = {
   id: string; name: string; description: string; created_at: string; updated_at: string;
   boards?: Board[]; roadmaps?: Roadmap[];
 };
+export type ApiKey = { id: string; name: string; prefix: string; created_at: string; last_used_at: string | null };
 export type Subscription = { paid: boolean; project_limit: number }; // project_limit -1 = unlimited
 
 export class ApiError extends Error {
@@ -98,10 +112,18 @@ export const columns = {
   reorder: (boardId: string, ids: string[], token: T) => api<void>(`/boards/${boardId}/columns/order`, { method: 'PUT', body: { column_ids: ids }, token }),
 };
 
+// One ticket plus where it lives (board/column/sprint are null for backlog tickets) — /tickets/[id].
+export type TicketDetail = Omit<Ticket, 'column_id'> & {
+  column_id: string | null; project_id: string; project_name: string; type: TicketType;
+  board_id: string | null; board_name: string | null; column_name: string | null; sprint_number: number | null;
+  done: boolean; // in the board's last column: attachments locked
+};
+
 export const tickets = {
-  create: (columnId: string, t: { title: string; description?: string }, token: T) =>
+  get: (id: string, token: T) => api<TicketDetail>(`/tickets/${id}`, { token }),
+  create: (columnId: string, t: { title: string; description?: string; type?: TicketType; priority?: string }, token: T) =>
     api<Ticket>(`/columns/${columnId}/tickets`, { method: 'POST', body: t, token }),
-  update: (id: string, t: { title: string; description: string }, token: T) => api<void>(`/tickets/${id}`, { method: 'PATCH', body: t, token }),
+  update: (id: string, t: { title: string; description: string; type?: TicketType; priority?: string }, token: T) => api<void>(`/tickets/${id}`, { method: 'PATCH', body: t, token }),
   remove: (id: string, token: T) => api<void>(`/tickets/${id}`, { method: 'DELETE', token }),
   move: (id: string, columnId: string, position: number, token: T) =>
     api<void>(`/tickets/${id}/move`, { method: 'POST', body: { column_id: columnId, position }, token }),
@@ -124,4 +146,43 @@ export const billing = {
   status: (token: T) => api<Subscription>('/subscription', { token }),
   checkout: (token: T) => api<{ url: string }>('/subscription/checkout', { method: 'POST', token }),
   portal: (token: T) => api<{ url: string }>('/subscription/portal', { method: 'POST', token }),
+};
+
+// API keys: one per agent, acts as you. Managing keys needs a signed-in session (not a key).
+export const apiKeys = {
+  list: (token: T) => api<ApiKey[]>('/keys', { token }),
+  create: (name: string, token: T) => api<ApiKey & { key: string }>('/keys', { method: 'POST', body: { name }, token }),
+  revoke: (id: string, token: T) => api<void>(`/keys/${id}`, { method: 'DELETE', token }),
+};
+
+// Sprints are per board. Closing opens the next sprint (same length) and carries over every
+// ticket not in the board's last column; overdue sprints also close themselves.
+export const sprints = {
+  list: (boardId: string, token: T) => api<Sprint[]>(`/boards/${boardId}/sprints`, { token }),
+  start: (boardId: string, lengthDays: number, token: T) =>
+    api<Sprint>(`/boards/${boardId}/sprints`, { method: 'POST', body: { length_days: lengthDays }, token }),
+  close: (id: string, token: T) => api<Sprint>(`/sprints/${id}/close`, { method: 'POST', token }),
+};
+
+// Backlog: project tickets not on any board. Pull one in with tickets.move(id, columnId, pos);
+// it joins that board's open sprint.
+export const backlog = {
+  list: (projectId: string, token: T, type?: TicketType) =>
+    api<BacklogTicket[]>(`/projects/${projectId}/backlog${type ? `?type=${type}` : ''}`, { token }),
+  create: (projectId: string, t: { title: string; description?: string; type: TicketType }, token: T) =>
+    api<BacklogTicket>(`/projects/${projectId}/backlog`, { method: 'POST', body: t, token }),
+  send: (ticketId: string, token: T) => api<void>(`/tickets/${ticketId}/backlog`, { method: 'POST', token }),
+};
+
+// Files attached to a ticket (stored on UploadThing; the backend keeps the records).
+export type Attachment = {
+  id: string; ticket_id: string; key: string; url: string; name: string; size: number;
+  content_type: string; created_by: string; created_at: string;
+};
+
+export const attachments = {
+  list: (ticketId: string, token: T) => api<Attachment[]>(`/tickets/${ticketId}/attachments`, { token }),
+  add: (ticketId: string, f: { key: string; url: string; name: string; size: number; content_type: string }, token: T) =>
+    api<Attachment>(`/tickets/${ticketId}/attachments`, { method: 'POST', body: f, token }),
+  remove: (id: string, token: T) => api<void>(`/attachments/${id}`, { method: 'DELETE', token }),
 };

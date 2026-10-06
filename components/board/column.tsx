@@ -9,10 +9,11 @@ import { columns } from '@/lib/api';
 type ColumnProps = {
   column: BoardColumn;
   token: string;
+  editMode?: boolean;
   children?: ReactNode;
 };
 
-export function Column({ column, token, children }: ColumnProps) {
+export function Column({ column, token, editMode = false, children }: ColumnProps) {
   const [name, setName] = useState(column.name);
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(column.name);
@@ -43,9 +44,9 @@ export function Column({ column, token, children }: ColumnProps) {
   }
 
   return (
-    <section aria-label={`${name} column`} data-column-id={column.id} className="flex min-h-48 w-72 shrink-0 flex-col gap-3 rounded-xl bg-muted/50 p-3">
+    <section aria-label={`${name} column`} data-column-id={column.id} className="flex min-h-48 min-w-0 w-full flex-col gap-3 rounded-xl bg-muted/50 p-3">
       <header className="flex min-h-8 items-center justify-between gap-2">
-        {editing ? (
+        {editing && editMode ? (
           <form onSubmit={saveName} className="flex min-w-0 flex-1 gap-2">
             <label className="sr-only" htmlFor={`column-name-${column.id}`}>Column name</label>
             <Input id={`column-name-${column.id}`} autoFocus value={draft} maxLength={80} required onChange={(event) => setDraft(event.target.value)} />
@@ -55,7 +56,7 @@ export function Column({ column, token, children }: ColumnProps) {
         ) : (
           <>
             <h2 className="min-w-0 truncate font-semibold">{name}</h2>
-            <Button type="button" variant="ghost" size="sm" onClick={() => { setDraft(name); setEditing(true); setError(''); }}>Rename</Button>
+            {editMode && <Button type="button" variant="ghost" size="sm" onClick={() => { setDraft(name); setEditing(true); setError(''); }}>Rename</Button>}
           </>
         )}
       </header>
