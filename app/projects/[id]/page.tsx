@@ -11,12 +11,14 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ApiError, boards, projects, roadmaps, type Project, type Roadmap } from '@/lib/api';
 import { useToken } from '@/lib/use-token';
+import { useCachedState } from '@/lib/page-cache';
+import { ProjectSkeleton } from '@/components/page-skeletons';
 
 export default function ProjectPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const token = useToken();
-  const [project, setProject] = useState<Project | null>(null);
+  const [project, setProject] = useCachedState<Project>(`project:${id}`); // last-seen project shows instantly, then refreshes
   const [error, setError] = useState<number | null>(null);
   const [dialog, setDialog] = useState<'board' | 'roadmap' | null>(null);
 
@@ -27,7 +29,7 @@ export default function ProjectPage() {
 
   if (error === 404) return <Message title="Project not found" body="It may have been deleted, or it isn't yours." />;
   if (error) return <Message title="Couldn't load this project" body="Please refresh to try again." />;
-  if (!project || !token) return <p className="p-8 text-muted-foreground" role="status">Loading project…</p>;
+  if (!project || !token) return <ProjectSkeleton />;
 
   const boardList = project.boards ?? [];
   const roadmapList = project.roadmaps ?? [];

@@ -20,13 +20,13 @@ export async function projectTickets(projectId: string, token: string): Promise<
   return [...onBoards, ...bl.map((t) => ({ id: t.id, title: t.title, done: false }))];
 }
 
-function DepRow({ d, onRemove }: { d: Dep; onRemove?: () => void }) {
+export function DepRow({ d, onRemove, removeLabel }: { d: Dep; onRemove?: () => void; removeLabel?: string }) {
   return (
     <li className="flex items-center gap-2 text-sm">
       {d.done ? <CheckIcon className="size-4 text-emerald-600" aria-label="done" /> : <span className="size-4 rounded-full border" aria-label="not done" />}
       <Link href={`/tickets/${d.id}`} className={`min-w-0 flex-1 truncate hover:underline ${d.done ? 'text-muted-foreground line-through' : ''}`}>{d.title}</Link>
       {onRemove && (
-        <button type="button" onClick={onRemove} className="text-muted-foreground hover:text-destructive" aria-label={`Stop waiting on ${d.title}`}>
+        <button type="button" onClick={onRemove} className="text-muted-foreground hover:text-destructive" aria-label={removeLabel ?? `Stop waiting on ${d.title}`}>
           <XIcon className="size-4" />
         </button>
       )}

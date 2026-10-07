@@ -8,6 +8,7 @@ import { Attachments } from '@/components/ticket/attachments';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
 import { AssigneeSelect } from '@/components/ticket/assignee-select';
 import { Dependencies } from '@/components/ticket/dependencies';
+import { PartOf, SubTickets } from '@/components/ticket/sub-tickets';
 import { TicketComments } from '@/components/ticket/comments';
 import { LabelEditor, TicketLabels } from '@/components/ticket/labels';
 import { Button } from '@/components/ui/button';
@@ -18,12 +19,14 @@ import { buttonVariants } from '@/components/ui/button';
 import { ApiError, tickets, type TicketDetail } from '@/lib/api';
 import { personLabel } from '@/lib/people';
 import { useToken } from '@/lib/use-token';
+import { useCachedState } from '@/lib/page-cache';
+import { TicketSkeleton } from '@/components/page-skeletons';
 
 // A shareable page for one ticket — works for board and backlog tickets.
 export default function TicketPage() {
   const { id } = useParams<{ id: string }>();
   const token = useToken();
-  const [t, setT] = useState<TicketDetail | null>(null);
+  const [t, setT] = useCachedState<TicketDetail>(`ticket:${id}`); // last-seen ticket shows instantly, then refreshes
   const [error, setError] = useState<number | null>(null);
   const [labels, setLabels] = useState<string[]>([]);
   const [savingLabels, setSavingLabels] = useState(false);
@@ -55,7 +58,7 @@ export default function TicketPage() {
 
   if (error === 404) return <Message title="Ticket not found" body="It may have been deleted, or it isn't yours." />;
   if (error) return <Message title="Couldn't load this ticket" body="Please refresh to try again." />;
-  if (!t) return <p className="p-8 text-muted-foreground" role="status">Loading ticket…</p>;
+  if (!t) return <TicketSkeleton />;
 
   return (
     <main className="mx-auto grid max-w-3xl gap-6 px-6 py-10">
@@ -80,6 +83,7 @@ export default function TicketPage() {
           {t.blocked && <BlockedBadge />}
         </div>
         <h1 className="text-3xl font-bold tracking-tight">{t.title}</h1>
+        <PartOf ticket={t} />
         <p className="text-sm text-muted-foreground">
           Created by {personLabel(t.created_by)}{!token && (t.assigned_to ? ` · assigned to ${personLabel(t.assigned_to)}` : ' · unassigned')}
         </p>
@@ -105,6 +109,7 @@ export default function TicketPage() {
       <section aria-label="Ticket details" className="rounded-xl border p-5 text-sm">
         {t.description ? <p className="whitespace-pre-wrap break-words">{t.description}</p> : <p className="text-muted-foreground">No details provided.</p>}
       </section>
+      {token && <SubTickets ticket={t} token={token} onChanged={() => tickets.get(id, token).then(setT)} />}
       {token && <Dependencies ticket={t} token={token} onChanged={() => tickets.get(id, token).then(setT)} />}
       {token && <Attachments ticketId={t.id} token={token} locked={t.done} />}
       {token && <TicketComments ticketId={t.id} token={token} />}

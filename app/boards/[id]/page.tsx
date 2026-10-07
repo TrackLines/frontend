@@ -11,6 +11,8 @@ import { TicketDialog } from '@/components/board/ticket-dialog';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { ApiError, boards, tickets, type Board, type Ticket } from '@/lib/api';
 import { useToken } from '@/lib/use-token';
+import { useCachedState } from '@/lib/page-cache';
+import { BoardSkeleton } from '@/components/page-skeletons';
 import { useAutoRefresh } from '@/lib/use-auto-refresh';
 import { LabelFilter, filterTicketsByLabels } from '@/components/board/label-filter';
 
@@ -25,7 +27,7 @@ export default function BoardPage() {
   const { id } = useParams<{ id: string }>();
   const focus = useSearchParams().get('ticket'); // /boards/<id>?ticket=<ticket> opens that ticket's modal
   const token = useToken();
-  const [board, setBoard] = useState<Board | null>(null);
+  const [board, setBoard] = useCachedState<Board>(`board:${id}`); // last-seen board shows instantly, then refreshes
   const [error, setError] = useState<number | null>(null);
   const [addingTo, setAddingTo] = useState<string | null>(null); // column id for the "new ticket" dialog
   const [editMode, setEditMode] = useState(false);
@@ -52,7 +54,7 @@ export default function BoardPage() {
 
   if (error === 404) return <Message title="Board not found" body="It may have been deleted, or it isn't yours." />;
   if (error) return <Message title="Couldn't load this board" body="Please refresh to try again." />;
-  if (!board || !token) return <p className="p-8 text-muted-foreground" role="status">Loading board…</p>;
+  if (!board || !token) return <BoardSkeleton />;
 
   return (
     <main className="flex min-h-screen flex-col">

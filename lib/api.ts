@@ -136,6 +136,8 @@ export type TicketDetail = Omit<Ticket, 'column_id'> & {
   board_id: string | null; board_name: string | null; column_name: string | null; sprint_number: number | null;
   done: boolean; // in the board's last column: attachments locked
   blocked_by: Dep[]; blocks: Dep[];
+  parent?: Dep | null; // this is a sub-ticket of parent
+  children?: Dep[]; // its sub-tickets
 };
 
 export type Assignee = { id: string; label: string };
@@ -151,6 +153,8 @@ export const tickets = {
   setLabels: (id: string, labels: string[], token: T) => api<{ labels: string[] }>(`/tickets/${id}/labels`, { method: 'PUT', body: { labels }, token }),
   remove: (id: string, token: T) => api<void>(`/tickets/${id}`, { method: 'DELETE', token }),
   // dependencies: replace what ticket {id} waits on (same project, no loops); claim is refused while blocked
+  // setParent makes id a sub-ticket of parentId (null detaches)
+  setParent: (id: string, parentId: string | null, token: T) => api<void>(`/tickets/${id}/parent`, { method: 'PUT', body: { parent_id: parentId }, token }),
   setBlockedBy: (id: string, ticketIds: string[], token: T) => api<void>(`/tickets/${id}/blocked-by`, { method: 'PUT', body: { ticket_ids: ticketIds }, token }),
   move: (id: string, columnId: string, position: number, token: T) =>
     api<void>(`/tickets/${id}/move`, { method: 'POST', body: { column_id: columnId, position }, token }),

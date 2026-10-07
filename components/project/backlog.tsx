@@ -14,13 +14,15 @@ import { attachAll, PendingAttachments, type PendingFile } from '@/components/ti
 import { BACKLOG_CHANGED } from '@/components/quick-add-ticket';
 import { backlog, BacklogTicket, boards as boardsApi, tickets, type Board, type Ticket, type TicketType } from '@/lib/api';
 import { useAutoRefresh } from '@/lib/use-auto-refresh';
+import { useCachedState } from '@/lib/page-cache';
+import { ListSkeleton } from '@/components/page-skeletons';
 import { LabelFilter, filterTicketsByLabels } from '@/components/board/label-filter';
 
 type Props = { projectId: string; boards: Board[]; token: string };
 
 // Backlog: tickets in the project that aren't on any board or sprint yet (e.g. triaged bugs).
 export function Backlog({ projectId, boards, token }: Props) {
-  const [list, setList] = useState<BacklogTicket[] | null>(null);
+  const [list, setList] = useCachedState<BacklogTicket[]>(`backlog:${projectId}`); // instant on revisit, refreshed on mount
   const [failed, setFailed] = useState(false);
   const [filter, setFilter] = useState<TicketType | 'all'>('all');
   const [labelFilter, setLabelFilter] = useState<string[]>([]);
@@ -112,7 +114,7 @@ export function Backlog({ projectId, boards, token }: Props) {
       {failed ? (
         <p role="alert" className="text-sm text-destructive">Couldn&apos;t load the backlog. Please refresh to try again.</p>
       ) : list === null ? (
-        <p role="status" className="text-sm text-muted-foreground">Loading backlog…</p>
+        <ListSkeleton />
       ) : shown.length === 0 ? (
         <p className="rounded-xl border border-dashed p-6 text-sm text-muted-foreground">
           {list.length === 0 ? 'The backlog is empty.' : labelFilter.length > 0 ? 'No tickets with these labels in the backlog.' : 'Nothing of this type in the backlog.'}
