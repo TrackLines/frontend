@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
-import { projects, tickets, type Ticket } from '@/lib/api';
+import { projects, type ProjectLabel, type Ticket } from '@/lib/api';
 import { LabelFilterClear } from './label-filter-clear';
 
 type Props = {
@@ -18,7 +18,7 @@ type Props = {
 export function LabelFilter({ boardId, projectId, token, labels, onLabelsChange }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [options, setOptions] = useState<{ label: string; count: number }[]>([]);
+  const [options, setOptions] = useState<ProjectLabel[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Sync from URL on mount and when searchParams change
@@ -48,10 +48,12 @@ export function LabelFilter({ boardId, projectId, token, labels, onLabelsChange 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
+    setOptions([]);
     projects.labels(projectId, token)
       .then((items) => {
         if (!cancelled) {
-          setOptions(items);
+          // Older API deployments can serialize an empty result as null.
+          setOptions(normalizeLabelOptions(items));
           setLoading(false);
         }
       })
@@ -124,4 +126,8 @@ export function filterTicketsByLabels(tickets: Ticket[], labels: string[]): Tick
   if (labels.length === 0) return tickets;
   const lower = new Set(labels.map((l) => l.toLowerCase()));
   return tickets.filter((t) => t.labels && t.labels.some((l) => lower.has(l.toLowerCase())));
+}
+
+export function normalizeLabelOptions(options: unknown): ProjectLabel[] {
+  return Array.isArray(options) ? options : [];
 }
