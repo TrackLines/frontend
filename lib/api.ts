@@ -48,7 +48,8 @@ export type Project = {
   boards?: Board[]; roadmaps?: Roadmap[];
 };
 export type ProjectLabel = { label: string; count: number };
-export type ApiKey = { id: string; name: string; prefix: string; created_at: string; last_used_at: string | null };
+export type ApiKeyKind = 'ai' | 'service';
+export type ApiKey = { id: string; name: string; kind: ApiKeyKind; prefix: string; created_at: string; last_used_at: string | null };
 export type Subscription = { paid: boolean; project_limit: number }; // project_limit -1 = unlimited
 
 export class ApiError extends Error {
@@ -140,7 +141,7 @@ export type TicketDetail = Omit<Ticket, 'column_id'> & {
   children?: Dep[]; // its sub-tickets
 };
 
-export type Assignee = { id: string; label: string };
+export type Assignee = { id: string; label: string; kind?: 'person' | 'ai' | 'service' };
 
 export const tickets = {
   get: (id: string, token: T) => api<TicketDetail>(`/tickets/${id}`, { token }),
@@ -190,10 +191,10 @@ export const billing = {
   portal: (token: T) => api<{ url: string }>('/subscription/portal', { method: 'POST', token }),
 };
 
-// API keys: one per agent, acts as you. Managing keys needs a signed-in session (not a key).
+// API keys act as you; AI keys can be assigned tickets. Managing keys needs a signed-in session.
 export const apiKeys = {
   list: (token: T) => api<ApiKey[]>('/keys', { token }),
-  create: (name: string, token: T) => api<ApiKey & { key: string }>('/keys', { method: 'POST', body: { name }, token }),
+  create: (name: string, kind: ApiKeyKind, token: T) => api<ApiKey & { key: string }>('/keys', { method: 'POST', body: { name, kind }, token }),
   revoke: (id: string, token: T) => api<void>(`/keys/${id}`, { method: 'DELETE', token }),
 };
 

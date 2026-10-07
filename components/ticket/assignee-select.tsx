@@ -10,12 +10,16 @@ const NONE = '__unassigned';
 // assigneeItems: value → label for the picker. Keeps a current assignee that's no longer a choice
 // (revoked key, imported) so the trigger still shows who holds the ticket.
 export function assigneeItems(list: Assignee[], current: string | null | undefined): Record<string, string> {
-  const items: Record<string, string> = { [NONE]: 'Unassigned', ...Object.fromEntries(list.map((a) => [a.id, a.label])) };
+  const assignable = list.filter((a) => a.kind !== 'service');
+  const items: Record<string, string> = {
+    [NONE]: 'Unassigned',
+    ...Object.fromEntries(assignable.map((a) => [a.id, a.kind === 'ai' || !a.kind ? `${a.label} (AI)` : a.label])),
+  };
   if (current && !(current in items)) items[current] = personLabel(current);
   return items;
 }
 
-// AssigneeSelect hands a ticket to you or one of your agents (API keys); saves on change.
+// AssigneeSelect hands a ticket to a person or AI key; service keys aren't assignable.
 export function AssigneeSelect({ ticketId, value, token, onChange }: {
   ticketId: string; value: string | null | undefined; token: string; onChange: (t: Ticket) => void;
 }) {
