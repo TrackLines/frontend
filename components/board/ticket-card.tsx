@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card';
 import { personLabel } from '@/lib/people';
 import { PriorityBadge } from './priority-badge';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
+import { TicketLabels } from '@/components/ticket/labels';
 import { TypeBadge } from '@/components/ticket-type';
 import type { Ticket } from '@/lib/api';
 import { TicketDialog } from './ticket-dialog';
@@ -51,6 +52,7 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
             {ticket.blocked && <BlockedBadge />}
           </div>
         )}
+        <TicketLabels labels={ticket.labels} className="px-3" />
         {ticket.description && (
           <p className="line-clamp-2 px-3 text-xs whitespace-pre-line text-muted-foreground">{ticket.description}</p>
         )}
@@ -72,6 +74,7 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
         open={editOpen}
         onOpenChange={setEditOpen}
         token={token}
+        projectId={ticket.project_id}
         columnId={ticket.column_id}
         ticket={ticket}
         onSaved={onUpdated}

@@ -12,6 +12,7 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { ApiError, boards, tickets, type Board, type Ticket } from '@/lib/api';
 import { useToken } from '@/lib/use-token';
 import { useAutoRefresh } from '@/lib/use-auto-refresh';
+import { LabelFilter, filterTicketsByLabels } from '@/components/board/label-filter';
 
 function columnWidthPct(count: number): string {
   if (count === 0) return '100%';
@@ -28,6 +29,7 @@ export default function BoardPage() {
   const [error, setError] = useState<number | null>(null);
   const [addingTo, setAddingTo] = useState<string | null>(null); // column id for the "new ticket" dialog
   const [editMode, setEditMode] = useState(false);
+  const [labelFilter, setLabelFilter] = useState<string[]>([]);
 
   const loaded = token !== null;
   const load = (background = false) => boards.get(id, token).then((next) => {
@@ -58,6 +60,13 @@ export default function BoardPage() {
         <Link href={`/projects/${board.project_id}`} className="text-sm text-muted-foreground hover:underline">← Project</Link>
         <h1 className="text-2xl font-bold tracking-tight">{board.name}</h1>
         {board.description && <p className="w-full text-muted-foreground">{board.description}</p>}
+        <LabelFilter
+          boardId={board.id}
+          projectId={board.project_id}
+          token={token}
+          labels={labelFilter}
+          onLabelsChange={setLabelFilter}
+        />
         <Button type="button" variant={editMode ? 'secondary' : 'outline'} size="sm" aria-pressed={editMode} onClick={() => setEditMode((editing) => !editing)}>
           {editMode ? 'Done editing' : 'Edit board'}
         </Button>
@@ -80,11 +89,12 @@ export default function BoardPage() {
         {board.columns?.map((col) => {
           const cols = board.columns ?? [];
           const w = columnWidthPct(cols.length);
+          const shown = filterTicketsByLabels(col.tickets, labelFilter);
           return (
             <div key={col.id} style={{ width: w }} className="shrink-0">
               <Column column={col} token={token} editMode={editMode}>
-                <DroppableColumn id={col.id} ticketIds={col.tickets.map((t) => t.id)}>
-                  {col.tickets.map((t) => (
+                <DroppableColumn id={col.id} ticketIds={shown.map((t) => t.id)}>
+                  {shown.map((t) => (
                     <SortableTicket key={t.id} id={t.id}>
                       <TicketCard
                         ticket={t}
@@ -118,6 +128,7 @@ export default function BoardPage() {
           open
           onOpenChange={(open) => !open && setAddingTo(null)}
           token={token}
+          projectId={board.project_id}
           columnId={addingTo}
           onSaved={(t) => updateTickets(t.column_id, (ts) => [...ts, t])}
         />

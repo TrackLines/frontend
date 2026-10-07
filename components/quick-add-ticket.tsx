@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState, type FormEvent } from 'react';
 import { attachAll, PendingAttachments, type PendingFile } from '@/components/ticket/pending-attachments';
 import { TypePicker } from '@/components/ticket-type';
+import { LabelEditor } from '@/components/ticket/labels';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -43,6 +44,7 @@ function QuickAddDialog({ scope, onClose }: { scope: NonNullable<ReturnType<type
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [type, setType] = useState<TicketType>('bug');
+  const [labels, setLabels] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [added, setAdded] = useState('');
@@ -61,7 +63,7 @@ function QuickAddDialog({ scope, onClose }: { scope: NonNullable<ReturnType<type
     setSaving(true);
     setError('');
     try {
-      const t = await backlog.create(projectId, { title: title.trim(), description: description.trim(), type }, token);
+      const t = await backlog.create(projectId, { title: title.trim(), description: description.trim(), type, labels }, token);
       const failed = await attachAll(t.id, files, token);
       setFiles([]);
       if (failed) setError(`${failed} file(s) didn’t attach — add them from the ticket.`);
@@ -70,6 +72,7 @@ function QuickAddDialog({ scope, onClose }: { scope: NonNullable<ReturnType<type
       setAdded(`Added “${t.title}” to ${where ? `${where}’s` : 'the'} backlog.`);
       setTitle('');
       setDescription('');
+      setLabels([]);
     } catch {
       setError('Couldn’t add the ticket. Please try again.');
     } finally {
@@ -99,6 +102,7 @@ function QuickAddDialog({ scope, onClose }: { scope: NonNullable<ReturnType<type
             </label>
           )}
           <TypePicker value={type} onChange={setType} name="quick-add-type" />
+          <LabelEditor projectId={projectId} token={token ?? ''} labels={labels} onChange={setLabels} disabled={!token || saving} />
           <Input autoFocus required maxLength={200} placeholder="What's wrong / what's needed?" value={title} onChange={(e) => setTitle(e.target.value)} />
           <textarea
             className="min-h-24 rounded-md border bg-background px-3 py-2 text-sm"

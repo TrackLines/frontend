@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { AssigneeSelect } from '@/components/ticket/assignee-select';
+import { LabelEditor } from '@/components/ticket/labels';
 import { Attachments } from '@/components/ticket/attachments';
 import { attachAll, PendingAttachments, type PendingFile } from '@/components/ticket/pending-attachments';
 import { TypePicker } from '@/components/ticket-type';
@@ -16,6 +17,7 @@ type Props = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   token: string;
+  projectId?: string;
   columnId: string;
   ticket?: Ticket;
   onSaved: (ticket: Ticket) => void;
@@ -24,11 +26,12 @@ type Props = {
   done?: boolean; // in the board's last column: attachments locked
 };
 
-export function TicketDialog({ open, onOpenChange, token, columnId, ticket, onSaved, onDeleted, onSentToBacklog, done }: Props) {
+export function TicketDialog({ open, onOpenChange, token, projectId, columnId, ticket, onSaved, onDeleted, onSentToBacklog, done }: Props) {
   const [title, setTitle] = useState(ticket?.title ?? '');
   const [description, setDescription] = useState(ticket?.description ?? '');
   const [type, setType] = useState<TicketType>(ticket?.type ?? 'task');
   const [priority, setPriority] = useState<string>(ticket?.priority ?? '');
+  const [labels, setLabels] = useState<string[]>(ticket?.labels ?? []);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -42,6 +45,7 @@ export function TicketDialog({ open, onOpenChange, token, columnId, ticket, onSa
       setDescription(ticket?.description ?? '');
       setType(ticket?.type ?? 'task');
       setPriority(ticket?.priority ?? '');
+      setLabels(ticket?.labels ?? []);
       setConfirmDelete(false);
       setError('');
     }
@@ -56,9 +60,10 @@ export function TicketDialog({ open, onOpenChange, token, columnId, ticket, onSa
     try {
       if (ticket) {
         await tickets.update(ticket.id, { title: cleanTitle, description: description.trim(), type, priority }, token);
-        onSaved({ ...ticket, title: cleanTitle, description: description.trim(), type, priority });
+        const result = await tickets.setLabels(ticket.id, labels, token);
+        onSaved({ ...ticket, title: cleanTitle, description: description.trim(), type, priority, labels: result.labels });
       } else {
-        const created = await tickets.create(columnId, { title: cleanTitle, description: description.trim(), type, priority }, token);
+        const created = await tickets.create(columnId, { title: cleanTitle, description: description.trim(), type, priority, labels }, token);
         await attachAll(created.id, files, token); // failures are visible on the ticket's attachment list
         setFiles([]);
         onSaved(created);
@@ -131,6 +136,7 @@ export function TicketDialog({ open, onOpenChange, token, columnId, ticket, onSa
             Priority <span className="font-normal text-muted-foreground">(optional)</span>
             <PrioritySelect value={priority} onChange={setPriority} />
           </label>
+          <LabelEditor projectId={projectId ?? ticket?.project_id ?? ''} token={token} labels={labels} onChange={setLabels} disabled={saving || deleting} />
           {ticket && (
             // saves straight away (not with the form) — same as claiming
             <label className="grid gap-1.5 text-sm font-medium">

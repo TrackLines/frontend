@@ -8,6 +8,7 @@ export type Visibility = 'public' | 'login_only' | 'team';
 export type TicketType = 'bug' | 'feature' | 'task';
 export type Ticket = {
   id: string; column_id: string; title: string; description: string; position: number;
+  project_id?: string; labels?: string[];
   type?: TicketType; sprint_id?: string | null;
   created_by: string; assigned_to?: string | null; priority?: string;
   blocked?: boolean; // waits on tickets that aren't done yet
@@ -46,6 +47,7 @@ export type Project = {
   id: string; name: string; description: string; created_at: string; updated_at: string;
   boards?: Board[]; roadmaps?: Roadmap[];
 };
+export type ProjectLabel = { label: string; count: number };
 export type ApiKey = { id: string; name: string; prefix: string; created_at: string; last_used_at: string | null };
 export type Subscription = { paid: boolean; project_limit: number }; // project_limit -1 = unlimited
 
@@ -108,6 +110,7 @@ export const projects = {
   create: (p: { name: string; description?: string }, token: T) => api<Project>('/projects', { method: 'POST', body: p, token }),
   update: (id: string, p: { name: string; description: string }, token: T) => api<void>(`/projects/${id}`, { method: 'PATCH', body: p, token }),
   remove: (id: string, token: T) => api<void>(`/projects/${id}`, { method: 'DELETE', token }),
+  labels: (id: string, token: T) => api<ProjectLabel[]>(`/projects/${id}/labels`, { token }),
 };
 
 export const boards = {
@@ -142,9 +145,10 @@ export const tickets = {
   // assign hands a ticket to you (your user id) or an agent (API key name); null unassigns
   assign: (id: string, assignee: string | null, token: T) => api<Ticket>(`/tickets/${id}/assignee`, { method: 'PUT', body: { assignee }, token }),
   assignees: (token: T) => api<Assignee[]>('/assignees', { token }),
-  create: (columnId: string, t: { title: string; description?: string; type?: TicketType; priority?: string }, token: T) =>
+  create: (columnId: string, t: { title: string; description?: string; type?: TicketType; priority?: string; labels?: string[] }, token: T) =>
     api<Ticket>(`/columns/${columnId}/tickets`, { method: 'POST', body: t, token }),
   update: (id: string, t: { title: string; description: string; type?: TicketType; priority?: string }, token: T) => api<void>(`/tickets/${id}`, { method: 'PATCH', body: t, token }),
+  setLabels: (id: string, labels: string[], token: T) => api<{ labels: string[] }>(`/tickets/${id}/labels`, { method: 'PUT', body: { labels }, token }),
   remove: (id: string, token: T) => api<void>(`/tickets/${id}`, { method: 'DELETE', token }),
   // dependencies: replace what ticket {id} waits on (same project, no loops); claim is refused while blocked
   setBlockedBy: (id: string, ticketIds: string[], token: T) => api<void>(`/tickets/${id}/blocked-by`, { method: 'PUT', body: { ticket_ids: ticketIds }, token }),
@@ -203,7 +207,7 @@ export const sprints = {
 export const backlog = {
   list: (projectId: string, token: T, type?: TicketType) =>
     api<BacklogTicket[]>(`/projects/${projectId}/backlog${type ? `?type=${type}` : ''}`, { token }),
-  create: (projectId: string, t: { title: string; description?: string; type: TicketType }, token: T) =>
+  create: (projectId: string, t: { title: string; description?: string; type: TicketType; labels?: string[] }, token: T) =>
     api<BacklogTicket>(`/projects/${projectId}/backlog`, { method: 'POST', body: t, token }),
   send: (ticketId: string, token: T) => api<void>(`/tickets/${ticketId}/backlog`, { method: 'POST', token }),
 };

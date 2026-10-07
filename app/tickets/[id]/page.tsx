@@ -9,6 +9,8 @@ import { BlockedBadge } from '@/components/ticket/blocked-badge';
 import { AssigneeSelect } from '@/components/ticket/assignee-select';
 import { Dependencies } from '@/components/ticket/dependencies';
 import { TicketComments } from '@/components/ticket/comments';
+import { LabelEditor, TicketLabels } from '@/components/ticket/labels';
+import { Button } from '@/components/ui/button';
 import { PriorityBadge } from '@/components/board/priority-badge';
 import { TypeBadge } from '@/components/ticket-type';
 import { Badge } from '@/components/ui/badge';
@@ -23,11 +25,33 @@ export default function TicketPage() {
   const token = useToken();
   const [t, setT] = useState<TicketDetail | null>(null);
   const [error, setError] = useState<number | null>(null);
+  const [labels, setLabels] = useState<string[]>([]);
+  const [savingLabels, setSavingLabels] = useState(false);
+  const [labelError, setLabelError] = useState('');
 
   const loaded = token !== null;
   useEffect(() => {
     if (loaded) tickets.get(id, token).then(setT, (e) => setError(e instanceof ApiError ? e.status : 500));
   }, [id, loaded]); // load once; token refreshes must not refetch
+
+  useEffect(() => {
+    if (t) setLabels(t.labels ?? []);
+  }, [t?.id, t?.labels]);
+
+  async function saveLabels() {
+    if (!t || !token) return;
+    setSavingLabels(true);
+    setLabelError('');
+    try {
+      const result = await tickets.setLabels(t.id, labels, token);
+      setLabels(result.labels);
+      setT((current) => current && { ...current, labels: result.labels });
+    } catch {
+      setLabelError('Couldn’t save labels. Please try again.');
+    } finally {
+      setSavingLabels(false);
+    }
+  }
 
   if (error === 404) return <Message title="Ticket not found" body="It may have been deleted, or it isn't yours." />;
   if (error) return <Message title="Couldn't load this ticket" body="Please refresh to try again." />;
@@ -59,6 +83,7 @@ export default function TicketPage() {
         <p className="text-sm text-muted-foreground">
           Created by {personLabel(t.created_by)}{!token && (t.assigned_to ? ` · assigned to ${personLabel(t.assigned_to)}` : ' · unassigned')}
         </p>
+        <TicketLabels labels={t.labels} />
         {token && (
           <label className="flex max-w-xs items-center gap-2 text-sm text-muted-foreground">
             Assigned to
@@ -66,6 +91,17 @@ export default function TicketPage() {
           </label>
         )}
       </header>
+      {token && (
+        <section className="grid gap-2 rounded-xl border p-4" aria-label="Edit ticket labels">
+          <LabelEditor projectId={t.project_id} token={token} labels={labels} onChange={setLabels} disabled={savingLabels} showLabels={false} />
+          <div className="flex flex-wrap items-center gap-3">
+            <Button type="button" size="sm" disabled={savingLabels || labels.join('\0') === (t.labels ?? []).join('\0')} onClick={saveLabels}>
+              {savingLabels ? 'Saving labels…' : 'Save labels'}
+            </Button>
+            {labelError && <p role="alert" className="text-sm text-destructive">{labelError}</p>}
+          </div>
+        </section>
+      )}
       <section aria-label="Ticket details" className="rounded-xl border p-5 text-sm">
         {t.description ? <p className="whitespace-pre-wrap break-words">{t.description}</p> : <p className="text-muted-foreground">No details provided.</p>}
       </section>

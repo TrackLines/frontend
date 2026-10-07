@@ -9,10 +9,12 @@ import { Input } from '@/components/ui/input';
 import { TICKET_TYPES as TYPES, TypeBadge, TypePicker } from '@/components/ticket-type';
 import { TicketDialog } from '@/components/board/ticket-dialog';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
+import { LabelEditor, TicketLabels } from '@/components/ticket/labels';
 import { attachAll, PendingAttachments, type PendingFile } from '@/components/ticket/pending-attachments';
 import { BACKLOG_CHANGED } from '@/components/quick-add-ticket';
-import { backlog, boards as boardsApi, tickets, type BacklogTicket, type Board, type Ticket, type TicketType } from '@/lib/api';
+import { backlog, BacklogTicket, boards as boardsApi, tickets, type Board, type Ticket, type TicketType } from '@/lib/api';
 import { useAutoRefresh } from '@/lib/use-auto-refresh';
+import { LabelFilter, filterTicketsByLabels } from '@/components/board/label-filter';
 
 type Props = { projectId: string; boards: Board[]; token: string };
 
@@ -21,6 +23,7 @@ export function Backlog({ projectId, boards, token }: Props) {
   const [list, setList] = useState<BacklogTicket[] | null>(null);
   const [failed, setFailed] = useState(false);
   const [filter, setFilter] = useState<TicketType | 'all'>('all');
+  const [labelFilter, setLabelFilter] = useState<string[]>([]);
   const [adding, setAdding] = useState(false);
   const [busy, setBusy] = useState<string | null>(null); // ticket id being moved/deleted
   const [error, setError] = useState('');
@@ -48,7 +51,10 @@ export function Backlog({ projectId, boards, token }: Props) {
   }, !adding && !editing && busy === null);
 
   // ready tickets first, blocked ones after (stable within each group)
-  const shown = (list ?? []).filter((t) => filter === 'all' || t.type === filter).sort((a, b) => Number(!!a.blocked) - Number(!!b.blocked));
+  const shown = (list ?? [])
+    .filter((t) => filter === 'all' || t.type === filter)
+    .filter((t) => labelFilter.length === 0 || (t.labels && t.labels.some((l) => labelFilter.includes(l))))
+    .sort((a, b) => Number(!!a.blocked) - Number(!!b.blocked));
 
   async function moveTo(t: BacklogTicket, boardId: string) {
     setBusy(t.id);
@@ -98,6 +104,9 @@ export function Backlog({ projectId, boards, token }: Props) {
           </Button>
         ))}
       </div>
+      <div className="mb-3">
+        <LabelFilter projectId={projectId} token={token} labels={labelFilter} onLabelsChange={setLabelFilter} />
+      </div>
 
       {error && <p role="alert" className="mb-3 text-sm text-destructive">{error}</p>}
       {failed ? (
@@ -106,7 +115,7 @@ export function Backlog({ projectId, boards, token }: Props) {
         <p role="status" className="text-sm text-muted-foreground">Loading backlog…</p>
       ) : shown.length === 0 ? (
         <p className="rounded-xl border border-dashed p-6 text-sm text-muted-foreground">
-          {list.length === 0 ? 'The backlog is empty.' : 'Nothing of this type in the backlog.'}
+          {list.length === 0 ? 'The backlog is empty.' : labelFilter.length > 0 ? 'No tickets with these labels in the backlog.' : 'Nothing of this type in the backlog.'}
         </p>
       ) : (
         <ul className="divide-y rounded-xl border">
@@ -114,6 +123,7 @@ export function Backlog({ projectId, boards, token }: Props) {
             <li key={t.id} className="flex flex-wrap items-center gap-x-3 gap-y-2 p-4">
               <TypeBadge type={t.type} />
               {t.blocked && <BlockedBadge />}
+              <TicketLabels labels={t.labels} />
               <div className="min-w-0 flex-1">
                 <Link href={`/tickets/${t.id}`} className="font-medium hover:underline">{t.title}</Link>
                 {t.description && <p className="line-clamp-1 text-sm text-muted-foreground">{t.description}</p>}
@@ -141,6 +151,7 @@ export function Backlog({ projectId, boards, token }: Props) {
           open
           onOpenChange={(o) => !o && setEditing(null)}
           token={token}
+          projectId={projectId}
           columnId=""
           ticket={editing as unknown as Ticket}
           onSaved={(nt) => setList((l) => l && l.map((x) => (x.id === nt.id ? { ...x, ...nt, column_id: null, type: nt.type ?? x.type } : x)))}
@@ -150,6 +161,8 @@ export function Backlog({ projectId, boards, token }: Props) {
       <AddDialog
         open={adding}
         onOpenChange={setAdding}
+        projectId={projectId}
+        token={token}
         onAdd={async ({ files, ...input }) => {
           const t = await backlog.create(projectId, input, token);
           if (await attachAll(t.id, files, token)) setError(`“${t.title}” was added, but some files didn’t attach — add them from the ticket.`);
@@ -160,13 +173,15 @@ export function Backlog({ projectId, boards, token }: Props) {
   );
 }
 
-function AddDialog({ open, onOpenChange, onAdd }: {
+function AddDialog({ open, onOpenChange, projectId, token, onAdd }: {
   open: boolean; onOpenChange: (o: boolean) => void;
-  onAdd: (t: { title: string; description: string; type: TicketType; files: PendingFile[] }) => Promise<void>;
+  projectId: string; token: string;
+  onAdd: (t: { title: string; description: string; type: TicketType; labels: string[]; files: PendingFile[] }) => Promise<void>;
 }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [type, setType] = useState<TicketType>('bug');
+  const [labels, setLabels] = useState<string[]>([]);
   const [files, setFiles] = useState<PendingFile[]>([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -176,10 +191,11 @@ function AddDialog({ open, onOpenChange, onAdd }: {
     setSaving(true);
     setError('');
     try {
-      await onAdd({ title: title.trim(), description: description.trim(), type, files });
+      await onAdd({ title: title.trim(), description: description.trim(), type, labels, files });
       setFiles([]);
       setTitle('');
       setDescription('');
+      setLabels([]);
       onOpenChange(false);
     } catch {
       setError('Couldn’t add the ticket. Please try again.');
@@ -197,6 +213,7 @@ function AddDialog({ open, onOpenChange, onAdd }: {
             <DialogDescription>It stays here until you move it onto a team board.</DialogDescription>
           </DialogHeader>
           <TypePicker value={type} onChange={setType} />
+          <LabelEditor projectId={projectId} token={token} labels={labels} onChange={setLabels} disabled={saving} />
           <Input autoFocus required maxLength={200} placeholder="What's wrong / what's needed?" value={title} onChange={(e) => setTitle(e.target.value)} />
           <textarea
             className="min-h-24 rounded-md border bg-background px-3 py-2 text-sm"

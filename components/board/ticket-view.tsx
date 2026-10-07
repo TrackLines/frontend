@@ -3,6 +3,7 @@
 import { CopyLink } from '@/components/copy-link';
 import { Attachments } from '@/components/ticket/attachments';
 import { TicketComments } from '@/components/ticket/comments';
+import { TicketLabels } from '@/components/ticket/labels';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -38,6 +39,7 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
           <dt className="text-muted-foreground">Assigned to</dt>
           <dd>{ticket.assigned_to ? personLabel(ticket.assigned_to) : <span className="text-muted-foreground italic">Unassigned</span>}</dd>
         </dl>
+        <TicketLabels labels={ticket.labels} />
         <section aria-label="Ticket details" className="min-h-20 rounded-md bg-muted/50 p-3 text-sm">
           {ticket.description ? (
             <p className="whitespace-pre-wrap break-words">{ticket.description}</p>
