@@ -13,6 +13,7 @@ import { ApiError, boards, projects, roadmaps, type Project, type Roadmap } from
 import { useToken } from '@/lib/use-token';
 import { useCachedState } from '@/lib/page-cache';
 import { ProjectSkeleton } from '@/components/page-skeletons';
+import { CopyButton } from '@/components/copy-link';
 
 export default function ProjectPage() {
   const { id } = useParams<{ id: string }>();
@@ -38,6 +39,12 @@ export default function ProjectPage() {
     <main className="mx-auto max-w-5xl px-6 py-10">
       <Link href="/dashboard" className="text-sm text-muted-foreground hover:underline">← Projects</Link>
       <h1 className="mt-2 text-3xl font-bold tracking-tight">{project.name}</h1>
+      {/* integrations (ChewedFeed, BugFixes) ask for this */}
+      <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+        Project ID
+        <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs text-foreground select-all">{project.id}</code>
+        <CopyButton value={project.id} label="Copy ID" size="sm" ariaLabel="Copy project ID" />
+      </p>
       {project.description && <p className="mt-2 text-muted-foreground">{project.description}</p>}
 
       <Section title="Boards" hint="One board per team." action={<Button onClick={() => setDialog('board')}>New board</Button>}>
