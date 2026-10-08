@@ -26,3 +26,8 @@ export function prefetch<T>(key: string, load: () => Promise<T>) {
   if (cache.has(key)) return;
   load().then((v) => { cache.set(key, v); }, () => {});
 }
+
+// forgetAllCached drops every cached page, e.g. when the active organization changes.
+export function forgetAllCached() {
+  cache.clear();
+}

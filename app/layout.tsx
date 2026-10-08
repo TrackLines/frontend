@@ -6,6 +6,7 @@ import { ThemeProvider } from 'next-themes';
 import { ThemeChooser } from '@/components/theme-chooser';
 import { UserMenu } from '@/components/user-menu';
 import { QuickAddTicket } from '@/components/quick-add-ticket';
+import { OrgSwitcher } from '@/components/org-switcher';
 import './globals.css';
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
@@ -25,7 +26,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange storageKey="tracklines-theme">
         <ClerkProvider appearance={{ theme: shadcn }}>
           <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-            <Link href="/" className="font-semibold tracking-tight">Tracklines</Link>
+            <div className="flex items-center gap-4">
+              <Link href="/" className="font-semibold tracking-tight">Tracklines</Link>
+              <Show when="signed-in"><OrgSwitcher /></Show>
+            </div>
             <nav className="flex items-center gap-4" aria-label="Account">
               {/* QuickAddTicket only renders on some pages, so it goes first: the toggle and avatar never move */}
               <Show when="signed-in"><QuickAddTicket /></Show>
