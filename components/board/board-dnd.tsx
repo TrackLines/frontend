@@ -92,6 +92,9 @@ export function SortableTicket({ id, children }: { id: string; children: ReactNo
       {...listeners}
       // keyboard drag only when the card itself is focused, so Enter/Space on "Edit ticket" still edits
       onKeyDown={(e) => { if (e.target === e.currentTarget) listeners?.onKeyDown?.(e); }}
+      // the card's dialogs are portals, but React still bubbles their events here: only drag from the card itself,
+      // so selecting text in an open ticket doesn't pick up the card behind it
+      onPointerDown={(e) => { if (e.currentTarget.contains(e.target as Node)) listeners?.onPointerDown?.(e); }}
     >
       {children}
     </div>
