@@ -11,7 +11,7 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ApiError, boards, projects, roadmaps, type Project, type Roadmap } from '@/lib/api';
 import { useToken } from '@/lib/use-token';
-import { useCachedState } from '@/lib/page-cache';
+import { prefetch, useCachedState } from '@/lib/page-cache';
 import { ProjectSkeleton } from '@/components/page-skeletons';
 import { CopyButton } from '@/components/copy-link';
 
@@ -27,6 +27,10 @@ export default function ProjectPage() {
   useEffect(() => {
     if (loaded) projects.get(id, token).then(setProject, (e) => setError(e instanceof ApiError ? e.status : 500));
   }, [id, loaded]); // load once; token refreshes must not refetch
+  // its boards are the likely next click (one per team, so only a few)
+  useEffect(() => {
+    if (loaded) for (const b of project?.boards ?? []) prefetch(`board:${b.id}`, () => boards.get(b.id, token));
+  }, [project?.id, loaded]);
 
   if (error === 404) return <Message title="Project not found" body="It may have been deleted, or it isn't yours." />;
   if (error) return <Message title="Couldn't load this project" body="Please refresh to try again." />;

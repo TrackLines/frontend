@@ -19,3 +19,10 @@ export function useCachedState<T>(key: string): [T | null, Dispatch<SetStateActi
 export function forgetCached(key: string) {
   cache.delete(key);
 }
+
+// prefetch warms key for a page the user is likely to open next, so its first visit is instant
+// too (it still refreshes on mount). No-op if already cached; failures are ignored.
+export function prefetch<T>(key: string, load: () => Promise<T>) {
+  if (cache.has(key)) return;
+  load().then((v) => { cache.set(key, v); }, () => {});
+}

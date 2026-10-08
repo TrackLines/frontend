@@ -9,9 +9,9 @@ import { SprintBar } from '@/components/board/sprint-bar';
 import { TicketCard } from '@/components/board/ticket-card';
 import { TicketDialog } from '@/components/board/ticket-dialog';
 import { Button, buttonVariants } from '@/components/ui/button';
-import { ApiError, boards, tickets, type Board, type Ticket } from '@/lib/api';
+import { ApiError, boards, projects, tickets, type Board, type Ticket } from '@/lib/api';
 import { useToken } from '@/lib/use-token';
-import { useCachedState } from '@/lib/page-cache';
+import { prefetch, useCachedState } from '@/lib/page-cache';
 import { BoardSkeleton } from '@/components/page-skeletons';
 import { useAutoRefresh } from '@/lib/use-auto-refresh';
 import { LabelFilter, filterTicketsByLabels, labelCounts } from '@/components/board/label-filter';
@@ -47,6 +47,10 @@ export default function BoardPage() {
   }, [id, loaded]);
 
   useAutoRefresh(() => load(true), loaded && !editMode && !addingTo);
+  // "← Project" is the likely next click
+  useEffect(() => {
+    if (board && token) prefetch(`project:${board.project_id}`, () => projects.get(board.project_id, token));
+  }, [board?.project_id, loaded]);
 
   // local edits: components call the API themselves and report back here
   const updateTickets = (columnId: string, fn: (ts: Ticket[]) => Ticket[]) =>

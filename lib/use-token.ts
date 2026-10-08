@@ -4,9 +4,10 @@ import { useAuth } from '@clerk/nextjs';
 import { useEffect, useState } from 'react';
 
 // Shared across pages so a page you navigate to can fetch on its first render instead of
-// waiting for getToken(). Clerk tokens live ~60s; only reuse one younger than 50s.
+// waiting for getToken(). Its age doesn't matter: in the browser api() swaps in a live Clerk
+// token per request, so callers' token only says "signed in".
 let last: { token: string; at: number } | null = null;
-const fresh = () => (last && Date.now() - last.at < 50_000 ? last.token : null);
+const fresh = () => last?.token ?? null;
 
 // useToken returns a Clerk session token that stays fresh. Clerk tokens live ~60s and the
 // board components take `token: string`, so we re-fetch on an interval and re-render.
