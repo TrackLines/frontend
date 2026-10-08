@@ -79,16 +79,31 @@ async function reportBackendFailure(message: string, detail: string): Promise<vo
   }
 }
 
+// In the browser, ask Clerk for the token at request time: the `token` callers hold can be minutes
+// old (a form left open, a background tab), and Clerk tokens only live ~60s. Clerk refreshes as needed.
+type ClerkSession = { getToken(o?: { skipCache?: boolean }): Promise<string | null> };
+async function liveToken(passed: string | null | undefined, skipCache = false): Promise<string | null | undefined> {
+  if (typeof window === 'undefined' || !passed) return passed; // server side, or a signed-out call
+  const session = (window as { Clerk?: { session?: ClerkSession | null } }).Clerk?.session;
+  return (await session?.getToken({ skipCache }).catch(() => null)) ?? passed;
+}
+
 export async function api<T>(path: string, { method = 'GET', body, token }: Options = {}): Promise<T> {
-  const headers: Record<string, string> = {};
-  if (body !== undefined) headers['Content-Type'] = 'application/json';
-  if (token) headers.Authorization = `Bearer ${token}`;
-  let res: Response;
-  try {
-    res = await fetch(base() + path, {
+  const send = async (skipCache: boolean) => {
+    const headers: Record<string, string> = {};
+    if (body !== undefined) headers['Content-Type'] = 'application/json';
+    const t = await liveToken(token, skipCache);
+    if (t) headers.Authorization = `Bearer ${t}`;
+    return fetch(base() + path, {
       method, headers, cache: 'no-store',
       body: body === undefined ? undefined : JSON.stringify(body),
     });
+  };
+  let res: Response;
+  try {
+    res = await send(false);
+    // a token that expired in flight (or clock skew): force a fresh one and retry once
+    if (res.status === 401 && token && typeof window !== 'undefined') res = await send(true);
   } catch (cause) {
     await reportBackendFailure('backend request failed', `${method} ${path}: ${cause instanceof Error ? cause.message : String(cause)}`);
     throw cause;
