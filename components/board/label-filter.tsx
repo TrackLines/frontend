@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuGroup } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { projects, type ProjectLabel, type Ticket } from '@/lib/api';
 import { LabelFilterClear } from './label-filter-clear';
@@ -92,6 +92,8 @@ export function LabelFilter({ boardId, projectId, token, labels, onLabelsChange 
         </Badge>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-72">
+        {/* Base UI throws if a group label renders outside a group */}
+        <DropdownMenuGroup>
         <DropdownMenuLabel>Filter by label</DropdownMenuLabel>
         {loading ? (
           <div className="text-sm text-muted-foreground px-2 py-1">Loading labels…</div>
@@ -117,6 +119,7 @@ export function LabelFilter({ boardId, projectId, token, labels, onLabelsChange 
             <DropdownMenuItem onClick={clear}>Clear filter</DropdownMenuItem>
           </>
         )}
+        </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );
