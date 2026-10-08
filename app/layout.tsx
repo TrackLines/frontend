@@ -7,6 +7,7 @@ import { ThemeChooser } from '@/components/theme-chooser';
 import { UserMenu } from '@/components/user-menu';
 import { QuickAddTicket } from '@/components/quick-add-ticket';
 import { OrgSwitcher } from '@/components/org-switcher';
+import { FeatureFlags } from '@/components/feature-flags';
 import './globals.css';
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
@@ -25,6 +26,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange storageKey="tracklines-theme">
         <ClerkProvider appearance={{ theme: shadcn }}>
+        <FeatureFlags>
           <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
             <div className="flex items-center gap-4">
               <Link href="/" className="font-semibold tracking-tight">Tracklines</Link>
@@ -42,6 +44,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             </nav>
           </header>
           {children}
+        </FeatureFlags>
         </ClerkProvider>
         </ThemeProvider>
       </body>
