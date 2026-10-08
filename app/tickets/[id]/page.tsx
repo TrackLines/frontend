@@ -61,7 +61,7 @@ export default function TicketPage() {
   if (!t) return <TicketSkeleton />;
 
   return (
-    <main className="mx-auto grid max-w-3xl gap-6 px-6 py-10">
+    <main className="mx-auto grid max-w-6xl gap-6 px-6 py-10">
       <nav aria-label="Breadcrumb" className="flex flex-wrap gap-1.5 text-sm text-muted-foreground">
         <Link href={`/projects/${t.project_id}`} className="hover:underline">{t.project_name}</Link>
         <span aria-hidden>›</span>

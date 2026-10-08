@@ -36,7 +36,7 @@ export default function ProjectPage() {
   const roadmapList = project.roadmaps ?? [];
 
   return (
-    <main className="mx-auto max-w-5xl px-6 py-10">
+    <main className="mx-auto max-w-6xl px-6 py-10">
       <Link href="/dashboard" className="text-sm text-muted-foreground hover:underline">← Projects</Link>
       <h1 className="mt-2 text-3xl font-bold tracking-tight">{project.name}</h1>
       {/* integrations (ChewedFeed, BugFixes) ask for this */}

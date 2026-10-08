@@ -27,12 +27,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
             <Link href="/" className="font-semibold tracking-tight">Tracklines</Link>
             <nav className="flex items-center gap-4" aria-label="Account">
+              {/* QuickAddTicket only renders on some pages, so it goes first: the toggle and avatar never move */}
+              <Show when="signed-in"><QuickAddTicket /></Show>
               <ThemeChooser />
               <Show when="signed-out">
                 <Link href="/sign-in" className="text-sm text-muted-foreground hover:text-foreground">Sign in</Link>
                 <Link href="/sign-up" className="text-sm font-medium hover:underline">Create account</Link>
               </Show>
-              <Show when="signed-in"><QuickAddTicket /><UserMenu /></Show>
+              <Show when="signed-in"><UserMenu /></Show>
             </nav>
           </header>
           {children}

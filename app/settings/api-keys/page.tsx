@@ -34,7 +34,7 @@ export default function ApiKeysPage() {
   }
 
   return (
-    <main className="mx-auto max-w-3xl px-6 py-10">
+    <main className="mx-auto max-w-6xl px-6 py-10">
       <Link href="/dashboard" className="text-sm text-muted-foreground hover:underline">← Projects</Link>
       <header className="mt-2 mb-6 flex items-center justify-between gap-4">
         <h1 className="text-3xl font-bold tracking-tight">API keys</h1>

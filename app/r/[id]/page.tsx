@@ -51,7 +51,7 @@ export default async function RoadmapPage({ params }: Props) {
   if (!r) return <Locked id={id} />;
   const project = await ownerProject(r.project_id, token);
   return (
-    <main className="mx-auto max-w-3xl px-6 py-16">
+    <main className="mx-auto max-w-6xl px-6 py-16">
       {project && (
         <nav aria-label="Roadmap navigation" className="mb-10 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
           <Link href={`/projects/${project.id}`} className="text-muted-foreground hover:text-foreground hover:underline">← {project.name}</Link>

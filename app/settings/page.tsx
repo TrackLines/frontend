@@ -8,7 +8,7 @@ import { useToken } from '@/lib/use-token';
 
 export default function SettingsPage() {
   return (
-    <main className="mx-auto max-w-3xl px-6 py-10">
+    <main className="mx-auto max-w-6xl px-6 py-10">
       <Link href="/dashboard" className="text-sm text-muted-foreground hover:underline">← Projects</Link>
       <h1 className="mt-2 mb-6 text-3xl font-bold tracking-tight">Settings</h1>
       {/* useSearchParams needs a Suspense boundary for static rendering */}

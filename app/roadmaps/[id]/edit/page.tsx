@@ -26,7 +26,7 @@ export default function EditRoadmapPage() {
   if (!roadmap || !token) return <p className="p-8 text-muted-foreground" role="status">Loading roadmap…</p>;
 
   return (
-    <main className="mx-auto grid max-w-3xl gap-10 px-6 py-10">
+    <main className="mx-auto grid max-w-6xl gap-10 px-6 py-10">
       <div>
         <Link href={`/projects/${roadmap.project_id}`} className="text-sm text-muted-foreground hover:underline">← Project</Link>
         <div className="mt-2 flex flex-wrap items-center justify-between gap-3">

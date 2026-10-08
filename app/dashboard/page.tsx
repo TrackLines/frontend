@@ -42,7 +42,7 @@ export default function Dashboard() {
   if (!list || !token) return <p className="p-8 text-muted-foreground" role="status">Loading projects…</p>;
 
   return (
-    <main className="mx-auto max-w-5xl px-6 py-10">
+    <main className="mx-auto max-w-6xl px-6 py-10">
       <header className="mb-8 flex items-center justify-between gap-4">
         <h1 className="text-3xl font-bold tracking-tight">Projects</h1>
         <div className="flex items-center gap-2">

@@ -57,7 +57,7 @@ export default function BoardPage() {
   if (!board || !token) return <BoardSkeleton />;
 
   return (
-    <main className="flex min-h-screen flex-col">
+    <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col">
       <header className="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b px-6 py-4">
         <Link href={`/projects/${board.project_id}`} className="text-sm text-muted-foreground hover:underline">← Project</Link>
         <h1 className="text-2xl font-bold tracking-tight">{board.name}</h1>
@@ -92,6 +92,7 @@ export default function BoardPage() {
           const cols = board.columns ?? [];
           const w = columnWidthPct(cols.length);
           const shown = filterTicketsByLabels(col.tickets, labelFilter);
+          const done = col.id === cols.at(-1)?.id; // last column = Done
           return (
             <div key={col.id} style={{ width: w }} className="shrink-0">
               <Column column={col} token={token} editMode={editMode}>
@@ -101,7 +102,7 @@ export default function BoardPage() {
                       <TicketCard
                         ticket={t}
                         openOnLoad={t.id === focus ? { columnName: col.name } : undefined}
-                        done={col.id === board.columns?.at(-1)?.id}
+                        done={done}
                         token={token}
                         onUpdated={(nt) => updateTickets(col.id, (ts) => ts.map((x) => (x.id === nt.id ? nt : x)))}
                         onDeleted={(tid) => updateTickets(col.id, (ts) => ts.filter((x) => x.id !== tid))}
@@ -109,7 +110,10 @@ export default function BoardPage() {
                     </SortableTicket>
                   ))}
                 </DroppableColumn>
-                <Button variant="ghost" className="justify-start" onClick={() => setAddingTo(col.id)}>+ Add ticket</Button>
+                {/* tickets reach Done by being moved there, not created in it */}
+                {!(done && cols.length > 1) && (
+                  <Button variant="ghost" className="justify-start" onClick={() => setAddingTo(col.id)}>+ Add ticket</Button>
+                )}
               </Column>
             </div>
           );
