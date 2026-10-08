@@ -121,7 +121,7 @@ export function Backlog({ projectId, boards, token }: Props) {
         ))}
       </div>
       <div className="mb-3">
-        <LabelFilter projectId={projectId} token={token} labels={labelFilter} onLabelsChange={changeLabels} />
+        <LabelFilter options={data?.labels ?? null} labels={labelFilter} onLabelsChange={changeLabels} />
       </div>
 
       {error && <p role="alert" className="mb-3 text-sm text-destructive">{error}</p>}

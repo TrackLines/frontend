@@ -14,7 +14,7 @@ import { useToken } from '@/lib/use-token';
 import { useCachedState } from '@/lib/page-cache';
 import { BoardSkeleton } from '@/components/page-skeletons';
 import { useAutoRefresh } from '@/lib/use-auto-refresh';
-import { LabelFilter, filterTicketsByLabels } from '@/components/board/label-filter';
+import { LabelFilter, filterTicketsByLabels, labelCounts } from '@/components/board/label-filter';
 
 function columnWidthPct(count: number): string {
   if (count === 0) return '100%';
@@ -63,9 +63,7 @@ export default function BoardPage() {
         <h1 className="text-2xl font-bold tracking-tight">{board.name}</h1>
         {board.description && <p className="w-full text-muted-foreground">{board.description}</p>}
         <LabelFilter
-          boardId={board.id}
-          projectId={board.project_id}
-          token={token}
+          options={labelCounts((board.columns ?? []).flatMap((c) => c.tickets))}
           labels={labelFilter}
           onLabelsChange={setLabelFilter}
         />

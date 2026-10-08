@@ -15,7 +15,7 @@ export type Ticket = {
 };
 // A project ticket not on any board or sprint yet.
 export type BacklogTicket = Omit<Ticket, 'column_id'> & { column_id: null; project_id: string; type: TicketType };
-export type BacklogPage = { tickets: BacklogTicket[]; counts: Record<TicketType | 'all', number> };
+export type BacklogPage = { tickets: BacklogTicket[]; counts: Record<TicketType | 'all', number>; labels: ProjectLabel[] };
 // A board's time box; the board shows only the open sprint's tickets.
 export type Sprint = {
   id: string; board_id: string; number: number; length_days: number;

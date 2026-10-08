@@ -1,25 +1,22 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuGroup } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
-import { projects, type ProjectLabel, type Ticket } from '@/lib/api';
+import type { ProjectLabel, Ticket } from '@/lib/api';
 import { LabelFilterClear } from './label-filter-clear';
 
 type Props = {
-  boardId?: string;
-  projectId: string;
-  token: string;
+  options: ProjectLabel[] | null; // labels on the tickets being filtered (null = still loading)
   labels: string[];
   onLabelsChange: (labels: string[]) => void;
 };
 
-export function LabelFilter({ boardId, projectId, token, labels, onLabelsChange }: Props) {
+// LabelFilter lists only the labels on the tickets it filters (a board's, or the backlog's), not the whole project's.
+export function LabelFilter({ options, labels, onLabelsChange }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [options, setOptions] = useState<ProjectLabel[]>([]);
-  const [loading, setLoading] = useState(true);
 
   // Sync from URL on mount and when searchParams change
   useEffect(() => {
@@ -43,25 +40,6 @@ export function LabelFilter({ boardId, projectId, token, labels, onLabelsChange 
       router.replace(`${window.location.pathname}?${next}`, { scroll: false });
     }
   }, [labels, router, searchParams]);
-
-  // Load label options from the project
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    setOptions([]);
-    projects.labels(projectId, token)
-      .then((items) => {
-        if (!cancelled) {
-          // Older API deployments can serialize an empty result as null.
-          setOptions(normalizeLabelOptions(items));
-          setLoading(false);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => { cancelled = true; };
-  }, [projectId, token]);
 
   const toggle = useCallback(
     (label: string) => {
@@ -95,10 +73,10 @@ export function LabelFilter({ boardId, projectId, token, labels, onLabelsChange 
         {/* Base UI throws if a group label renders outside a group */}
         <DropdownMenuGroup>
         <DropdownMenuLabel>Filter by label</DropdownMenuLabel>
-        {loading ? (
+        {options === null ? (
           <div className="text-sm text-muted-foreground px-2 py-1">Loading labels…</div>
         ) : options.length === 0 ? (
-          <div className="text-sm text-muted-foreground px-2 py-1">No labels in this project yet.</div>
+          <div className="text-sm text-muted-foreground px-2 py-1">No labels on these tickets yet.</div>
         ) : (
           <>
             {options.map(({ label: l, count }) => {
@@ -131,6 +109,17 @@ export function filterTicketsByLabels(tickets: Ticket[], labels: string[]): Tick
   return tickets.filter((t) => t.labels && t.labels.some((l) => lower.has(l.toLowerCase())));
 }
 
-export function normalizeLabelOptions(options: unknown): ProjectLabel[] {
-  return Array.isArray(options) ? options : [];
+// labelCounts: the labels on these tickets with how many use each, merged case-insensitively
+// (first spelling wins), most used first — the same shape the backlog endpoint returns.
+export function labelCounts(tickets: Ticket[]): ProjectLabel[] {
+  const byKey = new Map<string, ProjectLabel>();
+  for (const t of tickets) {
+    for (const l of new Set((t.labels ?? []).map((x) => x.toLowerCase()))) {
+      const spelled = t.labels!.find((x) => x.toLowerCase() === l)!;
+      const c = byKey.get(l) ?? { label: spelled, count: 0 };
+      c.count++;
+      byKey.set(l, c);
+    }
+  }
+  return [...byKey.values()].sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
 }
