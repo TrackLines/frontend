@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { AssigneeSelect } from '@/components/ticket/assignee-select';
-import { LabelEditor } from '@/components/ticket/labels';
+import { LabelDrawer } from '@/components/ticket/labels';
 import { Attachments } from '@/components/ticket/attachments';
 import { attachAll, PendingAttachments, type PendingFile } from '@/components/ticket/pending-attachments';
 import { TypePicker } from '@/components/ticket-type';
@@ -136,7 +136,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
             Priority <span className="font-normal text-muted-foreground">(optional)</span>
             <PrioritySelect value={priority} onChange={setPriority} />
           </label>
-          <LabelEditor projectId={projectId ?? ticket?.project_id ?? ''} token={token} labels={labels} onChange={setLabels} disabled={saving || deleting} />
+          <LabelDrawer projectId={projectId ?? ticket?.project_id ?? ''} token={token} labels={labels} onChange={setLabels} disabled={saving || deleting} />
           {ticket && (
             // saves straight away (not with the form) — same as claiming
             <label className="grid gap-1.5 text-sm font-medium">

@@ -10,7 +10,7 @@ import { AssigneeSelect } from '@/components/ticket/assignee-select';
 import { Dependencies } from '@/components/ticket/dependencies';
 import { PartOf, SubTickets } from '@/components/ticket/sub-tickets';
 import { TicketComments } from '@/components/ticket/comments';
-import { LabelEditor, TicketLabels } from '@/components/ticket/labels';
+import { LabelDrawer, TicketLabels } from '@/components/ticket/labels';
 import { Button } from '@/components/ui/button';
 import { PriorityBadge } from '@/components/board/priority-badge';
 import { TypeBadge } from '@/components/ticket-type';
@@ -96,15 +96,10 @@ export default function TicketPage() {
         )}
       </header>
       {token && (
-        <section className="grid gap-2 rounded-xl border p-4" aria-label="Edit ticket labels">
-          <LabelEditor projectId={t.project_id} token={token} labels={labels} onChange={setLabels} disabled={savingLabels} showLabels={false} />
-          <div className="flex flex-wrap items-center gap-3">
-            <Button type="button" size="sm" disabled={savingLabels || labels.join('\0') === (t.labels ?? []).join('\0')} onClick={saveLabels}>
-              {savingLabels ? 'Saving labels…' : 'Save labels'}
-            </Button>
-            {labelError && <p role="alert" className="text-sm text-destructive">{labelError}</p>}
-          </div>
-        </section>
+        <div className="grid gap-2" aria-label="Edit ticket labels">
+          <LabelDrawer projectId={t.project_id} token={token} labels={labels} onChange={setLabels} disabled={savingLabels} onSave={saveLabels} saveLabel={savingLabels ? 'Saving labels…' : 'Save labels'} />
+          {labelError && <p role="alert" className="text-sm text-destructive">{labelError}</p>}
+        </div>
       )}
       <section aria-label="Ticket details" className="rounded-xl border p-5 text-sm">
         {t.description ? <p className="whitespace-pre-wrap break-words">{t.description}</p> : <p className="text-muted-foreground">No details provided.</p>}

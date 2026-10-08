@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState, type FormEvent } from 'react';
 import { attachAll, PendingAttachments, type PendingFile } from '@/components/ticket/pending-attachments';
 import { TypePicker } from '@/components/ticket-type';
-import { LabelEditor } from '@/components/ticket/labels';
+import { LabelDrawer } from '@/components/ticket/labels';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -102,7 +102,7 @@ function QuickAddDialog({ scope, onClose }: { scope: NonNullable<ReturnType<type
             </label>
           )}
           <TypePicker value={type} onChange={setType} name="quick-add-type" />
-          <LabelEditor projectId={projectId} token={token ?? ''} labels={labels} onChange={setLabels} disabled={!token || saving} />
+          <LabelDrawer projectId={projectId} token={token ?? ''} labels={labels} onChange={setLabels} disabled={!token || saving} />
           <Input autoFocus required maxLength={200} placeholder="What's wrong / what's needed?" value={title} onChange={(e) => setTitle(e.target.value)} />
           <textarea
             className="min-h-24 rounded-md border bg-background px-3 py-2 text-sm"

@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { TICKET_TYPES as TYPES, TypeBadge, TypePicker } from '@/components/ticket-type';
 import { TicketDialog } from '@/components/board/ticket-dialog';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
-import { LabelEditor, TicketLabels } from '@/components/ticket/labels';
+import { LabelDrawer, TicketLabels } from '@/components/ticket/labels';
 import { attachAll, PendingAttachments, type PendingFile } from '@/components/ticket/pending-attachments';
 import { BACKLOG_CHANGED } from '@/components/quick-add-ticket';
 import { backlog, BacklogTicket, boards as boardsApi, tickets, type Board, type Ticket, type TicketType } from '@/lib/api';
@@ -215,7 +215,7 @@ function AddDialog({ open, onOpenChange, projectId, token, onAdd }: {
             <DialogDescription>It stays here until you move it onto a team board.</DialogDescription>
           </DialogHeader>
           <TypePicker value={type} onChange={setType} />
-          <LabelEditor projectId={projectId} token={token} labels={labels} onChange={setLabels} disabled={saving} />
+          <LabelDrawer projectId={projectId} token={token} labels={labels} onChange={setLabels} disabled={saving} />
           <Input autoFocus required maxLength={200} placeholder="What's wrong / what's needed?" value={title} onChange={(e) => setTitle(e.target.value)} />
           <textarea
             className="min-h-24 rounded-md border bg-background px-3 py-2 text-sm"

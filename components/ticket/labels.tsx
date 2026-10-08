@@ -5,6 +5,7 @@ import { XIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
 import { projects } from '@/lib/api';
 import { addLabels, removeLabel } from '@/lib/labels';
 
@@ -111,5 +112,40 @@ export function LabelEditor({ projectId, token, labels, onChange, disabled = fal
         {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       </div>
     </section>
+  );
+}
+
+export function LabelDrawer({ projectId, token, labels, onChange, disabled = false, onSave, saveLabel = 'Done' }: {
+  projectId: string;
+  token: string;
+  labels: string[];
+  onChange: (labels: string[]) => void;
+  disabled?: boolean;
+  onSave?: () => void | Promise<void>;
+  saveLabel?: string;
+}) {
+  return (
+    <div className="grid gap-2">
+      <div className="flex flex-wrap items-center gap-2">
+        <TicketLabels labels={labels} />
+        <Drawer swipeDirection="right">
+          <DrawerTrigger render={<Button type="button" variant="outline" size="sm" disabled={disabled} />}>
+            {labels.length ? 'Edit labels' : 'Add labels'}
+          </DrawerTrigger>
+          <DrawerContent className="p-4">
+            <DrawerHeader className="px-0 pt-0">
+              <DrawerTitle>Labels</DrawerTitle>
+              <DrawerDescription>Add labels to organise and find this ticket.</DrawerDescription>
+            </DrawerHeader>
+            <LabelEditor projectId={projectId} token={token} labels={labels} onChange={onChange} disabled={disabled} />
+            <DrawerFooter className="px-0 pb-0">
+              <DrawerClose render={<Button type="button" disabled={disabled} onClick={() => { void onSave?.(); }} />}>
+                {saveLabel}
+              </DrawerClose>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
+      </div>
+    </div>
   );
 }

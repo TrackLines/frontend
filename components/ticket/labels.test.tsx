@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { TicketLabels } from './labels';
+import { LabelDrawer, TicketLabels } from './labels';
 import { addLabels, normalizeLabels, removeLabel } from '@/lib/labels';
 
 test('ticket label chips render as outlined, truncated badges', () => {
@@ -10,6 +10,13 @@ test('ticket label chips render as outlined, truncated badges', () => {
   expect(html).toContain('frontend');
   expect(html).toContain('agent:checkout-api');
   expect(renderToStaticMarkup(<TicketLabels labels={[]} />)).toBe('');
+});
+
+test('label editor stays hidden behind the add labels button', () => {
+  const html = renderToStaticMarkup(<LabelDrawer projectId="project-1" token="token" labels={[]} onChange={() => {}} />);
+  expect(html).toContain('Add labels');
+  expect(html).not.toContain('Add a label');
+  expect(html).not.toContain('Suggested labels');
 });
 
 test('label editor helpers trim, dedupe case-insensitively, add and remove labels', () => {
