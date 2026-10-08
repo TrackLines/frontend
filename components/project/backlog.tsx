@@ -1,62 +1,74 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { TICKET_TYPES as TYPES, TypeBadge, TypePicker } from '@/components/ticket-type';
 import { TicketDialog } from '@/components/board/ticket-dialog';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
 import { LabelDrawer, TicketLabels } from '@/components/ticket/labels';
 import { attachAll, PendingAttachments, type PendingFile } from '@/components/ticket/pending-attachments';
 import { BACKLOG_CHANGED } from '@/components/quick-add-ticket';
-import { backlog, BacklogTicket, boards as boardsApi, tickets, type Board, type Ticket, type TicketType } from '@/lib/api';
+import { backlog, BacklogTicket, type BacklogPage, boards as boardsApi, tickets, type Board, type Ticket, type TicketType } from '@/lib/api';
 import { useAutoRefresh } from '@/lib/use-auto-refresh';
 import { useCachedState } from '@/lib/page-cache';
 import { ListSkeleton } from '@/components/page-skeletons';
-import { LabelFilter, filterTicketsByLabels } from '@/components/board/label-filter';
+import { LabelFilter } from '@/components/board/label-filter';
+import { pageItems } from '@/lib/pagination';
 
 type Props = { projectId: string; boards: Board[]; token: string };
 
+const PER_PAGE = 25;
+
 // Backlog: tickets in the project that aren't on any board or sprint yet (e.g. triaged bugs).
 export function Backlog({ projectId, boards, token }: Props) {
-  const [list, setList] = useCachedState<BacklogTicket[]>(`backlog:${projectId}`); // instant on revisit, refreshed on mount
+  const [data, setData] = useCachedState<BacklogPage>(`backlog-page:${projectId}`); // instant on revisit, refreshed on mount
   const [failed, setFailed] = useState(false);
   const [filter, setFilter] = useState<TicketType | 'all'>('all');
   const [labelFilter, setLabelFilter] = useState<string[]>([]);
+  const [page, setPage] = useState(1);
   const [adding, setAdding] = useState(false);
   const [busy, setBusy] = useState<string | null>(null); // ticket id being moved/deleted
   const [error, setError] = useState('');
   const [editing, setEditing] = useState<BacklogTicket | null>(null);
 
-  useEffect(() => {
-    const load = () => backlog.list(projectId, token).then((items) => {
-      setList(items);
-      setFailed(false);
-    }, () => setFailed(true));
-    void load();
-    const onChange = (e: Event) => { if ((e as CustomEvent).detail?.projectId === projectId) void load(); };
-    window.addEventListener(BACKLOG_CHANGED, onChange);
-    return () => window.removeEventListener(BACKLOG_CHANGED, onChange);
-  }, [projectId]); // token refreshes must not refetch
-
-  useAutoRefresh(async () => {
+  // server does the filtering, ordering (ready first, blocked after) and paging; only the latest request may land
+  const latest = useRef(0);
+  const load = async (quiet = false) => {
+    const req = ++latest.current;
     try {
-      setList(await backlog.list(projectId, token));
+      const d = await backlog.page(projectId, { type: filter === 'all' ? undefined : filter, labels: labelFilter, page, perPage: PER_PAGE }, token);
+      if (req !== latest.current) return;
+      const last = Math.max(1, Math.ceil(d.counts[filter] / PER_PAGE));
+      if (page > last) return setPage(last); // e.g. the last ticket on the last page moved away
+      setData(d);
       setFailed(false);
     } catch {
-      // Keep already-rendered backlog data available during transient failures.
-      if (list === null) setFailed(true);
+      // keep already-rendered data during transient failures
+      if (req === latest.current && (!quiet || data === null)) setFailed(true);
     }
-  }, !adding && !editing && busy === null);
+  };
+  const loadRef = useRef(load);
+  useEffect(() => { loadRef.current = load; }); // declared before the effects that call it, so they see this render's filters
 
-  // ready tickets first, blocked ones after (stable within each group)
-  const shown = (list ?? [])
-    .filter((t) => filter === 'all' || t.type === filter)
-    .filter((t) => labelFilter.length === 0 || (t.labels && t.labels.some((l) => labelFilter.includes(l))))
-    .sort((a, b) => Number(!!a.blocked) - Number(!!b.blocked));
+  useEffect(() => { void loadRef.current(); }, [projectId, filter, labelFilter, page]); // token refreshes must not refetch
+  useEffect(() => {
+    const onChange = (e: Event) => { if ((e as CustomEvent).detail?.projectId === projectId) void loadRef.current(); };
+    window.addEventListener(BACKLOG_CHANGED, onChange);
+    return () => window.removeEventListener(BACKLOG_CHANGED, onChange);
+  }, [projectId]);
+
+  useAutoRefresh(() => load(true), !adding && !editing && busy === null);
+
+  const shown = data?.tickets ?? [];
+  const lastPage = data ? Math.max(1, Math.ceil(data.counts[filter] / PER_PAGE)) : 1;
+  const changeFilter = (f: TicketType | 'all') => { setFilter(f); setPage(1); };
+  const changeLabels = (l: string[]) => { setLabelFilter(l); setPage(1); };
+  const drop = (id: string) => setData((d) => d && { ...d, tickets: d.tickets.filter((x) => x.id !== id) });
 
   async function moveTo(t: BacklogTicket, boardId: string) {
     setBusy(t.id);
@@ -67,7 +79,8 @@ export function Backlog({ projectId, boards, token }: Props) {
       const first = target.columns?.[0];
       if (!first) throw new Error('board has no columns');
       await tickets.move(t.id, first.id, first.tickets.length, token);
-      setList((l) => l && l.filter((x) => x.id !== t.id));
+      drop(t.id);
+      void load();
     } catch {
       setError(`Couldn’t move “${t.title}”. Please try again.`);
     } finally {
@@ -80,7 +93,8 @@ export function Backlog({ projectId, boards, token }: Props) {
     setBusy(t.id);
     try {
       await tickets.remove(t.id, token);
-      setList((l) => l && l.filter((x) => x.id !== t.id));
+      drop(t.id);
+      void load();
     } catch {
       setError(`Couldn’t delete “${t.title}”. Please try again.`);
     } finally {
@@ -89,7 +103,7 @@ export function Backlog({ projectId, boards, token }: Props) {
   }
 
   return (
-    <section className="mt-10">
+    <section id="backlog" className="mt-10">
       <div className="mb-4 flex flex-wrap items-end justify-between gap-4">
         <div>
           <h2 className="text-xl font-semibold tracking-tight">Backlog</h2>
@@ -100,24 +114,24 @@ export function Backlog({ projectId, boards, token }: Props) {
 
       <div role="group" aria-label="Filter by type" className="mb-3 flex gap-1">
         {(['all', ...TYPES.map((t) => t.value)] as const).map((f) => (
-          <Button key={f} size="sm" variant={filter === f ? 'secondary' : 'ghost'} aria-pressed={filter === f} onClick={() => setFilter(f)}>
+          <Button key={f} size="sm" variant={filter === f ? 'secondary' : 'ghost'} aria-pressed={filter === f} onClick={() => changeFilter(f)}>
             {f === 'all' ? 'All' : TYPES.find((t) => t.value === f)!.label + 's'}
-            {list && <span className="text-muted-foreground">{f === 'all' ? list.length : list.filter((t) => t.type === f).length}</span>}
+            {data && <span className="text-muted-foreground">{data.counts[f]}</span>}
           </Button>
         ))}
       </div>
       <div className="mb-3">
-        <LabelFilter projectId={projectId} token={token} labels={labelFilter} onLabelsChange={setLabelFilter} />
+        <LabelFilter projectId={projectId} token={token} labels={labelFilter} onLabelsChange={changeLabels} />
       </div>
 
       {error && <p role="alert" className="mb-3 text-sm text-destructive">{error}</p>}
       {failed ? (
         <p role="alert" className="text-sm text-destructive">Couldn&apos;t load the backlog. Please refresh to try again.</p>
-      ) : list === null ? (
+      ) : data === null ? (
         <ListSkeleton />
       ) : shown.length === 0 ? (
         <p className="rounded-xl border border-dashed p-6 text-sm text-muted-foreground">
-          {list.length === 0 ? 'The backlog is empty.' : labelFilter.length > 0 ? 'No tickets with these labels in the backlog.' : 'Nothing of this type in the backlog.'}
+          {labelFilter.length > 0 ? 'No tickets with these labels in the backlog.' : data.counts.all === 0 ? 'The backlog is empty.' : 'Nothing of this type in the backlog.'}
         </p>
       ) : (
         <ul className="divide-y rounded-xl border">
@@ -146,6 +160,25 @@ export function Backlog({ projectId, boards, token }: Props) {
           ))}
         </ul>
       )}
+      {lastPage > 1 && (
+        <Pagination className="mt-4">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious href="#backlog" aria-disabled={page === 1} className={page === 1 ? 'pointer-events-none opacity-50' : undefined} onClick={(e) => { e.preventDefault(); if (page > 1) setPage(page - 1); }} />
+            </PaginationItem>
+            {pageItems(page, lastPage).map((p, i) => (
+              <PaginationItem key={p === 'gap' ? `gap${i}` : p}>
+                {p === 'gap' ? <PaginationEllipsis /> : (
+                  <PaginationLink href="#backlog" isActive={p === page} onClick={(e) => { e.preventDefault(); setPage(p); }}>{p}</PaginationLink>
+                )}
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext href="#backlog" aria-disabled={page === lastPage} className={page === lastPage ? 'pointer-events-none opacity-50' : undefined} onClick={(e) => { e.preventDefault(); if (page < lastPage) setPage(page + 1); }} />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
 
       {editing && (
         // same dialog as on boards; backlog tickets have no column, which only matters when creating
@@ -156,8 +189,8 @@ export function Backlog({ projectId, boards, token }: Props) {
           projectId={projectId}
           columnId=""
           ticket={editing as unknown as Ticket}
-          onSaved={(nt) => setList((l) => l && l.map((x) => (x.id === nt.id ? { ...x, ...nt, column_id: null, type: nt.type ?? x.type } : x)))}
-          onDeleted={(id) => setList((l) => l && l.filter((x) => x.id !== id))}
+          onSaved={(nt) => { setData((d) => d && { ...d, tickets: d.tickets.map((x) => (x.id === nt.id ? { ...x, ...nt, column_id: null, type: nt.type ?? x.type } : x)) }); void load(); }}
+          onDeleted={(id) => { drop(id); void load(); }}
         />
       )}
       <AddDialog
@@ -168,7 +201,7 @@ export function Backlog({ projectId, boards, token }: Props) {
         onAdd={async ({ files, ...input }) => {
           const t = await backlog.create(projectId, input, token);
           if (await attachAll(t.id, files, token)) setError(`“${t.title}” was added, but some files didn’t attach — add them from the ticket.`);
-          setList((l) => [...(l ?? []), t]);
+          void load(); // lands wherever the server orders it
         }}
       />
     </section>

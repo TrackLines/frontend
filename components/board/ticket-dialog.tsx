@@ -18,7 +18,7 @@ type Props = {
   onOpenChange: (open: boolean) => void;
   token: string;
   projectId?: string;
-  columnId: string;
+  columnId: string; // '' creates into projectId's backlog
   ticket?: Ticket;
   onSaved: (ticket: Ticket) => void;
   onDeleted?: (id: string) => void;
@@ -63,7 +63,8 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
         const result = await tickets.setLabels(ticket.id, labels, token);
         onSaved({ ...ticket, title: cleanTitle, description: description.trim(), type, priority, labels: result.labels });
       } else {
-        const created = await tickets.create(columnId, { title: cleanTitle, description: description.trim(), type, priority, labels }, token);
+        const input = { title: cleanTitle, description: description.trim(), type, priority, labels };
+        const created = columnId ? await tickets.create(columnId, input, token) : (await backlog.create(projectId ?? '', input, token)) as unknown as Ticket;
         await attachAll(created.id, files, token); // failures are visible on the ticket's attachment list
         setFiles([]);
         onSaved(created);

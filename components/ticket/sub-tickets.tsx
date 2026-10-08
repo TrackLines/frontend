@@ -5,7 +5,8 @@ import { useState } from 'react';
 import { DepRow, projectTickets, type TicketOption } from '@/components/ticket/dependencies';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ApiError, tickets, type TicketDetail } from '@/lib/api';
+import { TicketDialog } from '@/components/board/ticket-dialog';
+import { ApiError, boards, tickets, type TicketDetail } from '@/lib/api';
 
 // subTicketSummary: "2 of 3 done" for a parent's progress line.
 export function subTicketSummary(children: { done: boolean }[]): string {
@@ -22,12 +23,13 @@ export function PartOf({ ticket }: { ticket: TicketDetail }) {
   );
 }
 
-// SubTickets: this ticket's children (with progress), add an existing ticket as a child, or detach one.
+// SubTickets: this ticket's children (with progress), add an existing or brand-new ticket as a child, or detach one.
 export function SubTickets({ ticket, token, onChanged }: { ticket: TicketDetail; token: string; onChanged: () => void }) {
   const children = ticket.children ?? [];
   const [options, setOptions] = useState<TicketOption[] | null>(null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [newIn, setNewIn] = useState<string | null>(null); // column for a new sub-ticket ('' = backlog); null = dialog closed
 
   async function setParent(childId: string, parentId: string | null) {
     setSaving(true);
@@ -40,6 +42,16 @@ export function SubTickets({ ticket, token, onChanged }: { ticket: TicketDetail;
       setError(err instanceof ApiError && err.status === 400 ? err.message : 'Couldn’t update sub-tickets. Please try again.');
     } finally {
       setSaving(false);
+    }
+  }
+
+  // a new sub-ticket starts where the work is planned: the parent's board's first column, or the backlog
+  async function startNew() {
+    setError('');
+    try {
+      setNewIn(ticket.board_id ? ((await boards.get(ticket.board_id, token)).columns?.[0]?.id ?? '') : '');
+    } catch {
+      setError('Couldn’t open the new ticket form. Please try again.');
     }
   }
 
@@ -71,7 +83,18 @@ export function SubTickets({ ticket, token, onChanged }: { ticket: TicketDetail;
             <SelectContent>{choices.map((o) => <SelectItem key={o.id} value={o.id}>{o.title}</SelectItem>)}</SelectContent>
           </Select>
         )}
+        <Button size="sm" variant="outline" disabled={saving} onClick={startNew}>New sub-ticket…</Button>
       </div>
+      {newIn !== null && (
+        <TicketDialog
+          open
+          onOpenChange={(o) => !o && setNewIn(null)}
+          token={token}
+          projectId={ticket.project_id}
+          columnId={newIn}
+          onSaved={(created) => void setParent(created.id, ticket.id)}
+        />
+      )}
       {ticket.parent && (
         <Button size="sm" variant="ghost" className="justify-self-start text-muted-foreground" disabled={saving} onClick={() => setParent(ticket.id, null)}>
           Detach from “{ticket.parent.title}”

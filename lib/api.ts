@@ -15,6 +15,7 @@ export type Ticket = {
 };
 // A project ticket not on any board or sprint yet.
 export type BacklogTicket = Omit<Ticket, 'column_id'> & { column_id: null; project_id: string; type: TicketType };
+export type BacklogPage = { tickets: BacklogTicket[]; counts: Record<TicketType | 'all', number> };
 // A board's time box; the board shows only the open sprint's tickets.
 export type Sprint = {
   id: string; board_id: string; number: number; length_days: number;
@@ -212,7 +213,14 @@ export const sprints = {
 export const backlog = {
   list: (projectId: string, token: T, type?: TicketType) =>
     api<BacklogTicket[]>(`/projects/${projectId}/backlog${type ? `?type=${type}` : ''}`, { token }),
-  create: (projectId: string, t: { title: string; description?: string; type: TicketType; labels?: string[] }, token: T) =>
+  // one page, filtered and ordered (ready before blocked) by the server; counts drive the type tabs
+  page: (projectId: string, q: { type?: TicketType; labels?: string[]; page: number; perPage: number }, token: T) => {
+    const params = new URLSearchParams({ page: String(q.page), per_page: String(q.perPage) });
+    if (q.type) params.set('type', q.type);
+    for (const l of q.labels ?? []) params.append('label', l);
+    return api<BacklogPage>(`/projects/${projectId}/backlog/page?${params}`, { token });
+  },
+  create: (projectId: string, t: { title: string; description?: string; type: TicketType; priority?: string; labels?: string[] }, token: T) =>
     api<BacklogTicket>(`/projects/${projectId}/backlog`, { method: 'POST', body: t, token }),
   send: (ticketId: string, token: T) => api<void>(`/tickets/${ticketId}/backlog`, { method: 'POST', token }),
 };
