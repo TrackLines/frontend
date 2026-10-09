@@ -15,7 +15,7 @@ export function ProjectCard({ project: p }: { project: Project }) {
           <CardHeader>
             <CardTitle className="flex items-start justify-between gap-2">
               <span>{p.name}</span>
-              {st && st.urgent > 0 && <Badge variant="outline" className="shrink-0 border-destructive/40 bg-destructive/10 text-destructive">{st.urgent} urgent</Badge>}
+              {st && <UrgentBadge count={st.urgent} />}
             </CardTitle>
             {p.description && <CardDescription className="line-clamp-2">{p.description}</CardDescription>}
           </CardHeader>
@@ -31,14 +31,7 @@ export function ProjectCard({ project: p }: { project: Project }) {
                   {st.roadmaps > 0 && <span>{plural(st.roadmaps, 'roadmap')}</span>}
                 </div>
               )}
-              {total > 0 && (
-                <div>
-                  <div className="h-1.5 overflow-hidden rounded-full bg-muted" role="progressbar" aria-label="Board tickets done" aria-valuemin={0} aria-valuemax={total} aria-valuenow={st.done}>
-                    <div className="h-full rounded-full bg-primary" style={{ width: `${(st.done / total) * 100}%` }} />
-                  </div>
-                  <p className="mt-1 text-xs text-muted-foreground">{st.done} of {total} done</p>
-                </div>
-              )}
+              <DoneBar done={st.done} total={total} />
               <p className="text-xs text-muted-foreground">Active {ago(st.active)}</p>
             </CardContent>
           )}
@@ -50,3 +43,22 @@ export function ProjectCard({ project: p }: { project: Project }) {
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
 
+
+// UrgentBadge flags open urgent tickets; nothing when there are none.
+export function UrgentBadge({ count }: { count: number }) {
+  if (count === 0) return null;
+  return <Badge variant="outline" className="shrink-0 border-destructive/40 bg-destructive/10 text-destructive">{count} urgent</Badge>;
+}
+
+// DoneBar shows how many tickets are done; nothing when there are none.
+export function DoneBar({ done, total }: { done: number; total: number }) {
+  if (total === 0) return null;
+  return (
+    <div>
+      <div className="h-1.5 overflow-hidden rounded-full bg-muted" role="progressbar" aria-label="Tickets done" aria-valuemin={0} aria-valuemax={total} aria-valuenow={done}>
+        <div className="h-full rounded-full bg-primary" style={{ width: `${(done / total) * 100}%` }} />
+      </div>
+      <p className="mt-1 text-xs text-muted-foreground">{done} of {total} done</p>
+    </div>
+  );
+}

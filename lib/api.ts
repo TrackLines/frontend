@@ -26,7 +26,10 @@ export type Board = {
   id: string; project_id: string; owner_clerk_id: string; name: string; description: string;
   created_at: string; updated_at: string; columns?: Column[];
   sprint?: Sprint; // open sprint, absent when the board doesn't run sprints
+  stats?: BoardStats; // a project's boards only
 };
+// counts the tickets the board shows (open sprint's, or all); in_progress = past the first column, not done
+export type BoardStats = { open: number; in_progress: number; done: number; urgent: number; active: string; sprint_number: number | null; sprint_ends_at: string | null };
 export type RoadmapItem = {
   id: string; title: string; description: string; target_date: string | null; position: number;
   start_date?: string | null; // Gantt bar start (YYYY-MM-DD)

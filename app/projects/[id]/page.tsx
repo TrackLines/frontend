@@ -5,10 +5,10 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { NameDialog } from '@/components/name-dialog';
 import { Backlog } from '@/components/project/backlog';
+import { BoardCard } from '@/components/project/board-card';
 import { RoadmapEditorForm } from '@/components/roadmap-editor-form';
 import { VisibilityBadge } from '@/components/roadmap/visibility';
 import { Button, buttonVariants } from '@/components/ui/button';
-import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ApiError, boards, projects, roadmaps, type Project, type Roadmap } from '@/lib/api';
 import { useToken } from '@/lib/use-token';
 import { prefetch, useCachedState } from '@/lib/page-cache';
@@ -56,18 +56,7 @@ export default function ProjectPage() {
           <Empty>No boards yet. Add one for each team, e.g. Backend, Design.</Empty>
         ) : (
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {boardList.map((b) => (
-              <li key={b.id}>
-                <Link href={`/boards/${b.id}`} className="block h-full rounded-xl focus-visible:outline-2 focus-visible:outline-ring">
-                  <Card className="h-full transition-colors hover:bg-muted/40">
-                    <CardHeader>
-                      <CardTitle>{b.name}</CardTitle>
-                      {b.description && <CardDescription className="line-clamp-2">{b.description}</CardDescription>}
-                    </CardHeader>
-                  </Card>
-                </Link>
-              </li>
-            ))}
+            {boardList.map((b) => <BoardCard key={b.id} board={b} />)}
           </ul>
         )}
       </Section>
