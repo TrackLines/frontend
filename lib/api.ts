@@ -14,6 +14,8 @@ export type Ticket = {
   created_by: string; assigned_to?: string | null; priority?: string;
   blocked?: boolean; // waits on tickets that aren't done yet
   estimate?: string | null; // on the board's estimate scale
+  created_at?: string; updated_at?: string; // UTC ISO; show with <When>
+  done_at?: string | null; resolved_at?: string | null; // set once it reached Done / was resolved
 };
 // A project ticket not on any board or sprint yet.
 export type BacklogTicket = Omit<Ticket, 'column_id'> & { column_id: null; project_id: string; type: TicketType };

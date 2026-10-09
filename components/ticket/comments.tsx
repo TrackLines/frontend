@@ -1,5 +1,6 @@
 'use client';
 
+import { When } from '@/components/when';
 import { useEffect, useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import type { TicketComment } from '@/lib/api';
@@ -8,9 +9,6 @@ import { personLabel } from '@/lib/people';
 import { commentThread, type CommentNode } from './comment-thread';
 
 const maxLength = 10000;
-const commentDate = new Intl.DateTimeFormat('en-GB', {
-  dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC',
-});
 
 export function TicketComments({ ticketId, token }: { ticketId: string; token: string }) {
   const [comments, setComments] = useState<TicketComment[] | null>(null);
@@ -104,13 +102,11 @@ export function TicketComments({ ticketId, token }: { ticketId: string; token: s
 
 function Comment({ node, depth, onReply }: { node: CommentNode; depth: number; onReply: (comment: TicketComment) => void }) {
   const comment = node.comment;
-  const date = new Date(comment.created_at);
-  const timestamp = Number.isNaN(date.getTime()) ? comment.created_at : commentDate.format(date);
   return (
     <article className={`min-w-0 rounded-lg border p-3 ${depth > 0 ? 'ml-3 border-l-2 bg-muted/20 sm:ml-6' : ''}`}>
       <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
         <span className="text-sm font-medium">{personLabel(comment.author)}</span>
-        <time dateTime={comment.created_at} className="text-xs text-muted-foreground">{timestamp} UTC</time>
+        <When iso={comment.created_at} className="text-xs text-muted-foreground" />
       </div>
       <p className="mt-2 whitespace-pre-wrap break-words text-sm">{comment.body}</p>
       <Button type="button" variant="ghost" size="sm" className="mt-1 -ml-2" onClick={() => onReply(comment)}>Reply</Button>

@@ -1,5 +1,6 @@
 'use client';
 
+import { When } from '@/components/when';
 import { useState, type MouseEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { PencilIcon } from 'lucide-react';
@@ -62,7 +63,7 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
         )}
         <div className="flex items-center justify-between gap-2 px-3 text-xs text-muted-foreground">
           <span className="truncate">{ticket.assigned_to ? personLabel(ticket.assigned_to) : <span className="italic">Unassigned</span>}</span>
-          <span className="truncate">by {personLabel(ticket.created_by)}</span>
+          <span className="truncate">by {personLabel(ticket.created_by)}{ticket.created_at && <>, <When iso={ticket.created_at} /></>}</span>
         </div>
       </Card>
       <TicketView

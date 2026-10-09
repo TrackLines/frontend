@@ -1,5 +1,6 @@
 'use client';
 
+import { When } from '@/components/when';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -87,9 +88,12 @@ export default function TicketPage() {
         <h1 className="text-3xl font-bold tracking-tight">{t.title}</h1>
         <PartOf ticket={t} />
         <p className="text-sm text-muted-foreground">
-          Created by {personLabel(t.created_by)}{!token && (t.assigned_to ? ` · assigned to ${personLabel(t.assigned_to)}` : ' · unassigned')}
+          Created by {personLabel(t.created_by)}{t.created_at && <> <When iso={t.created_at} /></>}
+          {t.updated_at && t.updated_at !== t.created_at && <> · updated <When iso={t.updated_at} /></>}
+          {t.done_at && <> · {t.resolved_at ? 'resolved' : 'done'} <When iso={t.done_at} /></>}
+          {!token && (t.assigned_to ? ` · assigned to ${personLabel(t.assigned_to)}` : ' · unassigned')}
         </p>
-        <TicketLabels labels={t.labels} />
+        {!token && <TicketLabels labels={t.labels} />}{/* signed in, the label editor below shows them */}
         {token && (
           <label className="flex max-w-xs items-center gap-2 text-sm text-muted-foreground">
             Assigned to

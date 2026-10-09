@@ -1,5 +1,6 @@
 'use client';
 
+import { When } from '@/components/when';
 import Link from 'next/link';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
@@ -143,6 +144,7 @@ export function Backlog({ projectId, boards, token }: Props) {
               <div className="min-w-0 flex-1">
                 <Link href={`/tickets/${t.id}`} className="font-medium hover:underline">{t.title}</Link>
                 {t.description && <p className="line-clamp-1 text-sm text-muted-foreground">{t.description}</p>}
+                {t.created_at && <p className="text-xs text-muted-foreground">Created <When iso={t.created_at} /></p>}
               </div>
               {boards.length > 0 && (
                 <Select items={Object.fromEntries(boards.map((b) => [b.id, b.name]))} value={null} onValueChange={(v) => v && moveTo(t, String(v))} disabled={busy === t.id}>

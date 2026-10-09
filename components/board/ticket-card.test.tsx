@@ -32,3 +32,7 @@ test('estimate shows as a badge, even on an otherwise plain task', () => {
   expect(card({ estimate: '8' })).toContain('aria-label="Estimate 8"');
   expect(card({ estimate: null })).not.toContain('Estimate');
 });
+
+test('card says how old the ticket is', () => {
+  expect(card({ created_at: new Date(Date.now() - 2 * 86400e3).toISOString() })).toContain('2 days ago');
+});
