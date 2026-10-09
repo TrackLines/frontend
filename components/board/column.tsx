@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { EditableTitle } from '@/components/editable-title';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import type { Column as BoardColumn } from '@/lib/api';
+import { ApiError, type Column as BoardColumn } from '@/lib/api';
 import { columns } from '@/lib/api';
 
 type ColumnProps = {
@@ -30,7 +30,11 @@ export function Column({ column, token, editMode = false, note, children }: Colu
       <header className="flex min-h-8 items-center justify-between gap-2">
         <EditableTitle
           value={name} label="column" as="h2" editable={editMode} className="font-semibold" maxLength={80}
-          onSave={async (next) => { await columns.update(column.id, { name: next }, token); setName(next); }}
+          onSave={async (next) => {
+            try { await columns.update(column.id, { name: next }, token); }
+            catch (err) { if (err instanceof ApiError && err.status === 403) throw new Error('Only organization admins and this board’s team leaders can edit columns.'); throw err; }
+            setName(next);
+          }}
         />
         <Badge variant={over ? 'destructive' : 'secondary'} title={limit === null ? undefined : 'Tickets / work-in-progress limit'}>
           {count}{limit !== null && ` / ${limit}`}
@@ -56,8 +60,8 @@ function WipLimit({ columnId, token, value, onChange }: { columnId: string; toke
       await columns.update(columnId, { wip_limit: n }, token);
       onChange(n === 0 ? null : n);
       setError('');
-    } catch {
-      setError('Couldn’t save the limit. Please try again.');
+    } catch (err) {
+      setError(err instanceof ApiError && err.status === 403 ? 'Only organization admins and this board’s team leaders can change column settings.' : 'Couldn’t save the limit. Please try again.');
     }
   }
   return (
@@ -98,8 +102,8 @@ export function AddColumn({ boardId, token, onCreated }: AddColumnProps) {
       onCreated(column);
       setName('');
       setOpen(false);
-    } catch {
-      setError('Could not add this column. Try again.');
+    } catch (err) {
+      setError(err instanceof ApiError && err.status === 403 ? 'Only organization admins and this board’s team leaders can add columns.' : 'Could not add this column. Try again.');
     } finally {
       setSaving(false);
     }

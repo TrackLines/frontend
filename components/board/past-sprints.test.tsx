@@ -5,7 +5,7 @@ import { SprintBar } from './sprint-bar';
 
 const sprint = (number: number) => ({ id: 's', board_id: 'b', number, length_days: 14, starts_at: '2026-10-01T00:00:00Z', ends_at: '2026-10-15T00:00:00Z', closed_at: null });
 const board = { id: 'b', project_id: 'p', owner_clerk_id: 'o', name: 'B', description: '', created_at: '', updated_at: '' };
-const bar = (s: ReturnType<typeof sprint> | undefined) => renderToStaticMarkup(<SprintBar board={{ ...board, sprint: s }} token="x" onChanged={() => {}} />);
+const bar = (s: ReturnType<typeof sprint> | undefined) => renderToStaticMarkup(<SprintBar board={{ ...board, sprint: s }} token="x" canManage={false} onChanged={() => {}} />);
 
 test('charts need a running sprint; past sprints need history', () => {
   expect(bar(undefined)).not.toContain('Charts');

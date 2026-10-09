@@ -37,8 +37,8 @@ export function EditableTitle({ value, label, editable, onSave, as: Tag = 'h1', 
     try {
       await onSave(next);
       setEditing(false);
-    } catch {
-      setError(`Couldn’t rename the ${label}. Please try again.`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : `Couldn’t rename the ${label}. Please try again.`);
     } finally {
       setSaving(false);
     }

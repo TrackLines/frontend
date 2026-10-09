@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { boards } from '@/lib/api';
+import { ApiError, boards } from '@/lib/api';
 import { SCALES, scaleValues, type EstimateScale } from '@/lib/estimates';
 
 const NONE = '__none';
@@ -45,8 +45,8 @@ export function ScaleSetting({ boardId, scale, estimated, token, onChanged }: {
       await boards.update(boardId, { estimate_scale: next }, token);
       setPending(null);
       onChanged();
-    } catch {
-      setError('Couldn’t change the estimate scale. Please try again.');
+    } catch (err) {
+      setError(err instanceof ApiError && err.status === 403 ? 'Only organization admins and this board’s team leaders can change estimates.' : 'Couldn’t change the estimate scale. Please try again.');
     } finally {
       setBusy(false);
     }

@@ -14,8 +14,9 @@ import { EditableTitle } from '@/components/editable-title';
 import { NameDialog } from '@/components/name-dialog';
 import { CopyLink } from '@/components/copy-link';
 import { Button, buttonVariants } from '@/components/ui/button';
-import { ApiError, boardTemplates, boards, projects, tickets, type Board, type Ticket } from '@/lib/api';
+import { ApiError, boardTemplates, boards, organization, projects, tickets, type Board, type Ticket } from '@/lib/api';
 import { useToken } from '@/lib/use-token';
+import { canManageBoard } from '@/lib/board-access';
 import { prefetch, useCachedState } from '@/lib/page-cache';
 import { BoardSkeleton } from '@/components/page-skeletons';
 import { useAutoRefresh } from '@/lib/use-auto-refresh';
@@ -37,12 +38,29 @@ export default function BoardPage() {
   const [addingTo, setAddingTo] = useState<string | null>(null); // column id for the "new ticket" dialog
   const [savingTemplate, setSavingTemplate] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [canManage, setCanManage] = useState<boolean | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [permissionBoardId, setPermissionBoardId] = useState('');
+  const [permissionError, setPermissionError] = useState(false);
   const [labelFilter, setLabelFilter] = useState<string[]>([]);
 
   const loaded = token !== null;
-  const load = (background = false) => boards.get(id, token).then((next) => {
+  const load = (background = false) => boards.get(id, token).then(async (next) => {
     setBoard(next);
     setError(null);
+    try {
+      const role = await organization.me(token);
+      setIsAdmin(role.admin);
+      setCanManage(canManageBoard(role, next.team_id));
+      setPermissionBoardId(next.id);
+      setPermissionError(false);
+    } catch {
+      // Keep ordinary ticket work usable, but fail closed for board configuration.
+      setIsAdmin(false);
+      setCanManage(false);
+      setPermissionError(true);
+      setEditMode(false);
+    }
   }, (e) => {
     if (!background) setError(e instanceof ApiError ? e.status : 500);
   });
@@ -58,6 +76,8 @@ export default function BoardPage() {
     if (board && token) prefetch(`project:${board.project_id}`, () => projects.get(board.project_id, token));
   }, [board?.project_id, loaded]);
 
+  useEffect(() => { if (canManage === false) setEditMode(false); }, [canManage]);
+
   // local edits: components call the API themselves and report back here
   const updateTickets = (columnId: string, fn: (ts: Ticket[]) => Ticket[]) =>
     setBoard((b) => b && { ...b, columns: b.columns?.map((c) => (c.id === columnId ? { ...c, tickets: fn(c.tickets) } : c)) });
@@ -65,6 +85,9 @@ export default function BoardPage() {
   if (error === 404) return <Message title="Board not found" body="It may have been deleted, or it belongs to another organization." />;
   if (error) return <Message title="Couldn't load this board" body="Please refresh to try again." />;
   if (!board || !token) return <BoardSkeleton />;
+  const boardCanManage = permissionBoardId === board.id && canManage === true;
+  const boardIsAdmin = permissionBoardId === board.id && isAdmin;
+  const boardEditMode = editMode && boardCanManage;
   const kanban = board.style === 'kanban';
 
   return (
@@ -74,10 +97,11 @@ export default function BoardPage() {
         <EditableTitle
           value={board.name}
           label="board"
-          editable={editMode}
+          editable={boardEditMode}
           className="text-2xl font-bold tracking-tight"
           onSave={async (name) => {
-            await boards.update(board.id, { name }, token);
+            try { await boards.update(board.id, { name }, token); }
+            catch (err) { if (err instanceof ApiError && err.status === 403) throw new Error('Only organization admins and this board’s team leaders can edit it.'); throw err; }
             setBoard((current) => current && { ...current, name });
           }}
         />
@@ -87,9 +111,9 @@ export default function BoardPage() {
           labels={labelFilter}
           onLabelsChange={setLabelFilter}
         />
-        {editMode && (
+        {boardEditMode && (
           <>
-            <Button type="button" variant="outline" size="sm" onClick={() => setSavingTemplate(true)}>Save as template</Button>
+            {boardIsAdmin && <Button type="button" variant="outline" size="sm" onClick={() => setSavingTemplate(true)}>Save as template</Button>}
             <StyleSetting boardId={board.id} style={board.style ?? 'sprints'} token={token} onChanged={() => void load(true)} />
             <ScaleSetting
               boardId={board.id}
@@ -101,10 +125,12 @@ export default function BoardPage() {
           </>
         )}
         <CopyLink path={`/boards/${board.id}`} className="ml-auto" />
-        <Button type="button" variant={editMode ? 'secondary' : 'outline'} size="sm" aria-pressed={editMode} onClick={() => setEditMode((editing) => !editing)}>
+        {boardCanManage && <Button type="button" variant={editMode ? 'secondary' : 'outline'} size="sm" aria-pressed={editMode} onClick={() => setEditMode((editing) => !editing)}>
           {editMode ? 'Done editing' : 'Edit board'}
-        </Button>
+        </Button>}
       </header>
+      {permissionError && <p role="status" className="border-b px-6 py-2 text-sm text-muted-foreground">Couldn’t verify board permissions. Board settings are hidden until permissions can be checked.</p>}
+      {permissionBoardId === board.id && !boardCanManage && <p role="note" className="border-b px-6 py-2 text-sm text-muted-foreground">Board settings are managed by organization admins and this board’s team leaders.</p>}
       {focus && !board.columns?.some((c) => c.tickets.some((t) => t.id === focus)) && (
         <p role="status" className="border-b px-6 py-3 text-sm text-muted-foreground">
           That ticket isn&apos;t on this board&apos;s current view (it may belong to a closed sprint or have moved).{' '}
@@ -114,7 +140,7 @@ export default function BoardPage() {
       {/* sprint start/close changes which tickets the board shows, so reload */}
       {kanban
         ? <p className="border-b px-6 py-3 text-sm text-muted-foreground">Kanban board: work flows continuously. Keep each column within its WIP limit.</p>
-        : <SprintBar board={board} token={token} onChanged={load} />}
+        : <SprintBar board={board} token={token} canManage={boardCanManage} onChanged={load} />}
       <BoardDnd
         boardId={board.id}
         columns={board.columns ?? []}
@@ -130,7 +156,7 @@ export default function BoardPage() {
           return (
             <div key={col.id} style={{ width: w }} className="shrink-0">
               <Column
-                column={col} token={token} editMode={editMode}
+                column={col} token={token} editMode={boardEditMode}
                 note={kanban && done && (board.hidden_done ?? 0) > 0 && (
                   <p className="text-xs text-muted-foreground">{board.hidden_done} finished over 14 days ago {board.hidden_done === 1 ? 'is' : 'are'} hidden.</p>
                 )}
@@ -158,7 +184,7 @@ export default function BoardPage() {
             </div>
           );
         })}
-        {editMode && (
+        {boardEditMode && (
           <div className="w-72 shrink-0">
             <AddColumn
               boardId={board.id}

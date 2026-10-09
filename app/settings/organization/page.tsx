@@ -5,6 +5,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ApiError, invitations, organization, projects as projectApi, teams as teamApi, type Invitation, type OrganizationMember, type OrgAdmin, type Project, type Team, type TeamMember } from '@/lib/api';
 import { useToken } from '@/lib/use-token';
 
@@ -15,7 +16,7 @@ type PageData = {
 };
 
 const card = 'rounded-xl border p-5';
-const field = 'h-8 rounded-lg border border-input bg-background px-2.5 text-sm';
+const NO_TARGET = '__none';
 
 export default function OrganizationSettingsPage() {
   const token = useToken();
@@ -147,14 +148,17 @@ export default function OrganizationSettingsPage() {
         <div className="mb-4"><h2 className="text-lg font-semibold">Invite people</h2><p className="text-sm text-muted-foreground">Invitations are sent by email and expire after seven days.</p></div>
         <form onSubmit={sendInvite} className="grid gap-3 sm:grid-cols-[2fr_1fr_1fr_auto]">
           <Input type="email" aria-label="Email address" value={inviteEmail} onChange={(event) => setInviteEmail(event.target.value)} required placeholder="name@example.com" />
-          <select aria-label="Invitation scope" className={field} value={inviteScope} onChange={(event) => { setInviteScope(event.target.value as Invitation['scope']); setInviteTarget(''); }}>
-            <option value="organization">Organization</option><option value="team">Team</option><option value="project">Project</option>
-          </select>
-          {inviteScope !== 'organization' ? <select aria-label="Invitation target" className={field} required value={inviteTarget} onChange={(event) => setInviteTarget(event.target.value)}>
-            <option value="">Choose {inviteScope}</option>
-            {(inviteScope === 'team' ? data.teams.map(({ team }) => team) : data.projects).map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
-          </select> : <span />}
-          <Button disabled={busy === 'invite'}>{busy === 'invite' ? 'Sending…' : 'Send invite'}</Button>
+          <Select value={inviteScope} onValueChange={(value) => { if (value) { setInviteScope(value as Invitation['scope']); setInviteTarget(''); } }}>
+            <SelectTrigger aria-label="Invitation scope" className="w-full"><SelectValue /></SelectTrigger>
+            <SelectContent><SelectItem value="organization">Organization</SelectItem><SelectItem value="team">Team</SelectItem><SelectItem value="project">Project</SelectItem></SelectContent>
+          </Select>
+          {inviteScope !== 'organization' ? <Select value={inviteTarget || NO_TARGET} onValueChange={(value) => setInviteTarget(value === NO_TARGET || !value ? '' : value)}>
+            <SelectTrigger aria-label="Invitation target" className="w-full"><SelectValue placeholder={`Choose ${inviteScope}`} /></SelectTrigger>
+            <SelectContent><SelectItem value={NO_TARGET}>Choose {inviteScope}</SelectItem>
+              {(inviteScope === 'team' ? data.teams.map(({ team }) => team) : data.projects).map((item) => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}
+            </SelectContent>
+          </Select> : <span />}
+          <Button disabled={busy === 'invite' || (inviteScope !== 'organization' && !inviteTarget)}>{busy === 'invite' ? 'Sending…' : 'Send invite'}</Button>
         </form>
         <div className="mt-5 border-t pt-4">
           <h3 className="mb-2 font-medium">Invitations</h3>
@@ -220,12 +224,15 @@ function TeamEditor({ team, members, people, projects, projectTeams, isAdmin, to
           <span>{person(member.user_id)}{member.leader && <Badge className="ml-2" variant="secondary">Leader</Badge>}</span>
           {isAdmin && <div className="flex gap-1"><Button size="xs" variant="ghost" disabled={busy.includes(`${team.id}:`)} onClick={() => onChange('leader', () => member.leader ? teamApi.removeLeader(team.id, member.user_id, token) : teamApi.addLeader(team.id, member.user_id, token), member.leader ? 'Team leader removed.' : 'Team leader assigned.')}>{member.leader ? 'Remove leader' : 'Make leader'}</Button><Button size="xs" variant="ghost" className="text-destructive" disabled={busy.includes(`${team.id}:`)} onClick={() => onChange('member', () => teamApi.removeMember(team.id, member.user_id, token), 'Member removed from team.')}>Remove</Button></div>}
         </li>)}</ul>}
-        {isAdmin && <div className="mt-3 flex gap-2"><select aria-label={`Add member to ${team.name}`} className={`${field} min-w-0 flex-1`} value={memberToAdd} onChange={(event) => setMemberToAdd(event.target.value)}><option value="">Add organization member…</option>{available.map((member) => <option key={member.user_id} value={member.user_id}>{[member.first_name, member.last_name].filter(Boolean).join(' ') || member.identifier} · {member.identifier}</option>)}</select><Button size="sm" disabled={!memberToAdd || busy.includes(`${team.id}:`)} onClick={() => onChange('member', () => teamApi.addMember(team.id, memberToAdd, token), 'Member added to team.')}>Add</Button></div>}
+        {isAdmin && <div className="mt-3 flex gap-2"><Select value={memberToAdd || NO_TARGET} onValueChange={(value) => setMemberToAdd(value === NO_TARGET || !value ? '' : value)}>
+          <SelectTrigger aria-label={`Add member to ${team.name}`} className="min-w-0 flex-1"><SelectValue placeholder="Add organization member…" /></SelectTrigger>
+          <SelectContent><SelectItem value={NO_TARGET}>Add organization member…</SelectItem>{available.map((member) => <SelectItem key={member.user_id} value={member.user_id}>{[member.first_name, member.last_name].filter(Boolean).join(' ') || member.identifier} · {member.identifier}</SelectItem>)}</SelectContent>
+        </Select><Button size="sm" disabled={!memberToAdd || busy.includes(`${team.id}:`)} onClick={() => onChange('member', () => teamApi.addMember(team.id, memberToAdd, token), 'Member added to team.')}>Add</Button></div>}
       </div>
       <div><p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Project boards</p>
         {projects.length === 0 ? <p className="text-sm text-muted-foreground">Create a project before linking this team.</p> : <ul className="space-y-2">{projects.map((project) => {
           const linked = projectTeams[project.id]?.some((item) => item.id === team.id) ?? false;
-          return <li key={project.id} className="flex items-center gap-2 text-sm"><input id={`${team.id}-${project.id}`} type="checkbox" checked={linked} disabled={!isAdmin || busy.includes(`${team.id}:`)} onChange={() => onChange('project', () => linked ? teamApi.removeProject(project.id, team.id, token) : teamApi.addProject(project.id, team.id, token), linked ? 'Team unlinked from project.' : 'Team linked to project.')} /><label htmlFor={`${team.id}-${project.id}`} className="cursor-pointer">{project.name}</label></li>;
+          return <li key={project.id} className="flex items-center justify-between gap-3 text-sm"><span>{project.name}</span><Button type="button" size="sm" variant={linked ? 'secondary' : 'outline'} aria-pressed={linked} disabled={!isAdmin || busy.includes(`${team.id}:`)} onClick={() => onChange('project', () => linked ? teamApi.removeProject(project.id, team.id, token) : teamApi.addProject(project.id, team.id, token), linked ? 'Team unlinked from project.' : 'Team linked to project.')}>{linked ? 'Linked' : 'Link team'}</Button></li>;
         })}</ul>}
         {linkedProjects.length > 0 && <p className="mt-2 text-xs text-muted-foreground">Boards linked to this team are managed by its leaders.</p>}
       </div>

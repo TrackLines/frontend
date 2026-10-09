@@ -5,17 +5,17 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { sprints, type Board, type Sprint } from '@/lib/api';
+import { ApiError, sprints, type Board, type Sprint } from '@/lib/api';
 import { LENGTH_PRESETS, sprintStatus } from './sprint-status';
 import { Charts } from './velocity';
 import { PastSprints } from './past-sprints';
 
 const day = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short' });
 
-type Props = { board: Board; token: string; onChanged: () => void };
+type Props = { board: Board; token: string; canManage: boolean; onChanged: () => void };
 
 // SprintBar sits under the board header: start a sprint, see time left, close it, browse history.
-export function SprintBar({ board, token, onChanged }: Props) {
+export function SprintBar({ board, token, canManage, onChanged }: Props) {
   const [starting, setStarting] = useState(false);
   const [closing, setClosing] = useState(false);
   const sprint = board.sprint;
@@ -29,19 +29,19 @@ export function SprintBar({ board, token, onChanged }: Props) {
             {day.format(new Date(sprint.starts_at))} – {day.format(new Date(sprint.ends_at))} · {sprint.length_days} days
           </span>
           <Status endsAt={sprint.ends_at} />
-          <Button size="sm" variant="outline" onClick={() => setClosing(true)}>Close sprint</Button>
+          {canManage && <Button size="sm" variant="outline" onClick={() => setClosing(true)}>Close sprint</Button>}
         </>
       ) : (
         <>
           <span className="text-muted-foreground">No sprint running — tickets aren&apos;t time-boxed.</span>
-          <Button size="sm" onClick={() => setStarting(true)}>Start sprint</Button>
+          {canManage && <Button size="sm" onClick={() => setStarting(true)}>Start sprint</Button>}
         </>
       )}
       {/* closing a sprint opens the next, so number > 1 means there's history; no sprint, nothing to chart */}
       {sprint && sprint.number > 1 && <PastSprints boardId={board.id} token={token} />}
       {sprint && <Charts boardId={board.id} token={token} />}
-      <StartDialog open={starting} onOpenChange={setStarting} boardId={board.id} token={token} onStarted={onChanged} />
-      {sprint && <CloseDialog open={closing} onOpenChange={setClosing} board={board} sprint={sprint} token={token} onClosed={onChanged} />}
+      {canManage && <StartDialog open={starting} onOpenChange={setStarting} boardId={board.id} token={token} onStarted={onChanged} />}
+      {canManage && sprint && <CloseDialog open={closing} onOpenChange={setClosing} board={board} sprint={sprint} token={token} onClosed={onChanged} />}
     </div>
   );
 }
@@ -69,8 +69,8 @@ function StartDialog({ open, onOpenChange, boardId, token, onStarted }: {
       await sprints.start(boardId, days, token);
       onOpenChange(false);
       onStarted();
-    } catch {
-      setError('Couldn’t start the sprint. Please try again.');
+    } catch (err) {
+      setError(err instanceof ApiError && err.status === 403 ? 'Only organization admins and this board’s team leaders can manage sprints.' : 'Couldn’t start the sprint. Please try again.');
     } finally {
       setSaving(false);
     }
@@ -131,8 +131,8 @@ function CloseDialog({ open, onOpenChange, board, sprint, token, onClosed }: {
       await sprints.close(sprint.id, token);
       onOpenChange(false);
       onClosed();
-    } catch {
-      setError('Couldn’t close the sprint. Please try again.');
+    } catch (err) {
+      setError(err instanceof ApiError && err.status === 403 ? 'Only organization admins and this board’s team leaders can manage sprints.' : 'Couldn’t close the sprint. Please try again.');
     } finally {
       setSaving(false);
     }

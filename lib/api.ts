@@ -27,6 +27,7 @@ export type Column = { id: string; name: string; position: number; tickets: Tick
 export type BoardStyle = 'sprints' | 'kanban';
 export type Board = {
   id: string; project_id: string; owner_clerk_id: string; name: string; description: string;
+  team_id?: string | null;
   created_at: string; updated_at: string; columns?: Column[];
   style?: BoardStyle;
   hidden_done?: number; // kanban: Done tickets finished over 14 days ago, left off the board
