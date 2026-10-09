@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { auth } from '@clerk/nextjs/server';
 import Link from 'next/link';
-import { BotIcon, GitBranchIcon, LayersIcon, LockIcon, MapIcon, TagIcon, UsersIcon, type LucideIcon } from 'lucide-react';
+import { BotIcon, BugIcon, LockIcon, MapIcon, type LucideIcon } from 'lucide-react';
 import { buttonVariants } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { PriorityBadge } from '@/components/board/priority-badge';
@@ -33,8 +33,8 @@ export default async function Home() {
 
       <section className="border-t bg-muted/30">
         <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="text-3xl font-bold tracking-tight">Everything a small team needs, nothing it doesn&apos;t</h2>
-          <ul className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <h2 className="text-3xl font-bold tracking-tight">What makes it different</h2>
+          <ul className="mt-10 grid gap-8 sm:grid-cols-2">
             {FEATURES.map((f) => <Feature key={f.title} {...f} />)}
           </ul>
         </div>
@@ -47,7 +47,7 @@ export default async function Home() {
           <p className="mt-4 text-muted-foreground">
             Give an agent its own API key and it can read the board, claim the highest-priority ticket, move it along and leave a comment when it&apos;s done. Every change shows who made it, person or agent.
           </p>
-          <p className="mt-3 text-muted-foreground">Use the documented HTTP API, or the MCP server for coding agents.</p>
+          <p className="mt-3 text-muted-foreground">It&apos;s all a documented HTTP API, so any agent that can make a request can join in.</p>
         </div>
         <pre className="overflow-x-auto rounded-xl border bg-card p-5 font-mono text-xs leading-6 text-muted-foreground">
 {`# claim the next ticket
@@ -67,8 +67,8 @@ POST /api/tickets/{id}/comments
         <div className="mx-auto max-w-6xl px-6 py-16">
           <h2 className="text-3xl font-bold tracking-tight">Simple pricing</h2>
           <div className="mt-8 grid gap-6 md:grid-cols-2">
-            <Plan name="Free" blurb="One project with unlimited boards, tickets and roadmaps." cta="Start free" href="/sign-up" />
-            <Plan name="Pro" blurb="Unlimited projects, for teams running more than one thing at once." cta="Start free, upgrade any time" href="/sign-up" />
+            <Plan name="Free" price="$0" blurb="One project with unlimited boards, tickets and roadmaps." cta="Start free" href="/sign-up" />
+            <Plan name="Pro" price="$10 / month" blurb="Unlimited projects, for teams running more than one thing at once." cta="Start free, upgrade any time" href="/sign-up" />
           </div>
         </div>
       </section>
@@ -77,12 +77,10 @@ POST /api/tickets/{id}/comments
 }
 
 const FEATURES: { icon: LucideIcon; title: string; body: string }[] = [
-  { icon: LayersIcon, title: 'Boards per team', body: 'Drag tickets between columns. Each team gets its own board inside a shared project.' },
-  { icon: GitBranchIcon, title: 'A real backlog', body: 'Park work until it’s ready, filter by type and label, then send it to a board.' },
-  { icon: TagIcon, title: 'Priorities and labels', body: 'Bugs, features and tasks, from low to urgent, with labels you can filter by.' },
-  { icon: LockIcon, title: 'Dependencies', body: 'Sub-tickets and blockers, so nobody starts work that’s still waiting on something.' },
-  { icon: UsersIcon, title: 'Shared with your org', body: 'Projects belong to your organization, so everyone on the team sees the same boards.' },
-  { icon: MapIcon, title: 'Shareable roadmaps', body: 'Group milestones into a roadmap and send a public link; dates stay optional.' },
+  { icon: BotIcon, title: 'Agents as teammates', body: 'AI agents get their own keys, claim tickets and show up on the board next to everyone else.' },
+  { icon: LockIcon, title: 'Blockers that hold', body: 'A ticket waiting on unfinished work can’t be claimed, by a person or an agent.' },
+  { icon: BugIcon, title: 'Errors become tickets', body: 'Connect Bugfixes and the errors it catches land on your board as bug tickets.' },
+  { icon: MapIcon, title: 'Roadmaps anyone can read', body: 'Send a public link to customers; they don’t need an account to see what’s coming.' },
 ];
 
 function Feature({ icon: Icon, title, body }: (typeof FEATURES)[number]) {
@@ -97,10 +95,11 @@ function Feature({ icon: Icon, title, body }: (typeof FEATURES)[number]) {
   );
 }
 
-function Plan({ name, blurb, cta, href }: { name: string; blurb: string; cta: string; href: string }) {
+function Plan({ name, price, blurb, cta, href }: { name: string; price: string; blurb: string; cta: string; href: string }) {
   return (
     <Card className="p-6">
       <h3 className="text-xl font-semibold">{name}</h3>
+      <p className="text-3xl font-bold tracking-tight">{price}</p>
       <p className="text-muted-foreground">{blurb}</p>
       <Link href={href} className={buttonVariants({ variant: name === 'Pro' ? 'default' : 'outline', className: 'w-fit' })}>{cta}</Link>
     </Card>

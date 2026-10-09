@@ -47,7 +47,10 @@ export type Roadmap = {
 export type Project = {
   id: string; name: string; description: string; created_at: string; updated_at: string;
   boards?: Board[]; roadmaps?: Roadmap[];
+  stats?: ProjectStats; // list only
 };
+// open/done: board tickets (done = last column); urgent: open urgent tickets anywhere; active: latest change
+export type ProjectStats = { boards: number; roadmaps: number; open: number; done: number; backlog: number; urgent: number; active: string };
 export type ProjectLabel = { label: string; count: number };
 export type ApiKeyKind = 'ai' | 'service';
 export type ApiKey = { id: string; name: string; kind: ApiKeyKind; prefix: string; created_at: string; last_used_at: string | null };

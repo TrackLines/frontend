@@ -3,7 +3,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 // Page-shaped placeholders: shown by each route's loading.tsx on navigation and by the page
 // while its data loads, so it looks like it's loading rather than blank.
 
-function Loading({ label, children, className }: { label: string; children: React.ReactNode; className?: string }) {
+export function Loading({ label, children, className }: { label: string; children: React.ReactNode; className?: string }) {
   return (
     <main className={className} role="status" aria-busy="true">
       <span className="sr-only">{label}</span>
