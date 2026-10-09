@@ -15,6 +15,11 @@ export default function SettingsPage() {
       <Suspense><ReturnBanner /></Suspense>
       <Plan />
       <section className="mt-6 rounded-xl border p-5">
+        <h2 className="text-lg font-semibold">Organization</h2>
+        <p className="mt-2 text-sm text-muted-foreground">View members, teams, project access, and leadership.</p>
+        <Link href="/settings/organization" className="mt-3 inline-block text-sm font-medium hover:underline">Manage organization →</Link>
+      </section>
+      <section className="mt-6 rounded-xl border p-5">
         <h2 className="text-lg font-semibold">API keys</h2>
         <p className="mt-2 text-sm text-muted-foreground">Keys let agents and scripts use the API as you.</p>
         <Link href="/settings/api-keys" className="mt-3 inline-block text-sm font-medium hover:underline">Manage API keys →</Link>

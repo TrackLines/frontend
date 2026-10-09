@@ -65,6 +65,51 @@ export type ApiKeyKind = 'ai' | 'service';
 export type ApiKey = { id: string; name: string; kind: ApiKeyKind; prefix: string; created_at: string; last_used_at: string | null };
 export type Subscription = { paid: boolean; project_limit: number }; // project_limit -1 = unlimited
 
+export type OrganizationMember = { user_id: string; first_name?: string; last_name?: string; image_url?: string; identifier: string };
+export type OrganizationMemberPage = { members: OrganizationMember[]; total_count: number; limit: number; offset: number };
+export type TeamMember = { user_id: string; leader: boolean };
+export type OrgAdmin = { user_id: string; granted_by: string; created_at: string };
+export type OrganizationRole = { user_id: string; org_id: string; admin: boolean; leads: string[] };
+export type Invitation = {
+  id: string; org_id: string; email_address: string; scope: 'organization' | 'team' | 'project';
+  target_id?: string; invited_by: string; accept_url?: string; status: 'pending' | 'accepted' | 'revoked' | 'expired';
+  expires_at: string; accepted_by?: string; accepted_at?: string; created_at: string;
+};
+
+export const organization = {
+  members: (token: T, offset = 0) => api<OrganizationMemberPage>(`/organizations/members?limit=500&offset=${offset}`, { token }),
+  me: (token: T) => api<OrganizationRole>('/organizations/me', { token }),
+  admins: (token: T) => api<OrgAdmin[]>('/organizations/admins', { token }),
+  grantAdmin: (userId: string, token: T) => api<void>(`/organizations/admins/${encodeURIComponent(userId)}`, { method: 'PUT', token }),
+  revokeAdmin: (userId: string, token: T) => api<void>(`/organizations/admins/${encodeURIComponent(userId)}`, { method: 'DELETE', token }),
+};
+
+export const teams = {
+  list: (token: T) => api<Team[]>('/teams', { token }),
+  create: (name: string, description: string, token: T) => api<Team>('/teams', { method: 'POST', body: { name, description }, token }),
+  update: (id: string, name: string, description: string, token: T) => api<void>(`/teams/${id}`, { method: 'PATCH', body: { name, description }, token }),
+  remove: (id: string, token: T) => api<void>(`/teams/${id}`, { method: 'DELETE', token }),
+  members: (id: string, token: T) => api<TeamMember[]>(`/teams/${id}/members`, { token }),
+  addMember: (id: string, userId: string, token: T) => api<void>(`/teams/${id}/members/${encodeURIComponent(userId)}`, { method: 'PUT', token }),
+  removeMember: (id: string, userId: string, token: T) => api<void>(`/teams/${id}/members/${encodeURIComponent(userId)}`, { method: 'DELETE', token }),
+  addLeader: (id: string, userId: string, token: T) => api<void>(`/teams/${id}/leaders/${encodeURIComponent(userId)}`, { method: 'PUT', token }),
+  removeLeader: (id: string, userId: string, token: T) => api<void>(`/teams/${id}/leaders/${encodeURIComponent(userId)}`, { method: 'DELETE', token }),
+  projectTeams: (projectId: string, token: T) => api<Team[]>(`/projects/${projectId}/teams`, { token }),
+  addProject: (projectId: string, teamId: string, token: T) => api<void>(`/projects/${projectId}/teams/${teamId}`, { method: 'PUT', token }),
+  removeProject: (projectId: string, teamId: string, token: T) => api<void>(`/projects/${projectId}/teams/${teamId}`, { method: 'DELETE', token }),
+};
+
+export const invitations = {
+  mine: (token: T) => api<Invitation[]>('/invitations', { token }),
+  list: (token: T) => api<Invitation[]>('/organizations/invitations', { token }),
+  create: (input: { email_address: string; scope: Invitation['scope']; target_id?: string }, token: T) =>
+    api<Invitation>('/organizations/invitations', { method: 'POST', body: input, token }),
+  revoke: (id: string, token: T) => api<void>(`/organizations/invitations/${id}`, { method: 'DELETE', token }),
+  accept: (id: string, token: T) => api<void>(`/organizations/invitations/${id}/accept`, { method: 'POST', token }),
+};
+
+export type Team = { id: string; org_id: string; name: string; description: string; created_at: string; updated_at: string };
+
 export class ApiError extends Error {
   constructor(public status: number, message: string) {
     super(message);
