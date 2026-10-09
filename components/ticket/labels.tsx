@@ -76,15 +76,17 @@ export function LabelEditor({ projectId, token, labels, onChange, disabled = fal
         {labels.map((label) => (
           <Badge key={label.toLowerCase()} variant="outline" title={label} className="max-w-48 pr-1">
             <span className="truncate">{label}</span>
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="icon-xs"
               aria-label={`Remove label ${label}`}
               disabled={disabled}
               onClick={() => { onChange(removeLabel(labels, label)); setError(''); }}
-              className="ml-1 rounded-full text-muted-foreground hover:text-foreground disabled:opacity-50"
+              className="ml-0.5 size-4 rounded-full text-muted-foreground"
             >
               <XIcon className="size-3" aria-hidden />
-            </button>
+            </Button>
           </Badge>
         ))}
       </div>}

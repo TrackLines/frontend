@@ -3,6 +3,7 @@ import { auth } from '@clerk/nextjs/server';
 import Link from 'next/link';
 import { BotIcon, BugIcon, LockIcon, MapIcon, type LucideIcon } from 'lucide-react';
 import { buttonVariants } from '@/components/ui/button';
+import { McpConnect } from '@/components/mcp-connect';
 import { Card } from '@/components/ui/card';
 import { PriorityBadge } from '@/components/board/priority-badge';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
@@ -47,19 +48,25 @@ export default async function Home() {
           <p className="mt-4 text-muted-foreground">
             Give an agent its own API key and it can read the board, claim the highest-priority ticket, move it along and leave a comment when it&apos;s done. Every change shows who made it, person or agent.
           </p>
-          <p className="mt-3 text-muted-foreground">It&apos;s all a documented HTTP API, so any agent that can make a request can join in.</p>
+          <p className="mt-3 text-muted-foreground">
+            Connect Claude, Codex or any MCP client to the built-in MCP server and just ask it to pick up work. Prefer to script it? The same actions are a documented HTTP API, with the same permissions.
+          </p>
+          <div className="mt-6">
+            <McpConnect keyHint="Sign up, then create an API key for each agent in Settings → API keys; every change it makes shows its name." />
+          </div>
         </div>
         <pre className="overflow-x-auto rounded-xl border bg-card p-5 font-mono text-xs leading-6 text-muted-foreground">
-{`# claim the next ticket
-POST /api/tickets/{id}/claim
+{`# connect Claude Code (or any MCP client)
+claude mcp add -s user --transport http tracklines \\
+  https://api.tracklin.es/mcp \\
+  --header "Authorization: Bearer tl_…"
 
-# move it to In progress
-POST /api/tickets/{id}/move
-{ "column_id": "…", "position": 0 }
+# then just ask
+> pick up the most urgent ticket on Backend
 
-# report back
-POST /api/tickets/{id}/comments
-{ "body": "Fixed in #42, tests pass" }`}
+  list_backlog → claim_ticket → move_ticket
+  … does the work …
+  add_comment "Fixed in #42, tests pass"`}
         </pre>
       </section>
 
@@ -77,7 +84,7 @@ POST /api/tickets/{id}/comments
 }
 
 const FEATURES: { icon: LucideIcon; title: string; body: string }[] = [
-  { icon: BotIcon, title: 'Agents as teammates', body: 'AI agents get their own keys, claim tickets and show up on the board next to everyone else.' },
+  { icon: BotIcon, title: 'Agents as teammates', body: 'Connect agents over MCP with their own keys; they claim tickets and show up on the board next to everyone else.' },
   { icon: LockIcon, title: 'Blockers that hold', body: 'A ticket waiting on unfinished work can’t be claimed, by a person or an agent.' },
   { icon: BugIcon, title: 'Errors become tickets', body: 'Connect Bugfixes and the errors it catches land on your board as bug tickets.' },
   { icon: MapIcon, title: 'Roadmaps anyone can read', body: 'Send a public link to customers; they don’t need an account to see what’s coming.' },

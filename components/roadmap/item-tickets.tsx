@@ -57,9 +57,9 @@ export function ItemTickets({ roadmapId, itemId, projectId, initial, token }: {
             <li key={t.id} className="flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs">
               {t.done && <CheckIcon className="size-3 text-emerald-600" aria-label="done" />}
               <Link href={`/tickets/${t.id}`} className={`max-w-48 truncate hover:underline ${t.done ? 'text-muted-foreground line-through' : ''}`}>{t.title}</Link>
-              <button type="button" disabled={saving} onClick={() => save(linked.filter((x) => x.id !== t.id))} className="text-muted-foreground hover:text-destructive" aria-label={`Unlink ${t.title}`}>
+              <Button type="button" variant="ghost" size="icon-xs" disabled={saving} onClick={() => save(linked.filter((x) => x.id !== t.id))} className="size-4 rounded-full text-muted-foreground hover:text-destructive" aria-label={`Unlink ${t.title}`}>
                 <XIcon className="size-3" />
-              </button>
+              </Button>
             </li>
           ))}
         </ul>

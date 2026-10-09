@@ -1,5 +1,7 @@
 'use client';
 
+import { XIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { attachments } from '@/lib/api';
 import { UploadButton } from '@/lib/uploadthing';
 import { formatSize } from './attachments';
@@ -31,7 +33,7 @@ export function PendingAttachments({ files, onChange }: { files: PendingFile[]; 
             <li key={f.key} className="flex items-center gap-2">
               <span className="min-w-0 flex-1 truncate">{f.name}</span>
               <span className="text-muted-foreground">{formatSize(f.size)}</span>
-              <button type="button" className="text-muted-foreground hover:text-destructive" aria-label={`Don't attach ${f.name}`} onClick={() => onChange(files.filter((x) => x.key !== f.key))}>×</button>
+              <Button type="button" variant="ghost" size="icon-xs" className="text-muted-foreground hover:text-destructive" aria-label={`Don't attach ${f.name}`} onClick={() => onChange(files.filter((x) => x.key !== f.key))}><XIcon /></Button>
             </li>
           ))}
         </ul>

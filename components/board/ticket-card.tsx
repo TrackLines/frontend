@@ -41,9 +41,9 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
       <Card className="gap-2 py-3 shadow-xs">
         <div className="flex items-start gap-1 px-3">
           {/* the title opens the read-only view; the pencil edits */}
-          <button type="button" onClick={openView} className="min-w-0 flex-1 rounded-sm text-left text-sm font-medium leading-5 hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none">
+          <Button type="button" variant="link" onClick={openView} className="h-auto min-w-0 flex-1 justify-start p-0 text-left leading-5 whitespace-normal text-foreground">
             {ticket.title}
-          </button>
+          </Button>
           <Button type="button" variant="ghost" size="icon" className="-mt-1 -mr-1.5 size-7 shrink-0 text-muted-foreground" aria-label={`Edit ${ticket.title}`} onClick={() => setEditOpen(true)}>
             <PencilIcon className="size-3.5" aria-hidden />
           </Button>

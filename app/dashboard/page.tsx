@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { NameDialog } from '@/components/name-dialog';
+import { McpConnect } from '@/components/mcp-connect';
 import { ProjectCard } from '@/components/project/project-card';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -54,6 +55,10 @@ export default function Dashboard() {
         <div className="flex items-center gap-2">
           <Link href="/roadmaps" className={buttonVariants({ variant: 'ghost' })}>Roadmaps</Link>
           <Link href="/settings" className={buttonVariants({ variant: 'ghost' })}>Settings</Link>
+          <McpConnect
+            keyHint={<>Each agent needs its own API key: create one in <Link href="/settings/api-keys" className="font-medium text-foreground underline">Settings → API keys</Link> and use it in place of <code>tl_your_key</code>.</>}
+            trigger={(open) => <Button variant="ghost" onClick={open}>Connect AI</Button>}
+          />
           <Button onClick={() => setCreating(true)} disabled={!token}><PlusIcon />New project</Button>
         </div>
       </header>

@@ -26,9 +26,9 @@ export function DepRow({ d, onRemove, removeLabel }: { d: Dep; onRemove?: () => 
       {d.done ? <CheckIcon className="size-4 text-emerald-600" aria-label="done" /> : <span className="size-4 rounded-full border" aria-label="not done" />}
       <Link href={`/tickets/${d.id}`} className={`min-w-0 flex-1 truncate hover:underline ${d.done ? 'text-muted-foreground line-through' : ''}`}>{d.title}</Link>
       {onRemove && (
-        <button type="button" onClick={onRemove} className="text-muted-foreground hover:text-destructive" aria-label={removeLabel ?? `Stop waiting on ${d.title}`}>
-          <XIcon className="size-4" />
-        </button>
+        <Button type="button" variant="ghost" size="icon-xs" onClick={onRemove} className="text-muted-foreground hover:text-destructive" aria-label={removeLabel ?? `Stop waiting on ${d.title}`}>
+          <XIcon />
+        </Button>
       )}
     </li>
   );

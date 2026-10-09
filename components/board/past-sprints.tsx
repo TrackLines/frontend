@@ -46,10 +46,10 @@ export function PastSprints({ boardId, token }: { boardId: string; token: string
                 <ul className="divide-y rounded-lg border">
                   {list.map((s) => (
                     <li key={s.id}>
-                      <button type="button" onClick={() => setChosen(s.id)} className="flex w-full items-center justify-between gap-4 px-4 py-3 text-left text-sm hover:bg-muted/50 focus-visible:outline-2 focus-visible:outline-ring">
-                        <span className="font-medium">Sprint {s.number}</span>
-                        <span className="text-muted-foreground">{range(s)}</span>
-                      </button>
+                      <Button type="button" variant="ghost" onClick={() => setChosen(s.id)} className="h-auto w-full justify-between rounded-none px-4 py-3">
+                        <span>Sprint {s.number}</span>
+                        <span className="font-normal text-muted-foreground">{range(s)}</span>
+                      </Button>
                     </li>
                   ))}
                 </ul>
