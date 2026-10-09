@@ -233,6 +233,20 @@ export const sprints = {
   start: (boardId: string, lengthDays: number, token: T) =>
     api<Sprint>(`/boards/${boardId}/sprints`, { method: 'POST', body: { length_days: lengthDays }, token }),
   close: (id: string, token: T) => api<Sprint>(`/sprints/${id}/close`, { method: 'POST', token }),
+  velocity: (boardId: string, token: T) => api<Velocity>(`/boards/${boardId}/velocity`, { token }),
+};
+
+// Velocity: what each closed sprint finished, and the open sprint's burn data (see lib/burn.ts).
+export type Velocity = {
+  unit: 'points' | 'tickets';
+  sprints: { number: number; starts_at: string; closed_at: string; completed: number }[]; // oldest first
+  current: Burn | null;
+};
+export type Burn = {
+  number: number; starts_at: string; ends_at: string;
+  total: number; // today's scope
+  unestimated: number; // on a points board
+  done: { at: string; value: number }[]; // oldest first
 };
 
 // Backlog: project tickets not on any board. Pull one in with tickets.move(id, columnId, pos);

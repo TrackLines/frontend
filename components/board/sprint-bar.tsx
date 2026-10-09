@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from '@/components/ui/input';
 import { sprints, type Board, type Sprint } from '@/lib/api';
 import { LENGTH_PRESETS, sprintStatus } from './sprint-status';
+import { Charts } from './velocity';
 
 const day = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short' });
 
@@ -36,6 +37,7 @@ export function SprintBar({ board, token, onChanged }: Props) {
         </>
       )}
       <History boardId={board.id} token={token} />
+      <Charts boardId={board.id} token={token} />
       <StartDialog open={starting} onOpenChange={setStarting} boardId={board.id} token={token} onStarted={onChanged} />
       {sprint && <CloseDialog open={closing} onOpenChange={setClosing} board={board} sprint={sprint} token={token} onClosed={onChanged} />}
     </div>

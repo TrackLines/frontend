@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Progress, ProgressLabel } from '@/components/ui/progress';
 import { ago } from '@/lib/ago';
 import type { Project } from '@/lib/api';
 
@@ -54,11 +55,8 @@ export function UrgentBadge({ count }: { count: number }) {
 export function DoneBar({ done, total }: { done: number; total: number }) {
   if (total === 0) return null;
   return (
-    <div>
-      <div className="h-1.5 overflow-hidden rounded-full bg-muted" role="progressbar" aria-label="Tickets done" aria-valuemin={0} aria-valuemax={total} aria-valuenow={done}>
-        <div className="h-full rounded-full bg-primary" style={{ width: `${(done / total) * 100}%` }} />
-      </div>
-      <p className="mt-1 text-xs text-muted-foreground">{done} of {total} done</p>
-    </div>
+    <Progress value={done} max={total} aria-label="Tickets done" className="gap-1">
+      <ProgressLabel className="order-last text-xs font-normal text-muted-foreground">{done} of {total} done</ProgressLabel>
+    </Progress>
   );
 }
