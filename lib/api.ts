@@ -2,6 +2,7 @@
 // Browser calls go through the same-origin /api proxy (app/api/[...path]); server components
 // call the backend directly via BACKEND_URL. Pass a Clerk session token as `token`
 // (client: useAuth().getToken(), server: (await auth()).getToken()).
+import type { EstimateScale } from './estimates';
 
 export type Visibility = 'public' | 'login_only' | 'team';
 
@@ -12,6 +13,7 @@ export type Ticket = {
   type?: TicketType; sprint_id?: string | null;
   created_by: string; assigned_to?: string | null; priority?: string;
   blocked?: boolean; // waits on tickets that aren't done yet
+  estimate?: string | null; // on the board's estimate scale
 };
 // A project ticket not on any board or sprint yet.
 export type BacklogTicket = Omit<Ticket, 'column_id'> & { column_id: null; project_id: string; type: TicketType };
@@ -25,6 +27,7 @@ export type Column = { id: string; name: string; position: number; tickets: Tick
 export type Board = {
   id: string; project_id: string; owner_clerk_id: string; name: string; description: string;
   created_at: string; updated_at: string; columns?: Column[];
+  estimate_scale?: EstimateScale;
   sprint?: Sprint; // open sprint, absent when the board doesn't run sprints
   stats?: BoardStats; // a project's boards only
 };
@@ -140,6 +143,8 @@ export const boards = {
   get: (id: string, token: T) => api<Board>(`/boards/${id}`, { token }),
   create: (projectId: string, b: { name: string; description?: string }, token: T) =>
     api<Board>(`/projects/${projectId}/boards`, { method: 'POST', body: b, token }),
+  // Update the board name and/or settings; switching estimate_scale clears open tickets' estimates.
+  update: (id: string, b: { name?: string; estimate_scale?: EstimateScale }, token: T) => api<void>(`/boards/${id}`, { method: 'PATCH', body: b, token }),
   remove: (id: string, token: T) => api<void>(`/boards/${id}`, { method: 'DELETE', token }),
 };
 
@@ -157,6 +162,7 @@ export type Dep = { id: string; title: string; done: boolean };
 export type TicketDetail = Omit<Ticket, 'column_id'> & {
   column_id: string | null; project_id: string; project_name: string; type: TicketType;
   board_id: string | null; board_name: string | null; column_name: string | null; sprint_number: number | null;
+  estimate_scale: EstimateScale; // the board's; 'none' in the backlog
   done: boolean; // in the board's last column: attachments locked
   blocked_by: Dep[]; blocks: Dep[];
   parent?: Dep | null; // this is a sub-ticket of parent
@@ -170,9 +176,9 @@ export const tickets = {
   // assign hands a ticket to you (your user id) or an agent (API key name); null unassigns
   assign: (id: string, assignee: string | null, token: T) => api<Ticket>(`/tickets/${id}/assignee`, { method: 'PUT', body: { assignee }, token }),
   assignees: (token: T) => api<Assignee[]>('/assignees', { token }),
-  create: (columnId: string, t: { title: string; description?: string; type?: TicketType; priority?: string; labels?: string[] }, token: T) =>
+  create: (columnId: string, t: { title: string; description?: string; type?: TicketType; priority?: string; labels?: string[]; estimate?: string }, token: T) =>
     api<Ticket>(`/columns/${columnId}/tickets`, { method: 'POST', body: t, token }),
-  update: (id: string, t: { title: string; description: string; type?: TicketType; priority?: string }, token: T) => api<void>(`/tickets/${id}`, { method: 'PATCH', body: t, token }),
+  update: (id: string, t: { title: string; description: string; type?: TicketType; priority?: string; estimate?: string }, token: T) => api<void>(`/tickets/${id}`, { method: 'PATCH', body: t, token }),
   setLabels: (id: string, labels: string[], token: T) => api<{ labels: string[] }>(`/tickets/${id}/labels`, { method: 'PUT', body: { labels }, token }),
   remove: (id: string, token: T) => api<void>(`/tickets/${id}`, { method: 'DELETE', token }),
   // dependencies: replace what ticket {id} waits on (same project, no loops); claim is refused while blocked

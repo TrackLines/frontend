@@ -13,6 +13,7 @@ import { TicketComments } from '@/components/ticket/comments';
 import { LabelDrawer, TicketLabels } from '@/components/ticket/labels';
 import { Button } from '@/components/ui/button';
 import { PriorityBadge } from '@/components/board/priority-badge';
+import { EstimateBadge } from '@/components/board/estimate';
 import { TypeBadge } from '@/components/ticket-type';
 import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
@@ -79,6 +80,7 @@ export default function TicketPage() {
         <div className="flex flex-wrap items-center gap-2">
           <TypeBadge type={t.type} />
           <PriorityBadge priority={t.priority} />
+          <EstimateBadge estimate={t.estimate} />
           {t.sprint_number != null && <Badge variant="secondary">Sprint {t.sprint_number}</Badge>}
           {t.blocked && <BlockedBadge />}
         </div>

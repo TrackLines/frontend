@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import type { Ticket } from '@/lib/api';
+import { EstimateBadge } from './estimate';
 import { personLabel } from '@/lib/people';
 
 type Props = {
@@ -31,6 +32,7 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
           <DialogTitle className="pr-8">{ticket.title}</DialogTitle>
           <DialogDescription className="flex items-center gap-2">
             Status <Badge variant="secondary">{columnName}</Badge>
+            <EstimateBadge estimate={ticket.estimate} />
           </DialogDescription>
         </DialogHeader>
         <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">

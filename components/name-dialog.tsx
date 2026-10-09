@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type FormEvent, type ReactNode } from 'react';
+import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -11,6 +11,7 @@ type Props = {
   title: string;
   description?: string;
   placeholder?: string;
+  initialValue?: string;
   submitLabel: string;
   children?: ReactNode;
   // throw to show an error; resolve to close
@@ -18,10 +19,14 @@ type Props = {
 };
 
 // NameDialog asks for a single name, e.g. "New project" or "New board".
-export function NameDialog({ open, onOpenChange, title, description, placeholder, submitLabel, children, onSubmit }: Props) {
+export function NameDialog({ open, onOpenChange, title, description, placeholder, initialValue = '', submitLabel, children, onSubmit }: Props) {
   const [name, setName] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (open) setName(initialValue);
+  }, [open, initialValue]);
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();

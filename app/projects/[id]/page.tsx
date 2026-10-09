@@ -20,8 +20,9 @@ export default function ProjectPage() {
   const router = useRouter();
   const token = useToken();
   const [project, setProject] = useCachedState<Project>(`project:${id}`); // last-seen project shows instantly, then refreshes
+  const [, setProjects] = useCachedState<Project[]>('projects');
   const [error, setError] = useState<number | null>(null);
-  const [dialog, setDialog] = useState<'board' | 'roadmap' | null>(null);
+  const [dialog, setDialog] = useState<'board' | 'roadmap' | 'rename' | null>(null);
 
   const loaded = token !== null;
   useEffect(() => {
@@ -42,7 +43,10 @@ export default function ProjectPage() {
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
       <Link href="/dashboard" className="text-sm text-muted-foreground hover:underline">← Projects</Link>
-      <h1 className="mt-2 text-3xl font-bold tracking-tight">{project.name}</h1>
+      <div className="mt-2 flex flex-wrap items-center gap-3">
+        <h1 className="text-3xl font-bold tracking-tight">{project.name}</h1>
+        <Button variant="outline" size="sm" onClick={() => setDialog('rename')}>Rename project</Button>
+      </div>
       {/* integrations (ChewedFeed, BugFixes) ask for this */}
       <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
         Project ID
@@ -83,6 +87,22 @@ export default function ProjectPage() {
         onSubmit={async (name) => {
           const b = await boards.create(project.id, { name }, token).catch(() => { throw new Error('Couldn’t create the board. Please try again.'); });
           router.push(`/boards/${b.id}`);
+        }}
+      />
+      <NameDialog
+        open={dialog === 'rename'}
+        onOpenChange={(o) => !o && setDialog(null)}
+        title="Rename project"
+        description="Choose a new name for this project."
+        placeholder="Project name"
+        initialValue={project.name}
+        submitLabel="Save name"
+        onSubmit={async (name) => {
+          await projects.update(project.id, { name, description: project.description }, token).catch(() => {
+            throw new Error('Couldn’t rename the project. Please try again.');
+          });
+          setProject((current) => current && { ...current, name });
+          setProjects((current) => current?.map((item) => item.id === project.id ? { ...item, name } : item) ?? current);
         }}
       />
       <RoadmapEditorForm

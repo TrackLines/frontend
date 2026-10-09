@@ -10,6 +10,8 @@ import { Attachments } from '@/components/ticket/attachments';
 import { attachAll, PendingAttachments, type PendingFile } from '@/components/ticket/pending-attachments';
 import { TypePicker } from '@/components/ticket-type';
 import { PrioritySelect } from './priority-select';
+import { EstimateSelect } from './estimate';
+import type { EstimateScale } from '@/lib/estimates';
 import type { Ticket, TicketType } from '@/lib/api';
 import { backlog, tickets } from '@/lib/api';
 
@@ -24,20 +26,23 @@ type Props = {
   onDeleted?: (id: string) => void;
   onSentToBacklog?: (id: string) => void; // ticket leaves the board for the project backlog
   done?: boolean; // in the board's last column: attachments locked
+  scale?: EstimateScale; // the board's; no estimate field when absent or 'none'
 };
 
-export function TicketDialog({ open, onOpenChange, token, projectId, columnId, ticket, onSaved, onDeleted, onSentToBacklog, done }: Props) {
+export function TicketDialog({ open, onOpenChange, token, projectId, columnId, ticket, onSaved, onDeleted, onSentToBacklog, done, scale = 'none' }: Props) {
   const [title, setTitle] = useState(ticket?.title ?? '');
   const [description, setDescription] = useState(ticket?.description ?? '');
   const [type, setType] = useState<TicketType>(ticket?.type ?? 'task');
   const [priority, setPriority] = useState<string>(ticket?.priority ?? '');
   const [labels, setLabels] = useState<string[]>(ticket?.labels ?? []);
+  const [estimate, setEstimate] = useState(ticket?.estimate ?? '');
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [error, setError] = useState('');
   const [files, setFiles] = useState<PendingFile[]>([]); // create mode only
   const editing = Boolean(ticket);
+  const estimating = scale !== 'none';
 
   useEffect(() => {
     if (open) {
@@ -46,6 +51,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
       setType(ticket?.type ?? 'task');
       setPriority(ticket?.priority ?? '');
       setLabels(ticket?.labels ?? []);
+      setEstimate(ticket?.estimate ?? '');
       setConfirmDelete(false);
       setError('');
     }
@@ -59,11 +65,11 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
     setError('');
     try {
       if (ticket) {
-        await tickets.update(ticket.id, { title: cleanTitle, description: description.trim(), type, priority }, token);
+        await tickets.update(ticket.id, { title: cleanTitle, description: description.trim(), type, priority, ...(estimating && { estimate }) }, token);
         const result = await tickets.setLabels(ticket.id, labels, token);
-        onSaved({ ...ticket, title: cleanTitle, description: description.trim(), type, priority, labels: result.labels });
+        onSaved({ ...ticket, title: cleanTitle, description: description.trim(), type, priority, labels: result.labels, ...(estimating && { estimate: estimate || null }) });
       } else {
-        const input = { title: cleanTitle, description: description.trim(), type, priority, labels };
+        const input = { title: cleanTitle, description: description.trim(), type, priority, labels, ...(estimating && estimate && columnId && { estimate }) };
         const created = columnId ? await tickets.create(columnId, input, token) : (await backlog.create(projectId ?? '', input, token)) as unknown as Ticket;
         await attachAll(created.id, files, token); // failures are visible on the ticket's attachment list
         setFiles([]);
@@ -137,6 +143,12 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
             Priority <span className="font-normal text-muted-foreground">(optional)</span>
             <PrioritySelect value={priority} onChange={setPriority} />
           </label>
+          {estimating && (
+            <label className="grid gap-1.5 text-sm font-medium">
+              Estimate <span className="font-normal text-muted-foreground">(optional)</span>
+              <EstimateSelect scale={scale} value={estimate} onChange={setEstimate} />
+            </label>
+          )}
           <LabelDrawer projectId={projectId ?? ticket?.project_id ?? ''} token={token} labels={labels} onChange={setLabels} disabled={saving || deleting} />
           {ticket && (
             // saves straight away (not with the form) — same as claiming

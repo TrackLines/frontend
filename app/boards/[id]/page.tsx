@@ -7,7 +7,9 @@ import { AddColumn, Column } from '@/components/board/column';
 import { BoardDnd, DroppableColumn, SortableTicket } from '@/components/board/board-dnd';
 import { SprintBar } from '@/components/board/sprint-bar';
 import { TicketCard } from '@/components/board/ticket-card';
+import { ScaleSetting } from '@/components/board/estimate';
 import { TicketDialog } from '@/components/board/ticket-dialog';
+import { NameDialog } from '@/components/name-dialog';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { ApiError, boards, projects, tickets, type Board, type Ticket } from '@/lib/api';
 import { useToken } from '@/lib/use-token';
@@ -31,6 +33,7 @@ export default function BoardPage() {
   const [error, setError] = useState<number | null>(null);
   const [addingTo, setAddingTo] = useState<string | null>(null); // column id for the "new ticket" dialog
   const [editMode, setEditMode] = useState(false);
+  const [renaming, setRenaming] = useState(false);
   const [labelFilter, setLabelFilter] = useState<string[]>([]);
 
   const loaded = token !== null;
@@ -71,6 +74,18 @@ export default function BoardPage() {
           labels={labelFilter}
           onLabelsChange={setLabelFilter}
         />
+        {editMode && (
+          <>
+            <ScaleSetting
+              boardId={board.id}
+              scale={board.estimate_scale ?? 'none'}
+              estimated={(board.columns ?? []).flatMap((c) => c.tickets).filter((t) => t.estimate).length}
+              token={token}
+              onChanged={() => void load(true)}
+            />
+            <Button type="button" variant="outline" size="sm" onClick={() => setRenaming(true)}>Rename board</Button>
+          </>
+        )}
         <Button type="button" variant={editMode ? 'secondary' : 'outline'} size="sm" aria-pressed={editMode} onClick={() => setEditMode((editing) => !editing)}>
           {editMode ? 'Done editing' : 'Edit board'}
         </Button>
@@ -81,6 +96,21 @@ export default function BoardPage() {
           <Link href={`/tickets/${focus}`} className="font-medium text-foreground hover:underline">Open the ticket</Link>
         </p>
       )}
+      <NameDialog
+        open={renaming}
+        onOpenChange={(open) => !open && setRenaming(false)}
+        title="Rename board"
+        description="Choose a new name for this board."
+        placeholder="Board name"
+        initialValue={board.name}
+        submitLabel="Save name"
+        onSubmit={async (name) => {
+          await boards.update(board.id, { name }, token).catch(() => {
+            throw new Error('Couldn’t rename the board. Please try again.');
+          });
+          setBoard((current) => current && { ...current, name });
+        }}
+      />
       {/* sprint start/close changes which tickets the board shows, so reload */}
       <SprintBar board={board} token={token} onChanged={load} />
       <BoardDnd
@@ -105,6 +135,7 @@ export default function BoardPage() {
                         ticket={t}
                         openOnLoad={t.id === focus ? { columnName: col.name } : undefined}
                         done={done}
+                        scale={board.estimate_scale}
                         token={token}
                         onUpdated={(nt) => updateTickets(col.id, (ts) => ts.map((x) => (x.id === nt.id ? nt : x)))}
                         onDeleted={(tid) => updateTickets(col.id, (ts) => ts.filter((x) => x.id !== tid))}
@@ -138,6 +169,7 @@ export default function BoardPage() {
           token={token}
           projectId={board.project_id}
           columnId={addingTo}
+          scale={board.estimate_scale}
           onSaved={(t) => updateTickets(t.column_id, (ts) => [...ts, t])}
         />
       )}

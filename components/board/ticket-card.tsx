@@ -12,6 +12,8 @@ import { TypeBadge } from '@/components/ticket-type';
 import type { Ticket } from '@/lib/api';
 import { TicketDialog } from './ticket-dialog';
 import { TicketView } from './ticket-view';
+import { EstimateBadge } from './estimate';
+import type { EstimateScale } from '@/lib/estimates';
 
 type Props = {
   ticket: Ticket;
@@ -20,9 +22,10 @@ type Props = {
   onDeleted: (id: string) => void;
   openOnLoad?: { columnName: string }; // deep link (/boards/<id>?ticket=<this>): start with the View modal open
   done?: boolean; // in the board's last column: attachments locked
+  scale?: EstimateScale; // the board's estimate scale
 };
 
-export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, done }: Props) {
+export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, done, scale }: Props) {
   const [viewOpen, setViewOpen] = useState(Boolean(openOnLoad));
   const [editOpen, setEditOpen] = useState(false);
   const [columnName, setColumnName] = useState(openOnLoad?.columnName ?? '');
@@ -45,10 +48,11 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
             <PencilIcon className="size-3.5" aria-hidden />
           </Button>
         </div>
-        {(ticket.blocked || (ticket.type && ticket.type !== 'task') || (ticket.priority && ticket.priority !== 'medium')) && (
+        {(ticket.blocked || ticket.estimate || (ticket.type && ticket.type !== 'task') || (ticket.priority && ticket.priority !== 'medium')) && (
           <div className="flex flex-wrap gap-1 px-3">
             {ticket.type && ticket.type !== 'task' && <TypeBadge type={ticket.type} />}
             <PriorityBadge priority={ticket.priority} hideDefault />
+            <EstimateBadge estimate={ticket.estimate} />
             {ticket.blocked && <BlockedBadge />}
           </div>
         )}
@@ -81,6 +85,7 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
         onDeleted={onDeleted}
         onSentToBacklog={onDeleted}
         done={done}
+        scale={scale}
       />
     </>
   );

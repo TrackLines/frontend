@@ -27,3 +27,8 @@ test('blocked tickets say so', () => {
   expect(card({ type: 'task', priority: 'medium', blocked: true })).toContain('Blocked');
   expect(card({ type: 'task', priority: 'medium', blocked: false })).not.toContain('Blocked');
 });
+
+test('estimate shows as a badge, even on an otherwise plain task', () => {
+  expect(card({ estimate: '8' })).toContain('aria-label="Estimate 8"');
+  expect(card({ estimate: null })).not.toContain('Estimate');
+});
