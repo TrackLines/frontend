@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { sprints, type Board, type Sprint } from '@/lib/api';
 import { LENGTH_PRESETS, sprintStatus } from './sprint-status';
 import { Charts } from './velocity';
+import { PastSprints } from './past-sprints';
 
 const day = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short' });
 
@@ -36,8 +37,9 @@ export function SprintBar({ board, token, onChanged }: Props) {
           <Button size="sm" onClick={() => setStarting(true)}>Start sprint</Button>
         </>
       )}
-      <History boardId={board.id} token={token} />
-      <Charts boardId={board.id} token={token} />
+      {/* closing a sprint opens the next, so number > 1 means there's history; no sprint, nothing to chart */}
+      {sprint && sprint.number > 1 && <PastSprints boardId={board.id} token={token} />}
+      {sprint && <Charts boardId={board.id} token={token} />}
       <StartDialog open={starting} onOpenChange={setStarting} boardId={board.id} token={token} onStarted={onChanged} />
       {sprint && <CloseDialog open={closing} onOpenChange={setClosing} board={board} sprint={sprint} token={token} onClosed={onChanged} />}
     </div>
@@ -156,24 +158,3 @@ function CloseDialog({ open, onOpenChange, board, sprint, token, onClosed }: {
   );
 }
 
-// History lists closed sprints; loaded when opened so the board doesn't pay for it.
-function History({ boardId, token }: { boardId: string; token: string }) {
-  const [list, setList] = useState<Sprint[] | null>(null);
-  return (
-    <details
-      className="ml-auto"
-      onToggle={(e) => { if ((e.target as HTMLDetailsElement).open && !list) sprints.list(boardId, token).then(setList, () => setList([])); }}
-    >
-      <summary className="cursor-pointer text-muted-foreground hover:text-foreground">Past sprints</summary>
-      <ul className="mt-2 grid gap-1">
-        {list === null && <li className="text-muted-foreground">Loading…</li>}
-        {list?.filter((s) => s.closed_at).length === 0 && <li className="text-muted-foreground">None yet.</li>}
-        {list?.filter((s) => s.closed_at).map((s) => (
-          <li key={s.id}>
-            Sprint {s.number}: {day.format(new Date(s.starts_at))} – {day.format(new Date(s.closed_at!))}
-          </li>
-        ))}
-      </ul>
-    </details>
-  );
-}

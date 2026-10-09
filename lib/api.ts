@@ -144,11 +144,22 @@ export const projects = {
 
 export const boards = {
   get: (id: string, token: T) => api<Board>(`/boards/${id}`, { token }),
-  create: (projectId: string, b: { name: string; description?: string }, token: T) =>
+  create: (projectId: string, b: { name: string; description?: string; template_id?: string }, token: T) =>
     api<Board>(`/projects/${projectId}/boards`, { method: 'POST', body: b, token }),
   // Update the board name and/or settings; switching estimate_scale clears open tickets' estimates.
   update: (id: string, b: { name?: string; estimate_scale?: EstimateScale; style?: BoardStyle }, token: T) => api<void>(`/boards/${id}`, { method: 'PATCH', body: b, token }),
   remove: (id: string, token: T) => api<void>(`/boards/${id}`, { method: 'DELETE', token }),
+};
+
+// Board templates: built-ins (ids "builtin:…") plus the org's own; creating and deleting is for org admins.
+export type BoardTemplate = {
+  id: string; name: string; builtin: boolean; style: BoardStyle; estimate_scale: EstimateScale;
+  columns: { name: string; wip_limit: number | null }[]; // board order; the last is Done
+};
+export const boardTemplates = {
+  list: (token: T) => api<BoardTemplate[]>('/board-templates', { token }),
+  saveBoard: (name: string, boardId: string, token: T) => api<BoardTemplate>('/board-templates', { method: 'POST', body: { name, from_board_id: boardId }, token }),
+  remove: (id: string, token: T) => api<void>(`/board-templates/${encodeURIComponent(id)}`, { method: 'DELETE', token }),
 };
 
 export const columns = {
@@ -238,6 +249,7 @@ export const sprints = {
     api<Sprint>(`/boards/${boardId}/sprints`, { method: 'POST', body: { length_days: lengthDays }, token }),
   close: (id: string, token: T) => api<Sprint>(`/sprints/${id}/close`, { method: 'POST', token }),
   velocity: (boardId: string, token: T) => api<Velocity>(`/boards/${boardId}/velocity`, { token }),
+  get: (id: string, token: T) => api<SprintDetail>(`/sprints/${id}`, { token }),
 };
 
 // Velocity: what each closed sprint finished, and the open sprint's burn data (see lib/burn.ts).
@@ -246,6 +258,9 @@ export type Velocity = {
   sprints: { number: number; starts_at: string; closed_at: string; completed: number }[]; // oldest first
   current: Burn | null;
 };
+// SprintDetail is one sprint, read-only. A closed sprint's tickets are what it finished; carried_over
+// is how many moved to the next sprint (null when that wasn't recorded).
+export type SprintDetail = Sprint & { unit: Velocity['unit']; burn: Burn; tickets: Ticket[]; carried_over: number | null };
 export type Burn = {
   number: number; starts_at: string; ends_at: string;
   total: number; // today's scope

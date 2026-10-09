@@ -16,7 +16,7 @@ export function StyleSetting({ boardId, style, token, onChanged }: { boardId: st
       await boards.update(boardId, { style: next }, token);
       onChanged();
     } catch (err) {
-      setError(err instanceof ApiError && err.status === 409 ? 'Close the running sprint before switching to kanban.' : 'Couldn’t change the board style. Please try again.');
+      setError(err instanceof ApiError && err.status === 403 ? 'Only organization admins and the board’s team leaders can change this.' : 'Couldn’t change the board style. Please try again.');
     } finally {
       setBusy(false);
     }

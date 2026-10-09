@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { NameDialog } from '@/components/name-dialog';
+import { DEFAULT_TEMPLATE, TemplatePicker } from '@/components/board/template-picker';
 import { EditableTitle } from '@/components/editable-title';
 import { Backlog } from '@/components/project/backlog';
 import { BoardCard } from '@/components/project/board-card';
@@ -23,6 +24,7 @@ export default function ProjectPage() {
   const [project, setProject] = useCachedState<Project>(`project:${id}`); // last-seen project shows instantly, then refreshes
   const [, setProjects] = useCachedState<Project[]>('projects');
   const [error, setError] = useState<number | null>(null);
+  const [template, setTemplate] = useState(DEFAULT_TEMPLATE);
   const [dialog, setDialog] = useState<'board' | 'roadmap' | null>(null);
 
   const loaded = token !== null;
@@ -91,14 +93,16 @@ export default function ProjectPage() {
         open={dialog === 'board'}
         onOpenChange={(o) => !o && setDialog(null)}
         title="New board"
-        description="Comes with To do, In progress and Done columns."
+        description="Start from a template; you can change columns and settings afterwards."
         placeholder="e.g. Backend"
         submitLabel="Create board"
         onSubmit={async (name) => {
-          const b = await boards.create(project.id, { name }, token).catch(() => { throw new Error('Couldn’t create the board. Please try again.'); });
+          const b = await boards.create(project.id, { name, template_id: template }, token).catch(() => { throw new Error('Couldn’t create the board. Please try again.'); });
           router.push(`/boards/${b.id}`);
         }}
-      />
+      >
+        {dialog === 'board' && <TemplatePicker value={template} onChange={setTemplate} token={token} />}
+      </NameDialog>
       <RoadmapEditorForm
         open={dialog === 'roadmap'}
         onOpenChange={(o) => !o && setDialog(null)}

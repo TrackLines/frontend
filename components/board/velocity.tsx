@@ -50,7 +50,7 @@ export function Charts({ boardId, token }: { boardId: string; token: string }) {
   );
 }
 
-export function BurnChart({ burn, unit, now = Date.now() }: { burn: Burn; unit: Velocity['unit']; now?: number }) {
+export function BurnChart({ burn, unit, now = Date.now(), closed = false }: { burn: Burn; unit: Velocity['unit']; now?: number; closed?: boolean }) {
   const [mode, setMode] = useState<'down' | 'up'>('down');
   const steps = burnSteps(burn, now);
   const start = Date.parse(burn.starts_at), end = Date.parse(burn.ends_at);
@@ -83,7 +83,7 @@ export function BurnChart({ burn, unit, now = Date.now() }: { burn: Burn; unit: 
       <p className="text-sm text-muted-foreground">
         {summary}. Dashed line: {mode === 'down' ? 'ideal pace' : 'scope'}.
         {burn.unestimated > 0 && ` ${burn.unestimated} ${burn.unestimated === 1 ? 'ticket has no estimate and counts' : 'tickets have no estimate and count'} as 0.`}
-        {' '}Scope is today&apos;s; tickets added mid-sprint move the whole line.
+        {closed ? ' Scope is what the sprint held when it closed.' : <>{' '}Scope is today&apos;s; tickets added mid-sprint move the whole line.</>}
       </p>
     </section>
   );

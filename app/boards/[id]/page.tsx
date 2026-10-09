@@ -11,9 +11,10 @@ import { ScaleSetting } from '@/components/board/estimate';
 import { StyleSetting } from '@/components/board/board-style';
 import { TicketDialog } from '@/components/board/ticket-dialog';
 import { EditableTitle } from '@/components/editable-title';
+import { NameDialog } from '@/components/name-dialog';
 import { CopyLink } from '@/components/copy-link';
 import { Button, buttonVariants } from '@/components/ui/button';
-import { ApiError, boards, projects, tickets, type Board, type Ticket } from '@/lib/api';
+import { ApiError, boardTemplates, boards, projects, tickets, type Board, type Ticket } from '@/lib/api';
 import { useToken } from '@/lib/use-token';
 import { prefetch, useCachedState } from '@/lib/page-cache';
 import { BoardSkeleton } from '@/components/page-skeletons';
@@ -34,6 +35,7 @@ export default function BoardPage() {
   const [board, setBoard] = useCachedState<Board>(`board:${id}`); // last-seen board shows instantly, then refreshes
   const [error, setError] = useState<number | null>(null);
   const [addingTo, setAddingTo] = useState<string | null>(null); // column id for the "new ticket" dialog
+  const [savingTemplate, setSavingTemplate] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [labelFilter, setLabelFilter] = useState<string[]>([]);
 
@@ -87,6 +89,7 @@ export default function BoardPage() {
         />
         {editMode && (
           <>
+            <Button type="button" variant="outline" size="sm" onClick={() => setSavingTemplate(true)}>Save as template</Button>
             <StyleSetting boardId={board.id} style={board.style ?? 'sprints'} token={token} onChanged={() => void load(true)} />
             <ScaleSetting
               boardId={board.id}
@@ -166,6 +169,20 @@ export default function BoardPage() {
         )}
       </div>
       </BoardDnd>
+      <NameDialog
+        open={savingTemplate}
+        onOpenChange={setSavingTemplate}
+        title="Save as template"
+        description="New boards can start with this board's columns, WIP limits, style and estimate scale. Tickets aren't copied."
+        placeholder="e.g. Our delivery flow"
+        initialValue={board.name}
+        submitLabel="Save template"
+        onSubmit={async (name) => {
+          await boardTemplates.saveBoard(name, board.id, token).catch((err) => {
+            throw new Error(err instanceof ApiError && err.status === 403 ? 'Only organization admins can save templates.' : 'Couldn’t save the template. Please try again.');
+          });
+        }}
+      />
       {addingTo && (
         <TicketDialog
           open
