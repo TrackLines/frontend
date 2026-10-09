@@ -22,13 +22,6 @@ import { BoardSkeleton } from '@/components/page-skeletons';
 import { useAutoRefresh } from '@/lib/use-auto-refresh';
 import { LabelFilter, filterTicketsByLabels, labelCounts } from '@/components/board/label-filter';
 
-function columnWidthPct(count: number): string {
-  if (count === 0) return '100%';
-  const raw = 100 / count;
-  // Round down to nearest 5 (gives 30% for 3 cols, 25% for 4, 10% for 7+).
-  return `${Math.floor(raw / 5) * 5}%`;
-}
-
 export default function BoardPage() {
   const { id } = useParams<{ id: string }>();
   const focus = useSearchParams().get('ticket'); // /boards/<id>?ticket=<ticket> opens that ticket's modal
@@ -150,11 +143,10 @@ export default function BoardPage() {
       <div className="flex flex-1 items-start gap-4 overflow-x-auto p-6">
         {board.columns?.map((col) => {
           const cols = board.columns ?? [];
-          const w = columnWidthPct(cols.length);
           const shown = filterTicketsByLabels(col.tickets, labelFilter);
           const done = col.id === cols.at(-1)?.id; // last column = Done
           return (
-            <div key={col.id} style={{ width: w }} className="shrink-0">
+            <div key={col.id} className="min-w-72 flex-1">
               <Column
                 column={col} token={token} editMode={boardEditMode}
                 note={kanban && done && (board.hidden_done ?? 0) > 0 && (
