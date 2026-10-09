@@ -39,7 +39,7 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
 
   return (
     <>
-      <Card className="gap-2 py-3 shadow-xs">
+      <Card className="w-full min-w-0 gap-2 py-3 shadow-xs">
         <div className="flex items-start gap-1 px-3">
           {/* the title opens the read-only view; the pencil edits */}
           <Button type="button" variant="link" onClick={openView} className="h-auto min-w-0 flex-1 justify-start p-0 text-left leading-5 whitespace-normal text-foreground">
@@ -59,7 +59,7 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
         )}
         <TicketLabels labels={ticket.labels} className="px-3" />
         {ticket.description && (
-          <p className="line-clamp-2 px-3 text-xs whitespace-pre-line text-muted-foreground">{ticket.description}</p>
+          <p className="line-clamp-2 break-words px-3 text-xs whitespace-pre-line text-muted-foreground">{ticket.description}</p>
         )}
         <div className="flex items-center justify-between gap-2 px-3 text-xs text-muted-foreground">
           <span className="truncate">{ticket.assigned_to ? personLabel(ticket.assigned_to) : <span className="italic">Unassigned</span>}</span>

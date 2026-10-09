@@ -73,7 +73,7 @@ export function DroppableColumn({ id, ticketIds, children }: { id: string; ticke
   const { setNodeRef, isOver } = useDroppable({ id });
   return (
     <SortableContext id={id} items={ticketIds} strategy={verticalListSortingStrategy}>
-      <div ref={setNodeRef} className={`grid min-h-16 content-start gap-3 rounded-lg ${isOver ? 'bg-primary/5' : ''}`}>
+      <div ref={setNodeRef} className={`grid min-w-0 grid-cols-1 min-h-16 content-start gap-3 rounded-lg ${isOver ? 'bg-primary/5' : ''}`}>
         {children}
       </div>
     </SortableContext>
@@ -87,7 +87,7 @@ export function SortableTicket({ id, children }: { id: string; children: ReactNo
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`cursor-grab touch-none active:cursor-grabbing ${isDragging ? 'opacity-50' : ''}`}
+      className={`min-w-0 cursor-grab touch-none active:cursor-grabbing ${isDragging ? 'opacity-50' : ''}`}
       {...attributes}
       {...listeners}
       // keyboard drag only when the card itself is focused, so Enter/Space on "Edit ticket" still edits
