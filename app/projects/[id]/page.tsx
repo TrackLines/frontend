@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { NameDialog } from '@/components/name-dialog';
+import { EditableTitle } from '@/components/editable-title';
 import { Backlog } from '@/components/project/backlog';
 import { BoardCard } from '@/components/project/board-card';
 import { RoadmapEditorForm } from '@/components/roadmap-editor-form';
@@ -22,7 +23,7 @@ export default function ProjectPage() {
   const [project, setProject] = useCachedState<Project>(`project:${id}`); // last-seen project shows instantly, then refreshes
   const [, setProjects] = useCachedState<Project[]>('projects');
   const [error, setError] = useState<number | null>(null);
-  const [dialog, setDialog] = useState<'board' | 'roadmap' | 'rename' | null>(null);
+  const [dialog, setDialog] = useState<'board' | 'roadmap' | null>(null);
 
   const loaded = token !== null;
   useEffect(() => {
@@ -33,7 +34,7 @@ export default function ProjectPage() {
     if (loaded) for (const b of project?.boards ?? []) prefetch(`board:${b.id}`, () => boards.get(b.id, token));
   }, [project?.id, loaded]);
 
-  if (error === 404) return <Message title="Project not found" body="It may have been deleted, or it isn't yours." />;
+  if (error === 404) return <Message title="Project not found" body="It may have been deleted, or it belongs to another organization." />;
   if (error) return <Message title="Couldn't load this project" body="Please refresh to try again." />;
   if (!project || !token) return <ProjectSkeleton />;
 
@@ -43,9 +44,18 @@ export default function ProjectPage() {
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
       <Link href="/dashboard" className="text-sm text-muted-foreground hover:underline">← Projects</Link>
-      <div className="mt-2 flex flex-wrap items-center gap-3">
-        <h1 className="text-3xl font-bold tracking-tight">{project.name}</h1>
-        <Button variant="outline" size="sm" onClick={() => setDialog('rename')}>Rename project</Button>
+      <div className="mt-2">
+        <EditableTitle
+          value={project.name}
+          label="project"
+          editable
+          className="text-3xl font-bold tracking-tight"
+          onSave={async (name) => {
+            await projects.update(project.id, { name, description: project.description }, token);
+            setProject((current) => current && { ...current, name });
+            setProjects((current) => current?.map((item) => item.id === project.id ? { ...item, name } : item) ?? current);
+          }}
+        />
       </div>
       {/* integrations (ChewedFeed, BugFixes) ask for this */}
       <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
@@ -87,22 +97,6 @@ export default function ProjectPage() {
         onSubmit={async (name) => {
           const b = await boards.create(project.id, { name }, token).catch(() => { throw new Error('Couldn’t create the board. Please try again.'); });
           router.push(`/boards/${b.id}`);
-        }}
-      />
-      <NameDialog
-        open={dialog === 'rename'}
-        onOpenChange={(o) => !o && setDialog(null)}
-        title="Rename project"
-        description="Choose a new name for this project."
-        placeholder="Project name"
-        initialValue={project.name}
-        submitLabel="Save name"
-        onSubmit={async (name) => {
-          await projects.update(project.id, { name, description: project.description }, token).catch(() => {
-            throw new Error('Couldn’t rename the project. Please try again.');
-          });
-          setProject((current) => current && { ...current, name });
-          setProjects((current) => current?.map((item) => item.id === project.id ? { ...item, name } : item) ?? current);
         }}
       />
       <RoadmapEditorForm

@@ -57,7 +57,7 @@ export default function TicketPage() {
     }
   }
 
-  if (error === 404) return <Message title="Ticket not found" body="It may have been deleted, or it isn't yours." />;
+  if (error === 404) return <Message title="Ticket not found" body="It may have been deleted, or it belongs to another organization." />;
   if (error) return <Message title="Couldn't load this ticket" body="Please refresh to try again." />;
   if (!t) return <TicketSkeleton />;
 

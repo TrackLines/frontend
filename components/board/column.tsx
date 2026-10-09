@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, type FormEvent, type ReactNode } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { EditableTitle } from '@/components/editable-title';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import type { Column as BoardColumn } from '@/lib/api';
@@ -10,59 +12,66 @@ type ColumnProps = {
   column: BoardColumn;
   token: string;
   editMode?: boolean;
+  note?: ReactNode; // under the header, e.g. kanban's hidden Done tickets
   children?: ReactNode;
 };
 
-export function Column({ column, token, editMode = false, children }: ColumnProps) {
+export function Column({ column, token, editMode = false, note, children }: ColumnProps) {
   const [name, setName] = useState(column.name);
-  const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState(column.name);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
-
-  async function saveName(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const nextName = draft.trim();
-    if (!nextName || nextName === name) {
-      setDraft(name);
-      setEditing(false);
-      return;
-    }
-
-    setSaving(true);
-    setError('');
-    try {
-      await columns.rename(column.id, nextName, token);
-      setName(nextName);
-      setDraft(nextName);
-      setEditing(false);
-    } catch {
-      setError('Could not rename this column. Try again.');
-    } finally {
-      setSaving(false);
-    }
-  }
+  const [limit, setLimit] = useState(column.wip_limit ?? null);
+  const count = column.tickets.length;
+  const over = limit !== null && count > limit;
 
   return (
-    <section aria-label={`${name} column`} data-column-id={column.id} className="flex min-h-48 min-w-0 w-full flex-col gap-3 rounded-xl bg-muted/50 p-3">
+    <section
+      aria-label={`${name} column`} data-column-id={column.id}
+      className={`flex min-h-48 min-w-0 w-full flex-col gap-3 rounded-xl bg-muted/50 p-3 ${over ? 'ring-2 ring-destructive/50' : ''}`}
+    >
       <header className="flex min-h-8 items-center justify-between gap-2">
-        {editing && editMode ? (
-          <form onSubmit={saveName} className="flex min-w-0 flex-1 gap-2">
-            <label className="sr-only" htmlFor={`column-name-${column.id}`}>Column name</label>
-            <Input id={`column-name-${column.id}`} autoFocus value={draft} maxLength={80} required onChange={(event) => setDraft(event.target.value)} />
-            <Button type="submit" size="sm" disabled={saving || !draft.trim()}>{saving ? 'Saving…' : 'Save'}</Button>
-            <Button type="button" size="sm" variant="ghost" disabled={saving} onClick={() => { setDraft(name); setEditing(false); setError(''); }}>Cancel</Button>
-          </form>
-        ) : (
-          <>
-            <h2 className="min-w-0 truncate font-semibold">{name}</h2>
-            {editMode && <Button type="button" variant="ghost" size="sm" onClick={() => { setDraft(name); setEditing(true); setError(''); }}>Rename</Button>}
-          </>
-        )}
+        <EditableTitle
+          value={name} label="column" as="h2" editable={editMode} className="font-semibold" maxLength={80}
+          onSave={async (next) => { await columns.update(column.id, { name: next }, token); setName(next); }}
+        />
+        <Badge variant={over ? 'destructive' : 'secondary'} title={limit === null ? undefined : 'Tickets / work-in-progress limit'}>
+          {count}{limit !== null && ` / ${limit}`}
+        </Badge>
       </header>
-      {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+      {over && <p role="status" className="text-xs text-destructive">Over the limit of {limit}: finish something before starting more.</p>}
+      {editMode && <WipLimit columnId={column.id} token={token} value={limit} onChange={setLimit} />}
+      {note}
       <div className="grid content-start gap-3">{children}</div>
     </section>
+  );
+}
+
+// WipLimit edits a column's advisory work-in-progress limit; empty removes it. Saves on Enter or when it loses focus.
+function WipLimit({ columnId, token, value, onChange }: { columnId: string; token: string; value: number | null; onChange: (v: number | null) => void }) {
+  const [draft, setDraft] = useState(value === null ? '' : String(value));
+  const [error, setError] = useState('');
+  async function commit() {
+    const n = draft.trim() === '' ? 0 : Number(draft);
+    if (!Number.isInteger(n) || n < 0 || n > 999) return setError('Use a whole number from 1 to 999, or leave it empty.');
+    if ((value ?? 0) === n) return setError('');
+    try {
+      await columns.update(columnId, { wip_limit: n }, token);
+      onChange(n === 0 ? null : n);
+      setError('');
+    } catch {
+      setError('Couldn’t save the limit. Please try again.');
+    }
+  }
+  return (
+    <label className="grid gap-1 text-xs text-muted-foreground">
+      <span className="flex items-center gap-2">
+        WIP limit
+        <Input
+          type="number" min={1} max={999} placeholder="None" value={draft} className="h-7 w-20"
+          onChange={(e) => setDraft(e.target.value)} onBlur={commit}
+          onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); void commit(); } }}
+        />
+      </span>
+      {error && <span role="alert" className="text-destructive">{error}</span>}
+    </label>
   );
 }
 

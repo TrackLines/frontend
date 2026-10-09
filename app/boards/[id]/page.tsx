@@ -8,8 +8,10 @@ import { BoardDnd, DroppableColumn, SortableTicket } from '@/components/board/bo
 import { SprintBar } from '@/components/board/sprint-bar';
 import { TicketCard } from '@/components/board/ticket-card';
 import { ScaleSetting } from '@/components/board/estimate';
+import { StyleSetting } from '@/components/board/board-style';
 import { TicketDialog } from '@/components/board/ticket-dialog';
-import { NameDialog } from '@/components/name-dialog';
+import { EditableTitle } from '@/components/editable-title';
+import { CopyLink } from '@/components/copy-link';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { ApiError, boards, projects, tickets, type Board, type Ticket } from '@/lib/api';
 import { useToken } from '@/lib/use-token';
@@ -33,7 +35,6 @@ export default function BoardPage() {
   const [error, setError] = useState<number | null>(null);
   const [addingTo, setAddingTo] = useState<string | null>(null); // column id for the "new ticket" dialog
   const [editMode, setEditMode] = useState(false);
-  const [renaming, setRenaming] = useState(false);
   const [labelFilter, setLabelFilter] = useState<string[]>([]);
 
   const loaded = token !== null;
@@ -59,15 +60,25 @@ export default function BoardPage() {
   const updateTickets = (columnId: string, fn: (ts: Ticket[]) => Ticket[]) =>
     setBoard((b) => b && { ...b, columns: b.columns?.map((c) => (c.id === columnId ? { ...c, tickets: fn(c.tickets) } : c)) });
 
-  if (error === 404) return <Message title="Board not found" body="It may have been deleted, or it isn't yours." />;
+  if (error === 404) return <Message title="Board not found" body="It may have been deleted, or it belongs to another organization." />;
   if (error) return <Message title="Couldn't load this board" body="Please refresh to try again." />;
   if (!board || !token) return <BoardSkeleton />;
+  const kanban = board.style === 'kanban';
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col">
       <header className="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b px-6 py-4">
         <Link href={`/projects/${board.project_id}`} className="text-sm text-muted-foreground hover:underline">← Project</Link>
-        <h1 className="text-2xl font-bold tracking-tight">{board.name}</h1>
+        <EditableTitle
+          value={board.name}
+          label="board"
+          editable={editMode}
+          className="text-2xl font-bold tracking-tight"
+          onSave={async (name) => {
+            await boards.update(board.id, { name }, token);
+            setBoard((current) => current && { ...current, name });
+          }}
+        />
         {board.description && <p className="w-full text-muted-foreground">{board.description}</p>}
         <LabelFilter
           options={labelCounts((board.columns ?? []).flatMap((c) => c.tickets))}
@@ -76,6 +87,7 @@ export default function BoardPage() {
         />
         {editMode && (
           <>
+            <StyleSetting boardId={board.id} style={board.style ?? 'sprints'} token={token} onChanged={() => void load(true)} />
             <ScaleSetting
               boardId={board.id}
               scale={board.estimate_scale ?? 'none'}
@@ -83,9 +95,9 @@ export default function BoardPage() {
               token={token}
               onChanged={() => void load(true)}
             />
-            <Button type="button" variant="outline" size="sm" onClick={() => setRenaming(true)}>Rename board</Button>
           </>
         )}
+        <CopyLink path={`/boards/${board.id}`} className="ml-auto" />
         <Button type="button" variant={editMode ? 'secondary' : 'outline'} size="sm" aria-pressed={editMode} onClick={() => setEditMode((editing) => !editing)}>
           {editMode ? 'Done editing' : 'Edit board'}
         </Button>
@@ -96,23 +108,10 @@ export default function BoardPage() {
           <Link href={`/tickets/${focus}`} className="font-medium text-foreground hover:underline">Open the ticket</Link>
         </p>
       )}
-      <NameDialog
-        open={renaming}
-        onOpenChange={(open) => !open && setRenaming(false)}
-        title="Rename board"
-        description="Choose a new name for this board."
-        placeholder="Board name"
-        initialValue={board.name}
-        submitLabel="Save name"
-        onSubmit={async (name) => {
-          await boards.update(board.id, { name }, token).catch(() => {
-            throw new Error('Couldn’t rename the board. Please try again.');
-          });
-          setBoard((current) => current && { ...current, name });
-        }}
-      />
       {/* sprint start/close changes which tickets the board shows, so reload */}
-      <SprintBar board={board} token={token} onChanged={load} />
+      {kanban
+        ? <p className="border-b px-6 py-3 text-sm text-muted-foreground">Kanban board: work flows continuously. Keep each column within its WIP limit.</p>
+        : <SprintBar board={board} token={token} onChanged={load} />}
       <BoardDnd
         boardId={board.id}
         columns={board.columns ?? []}
@@ -127,7 +126,12 @@ export default function BoardPage() {
           const done = col.id === cols.at(-1)?.id; // last column = Done
           return (
             <div key={col.id} style={{ width: w }} className="shrink-0">
-              <Column column={col} token={token} editMode={editMode}>
+              <Column
+                column={col} token={token} editMode={editMode}
+                note={kanban && done && (board.hidden_done ?? 0) > 0 && (
+                  <p className="text-xs text-muted-foreground">{board.hidden_done} finished over 14 days ago {board.hidden_done === 1 ? 'is' : 'are'} hidden.</p>
+                )}
+              >
                 <DroppableColumn id={col.id} ticketIds={shown.map((t) => t.id)}>
                   {shown.map((t) => (
                     <SortableTicket key={t.id} id={t.id}>

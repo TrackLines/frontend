@@ -23,10 +23,13 @@ export type Sprint = {
   id: string; board_id: string; number: number; length_days: number;
   starts_at: string; ends_at: string; closed_at: string | null;
 };
-export type Column = { id: string; name: string; position: number; tickets: Ticket[] };
+export type Column = { id: string; name: string; position: number; tickets: Ticket[]; wip_limit?: number | null };
+export type BoardStyle = 'sprints' | 'kanban';
 export type Board = {
   id: string; project_id: string; owner_clerk_id: string; name: string; description: string;
   created_at: string; updated_at: string; columns?: Column[];
+  style?: BoardStyle;
+  hidden_done?: number; // kanban: Done tickets finished over 14 days ago, left off the board
   estimate_scale?: EstimateScale;
   sprint?: Sprint; // open sprint, absent when the board doesn't run sprints
   stats?: BoardStats; // a project's boards only
@@ -144,13 +147,14 @@ export const boards = {
   create: (projectId: string, b: { name: string; description?: string }, token: T) =>
     api<Board>(`/projects/${projectId}/boards`, { method: 'POST', body: b, token }),
   // Update the board name and/or settings; switching estimate_scale clears open tickets' estimates.
-  update: (id: string, b: { name?: string; estimate_scale?: EstimateScale }, token: T) => api<void>(`/boards/${id}`, { method: 'PATCH', body: b, token }),
+  update: (id: string, b: { name?: string; estimate_scale?: EstimateScale; style?: BoardStyle }, token: T) => api<void>(`/boards/${id}`, { method: 'PATCH', body: b, token }),
   remove: (id: string, token: T) => api<void>(`/boards/${id}`, { method: 'DELETE', token }),
 };
 
 export const columns = {
   create: (boardId: string, name: string, token: T) => api<Omit<Column, 'tickets'>>(`/boards/${boardId}/columns`, { method: 'POST', body: { name }, token }),
-  rename: (id: string, name: string, token: T) => api<void>(`/columns/${id}`, { method: 'PATCH', body: { name }, token }),
+  // update renames and/or sets the advisory work-in-progress limit (0 removes it)
+  update: (id: string, c: { name?: string; wip_limit?: number }, token: T) => api<void>(`/columns/${id}`, { method: 'PATCH', body: c, token }),
   remove: (id: string, token: T) => api<void>(`/columns/${id}`, { method: 'DELETE', token }),
   reorder: (boardId: string, ids: string[], token: T) => api<void>(`/boards/${boardId}/columns/order`, { method: 'PUT', body: { column_ids: ids }, token }),
 };
