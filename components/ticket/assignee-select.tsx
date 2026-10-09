@@ -15,7 +15,9 @@ export function assigneeItems(list: Assignee[], current: string | null | undefin
     [NONE]: 'Unassigned',
     ...Object.fromEntries(assignable.map((a) => [a.id, a.kind === 'ai' || !a.kind ? `${a.label} (AI)` : a.label])),
   };
-  if (current && !(current in items)) items[current] = personLabel(current);
+  if (current && !(current in items)) {
+    items[current] = current.startsWith('user_') ? 'Unavailable organization member' : personLabel(current);
+  }
   return items;
 }
 
@@ -24,18 +26,30 @@ export function AssigneeSelect({ ticketId, value, token, onChange }: {
   ticketId: string; value: string | null | undefined; token: string; onChange: (t: Ticket) => void;
 }) {
   const [list, setList] = useState<Assignee[]>([]);
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
-  useEffect(() => { tickets.assignees(token).then(setList, () => setError('Couldn’t load assignees.')); }, []); // once; token refreshes don't matter
+  const [loadError, setLoadError] = useState('');
+  const [saveError, setSaveError] = useState('');
+  useEffect(() => {
+    let active = true;
+    setLoading(true);
+    setLoadError('');
+    setList([]);
+    tickets.assignees(token).then(
+      (assignees) => { if (active) setList(assignees); },
+      () => { if (active) setLoadError('Couldn’t load organization members and agents.'); },
+    ).finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [token]);
   const items = assigneeItems(list, value);
 
   async function assign(v: string) {
     setSaving(true);
-    setError('');
+    setSaveError('');
     try {
       onChange(await tickets.assign(ticketId, v === NONE ? null : v, token));
     } catch {
-      setError('Couldn’t change the assignee. Please try again.');
+      setSaveError('Couldn’t change the assignee. Please try again.');
     } finally {
       setSaving(false);
     }
@@ -43,7 +57,7 @@ export function AssigneeSelect({ ticketId, value, token, onChange }: {
 
   return (
     <div className="grid gap-1">
-      <Select items={items} value={value || NONE} disabled={saving} onValueChange={(v) => { if (v) void assign(String(v)); }}>
+      <Select items={items} value={value || NONE} disabled={saving || loading || Boolean(loadError)} onValueChange={(v) => { if (v) void assign(String(v)); }}>
         <SelectTrigger className="w-full" aria-label="Assignee">
           <SelectValue />
         </SelectTrigger>
@@ -51,7 +65,7 @@ export function AssigneeSelect({ ticketId, value, token, onChange }: {
           {Object.entries(items).map(([id, label]) => <SelectItem key={id} value={id}>{label}</SelectItem>)}
         </SelectContent>
       </Select>
-      {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+      {(loadError || saveError) && <p role="alert" className="text-sm text-destructive">{loadError || saveError}</p>}
     </div>
   );
 }
