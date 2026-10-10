@@ -7,6 +7,7 @@ import { AddColumn, Column } from '@/components/board/column';
 import { BoardDnd, DroppableColumn, SortableTicket } from '@/components/board/board-dnd';
 import { SprintBar } from '@/components/board/sprint-bar';
 import { StandupPanel } from '@/components/board/standup';
+import { RefinementMode } from '@/components/board/refinement';
 import { TicketCard } from '@/components/board/ticket-card';
 import { ScaleSetting } from '@/components/board/estimate';
 import { StyleSetting } from '@/components/board/board-style';
@@ -41,6 +42,7 @@ export default function BoardPage() {
   const [labelFilter, setLabelFilter] = useState<string[]>([]);
   const [standup, setStandup] = useState<Standup | null>(null);
   const [startingStandup, setStartingStandup] = useState(false);
+  const [refining, setRefining] = useState(false); // refinement mode replaces the columns
 
   const loaded = token !== null;
   const load = (background = false) => boards.get(id, token).then(async (next) => {
@@ -68,7 +70,7 @@ export default function BoardPage() {
     // load once per board; later token refreshes must not refetch and wipe local edits
   }, [id, loaded]);
 
-  useAutoRefresh(() => load(true), loaded && !editMode && !addingTo);
+  useAutoRefresh(() => load(true), loaded && !editMode && !addingTo && !refining);
   // "← Project" is the likely next click
   useEffect(() => {
     if (board && token) prefetch(`project:${board.project_id}`, () => projects.get(board.project_id, token));
@@ -139,7 +141,8 @@ export default function BoardPage() {
           </>
         )}
         <CopyLink path={`/boards/${board.id}`} className="ml-auto" />
-        {!standup && <Button type="button" variant="outline" size="sm" disabled={startingStandup} onClick={() => void beginStandup(board)}>
+        {!kanban && !standup && !refining && <Button type="button" variant="outline" size="sm" onClick={() => { setEditMode(false); setRefining(true); }}>Refine</Button>}
+        {!standup && !refining && <Button type="button" variant="outline" size="sm" disabled={startingStandup} onClick={() => void beginStandup(board)}>
           {startingStandup ? 'Starting…' : 'Standup'}
         </Button>}
         {boardCanManage && !standup && <Button type="button" variant={editMode ? 'secondary' : 'outline'} size="sm" aria-pressed={editMode} onClick={() => setEditMode((editing) => !editing)}>
@@ -166,6 +169,9 @@ export default function BoardPage() {
       {kanban
         ? <p className="border-b px-6 py-3 text-sm text-muted-foreground">Kanban board: work flows continuously. Keep each column within its WIP limit.</p>
         : <SprintBar board={board} token={token} canManage={boardCanManage} editMode={boardEditMode} onChanged={load} />}
+      {refining ? (
+        <RefinementMode board={board} token={token} canManage={boardCanManage} onClose={() => { setRefining(false); void load(true); }} />
+      ) : (
       <BoardDnd
         boardId={board.id}
         columns={board.columns ?? []}
@@ -220,6 +226,7 @@ export default function BoardPage() {
         )}
       </div>
       </BoardDnd>
+      )}
       <NameDialog
         open={savingTemplate}
         onOpenChange={setSavingTemplate}

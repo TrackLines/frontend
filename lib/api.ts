@@ -16,6 +16,7 @@ export type Ticket = {
   estimate?: string | null; // on the board's estimate scale
   created_at?: string; updated_at?: string; // UTC ISO; show with <When>
   done_at?: string | null; resolved_at?: string | null; // set once it reached Done / was resolved
+  planned_sprint_id?: string | null; // a backlog ticket planned into a board's upcoming sprint (refinement)
 };
 // A project ticket not on any board or sprint yet.
 export type BacklogTicket = Omit<Ticket, 'column_id'> & { column_id: null; project_id: string; type: TicketType };
@@ -296,6 +297,25 @@ export const apiKeys = {
 
 // Sprints are per board. Closing carries over every ticket not in the board's last column and
 // creates the next sprint with the chosen length and optional future start date.
+// Refinement: a board plans up to 2 sprints after its current one; backlog tickets are planned into
+// them and sized. Capacity is velocity (last 3 closed sprints) + 10%; over it needs approval to start.
+export type Capacity = {
+  unit: 'points' | 'tickets'; velocity: number | null; cap: number | null; used: number; unestimated: number;
+  over: boolean; approved_total: number | null; approved_by: string | null; approved_at: string | null; needs_approval: boolean;
+};
+export type PlannedSprint = { id: string; board_id: string; position: number; number: number; length_days: number; tickets: Ticket[]; capacity: Capacity };
+
+export const plannedSprints = {
+  list: (boardId: string, token: T) => api<PlannedSprint[]>(`/boards/${boardId}/planned-sprints`, { token }),
+  plan: (boardId: string, lengthDays: number, token: T) =>
+    api<PlannedSprint[]>(`/boards/${boardId}/planned-sprints`, { method: 'POST', body: { length_days: lengthDays }, token }),
+  remove: (id: string, token: T) => api<void>(`/planned-sprints/${id}`, { method: 'DELETE', token }),
+  approve: (id: string, token: T) => api<PlannedSprint>(`/planned-sprints/${id}/approve`, { method: 'POST', token }),
+  // plannedId null takes the ticket out; estimate on the planned board's scale
+  planTicket: (ticketId: string, plannedId: string | null, token: T, estimate?: string) =>
+    api<void>(`/tickets/${ticketId}/planned-sprint`, { method: 'PUT', body: { planned_sprint_id: plannedId, ...(estimate !== undefined && { estimate }) }, token }),
+};
+
 export const sprints = {
   list: (boardId: string, token: T) => api<Sprint[]>(`/boards/${boardId}/sprints`, { token }),
   start: (boardId: string, lengthDays: number, token: T) =>
