@@ -75,7 +75,7 @@ function Details({ roadmap, token, onSaved }: { roadmap: Roadmap; token: string;
         <Input required maxLength={120} value={title} onChange={(e) => setTitle(e.target.value)} />
       </label>
       <label className="grid gap-1.5 text-sm font-medium">
-        Description <span className="font-normal text-muted-foreground">(optional)</span>
+        <span>Description <span className="font-normal text-muted-foreground">(optional)</span></span>
         <textarea
           rows={3}
           value={description}

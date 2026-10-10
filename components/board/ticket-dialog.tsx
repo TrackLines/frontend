@@ -132,7 +132,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
             <Input autoFocus value={title} maxLength={200} required placeholder="What needs to be done?" onChange={(event) => setTitle(event.target.value)} />
           </label>
           <label className="grid gap-1.5 text-sm font-medium">
-            Details <span className="font-normal text-muted-foreground">(optional)</span>
+            <span>Details <span className="font-normal text-muted-foreground">(optional)</span></span>
             <textarea
               value={description}
               maxLength={10000}
@@ -146,7 +146,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
           <div className="grid gap-4 sm:grid-cols-3">
             <TypePicker value={type} onChange={setType} />
             <label className="grid gap-1.5 text-sm font-medium">
-              Priority <span className="font-normal text-muted-foreground">(optional)</span>
+              <span>Priority <span className="font-normal text-muted-foreground">(optional)</span></span>
               <PrioritySelect value={priority} onChange={setPriority} />
             </label>
             {estimating && (

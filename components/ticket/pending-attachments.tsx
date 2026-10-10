@@ -16,7 +16,8 @@ export type PendingFile = { key: string; url: string; name: string; size: number
 export function PendingAttachments({ files, onChange }: { files: PendingFile[]; onChange: (f: PendingFile[]) => void }) {
   return (
     <div className="grid gap-2">
-      <div className="flex flex-wrap items-center justify-between gap-2">
+      {/* the button sits by its label, like "Add labels" above it */}
+      <div className="flex flex-wrap items-center gap-3">
         <span className="text-sm font-medium">Attachments <span className="font-normal text-muted-foreground">(optional)</span></span>
         <AttachFilesButton onUploaded={(up) => onChange([...files, ...up])} />
       </div>

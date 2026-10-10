@@ -111,7 +111,7 @@ export function ItemEditor({ roadmapId, projectId, items, token }: Props) {
                 <Input value={item.title} maxLength={200} required placeholder="e.g. Invite your team" onChange={(event) => update(index, { title: event.target.value })} />
               </label>
               <label className="grid gap-1.5 text-sm font-medium">
-                Description <span className="font-normal text-muted-foreground">(optional)</span>
+                <span>Description <span className="font-normal text-muted-foreground">(optional)</span></span>
                 <textarea
                   value={item.description}
                   maxLength={4000}
@@ -123,11 +123,11 @@ export function ItemEditor({ roadmapId, projectId, items, token }: Props) {
               </label>
               <div className="flex flex-wrap gap-3">
                 <label className="grid gap-1.5 text-sm font-medium">
-                  Start date <span className="font-normal text-muted-foreground">(optional)</span>
+                  <span>Start date <span className="font-normal text-muted-foreground">(optional)</span></span>
                   <Input type="date" value={item.start_date ?? ''} max={item.target_date ?? undefined} onChange={(event) => update(index, { start_date: event.target.value || null })} />
                 </label>
                 <label className="grid gap-1.5 text-sm font-medium">
-                  Target date <span className="font-normal text-muted-foreground">(optional)</span>
+                  <span>Target date <span className="font-normal text-muted-foreground">(optional)</span></span>
                   <Input type="date" value={item.target_date ?? ''} min={item.start_date ?? undefined} onChange={(event) => update(index, { target_date: event.target.value || null })} />
                 </label>
               </div>
