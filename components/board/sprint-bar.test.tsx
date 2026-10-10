@@ -39,7 +39,21 @@ test('open sprint: number, dates, time left, close', () => {
   expect(html).toContain('· 14 days');
   expect(html).toContain('ends in 4 days');
   expect(html).toContain('Close sprint');
+  expect(html).toContain('Change length');
   expect(html).not.toContain('Start sprint');
+});
+
+test('scheduled sprint shows its start date without current sprint actions', () => {
+  const starts = new Date(Date.now() + 3 * 24 * 3600 * 1000).toISOString();
+  const ends = new Date(Date.now() + 10 * 24 * 3600 * 1000).toISOString();
+  const html = renderToStaticMarkup(<SprintBar
+    board={{ ...board, sprint: { id: 's', board_id: 'b', number: 2, length_days: 7, starts_at: starts, ends_at: ends, closed_at: null } }}
+    token="t" canManage onChanged={() => {}}
+  />);
+  expect(html).toContain('Scheduled · starts');
+  expect(html).toContain('Change length');
+  expect(html).not.toContain('Close sprint');
+  expect(html).not.toContain('Charts');
 });
 
 test('members keep sprint history and charts but cannot close a sprint', () => {

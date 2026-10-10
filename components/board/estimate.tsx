@@ -9,15 +9,16 @@ import { SCALES, scaleValues, type EstimateScale } from '@/lib/estimates';
 
 const NONE = '__none';
 
-// EstimateSelect picks a value on the board's scale; '' = not estimated.
-export function EstimateSelect({ scale, value, onChange }: { scale: EstimateScale; value: string; onChange: (v: string) => void }) {
+// EstimateSelect picks a value on the board's scale; '' = not estimated. A board with a scale only
+// takes estimated tickets, so `required` leaves out "Not estimated".
+export function EstimateSelect({ scale, value, onChange, required = false }: { scale: EstimateScale; value: string; onChange: (v: string) => void; required?: boolean }) {
   const values = scaleValues(scale);
-  const items = { [NONE]: 'Not estimated', ...Object.fromEntries(values.map((v) => [v, v])) };
+  const items = { [NONE]: required ? 'Choose an estimate…' : 'Not estimated', ...Object.fromEntries(values.map((v) => [v, v])) };
   return (
     <Select items={items} value={value || NONE} onValueChange={(v) => onChange(v === NONE || !v ? '' : String(v))}>
-      <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+      <SelectTrigger className="w-full" aria-required={required}><SelectValue /></SelectTrigger>
       <SelectContent>
-        <SelectItem value={NONE}>Not estimated</SelectItem>
+        {!required && <SelectItem value={NONE}>Not estimated</SelectItem>}
         {values.map((v) => <SelectItem key={v} value={v}>{v}</SelectItem>)}
       </SelectContent>
     </Select>

@@ -42,7 +42,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
   const [error, setError] = useState('');
   const [files, setFiles] = useState<PendingFile[]>([]); // create mode only
   const editing = Boolean(ticket);
-  const estimating = scale !== 'none';
+  const estimating = scale !== 'none'; // the board has a scale, so an estimate is required
 
   useEffect(() => {
     if (open) {
@@ -145,8 +145,8 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
           </label>
           {estimating && (
             <label className="grid gap-1.5 text-sm font-medium">
-              Estimate <span className="font-normal text-muted-foreground">(optional)</span>
-              <EstimateSelect scale={scale} value={estimate} onChange={setEstimate} />
+              Estimate
+              <EstimateSelect scale={scale} value={estimate} onChange={setEstimate} required />
             </label>
           )}
           <LabelDrawer projectId={projectId ?? ticket?.project_id ?? ''} token={token} labels={labels} onChange={setLabels} disabled={saving || deleting} />
@@ -176,7 +176,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
               </div>
             )}
             <Button type="button" variant="outline" disabled={saving || deleting} onClick={() => onOpenChange(false)}>Cancel</Button>
-            <Button type="submit" disabled={saving || deleting || !title.trim()}>{saving ? 'Saving…' : editing ? 'Save changes' : 'Add ticket'}</Button>
+            <Button type="submit" disabled={saving || deleting || !title.trim() || (estimating && !estimate)}>{saving ? 'Saving…' : editing ? 'Save changes' : 'Add ticket'}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

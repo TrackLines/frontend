@@ -92,6 +92,7 @@ export function SubTickets({ ticket, token, onChanged }: { ticket: TicketDetail;
           token={token}
           projectId={ticket.project_id}
           columnId={newIn}
+          scale={newIn ? ticket.estimate_scale : 'none'} // on the parent's board: its scale (estimate required)
           onSaved={(created) => void setParent(created.id, ticket.id)}
         />
       )}

@@ -29,6 +29,7 @@ export default function BoardPage() {
   const [board, setBoard] = useCachedState<Board>(`board:${id}`); // last-seen board shows instantly, then refreshes
   const [error, setError] = useState<number | null>(null);
   const [addingTo, setAddingTo] = useState<string | null>(null); // column id for the "new ticket" dialog
+  const [toBacklog, setToBacklog] = useState<Ticket | null>(null); // created on the sprint's last day, so it went to the backlog
   const [savingTemplate, setSavingTemplate] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [canManage, setCanManage] = useState<boolean | null>(null);
@@ -130,6 +131,13 @@ export default function BoardPage() {
           <Link href={`/tickets/${focus}`} className="font-medium text-foreground hover:underline">Open the ticket</Link>
         </p>
       )}
+      {toBacklog && (
+        <p role="status" className="border-b px-6 py-3 text-sm text-muted-foreground">
+          The sprint ends today, so “{toBacklog.title}” went to the backlog.{' '}
+          <Link href={`/tickets/${toBacklog.id}`} className="font-medium text-foreground hover:underline">Open the ticket</Link>{' '}
+          <Button type="button" variant="ghost" size="sm" onClick={() => setToBacklog(null)}>Dismiss</Button>
+        </p>
+      )}
       {/* sprint start/close changes which tickets the board shows, so reload */}
       {kanban
         ? <p className="border-b px-6 py-3 text-sm text-muted-foreground">Kanban board: work flows continuously. Keep each column within its WIP limit.</p>
@@ -209,7 +217,7 @@ export default function BoardPage() {
           projectId={board.project_id}
           columnId={addingTo}
           scale={board.estimate_scale}
-          onSaved={(t) => updateTickets(t.column_id, (ts) => [...ts, t])}
+          onSaved={(t) => (t.column_id ? updateTickets(t.column_id, (ts) => [...ts, t]) : setToBacklog(t))}
         />
       )}
     </main>

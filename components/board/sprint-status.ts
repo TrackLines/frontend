@@ -12,6 +12,14 @@ export function sprintStatus(endsAt: string, now: Date = new Date()): { label: s
   return { overdue: false, label: `ends in ${days} day${days === 1 ? '' : 's'}` };
 }
 
+// sprintLocked: on its last day (local calendar date, or once it's past its end) a sprint's scope is
+// locked: nothing new can join it. Same rule as the backend, which reads our Tracklines-Timezone header.
+export function sprintLocked(endsAt: string, now: Date = new Date()): boolean {
+  const ends = new Date(endsAt);
+  const day = (d: Date) => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  return day(now) >= day(ends);
+}
+
 export const LENGTH_PRESETS = [
   { days: 7, label: '1 week' },
   { days: 14, label: '2 weeks' },

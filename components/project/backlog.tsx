@@ -10,11 +10,12 @@ import { Input } from '@/components/ui/input';
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { TICKET_TYPES as TYPES, TypeBadge, TypePicker } from '@/components/ticket-type';
 import { TicketDialog } from '@/components/board/ticket-dialog';
+import { EstimateSelect } from '@/components/board/estimate';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
 import { LabelDrawer, TicketLabels } from '@/components/ticket/labels';
 import { attachAll, PendingAttachments, type PendingFile } from '@/components/ticket/pending-attachments';
 import { BACKLOG_CHANGED } from '@/components/quick-add-ticket';
-import { backlog, BacklogTicket, type BacklogPage, boards as boardsApi, tickets, type Board, type Ticket, type TicketType } from '@/lib/api';
+import { ApiError, backlog, BacklogTicket, type BacklogPage, boards as boardsApi, tickets, type Board, type Ticket, type TicketType } from '@/lib/api';
 import { useAutoRefresh } from '@/lib/use-auto-refresh';
 import { useCachedState } from '@/lib/page-cache';
 import { ListSkeleton } from '@/components/page-skeletons';
@@ -34,6 +35,7 @@ export function Backlog({ projectId, boards, token }: Props) {
   const [page, setPage] = useState(1);
   const [adding, setAdding] = useState(false);
   const [busy, setBusy] = useState<string | null>(null); // ticket id being moved/deleted
+  const [sizing, setSizing] = useState<{ ticket: BacklogTicket; board: Board } | null>(null); // moving onto a board that needs an estimate
   const [error, setError] = useState('');
   const [editing, setEditing] = useState<BacklogTicket | null>(null);
 
@@ -71,19 +73,25 @@ export function Backlog({ projectId, boards, token }: Props) {
   const changeLabels = (l: string[]) => { setLabelFilter(l); setPage(1); };
   const drop = (id: string) => setData((d) => d && { ...d, tickets: d.tickets.filter((x) => x.id !== id) });
 
-  async function moveTo(t: BacklogTicket, boardId: string) {
+  // moveTo puts t at the bottom of the board's first column, inside its open sprint. A board with an
+  // estimate scale only takes estimated tickets, so it asks for one first (sizing) and moves with it.
+  async function moveTo(t: BacklogTicket, boardId: string, estimate?: string) {
     setBusy(t.id);
     setError('');
     try {
-      // lands at the bottom of the board's first column, inside its open sprint
       const target = await boardsApi.get(boardId, token);
       const first = target.columns?.[0];
       if (!first) throw new Error('board has no columns');
-      await tickets.move(t.id, first.id, first.tickets.length, token);
+      if ((target.estimate_scale ?? 'none') !== 'none' && !estimate) {
+        setSizing({ ticket: t, board: target });
+        return;
+      }
+      await tickets.move(t.id, first.id, first.tickets.length, token, estimate);
       drop(t.id);
       void load();
-    } catch {
-      setError(`Couldn’t move “${t.title}”. Please try again.`);
+    } catch (err) {
+      // 409: the sprint ends today (scope locked); 400: e.g. estimate required. The backend says which.
+      setError(err instanceof ApiError && (err.status === 409 || err.status === 400) ? err.message : `Couldn’t move “${t.title}”. Please try again.`);
     } finally {
       setBusy(null);
     }
@@ -182,6 +190,14 @@ export function Backlog({ projectId, boards, token }: Props) {
         </Pagination>
       )}
 
+      {sizing && (
+        <SizeDialog
+          ticket={sizing.ticket}
+          board={sizing.board}
+          onCancel={() => setSizing(null)}
+          onMove={(estimate) => { setSizing(null); void moveTo(sizing.ticket, sizing.board.id, estimate); }}
+        />
+      )}
       {editing && (
         // same dialog as on boards; backlog tickets have no column, which only matters when creating
         <TicketDialog
@@ -262,6 +278,33 @@ function AddDialog({ open, onOpenChange, projectId, token, onAdd }: {
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           <DialogFooter>
             <Button type="submit" disabled={saving || !title.trim()}>{saving ? 'Adding…' : 'Add to backlog'}</Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// SizeDialog asks for an estimate on the target board's scale before a backlog ticket moves onto it.
+function SizeDialog({ ticket, board, onCancel, onMove }: {
+  ticket: BacklogTicket; board: Board; onCancel: () => void; onMove: (estimate: string) => void;
+}) {
+  const [estimate, setEstimate] = useState('');
+  return (
+    <Dialog open onOpenChange={(open) => !open && onCancel()}>
+      <DialogContent>
+        <form onSubmit={(e) => { e.preventDefault(); if (estimate) onMove(estimate); }} className="grid gap-4">
+          <DialogHeader>
+            <DialogTitle>Estimate “{ticket.title}”</DialogTitle>
+            <DialogDescription>{board.name} estimates every ticket, so size this one before it joins the board.</DialogDescription>
+          </DialogHeader>
+          <label className="grid gap-1.5 text-sm font-medium">
+            Estimate
+            <EstimateSelect scale={board.estimate_scale ?? 'none'} value={estimate} onChange={setEstimate} required />
+          </label>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={onCancel}>Cancel</Button>
+            <Button type="submit" disabled={!estimate}>Move to {board.name}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

@@ -152,6 +152,9 @@ export async function api<T>(path: string, { method = 'GET', body, token }: Opti
   const send = async (skipCache: boolean) => {
     const headers: Record<string, string> = {};
     if (body !== undefined) headers['Content-Type'] = 'application/json';
+    // day-based rules (a sprint's last day) follow the user's local time; data stays UTC.
+    // Browser only: on the server this would be the server's zone, so the backend uses UTC.
+    if (typeof window !== 'undefined') headers['Tracklines-Timezone'] = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const t = await liveToken(token, skipCache);
     if (t) headers.Authorization = `Bearer ${t}`;
     return fetch(base() + path, {
@@ -239,8 +242,9 @@ export const tickets = {
   // assign hands a ticket to you (your user id) or an agent (API key name); null unassigns
   assign: (id: string, assignee: string | null, token: T) => api<Ticket>(`/tickets/${id}/assignee`, { method: 'PUT', body: { assignee }, token }),
   assignees: (token: T) => api<Assignee[]>('/assignees', { token }),
+  // on the sprint's last day the ticket goes to the backlog instead: column_id null, redirected_to_backlog
   create: (columnId: string, t: { title: string; description?: string; type?: TicketType; priority?: string; labels?: string[]; estimate?: string }, token: T) =>
-    api<Ticket>(`/columns/${columnId}/tickets`, { method: 'POST', body: t, token }),
+    api<Ticket & { redirected_to_backlog?: boolean }>(`/columns/${columnId}/tickets`, { method: 'POST', body: t, token }),
   update: (id: string, t: { title: string; description: string; type?: TicketType; priority?: string; estimate?: string }, token: T) => api<void>(`/tickets/${id}`, { method: 'PATCH', body: t, token }),
   setLabels: (id: string, labels: string[], token: T) => api<{ labels: string[] }>(`/tickets/${id}/labels`, { method: 'PUT', body: { labels }, token }),
   remove: (id: string, token: T) => api<void>(`/tickets/${id}`, { method: 'DELETE', token }),
@@ -248,8 +252,9 @@ export const tickets = {
   // setParent makes id a sub-ticket of parentId (null detaches)
   setParent: (id: string, parentId: string | null, token: T) => api<void>(`/tickets/${id}/parent`, { method: 'PUT', body: { parent_id: parentId }, token }),
   setBlockedBy: (id: string, ticketIds: string[], token: T) => api<void>(`/tickets/${id}/blocked-by`, { method: 'PUT', body: { ticket_ids: ticketIds }, token }),
-  move: (id: string, columnId: string, position: number, token: T) =>
-    api<void>(`/tickets/${id}/move`, { method: 'POST', body: { column_id: columnId, position }, token }),
+  // estimate sizes the ticket on the way in: required entering a board with an estimate scale
+  move: (id: string, columnId: string, position: number, token: T, estimate?: string) =>
+    api<void>(`/tickets/${id}/move`, { method: 'POST', body: { column_id: columnId, position, ...(estimate && { estimate }) }, token }),
 };
 
 export const ticketComments = {
@@ -289,13 +294,16 @@ export const apiKeys = {
   revoke: (id: string, token: T) => api<void>(`/keys/${id}`, { method: 'DELETE', token }),
 };
 
-// Sprints are per board. Closing opens the next sprint (same length) and carries over every
-// ticket not in the board's last column; overdue sprints also close themselves.
+// Sprints are per board. Closing carries over every ticket not in the board's last column and
+// creates the next sprint with the chosen length and optional future start date.
 export const sprints = {
   list: (boardId: string, token: T) => api<Sprint[]>(`/boards/${boardId}/sprints`, { token }),
   start: (boardId: string, lengthDays: number, token: T) =>
     api<Sprint>(`/boards/${boardId}/sprints`, { method: 'POST', body: { length_days: lengthDays }, token }),
-  close: (id: string, token: T) => api<Sprint>(`/sprints/${id}/close`, { method: 'POST', token }),
+  updateLength: (id: string, lengthDays: number, token: T) =>
+    api<Sprint>(`/sprints/${id}`, { method: 'PATCH', body: { length_days: lengthDays }, token }),
+  close: (id: string, token: T, next: { next_length_days: number; next_starts_at?: string }) =>
+    api<Sprint>(`/sprints/${id}/close`, { method: 'POST', body: next, token }),
   velocity: (boardId: string, token: T) => api<Velocity>(`/boards/${boardId}/velocity`, { token }),
   get: (id: string, token: T) => api<SprintDetail>(`/sprints/${id}`, { token }),
 };
