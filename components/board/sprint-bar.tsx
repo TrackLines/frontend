@@ -19,10 +19,10 @@ function localDateInputValue(date = new Date()) {
   return `${year}-${month}-${day}`;
 }
 
-type Props = { board: Board; token: string; canManage: boolean; onChanged: () => void };
+type Props = { board: Board; token: string; canManage: boolean; editMode?: boolean; onChanged: () => void };
 
 // SprintBar sits under the board header: start a sprint, see time left, close it, browse history.
-export function SprintBar({ board, token, canManage, onChanged }: Props) {
+export function SprintBar({ board, token, canManage, editMode = false, onChanged }: Props) {
   const [starting, setStarting] = useState(false);
   const [closing, setClosing] = useState(false);
   const [editingLength, setEditingLength] = useState(false);
@@ -43,7 +43,8 @@ export function SprintBar({ board, token, canManage, onChanged }: Props) {
           {sprintStarted && sprintLocked(sprint.ends_at) && (
             <span role="note" className="text-muted-foreground">Scope locked: the sprint ends today, so new tickets go to the backlog.</span>
           )}
-          {canManage && <Button size="sm" variant="outline" onClick={() => setEditingLength(true)}>Change length</Button>}
+          {/* a board setting: only while editing the board, like its scale and style */}
+          {canManage && editMode && <Button size="sm" variant="outline" onClick={() => setEditingLength(true)}>Change length</Button>}
           {canManage && sprintStarted && <Button size="sm" variant="outline" onClick={() => setClosing(true)}>Close sprint</Button>}
         </>
       ) : (

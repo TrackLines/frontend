@@ -165,7 +165,7 @@ export default function BoardPage() {
       {/* sprint start/close changes which tickets the board shows, so reload */}
       {kanban
         ? <p className="border-b px-6 py-3 text-sm text-muted-foreground">Kanban board: work flows continuously. Keep each column within its WIP limit.</p>
-        : <SprintBar board={board} token={token} canManage={boardCanManage} onChanged={load} />}
+        : <SprintBar board={board} token={token} canManage={boardCanManage} editMode={boardEditMode} onChanged={load} />}
       <BoardDnd
         boardId={board.id}
         columns={board.columns ?? []}

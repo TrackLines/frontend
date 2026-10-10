@@ -39,8 +39,18 @@ test('open sprint: number, dates, time left, close', () => {
   expect(html).toContain('· 14 days');
   expect(html).toContain('ends in 4 days');
   expect(html).toContain('Close sprint');
-  expect(html).toContain('Change length');
+  expect(html).not.toContain('Change length'); // a board setting: only in Edit board mode
   expect(html).not.toContain('Start sprint');
+});
+
+test('change length is offered while editing the board', () => {
+  const sprint = { id: 's', board_id: 'b', number: 4, length_days: 14, starts_at: '2026-10-01T09:00:00Z', ends_at: new Date(Date.now() + 86_400_000).toISOString(), closed_at: null };
+  const html = (editMode: boolean, canManage: boolean) => renderToStaticMarkup(
+    <SprintBar board={{ ...board, sprint }} token="t" canManage={canManage} editMode={editMode} onChanged={() => {}} />,
+  );
+  expect(html(true, true)).toContain('Change length');
+  expect(html(false, true)).not.toContain('Change length');
+  expect(html(true, false)).not.toContain('Change length');
 });
 
 test('scheduled sprint shows its start date without current sprint actions', () => {
@@ -48,7 +58,7 @@ test('scheduled sprint shows its start date without current sprint actions', () 
   const ends = new Date(Date.now() + 10 * 24 * 3600 * 1000).toISOString();
   const html = renderToStaticMarkup(<SprintBar
     board={{ ...board, sprint: { id: 's', board_id: 'b', number: 2, length_days: 7, starts_at: starts, ends_at: ends, closed_at: null } }}
-    token="t" canManage onChanged={() => {}}
+    token="t" canManage editMode onChanged={() => {}}
   />);
   expect(html).toContain('Scheduled · starts');
   expect(html).toContain('Change length');
