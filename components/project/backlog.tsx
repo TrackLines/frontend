@@ -11,6 +11,7 @@ import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, Pagi
 import { TICKET_TYPES as TYPES, TypeBadge, TypePicker } from '@/components/ticket-type';
 import { TicketDialog } from '@/components/board/ticket-dialog';
 import { EstimateSelect } from '@/components/board/estimate';
+import { RefinementMode } from '@/components/project/refinement';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
 import { LabelDrawer, TicketLabels } from '@/components/ticket/labels';
 import { attachAll, PendingAttachments, type PendingFile } from '@/components/ticket/pending-attachments';
@@ -35,6 +36,7 @@ export function Backlog({ projectId, boards, token }: Props) {
   const [page, setPage] = useState(1);
   const [adding, setAdding] = useState(false);
   const [busy, setBusy] = useState<string | null>(null); // ticket id being moved/deleted
+  const [refining, setRefining] = useState(false); // refinement mode: plan tickets into boards' next sprints
   const [sizing, setSizing] = useState<{ ticket: BacklogTicket; board: Board } | null>(null); // moving onto a board that needs an estimate
   const [error, setError] = useState('');
   const [editing, setEditing] = useState<BacklogTicket | null>(null);
@@ -65,7 +67,7 @@ export function Backlog({ projectId, boards, token }: Props) {
     return () => window.removeEventListener(BACKLOG_CHANGED, onChange);
   }, [projectId]);
 
-  useAutoRefresh(() => load(true), !adding && !editing && busy === null);
+  useAutoRefresh(() => load(true), !adding && !editing && !refining && busy === null);
 
   const shown = data?.tickets ?? [];
   const lastPage = data ? Math.max(1, Math.ceil(data.counts[filter] / PER_PAGE)) : 1;
@@ -116,10 +118,16 @@ export function Backlog({ projectId, boards, token }: Props) {
       <div className="mb-4 flex flex-wrap items-end justify-between gap-4">
         <div>
           <h2 className="text-xl font-semibold tracking-tight">Backlog</h2>
-          <p className="text-sm text-muted-foreground">Tickets not on a board yet. Move one to a board to put it in that team&apos;s sprint.</p>
+          <p className="text-sm text-muted-foreground">Tickets not on a board yet. Move one to a board to put it in that team&apos;s sprint, or refine to plan the next sprints.</p>
         </div>
-        <Button variant="outline" onClick={() => setAdding(true)}>Add to backlog</Button>
+        {!refining && (
+          <div className="flex gap-2">
+            {boards.some((b) => b.style !== 'kanban') && <Button variant="outline" onClick={() => setRefining(true)}>Refine</Button>}
+            <Button variant="outline" onClick={() => setAdding(true)}>Add to backlog</Button>
+          </div>
+        )}
       </div>
+      {refining ? <RefinementMode projectId={projectId} boards={boards} token={token} onClose={() => { setRefining(false); void load(); }} /> : <>
 
       <div role="group" aria-label="Filter by type" className="mb-3 flex gap-1">
         {(['all', ...TYPES.map((t) => t.value)] as const).map((f) => (
@@ -189,6 +197,7 @@ export function Backlog({ projectId, boards, token }: Props) {
           </PaginationContent>
         </Pagination>
       )}
+      </>}
 
       {sizing && (
         <SizeDialog

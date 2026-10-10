@@ -6,33 +6,41 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { TypeBadge } from '@/components/ticket-type';
-import { EstimateSelect } from './estimate';
-import { ApiError, backlog, plannedSprints, type BacklogTicket, type Board, type PlannedSprint } from '@/lib/api';
+import { EstimateSelect } from '@/components/board/estimate';
+import { ApiError, backlog, organization, plannedSprints, type BacklogTicket, type Board, type OrganizationRole, type PlannedSprint } from '@/lib/api';
+import { canManageBoard } from '@/lib/board-access';
 import type { EstimateScale } from '@/lib/estimates';
 import { capacityView, MAX_PLANNED } from '@/lib/refinement';
 
-type Props = { board: Board; token: string; canManage: boolean; onClose: () => void };
+type Props = { projectId: string; boards: Board[]; token: string; onClose: () => void };
 
-// RefinementMode plans the board's next sprints: the project backlog on one side, up to two
-// planned sprints on the other. Tickets go in with one click and are sized in place; each sprint
-// shows how full it is against the team's velocity, and an over-full one needs approving.
+// RefinementMode plans the project's next sprints from the backlog: unplanned backlog tickets on one
+// side, each sprint board's planned sprints (up to two) on the other. Tickets go into a board's sprint
+// with one click and are sized in place on that board's scale; each sprint shows how full it is
+// against the team's velocity, and an over-full one needs approving.
 // ponytail: buttons, not drag and drop; add DnD if planning lots of tickets gets tedious.
-export function RefinementMode({ board, token, canManage, onClose }: Props) {
-  const [plans, setPlans] = useState<PlannedSprint[] | null>(null);
+export function RefinementMode({ projectId, boards, token, onClose }: Props) {
+  const sprintBoards = boards.filter((b) => b.style !== 'kanban');
+  const [plans, setPlans] = useState<Record<string, PlannedSprint[]> | null>(null); // by board id
   const [tickets, setTickets] = useState<BacklogTicket[]>([]);
+  const [role, setRole] = useState<OrganizationRole | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  const scale = board.estimate_scale ?? 'none';
+  const boardIds = sprintBoards.map((b) => b.id).join(',');
 
   const load = useCallback(async () => {
-    const [ps, page] = await Promise.all([plannedSprints.list(board.id, token), backlog.page(board.project_id, { page: 1, perPage: 100 }, token)]);
-    setPlans(ps);
+    const [lists, page] = await Promise.all([
+      Promise.all(sprintBoards.map((b) => plannedSprints.list(b.id, token))),
+      backlog.page(projectId, { page: 1, perPage: 100 }, token),
+    ]);
+    setPlans(Object.fromEntries(sprintBoards.map((b, i) => [b.id, lists[i]])));
     setTickets(page.tickets.filter((t) => !t.planned_sprint_id)); // planned ones show in their sprint
-  }, [board.id, board.project_id, token]);
+  }, [boardIds, projectId, token]);
 
   useEffect(() => {
     load().catch(() => setError('Couldn’t load the backlog and planned sprints. Please try again.'));
-  }, [load]);
+    organization.me(token).then(setRole, () => setRole({ user_id: '', org_id: '', admin: false, leads: [] })); // fail closed
+  }, [load, token]);
 
   // act runs a change, then reloads (capacity is worked out by the server)
   async function act(change: () => Promise<unknown>, failed: string) {
@@ -42,57 +50,69 @@ export function RefinementMode({ board, token, canManage, onClose }: Props) {
       await change();
       await load();
     } catch (err) {
-      setError(err instanceof ApiError && err.status === 403 ? 'Only organization admins and this board’s team leaders can do that.'
+      setError(err instanceof ApiError && err.status === 403 ? 'Only organization admins and that board’s team leaders can do that.'
         : err instanceof ApiError && err.status < 500 ? err.message : failed);
     } finally {
       setBusy(false);
     }
   }
 
-  const planNext = () => act(() => plannedSprints.plan(board.id, board.sprint?.length_days ?? 14, token), 'Couldn’t plan a sprint. Please try again.');
+  const targets = sprintBoards.flatMap((b) => (plans?.[b.id] ?? []).map((p) => ({ board: b, plan: p })));
 
   return (
-    <section aria-label="Refinement" className="grid gap-4 p-6">
+    <section aria-label="Refinement" className="grid gap-4">
       <div className="flex flex-wrap items-center gap-3">
-        <h2 className="text-lg font-semibold">Refinement</h2>
-        <p className="text-sm text-muted-foreground">Plan backlog tickets into the next sprints and size them. Each sprint holds the team’s velocity + 10%.</p>
+        <p className="text-sm text-muted-foreground">Plan backlog tickets into each team’s next sprints and size them. A sprint holds the team’s velocity + 10%.</p>
         <Button size="sm" variant="outline" className="ml-auto" onClick={onClose}>Done refining</Button>
       </div>
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-      {plans === null ? <p className="text-sm text-muted-foreground">Loading…</p> : (
+      {sprintBoards.length === 0 ? <p className="text-sm text-muted-foreground">No sprint boards to plan for yet.</p>
+        : plans === null ? <p className="text-sm text-muted-foreground">Loading…</p> : (
         <div className="grid gap-6 md:grid-cols-2">
           <div className="grid content-start gap-2">
-            <h3 className="font-medium">Backlog</h3>
+            <h3 className="font-medium">To plan</h3>
             {tickets.length === 0 && <p className="text-sm text-muted-foreground">Nothing left to plan.</p>}
+            {tickets.length > 0 && targets.length === 0 && <p className="text-sm text-muted-foreground">Plan a sprint on a board to start adding tickets.</p>}
             <ul className="grid gap-2">
               {tickets.map((t) => (
                 <li key={t.id} className="flex flex-wrap items-center gap-2 rounded-lg border p-3 text-sm">
                   <TypeBadge type={t.type} />
                   <Link href={`/tickets/${t.id}`} className="min-w-0 flex-1 font-medium hover:underline">{t.title}</Link>
-                  {plans.map((p) => (
-                    <Button key={p.id} size="sm" variant="outline" disabled={busy}
-                      onClick={() => act(() => plannedSprints.planTicket(t.id, p.id, token), `Couldn’t plan “${t.title}”. Please try again.`)}>
-                      Sprint {p.number}
+                  {targets.map(({ board, plan }) => (
+                    <Button key={plan.id} size="sm" variant="outline" disabled={busy}
+                      onClick={() => act(() => plannedSprints.planTicket(t.id, plan.id, token), `Couldn’t plan “${t.title}”. Please try again.`)}>
+                      {board.name} · Sprint {plan.number}
                     </Button>
                   ))}
                 </li>
               ))}
             </ul>
           </div>
-          <div className="grid content-start gap-4">
-            {plans.length === 0 && (
-              <p className="text-sm text-muted-foreground">
-                No sprints planned yet. {canManage ? '' : 'An organization admin or this board’s team leader can plan one.'}
-              </p>
-            )}
-            {plans.map((p) => (
-              <PlannedSprintCard key={p.id} plan={p} scale={scale} canManage={canManage} busy={busy} token={token} act={act} />
-            ))}
-            {canManage && plans.length < MAX_PLANNED && (
-              <Button size="sm" variant="outline" className="justify-self-start" disabled={busy} onClick={planNext}>
-                Plan sprint {(plans.at(-1)?.number ?? (board.sprint?.number ?? 0)) + 1}
-              </Button>
-            )}
+          <div className="grid content-start gap-6">
+            {sprintBoards.map((b) => {
+              const boardPlans = plans[b.id] ?? [];
+              const canManage = !!role && canManageBoard(role, b.team_id);
+              const nextNumber = (boardPlans.at(-1)?.number ?? b.stats?.sprint_number ?? 0) + 1;
+              return (
+                <div key={b.id} className="grid gap-3">
+                  <h3 className="font-medium"><Link href={`/boards/${b.id}`} className="hover:underline">{b.name}</Link></h3>
+                  {boardPlans.length === 0 && (
+                    <p className="text-sm text-muted-foreground">
+                      No sprints planned yet.{canManage ? '' : ' An organization admin or this board’s team leader can plan one.'}
+                    </p>
+                  )}
+                  {boardPlans.map((p) => (
+                    <PlannedSprintCard key={p.id} plan={p} scale={b.estimate_scale ?? 'none'} canManage={canManage} busy={busy} token={token} act={act} />
+                  ))}
+                  {canManage && boardPlans.length < MAX_PLANNED && (
+                    <Button size="sm" variant="outline" className="justify-self-start" disabled={busy}
+                      onClick={() => act(() => plannedSprints.plan(b.id, 14, token), 'Couldn’t plan a sprint. Please try again.')}>
+                      Plan sprint {nextNumber}
+                    </Button>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}

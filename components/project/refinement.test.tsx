@@ -16,8 +16,11 @@ const card = (p: PlannedSprint, canManage: boolean) => renderToStaticMarkup(
 );
 
 test('loading', () => {
-  const html = renderToStaticMarkup(<RefinementMode board={{ id: 'b', project_id: 'p' } as never} token="t" canManage onClose={() => {}} />);
-  expect(html).toContain('Loading…');
+  const boards = [{ id: 'b', name: 'Backend', style: 'sprints' }, { id: 'k', name: 'Ops', style: 'kanban' }] as never;
+  expect(renderToStaticMarkup(<RefinementMode projectId="p" boards={boards} token="t" onClose={() => {}} />)).toContain('Loading…');
+  // kanban boards don't plan sprints
+  const kanbanOnly = [{ id: 'k', name: 'Ops', style: 'kanban' }] as never;
+  expect(renderToStaticMarkup(<RefinementMode projectId="p" boards={kanbanOnly} token="t" onClose={() => {}} />)).toContain('No sprint boards to plan for yet.');
 });
 
 test('empty plan with no velocity yet', () => {
