@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { AddColumn, Column } from '@/components/board/column';
 import { BoardDnd, DroppableColumn, SortableTicket } from '@/components/board/board-dnd';
 import { SprintBar } from '@/components/board/sprint-bar';
+import { StandupPanel } from '@/components/board/standup';
 import { TicketCard } from '@/components/board/ticket-card';
 import { ScaleSetting } from '@/components/board/estimate';
 import { StyleSetting } from '@/components/board/board-style';
@@ -14,7 +15,8 @@ import { EditableTitle } from '@/components/editable-title';
 import { NameDialog } from '@/components/name-dialog';
 import { CopyLink } from '@/components/copy-link';
 import { Button, buttonVariants } from '@/components/ui/button';
-import { ApiError, boardTemplates, boards, organization, projects, tickets, type Board, type Ticket } from '@/lib/api';
+import { ApiError, boardTemplates, boards, organization, projects, teams, tickets, type Board, type Ticket } from '@/lib/api';
+import { participants, speaker, start as startStandup, type Standup } from '@/lib/standup';
 import { useToken } from '@/lib/use-token';
 import { canManageBoard } from '@/lib/board-access';
 import { prefetch, useCachedState } from '@/lib/page-cache';
@@ -37,6 +39,8 @@ export default function BoardPage() {
   const [permissionBoardId, setPermissionBoardId] = useState('');
   const [permissionError, setPermissionError] = useState(false);
   const [labelFilter, setLabelFilter] = useState<string[]>([]);
+  const [standup, setStandup] = useState<Standup | null>(null);
+  const [startingStandup, setStartingStandup] = useState(false);
 
   const loaded = token !== null;
   const load = (background = false) => boards.get(id, token).then(async (next) => {
@@ -75,6 +79,22 @@ export default function BoardPage() {
   // local edits: components call the API themselves and report back here
   const updateTickets = (columnId: string, fn: (ts: Ticket[]) => Ticket[]) =>
     setBoard((b) => b && { ...b, columns: b.columns?.map((c) => (c.id === columnId ? { ...c, tickets: fn(c.tickets) } : c)) });
+
+  // everyone on the board's team plus anyone with tickets on it; names from the assignee list
+  async function beginStandup(b: Board) {
+    setStartingStandup(true);
+    try {
+      const [names, members] = await Promise.all([
+        tickets.assignees(token).catch(() => []),
+        b.team_id ? teams.members(b.team_id, token).catch(() => []) : Promise.resolve([]),
+      ]);
+      const people = participants(members.map((m) => m.user_id), (b.columns ?? []).flatMap((c) => c.tickets), new Map(names.map((a) => [a.id, a.label])));
+      setEditMode(false);
+      setStandup(startStandup(people, Date.now()));
+    } finally {
+      setStartingStandup(false);
+    }
+  }
 
   if (error === 404) return <Message title="Board not found" body="It may have been deleted, or it belongs to another organization." />;
   if (error) return <Message title="Couldn't load this board" body="Please refresh to try again." />;
@@ -119,7 +139,10 @@ export default function BoardPage() {
           </>
         )}
         <CopyLink path={`/boards/${board.id}`} className="ml-auto" />
-        {boardCanManage && <Button type="button" variant={editMode ? 'secondary' : 'outline'} size="sm" aria-pressed={editMode} onClick={() => setEditMode((editing) => !editing)}>
+        {!standup && <Button type="button" variant="outline" size="sm" disabled={startingStandup} onClick={() => void beginStandup(board)}>
+          {startingStandup ? 'Starting…' : 'Standup'}
+        </Button>}
+        {boardCanManage && !standup && <Button type="button" variant={editMode ? 'secondary' : 'outline'} size="sm" aria-pressed={editMode} onClick={() => setEditMode((editing) => !editing)}>
           {editMode ? 'Done editing' : 'Edit board'}
         </Button>}
       </header>
@@ -138,6 +161,7 @@ export default function BoardPage() {
           <Button type="button" variant="ghost" size="sm" onClick={() => setToBacklog(null)}>Dismiss</Button>
         </p>
       )}
+      {standup && <StandupPanel standup={standup} onChange={setStandup} onEnd={() => setStandup(null)} />}
       {/* sprint start/close changes which tickets the board shows, so reload */}
       {kanban
         ? <p className="border-b px-6 py-3 text-sm text-muted-foreground">Kanban board: work flows continuously. Keep each column within its WIP limit.</p>
@@ -151,7 +175,8 @@ export default function BoardPage() {
       <div className="flex flex-1 items-start gap-4 overflow-x-auto p-6">
         {board.columns?.map((col) => {
           const cols = board.columns ?? [];
-          const shown = filterTicketsByLabels(col.tickets, labelFilter);
+          const turn = standup && speaker(standup); // standup: only the speaker's tickets
+          const shown = filterTicketsByLabels(col.tickets, labelFilter).filter((t) => !turn || t.assigned_to === turn.id);
           const done = col.id === cols.at(-1)?.id; // last column = Done
           return (
             <div key={col.id} className="min-w-72 flex-1">
