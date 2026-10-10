@@ -12,6 +12,7 @@ import { TICKET_TYPES as TYPES, TypeBadge, TypePicker } from '@/components/ticke
 import { TicketDialog } from '@/components/board/ticket-dialog';
 import { EstimateSelect } from '@/components/board/estimate';
 import { RefinementMode } from '@/components/project/refinement';
+import type { EstimateScale } from '@/lib/estimates';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
 import { LabelDrawer, TicketLabels } from '@/components/ticket/labels';
 import { attachAll, PendingAttachments, type PendingFile } from '@/components/ticket/pending-attachments';
@@ -40,6 +41,9 @@ export function Backlog({ projectId, boards, token }: Props) {
   const [sizing, setSizing] = useState<{ ticket: BacklogTicket; board: Board } | null>(null); // moving onto a board that needs an estimate
   const [error, setError] = useState('');
   const [editing, setEditing] = useState<BacklogTicket | null>(null);
+  const [editScale, setEditScale] = useState<EstimateScale>('none'); // a planned ticket is sized on its planned board's scale
+  const [changes, setChanges] = useState(0); // bumps on every reload, so refine mode refreshes too
+  const openEditor = (t: BacklogTicket, scale: EstimateScale = 'none') => { setEditScale(scale); setEditing(t); };
 
   // server does the filtering, ordering (ready first, blocked after) and paging; only the latest request may land
   const latest = useRef(0);
@@ -52,6 +56,7 @@ export function Backlog({ projectId, boards, token }: Props) {
       if (page > last) return setPage(last); // e.g. the last ticket on the last page moved away
       setData(d);
       setFailed(false);
+      setChanges((c) => c + 1);
     } catch {
       // keep already-rendered data during transient failures
       if (req === latest.current && (!quiet || data === null)) setFailed(true);
@@ -127,7 +132,28 @@ export function Backlog({ projectId, boards, token }: Props) {
           </div>
         )}
       </div>
-      {refining ? <RefinementMode projectId={projectId} boards={boards} token={token} onClose={() => { setRefining(false); void load(); }} /> : <>
+      {refining ? (
+        <RefinementMode
+          projectId={projectId} boards={boards} token={token} version={changes}
+          onClose={() => { setRefining(false); void load(); }}
+          onOpen={(t, scale) => openEditor(t as unknown as BacklogTicket, scale)}
+          ticketActions={(t) => (
+            <>
+              {boards.length > 0 && (
+                <Select items={Object.fromEntries(boards.map((b) => [b.id, b.name]))} value={null} onValueChange={(v) => v && moveTo(t, String(v))} disabled={busy === t.id}>
+                  <SelectTrigger size="sm" aria-label={`Move “${t.title}” to a board`}>
+                    <SelectValue placeholder={busy === t.id ? 'Moving…' : 'Move to board…'} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {boards.map((b) => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              )}
+              <Button size="sm" variant="ghost" className="text-destructive" disabled={busy === t.id} onClick={() => remove(t)}>Delete</Button>
+            </>
+          )}
+        />
+      ) : <>
 
       <div role="group" aria-label="Filter by type" className="mb-3 flex gap-1">
         {(['all', ...TYPES.map((t) => t.value)] as const).map((f) => (
@@ -162,18 +188,8 @@ export function Backlog({ projectId, boards, token }: Props) {
                 {t.description && <p className="line-clamp-1 text-sm text-muted-foreground">{t.description}</p>}
                 {t.created_at && <p className="text-xs text-muted-foreground">Created <When iso={t.created_at} /></p>}
               </div>
-              {boards.length > 0 && (
-                <Select items={Object.fromEntries(boards.map((b) => [b.id, b.name]))} value={null} onValueChange={(v) => v && moveTo(t, String(v))} disabled={busy === t.id}>
-                  <SelectTrigger size="sm" aria-label={`Move “${t.title}” to a board`}>
-                    <SelectValue placeholder={busy === t.id ? 'Moving…' : 'Move to board…'} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {boards.map((b) => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
-                  </SelectContent>
-                </Select>
-              )}
-              <Button size="sm" variant="ghost" disabled={busy === t.id} onClick={() => setEditing(t)}>Edit</Button>
-              <Button size="sm" variant="ghost" className="text-destructive" disabled={busy === t.id} onClick={() => remove(t)}>Delete</Button>
+              {/* moving to a board and deleting are planning decisions: they live in refine mode */}
+              <Button size="sm" variant="ghost" disabled={busy === t.id} onClick={() => openEditor(t)}>Edit</Button>
             </li>
           ))}
         </ul>
@@ -216,8 +232,9 @@ export function Backlog({ projectId, boards, token }: Props) {
           projectId={projectId}
           columnId=""
           ticket={editing as unknown as Ticket}
+          scale={editScale}
           onSaved={(nt) => { setData((d) => d && { ...d, tickets: d.tickets.map((x) => (x.id === nt.id ? { ...x, ...nt, column_id: null, type: nt.type ?? x.type } : x)) }); void load(); }}
-          onDeleted={(id) => { drop(id); void load(); }}
+          onDeleted={refining ? (id) => { drop(id); void load(); } : undefined} // deleting is a refine-mode decision
         />
       )}
       <AddDialog

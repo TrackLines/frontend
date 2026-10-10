@@ -52,3 +52,13 @@ test('over capacity: admins and leaders can approve, others see why it won’t s
   expect(approved).toContain('Approved');
   expect(approved).not.toContain('Approve 10');
 });
+
+test('in refine mode a ticket opens in place, not on its own page (which would leave refine mode)', () => {
+  const p = plan({ tickets: [ticket('a', '5')] });
+  const inPlace = renderToStaticMarkup(
+    <PlannedSprintCard plan={p} scale="fibonacci" canManage busy={false} token="t" act={async () => {}} onOpen={() => {}} />,
+  );
+  expect(inPlace).toContain('Ticket a');
+  expect(inPlace).not.toContain('href="/tickets/a"');
+  expect(card(p, true)).toContain('href="/tickets/a"'); // without an opener it falls back to the link
+});

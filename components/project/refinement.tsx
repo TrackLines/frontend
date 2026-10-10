@@ -1,25 +1,30 @@
 'use client';
 
 import Link from 'next/link';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { TypeBadge } from '@/components/ticket-type';
 import { EstimateSelect } from '@/components/board/estimate';
-import { ApiError, backlog, organization, plannedSprints, type BacklogTicket, type Board, type OrganizationRole, type PlannedSprint } from '@/lib/api';
+import { ApiError, backlog, organization, plannedSprints, type BacklogTicket, type Board, type OrganizationRole, type PlannedSprint, type Ticket } from '@/lib/api';
 import { canManageBoard } from '@/lib/board-access';
 import type { EstimateScale } from '@/lib/estimates';
 import { capacityView, MAX_PLANNED } from '@/lib/refinement';
 
-type Props = { projectId: string; boards: Board[]; token: string; onClose: () => void };
+type Props = {
+  projectId: string; boards: Board[]; token: string; onClose: () => void;
+  version?: number; // bumps when the backlog changed (edited, moved, deleted): reload
+  onOpen?: (ticket: Ticket, scale: EstimateScale) => void; // open a ticket's editor in place, staying in refine mode
+  ticketActions?: (ticket: BacklogTicket) => ReactNode; // e.g. move to a board, delete
+};
 
 // RefinementMode plans the project's next sprints from the backlog: unplanned backlog tickets on one
 // side, each sprint board's planned sprints (up to two) on the other. Tickets go into a board's sprint
 // with one click and are sized in place on that board's scale; each sprint shows how full it is
 // against the team's velocity, and an over-full one needs approving.
 // ponytail: buttons, not drag and drop; add DnD if planning lots of tickets gets tedious.
-export function RefinementMode({ projectId, boards, token, onClose }: Props) {
+export function RefinementMode({ projectId, boards, token, onClose, version = 0, onOpen, ticketActions }: Props) {
   const sprintBoards = boards.filter((b) => b.style !== 'kanban');
   const [plans, setPlans] = useState<Record<string, PlannedSprint[]> | null>(null); // by board id
   const [tickets, setTickets] = useState<BacklogTicket[]>([]);
@@ -39,6 +44,8 @@ export function RefinementMode({ projectId, boards, token, onClose }: Props) {
 
   useEffect(() => {
     load().catch(() => setError('Couldn’t load the backlog and planned sprints. Please try again.'));
+  }, [load, version]);
+  useEffect(() => {
     organization.me(token).then(setRole, () => setRole({ user_id: '', org_id: '', admin: false, leads: [] })); // fail closed
   }, [load, token]);
 
@@ -77,13 +84,14 @@ export function RefinementMode({ projectId, boards, token, onClose }: Props) {
               {tickets.map((t) => (
                 <li key={t.id} className="flex flex-wrap items-center gap-2 rounded-lg border p-3 text-sm">
                   <TypeBadge type={t.type} />
-                  <Link href={`/tickets/${t.id}`} className="min-w-0 flex-1 font-medium hover:underline">{t.title}</Link>
+                  <TicketTitle ticket={t} onOpen={onOpen && (() => onOpen(t as unknown as Ticket, 'none'))} className="font-medium" />
                   {targets.map(({ board, plan }) => (
                     <Button key={plan.id} size="sm" variant="outline" disabled={busy}
                       onClick={() => act(() => plannedSprints.planTicket(t.id, plan.id, token), `Couldn’t plan “${t.title}”. Please try again.`)}>
                       {board.name} · Sprint {plan.number}
                     </Button>
                   ))}
+                  {ticketActions?.(t)}
                 </li>
               ))}
             </ul>
@@ -102,7 +110,8 @@ export function RefinementMode({ projectId, boards, token, onClose }: Props) {
                     </p>
                   )}
                   {boardPlans.map((p) => (
-                    <PlannedSprintCard key={p.id} plan={p} scale={b.estimate_scale ?? 'none'} canManage={canManage} busy={busy} token={token} act={act} />
+                    <PlannedSprintCard key={p.id} plan={p} scale={b.estimate_scale ?? 'none'} canManage={canManage} busy={busy} token={token} act={act}
+                      onOpen={onOpen && ((t) => onOpen(t, b.estimate_scale ?? 'none'))} />
                   ))}
                   {canManage && boardPlans.length < MAX_PLANNED && (
                     <Button size="sm" variant="outline" className="justify-self-start" disabled={busy}
@@ -120,9 +129,10 @@ export function RefinementMode({ projectId, boards, token, onClose }: Props) {
   );
 }
 
-export function PlannedSprintCard({ plan, scale, canManage, busy, token, act }: {
+export function PlannedSprintCard({ plan, scale, canManage, busy, token, act, onOpen }: {
   plan: PlannedSprint; scale: EstimateScale; canManage: boolean; busy: boolean; token: string;
   act: (change: () => Promise<unknown>, failed: string) => Promise<void>;
+  onOpen?: (ticket: Ticket) => void;
 }) {
   const view = capacityView(plan.capacity);
   return (
@@ -157,7 +167,7 @@ export function PlannedSprintCard({ plan, scale, canManage, busy, token, act }: 
           <ul className="grid gap-2">
             {plan.tickets.map((t) => (
               <li key={t.id} className="flex flex-wrap items-center gap-2">
-                <Link href={`/tickets/${t.id}`} className="min-w-0 flex-1 hover:underline">{t.title}</Link>
+                <TicketTitle ticket={t} onOpen={onOpen && (() => onOpen(t))} />
                 {scale !== 'none' && (
                   <div className="w-36">
                     <EstimateSelect scale={scale} value={t.estimate ?? ''}
@@ -174,4 +184,11 @@ export function PlannedSprintCard({ plan, scale, canManage, busy, token, act }: 
         )}
     </div>
   );
+}
+
+// TicketTitle opens the ticket's editor in place when it can (so refine mode stays open), else links to it.
+function TicketTitle({ ticket, onOpen, className = '' }: { ticket: { id: string; title: string }; onOpen?: () => void; className?: string }) {
+  return onOpen
+    ? <Button type="button" variant="link" onClick={onOpen} className={`h-auto min-w-0 flex-1 justify-start p-0 text-left whitespace-normal text-foreground ${className}`}>{ticket.title}</Button>
+    : <Link href={`/tickets/${ticket.id}`} className={`min-w-0 flex-1 hover:underline ${className}`}>{ticket.title}</Link>;
 }
