@@ -3,7 +3,7 @@
 import { XIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { attachments } from '@/lib/api';
-import { UploadButton } from '@/lib/uploadthing';
+import { AttachFilesButton } from './attach-files-button';
 import { formatSize } from './attachments';
 
 // A file already uploaded to UploadThing, waiting for its ticket to exist.
@@ -18,14 +18,7 @@ export function PendingAttachments({ files, onChange }: { files: PendingFile[]; 
     <div className="grid gap-2">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="text-sm font-medium">Attachments <span className="font-normal text-muted-foreground">(optional)</span></span>
-        <UploadButton
-          endpoint="ticketAttachment"
-          appearance={{ button: 'bg-secondary text-secondary-foreground text-sm h-8 px-3 rounded-md', allowedContent: 'hidden' }}
-          content={{ button: ({ isUploading }) => (isUploading ? 'Uploading…' : 'Attach files') }}
-          onClientUploadComplete={(up) =>
-            onChange([...files, ...up.map((f) => ({ key: f.key, url: f.ufsUrl, name: f.name, size: f.size, content_type: f.type }))])
-          }
-        />
+        <AttachFilesButton onUploaded={(up) => onChange([...files, ...up])} />
       </div>
       {files.length > 0 && (
         <ul className="grid gap-1 text-sm">

@@ -14,9 +14,9 @@ test('card shows a badge for bugs and features, not tasks', () => {
   expect(card('task')).not.toContain('data-slot="badge"');
 });
 
-test('picker marks the current type', () => {
+test('picker is a dropdown showing the current type', () => {
   const html = renderToStaticMarkup(<TypePicker value="feature" onChange={() => {}} />);
-  const input = (v: string) => html.match(new RegExp(`<input[^>]*value="${v}"[^>]*>`))![0];
-  expect(input('feature')).toContain('checked=""');
-  expect(input('bug')).not.toContain('checked');
+  expect(html).toContain('Type');
+  expect(html).toContain('>Feature<'); // the label, not the raw value
+  expect(html).not.toContain('type="radio"');
 });

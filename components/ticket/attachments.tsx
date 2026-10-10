@@ -5,7 +5,7 @@ import { PaperclipIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { attachments, type Attachment } from '@/lib/api';
-import { UploadButton } from '@/lib/uploadthing';
+import { AttachFilesButton } from './attach-files-button';
 
 export function formatSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`;
@@ -40,22 +40,19 @@ export function Attachments({ ticketId, token, locked = false }: { ticketId: str
           <PaperclipIcon className="size-4" aria-hidden /> Attachments{list ? ` (${list.length})` : ''}
         </h2>
         {!locked && (
-          <UploadButton
-            endpoint="ticketAttachment"
-            appearance={{ button: 'bg-primary text-primary-foreground text-sm h-8 px-3 rounded-md', allowedContent: 'hidden' }}
-            content={{ button: ({ isUploading }) => (isUploading ? 'Uploading…' : 'Attach files') }}
-            onClientUploadComplete={async (files) => {
+          <AttachFilesButton
+            onUploaded={async (files) => {
               setError('');
               for (const f of files) {
                 try {
-                  const a = await attachments.add(ticketId, { key: f.key, url: f.ufsUrl, name: f.name, size: f.size, content_type: f.type }, token);
+                  const a = await attachments.add(ticketId, f, token);
                   setList((l) => [...(l ?? []), a]);
                 } catch {
                   setError(`Uploaded “${f.name}” but couldn’t attach it to the ticket. Please try again.`);
                 }
               }
             }}
-            onUploadError={(e) => setError(e.message || 'Upload failed. Please try again.')}
+            onError={setError}
           />
         )}
       </div>

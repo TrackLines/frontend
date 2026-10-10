@@ -127,7 +127,6 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
           <DialogDescription>Give the work a clear title. Details are optional.</DialogDescription>
         </DialogHeader>
         <form onSubmit={save} className="grid gap-4">
-          <TypePicker value={type} onChange={setType} name={`type-${ticket?.id ?? 'new'}`} />
           <label className="grid gap-1.5 text-sm font-medium">
             Title
             <Input autoFocus value={title} maxLength={200} required placeholder="What needs to be done?" onChange={(event) => setTitle(event.target.value)} />
@@ -143,16 +142,20 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
               className="w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
             />
           </label>
-          <label className="grid gap-1.5 text-sm font-medium">
-            Priority <span className="font-normal text-muted-foreground">(optional)</span>
-            <PrioritySelect value={priority} onChange={setPriority} />
-          </label>
-          {estimating && (
+          {/* the short pickers share a row (the dialog is wide); they stack on phones */}
+          <div className="grid gap-4 sm:grid-cols-3">
+            <TypePicker value={type} onChange={setType} />
             <label className="grid gap-1.5 text-sm font-medium">
-              Estimate
-              <EstimateSelect scale={scale} value={estimate} onChange={setEstimate} required />
+              Priority <span className="font-normal text-muted-foreground">(optional)</span>
+              <PrioritySelect value={priority} onChange={setPriority} />
             </label>
-          )}
+            {estimating && (
+              <label className="grid gap-1.5 text-sm font-medium">
+                Estimate
+                <EstimateSelect scale={scale} value={estimate} onChange={setEstimate} required />
+              </label>
+            )}
+          </div>
           <LabelDrawer projectId={projectId ?? ticket?.project_id ?? ''} token={token} labels={labels} onChange={setLabels} disabled={saving || deleting} />
           {ticket && (
             // saves straight away (not with the form) — same as claiming

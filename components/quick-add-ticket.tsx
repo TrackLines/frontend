@@ -102,7 +102,7 @@ function QuickAddDialog({ scope, onClose }: { scope: NonNullable<ReturnType<type
               </Select>
             </label>
           )}
-          <TypePicker value={type} onChange={setType} name="quick-add-type" />
+          <TypePicker value={type} onChange={setType} />
           <LabelDrawer projectId={projectId} token={token ?? ''} labels={labels} onChange={setLabels} disabled={!token || saving} />
           <Input autoFocus required maxLength={200} placeholder="What's wrong / what's needed?" value={title} onChange={(e) => setTitle(e.target.value)} />
           <textarea
