@@ -45,7 +45,8 @@ export function SprintBar({ board, token, canManage, editMode = false, onChanged
           )}
           {/* a board setting: only while editing the board, like its scale and style */}
           {canManage && editMode && <Button size="sm" variant="outline" onClick={() => setEditingLength(true)}>Change length</Button>}
-          {canManage && sprintStarted && <Button size="sm" variant="outline" onClick={() => setClosing(true)}>Close sprint</Button>}
+          {/* closing is running the board, not configuring it: hidden while editing */}
+          {canManage && !editMode && sprintStarted && <Button size="sm" variant="outline" onClick={() => setClosing(true)}>Close sprint</Button>}
         </>
       ) : (
         <>

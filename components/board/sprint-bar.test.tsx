@@ -43,14 +43,17 @@ test('open sprint: number, dates, time left, close', () => {
   expect(html).not.toContain('Start sprint');
 });
 
-test('change length is offered while editing the board', () => {
+test('change length while editing the board; close sprint only outside it', () => {
   const sprint = { id: 's', board_id: 'b', number: 4, length_days: 14, starts_at: '2026-10-01T09:00:00Z', ends_at: new Date(Date.now() + 86_400_000).toISOString(), closed_at: null };
   const html = (editMode: boolean, canManage: boolean) => renderToStaticMarkup(
     <SprintBar board={{ ...board, sprint }} token="t" canManage={canManage} editMode={editMode} onChanged={() => {}} />,
   );
   expect(html(true, true)).toContain('Change length');
+  expect(html(true, true)).not.toContain('Close sprint'); // closing isn't a setting
   expect(html(false, true)).not.toContain('Change length');
+  expect(html(false, true)).toContain('Close sprint');
   expect(html(true, false)).not.toContain('Change length');
+  expect(html(false, false)).not.toContain('Close sprint');
 });
 
 test('scheduled sprint shows its start date without current sprint actions', () => {
