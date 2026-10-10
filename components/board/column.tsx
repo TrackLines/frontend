@@ -7,20 +7,24 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ApiError, type Column as BoardColumn } from '@/lib/api';
 import { columns } from '@/lib/api';
+import { points, type EstimateScale } from '@/lib/estimates';
 
 type ColumnProps = {
   column: BoardColumn;
   token: string;
   editMode?: boolean;
   note?: ReactNode; // under the header, e.g. kanban's hidden Done tickets
+  scale?: EstimateScale; // the board's: with one, the header also shows the column's points
+  done?: boolean; // the board's last column: its points are completed, the others' still to do
   children?: ReactNode;
 };
 
-export function Column({ column, token, editMode = false, note, children }: ColumnProps) {
+export function Column({ column, token, editMode = false, note, scale = 'none', done = false, children }: ColumnProps) {
   const [name, setName] = useState(column.name);
   const [limit, setLimit] = useState(column.wip_limit ?? null);
   const count = column.tickets.length;
   const over = limit !== null && count > limit;
+  const total = column.tickets.reduce((sum, t) => sum + points(t.estimate), 0);
 
   return (
     <section
@@ -36,9 +40,16 @@ export function Column({ column, token, editMode = false, note, children }: Colu
             setName(next);
           }}
         />
-        <Badge variant={over ? 'destructive' : 'secondary'} title={limit === null ? undefined : 'Tickets / work-in-progress limit'}>
-          {count}{limit !== null && ` / ${limit}`}
-        </Badge>
+        <div className="flex items-center gap-1.5">
+          {scale !== 'none' && (
+            <Badge variant="outline" title={done ? 'Points completed' : 'Points left to do'}>
+              {total} {total === 1 ? 'pt' : 'pts'} {done ? 'done' : 'left'}
+            </Badge>
+          )}
+          <Badge variant={over ? 'destructive' : 'secondary'} title={limit === null ? 'Tickets' : 'Tickets / work-in-progress limit'}>
+            {count}{limit !== null && ` / ${limit}`}
+          </Badge>
+        </div>
       </header>
       {over && <p role="status" className="text-xs text-destructive">Over the limit of {limit}: finish something before starting more.</p>}
       {editMode && <WipLimit columnId={column.id} token={token} value={limit} onChange={setLimit} />}

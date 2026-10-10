@@ -39,7 +39,7 @@ export function Charts({ boardId, token }: { boardId: string; token: string }) {
           {failed && <p role="alert" className="text-sm text-destructive">Couldn&apos;t load the charts. Please try again.</p>}
           {!data && !failed && <Skeleton role="status" aria-label="Loading charts…" className="h-56 w-full" />}
           {data && (
-            <div className="grid gap-8">
+            <div className="grid grid-cols-1 gap-8">
               {data.current ? <BurnChart burn={data.current} unit={data.unit} /> : <p className="text-sm text-muted-foreground">No sprint running, so there&apos;s nothing to burn down.</p>}
               <VelocityChart velocity={data} />
             </div>
@@ -60,7 +60,7 @@ export function BurnChart({ burn, unit, now = Date.now(), closed = false }: { bu
   const summary = `${fmt(done)} of ${fmt(burn.total)} ${unit} done in sprint ${burn.number}`;
 
   return (
-    <section className="grid gap-2">
+    <section className="grid grid-cols-1 gap-2">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h3 className="font-semibold">Sprint {burn.number}: {mode === 'down' ? 'burn-down' : 'burn-up'}</h3>
         <ToggleGroup size="sm" variant="outline" aria-label="Chart type" value={[mode]} onValueChange={(v) => { if (v[0]) setMode(v[0] as 'down' | 'up'); }}>
@@ -94,7 +94,7 @@ export function VelocityChart({ velocity }: { velocity: Velocity }) {
   const closed = velocity.sprints.length;
   if (avg === null) {
     return (
-      <section className="grid gap-1">
+      <section className="grid grid-cols-1 gap-1">
         <h3 className="font-semibold">Velocity</h3>
         <p className="text-sm text-muted-foreground">
           Velocity shows up after {MIN_SPRINTS_FOR_VELOCITY} closed sprints, so there&apos;s enough to compare. {closed === 0 ? 'None closed yet.' : `${closed} closed so far.`}
@@ -105,7 +105,7 @@ export function VelocityChart({ velocity }: { velocity: Velocity }) {
   const data = velocity.sprints.slice(-12).map((s) => ({ sprint: `Sprint ${s.number}`, number: s.number, completed: s.completed }));
   const config = { completed: { label: velocity.unit === 'points' ? 'Points' : 'Tickets', color: 'var(--chart-1)' } } satisfies ChartConfig;
   return (
-    <section className="grid gap-2">
+    <section className="grid grid-cols-1 gap-2">
       <h3 className="font-semibold">Velocity</h3>
       <ChartContainer config={config} className="aspect-auto h-56 w-full" aria-label={`Average ${fmt(avg)} ${velocity.unit} per sprint over the last ${MIN_SPRINTS_FOR_VELOCITY}`}>
         <BarChart data={data} margin={{ top: 20, left: 0, right: 12 }}>

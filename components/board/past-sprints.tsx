@@ -89,9 +89,9 @@ export function SprintView({ id, token, onBack }: { id: string; token: string; o
 // SprintDetailBody is the read-only content: the burn chart, then what the sprint finished.
 export function SprintDetailBody({ detail: d }: { detail: SprintDetail }) {
   return (
-    <div className="grid gap-6">
+    <div className="grid grid-cols-1 gap-6">
       <BurnChart burn={d.burn} unit={d.unit} now={Date.parse(d.closed_at ?? d.ends_at)} closed={d.closed_at !== null} />
-      <section className="grid gap-2">
+      <section className="grid grid-cols-1 gap-2">
         <h3 className="font-semibold">Finished</h3>
         {d.tickets.length === 0 ? (
           <p className="text-sm text-muted-foreground">Nothing was finished in this sprint.</p>

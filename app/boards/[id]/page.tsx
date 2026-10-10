@@ -187,7 +187,7 @@ export default function BoardPage() {
           return (
             <div key={col.id} className="min-w-72 flex-1">
               <Column
-                column={col} token={token} editMode={boardEditMode}
+                column={col} token={token} editMode={boardEditMode} scale={board.estimate_scale} done={done}
                 note={kanban && done && (board.hidden_done ?? 0) > 0 && (
                   <p className="text-xs text-muted-foreground">{board.hidden_done} finished over 14 days ago {board.hidden_done === 1 ? 'is' : 'are'} hidden.</p>
                 )}

@@ -21,3 +21,12 @@ test('no limit: just the count, and the WIP field only in edit mode', () => {
   expect(renderToStaticMarkup(<Column column={col(1, null)} token="x" />)).not.toContain('WIP limit');
   expect(renderToStaticMarkup(<Column column={col(1, null)} token="x" editMode />)).toContain('WIP limit');
 });
+
+test('on an estimated board the header shows points: left to do, or completed in Done', () => {
+  const sized = { ...col(3, null), tickets: [{ ...ticket('a'), estimate: '5' }, { ...ticket('b'), estimate: '3' }, ticket('c')] };
+  expect(renderToStaticMarkup(<Column column={sized} token="x" scale="fibonacci" />)).toContain('8 pts left');
+  expect(renderToStaticMarkup(<Column column={sized} token="x" scale="fibonacci" done />)).toContain('8 pts done');
+  expect(renderToStaticMarkup(<Column column={sized} token="x" />)).not.toContain('pts'); // no scale: count only
+  const shirts = { ...col(2, null), tickets: [{ ...ticket('a'), estimate: 'M' }, { ...ticket('b'), estimate: 'XS' }] };
+  expect(renderToStaticMarkup(<Column column={shirts} token="x" scale="tshirt" />)).toContain('4 pts left'); // M=3 + XS=1
+});
