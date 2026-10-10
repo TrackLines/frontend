@@ -66,7 +66,7 @@ export type ProjectStats = { boards: number; roadmaps: number; open: number; don
 export type ProjectLabel = { label: string; count: number };
 export type ApiKeyKind = 'ai' | 'service';
 export type ApiKey = { id: string; name: string; kind: ApiKeyKind; prefix: string; created_at: string; last_used_at: string | null };
-export type Subscription = { paid: boolean; project_limit: number }; // project_limit -1 = unlimited
+export type Subscription = { paid: boolean; project_limit: number; billed?: boolean }; // project_limit -1 = unlimited; billed = through Stripe, so there's billing to manage
 
 export type OrganizationMember = { user_id: string; first_name?: string; last_name?: string; image_url?: string; identifier: string };
 export type OrganizationMemberPage = { members: OrganizationMember[]; total_count: number; limit: number; offset: number };

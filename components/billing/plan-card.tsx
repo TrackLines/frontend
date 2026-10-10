@@ -17,6 +17,13 @@ export function billingError(err: unknown, action: 'checkout' | 'portal'): strin
   return 'Couldn’t reach billing. Please try again.';
 }
 
+// planAction is what the plan card offers: upgrade (free), manage billing (paid through Stripe),
+// or nothing (a plan granted by hand has no Stripe billing to manage).
+export function planAction(plan: Subscription): 'upgrade' | 'manage' | null {
+  if (!plan.paid) return 'upgrade';
+  return plan.billed === false ? null : 'manage';
+}
+
 // PlanCard shows the current plan and the way to change it (Stripe checkout / customer portal).
 export function PlanCard({ token }: { token: string }) {
   const [plan, setPlan] = useState<Subscription | null>(null);
@@ -49,13 +56,15 @@ export function PlanCard({ token }: { token: string }) {
         <Badge variant={plan.paid ? 'default' : 'secondary'}>{plan.paid ? 'Pro' : 'Free'}</Badge>
       </div>
       <p className="mt-2 text-sm text-muted-foreground">
-        {plan.paid
-          ? 'Unlimited projects, boards and roadmaps.'
-          : `${plan.project_limit} project with unlimited boards and roadmaps. Upgrade for unlimited projects.`}
+        {!plan.paid
+          ? `${plan.project_limit} project with unlimited boards and roadmaps. Upgrade for unlimited projects.`
+          : plan.billed === false
+            ? 'Unlimited projects, boards and roadmaps. This plan was granted to you, so there’s no billing to manage.'
+            : 'Unlimited projects, boards and roadmaps.'}
       </p>
       {error && <p role="alert" className="mt-3 text-sm text-destructive">{error}</p>}
       <div className="mt-4">
-        {plan.paid ? (
+        {planAction(plan) === null ? null : planAction(plan) === 'manage' ? (
           <Button variant="outline" disabled={busy} onClick={() => go('portal')}>{busy ? 'Opening…' : 'Manage billing'}</Button>
         ) : (
           <Button disabled={busy} onClick={() => go('checkout')}>{busy ? 'Opening checkout…' : 'Upgrade to Pro'}</Button>
