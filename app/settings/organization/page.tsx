@@ -1,5 +1,6 @@
 'use client';
 
+import { ListPageSkeleton } from '@/components/page-skeletons';
 import Link from 'next/link';
 import { useEffect, useState, type FormEvent } from 'react';
 import { Badge } from '@/components/ui/badge';
@@ -87,9 +88,9 @@ export default function OrganizationSettingsPage() {
     setInviteEmail('');
   }
 
-  if (!token) return <main className="mx-auto max-w-6xl px-6 py-10"><p role="status" className="text-sm text-muted-foreground">Loading organization settings…</p></main>;
+  if (!token) return <ListPageSkeleton label="Loading organization settings…" sections={2} />;
   if (loadError && !data) return <main className="mx-auto max-w-6xl px-6 py-10"><Link href="/settings" className="text-sm text-muted-foreground hover:underline">← Settings</Link><h1 className="mt-2 mb-6 text-3xl font-bold tracking-tight">Organization</h1>{error && <p role="alert" className="mb-4 text-sm text-destructive">{error}</p>}<ReceivedInvitations items={receivedInvites} token={token} run={run} /><p role="alert" className="mt-6 text-sm text-muted-foreground">{loadError}</p></main>;
-  if (!data) return <main className="mx-auto max-w-6xl px-6 py-10"><p role="status" className="text-sm text-muted-foreground">Loading members and teams…</p></main>;
+  if (!data) return <ListPageSkeleton label="Loading members and teams…" sections={2} />;
 
   const administrators = new Set(data.admins.map((admin) => admin.user_id));
   return (

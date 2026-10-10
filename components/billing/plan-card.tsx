@@ -1,5 +1,6 @@
 'use client';
 
+import { Skeleton } from '@/components/ui/skeleton';
 import { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -39,7 +40,7 @@ export function PlanCard({ token }: { token: string }) {
   }
 
   if (failed) return <p role="alert" className="text-sm text-destructive">Couldn&apos;t load your plan. Please refresh to try again.</p>;
-  if (!plan) return <p role="status" className="text-sm text-muted-foreground">Loading plan…</p>;
+  if (!plan) return <Skeleton role="status" aria-label="Loading plan…" className="h-36 w-full rounded-xl" />;
 
   return (
     <div className="rounded-xl border p-5">

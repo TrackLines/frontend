@@ -1,5 +1,6 @@
 'use client';
 
+import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
@@ -30,7 +31,7 @@ export default function SettingsPage() {
 
 function Plan() {
   const token = useToken();
-  return token ? <PlanCard token={token} /> : <p role="status" className="text-sm text-muted-foreground">Loading plan…</p>;
+  return token ? <PlanCard token={token} /> : <Skeleton role="status" aria-label="Loading plan…" className="h-36 w-full rounded-xl" />;
 }
 
 // Stripe sends people back here with ?billing=success|cancelled (backend PORTAL_URL).

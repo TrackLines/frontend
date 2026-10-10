@@ -94,3 +94,42 @@ export function ListSkeleton({ rows = 3, className = '' }: { rows?: number; clas
     </div>
   );
 }
+
+// ListPageSkeleton: back link, title, intro, then one bordered list per section (settings pages, roadmaps).
+export function ListPageSkeleton({ label, sections = 1, action = false }: { label: string; sections?: number; action?: boolean }) {
+  return (
+    <Loading label={label} className="mx-auto max-w-6xl px-6 py-10">
+      <Skeleton className="h-4 w-20" />
+      <div className="mt-3 flex items-center justify-between gap-4">
+        <Skeleton className="h-9 w-56" />
+        {action && <Skeleton className="h-9 w-28" />}
+      </div>
+      <Skeleton className="mt-3 h-4 w-full max-w-xl" />
+      {Array.from({ length: sections }, (_, i) => (
+        <div key={i} className="mt-10 grid gap-4">
+          <Skeleton className="h-6 w-32" />
+          <ListSkeleton />
+        </div>
+      ))}
+    </Loading>
+  );
+}
+
+// FormPageSkeleton: a page of stacked form sections (roadmap editing).
+export function FormPageSkeleton({ label }: { label: string }) {
+  return (
+    <Loading label={label} className="mx-auto grid max-w-6xl gap-10 px-6 py-10">
+      <div>
+        <Skeleton className="h-4 w-20" />
+        <Skeleton className="mt-3 h-9 w-56" />
+      </div>
+      {[0, 1].map((i) => (
+        <div key={i} className="grid gap-3 rounded-xl border p-5">
+          <Skeleton className="h-6 w-40" />
+          <Skeleton className="h-9 w-full" />
+          <Skeleton className="h-20 w-full" />
+        </div>
+      ))}
+    </Loading>
+  );
+}

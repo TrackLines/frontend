@@ -1,5 +1,6 @@
 'use client';
 
+import { ListSkeleton } from '@/components/page-skeletons';
 import { When } from '@/components/when';
 import { useEffect, useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
@@ -64,7 +65,7 @@ export function TicketComments({ ticketId, token }: { ticketId: string; token: s
             <span>Couldn&apos;t load the conversation.</span>
             <Button type="button" size="sm" variant="outline" onClick={() => setRetry((n) => n + 1)}>Try again</Button>
           </div>
-        ) : <p role="status" className="text-sm text-muted-foreground">Loading comments…</p>
+        ) : <ListSkeleton rows={2} />
       ) : comments.length === 0 ? (
         <p className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">No comments yet. Add the first update.</p>
       ) : (

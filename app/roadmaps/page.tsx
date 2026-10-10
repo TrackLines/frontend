@@ -1,5 +1,6 @@
 'use client';
 
+import { ListPageSkeleton } from '@/components/page-skeletons';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { VisibilityBadge } from '@/components/roadmap/visibility';
@@ -44,7 +45,7 @@ export default function RoadmapsPage() {
   }
 
   if (failed) return <Message title="Couldn't load your roadmaps" body="Please refresh to try again." />;
-  if (!entries || !token) return <p className="p-8 text-muted-foreground" role="status">Loading roadmaps…</p>;
+  if (!entries || !token) return <ListPageSkeleton label="Loading roadmaps…" />;
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">

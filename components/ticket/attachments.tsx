@@ -1,5 +1,6 @@
 'use client';
 
+import { ListSkeleton } from '@/components/page-skeletons';
 import { PaperclipIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -61,7 +62,7 @@ export function Attachments({ ticketId, token, locked = false }: { ticketId: str
       {locked && <p className="text-sm text-muted-foreground">This ticket is done — move it out of Done to add or remove files.</p>}
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       {list === null ? (
-        !error && <p role="status" className="text-sm text-muted-foreground">Loading attachments…</p>
+        !error && <ListSkeleton rows={1} />
       ) : list.length === 0 ? (
         <p className="text-sm text-muted-foreground">No files attached.</p>
       ) : (

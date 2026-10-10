@@ -1,5 +1,6 @@
 'use client';
 
+import { FormPageSkeleton } from '@/components/page-skeletons';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState, type FormEvent } from 'react';
@@ -23,7 +24,7 @@ export default function EditRoadmapPage() {
 
   if (error === 404 || error === 403) return <Message title="Roadmap not found" body="It may have been deleted, or it belongs to another organization." />;
   if (error) return <Message title="Couldn't load this roadmap" body="Please refresh to try again." />;
-  if (!roadmap || !token) return <p className="p-8 text-muted-foreground" role="status">Loading roadmap…</p>;
+  if (!roadmap || !token) return <FormPageSkeleton label="Loading roadmap…" />;
 
   return (
     <main className="mx-auto grid max-w-6xl gap-10 px-6 py-10">

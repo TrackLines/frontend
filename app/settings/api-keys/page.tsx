@@ -1,5 +1,6 @@
 'use client';
 
+import { ListPageSkeleton } from '@/components/page-skeletons';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { NameDialog } from '@/components/name-dialog';
@@ -25,7 +26,7 @@ export default function ApiKeysPage() {
   }, [loaded]); // load once; token refreshes must not refetch
 
   if (failed) return <p className="p-8 text-destructive" role="alert">Couldn&apos;t load your API keys. Please refresh to try again.</p>;
-  if (!list || !token) return <p className="p-8 text-muted-foreground" role="status">Loading API keys…</p>;
+  if (!list || !token) return <ListPageSkeleton label="Loading API keys…" action />;
 
   async function revoke(k: ApiKey) {
     if (!confirm(`Revoke "${k.name}"? Anything using it stops working immediately.`)) return;

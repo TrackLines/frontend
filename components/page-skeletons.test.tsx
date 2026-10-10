@@ -12,3 +12,12 @@ test('skeletons announce loading to screen readers and hide the shapes', () => {
     expect(html).toContain('animate-pulse');
   }
 });
+
+test('list and form page skeletons announce themselves and draw the page shape', async () => {
+  const { ListPageSkeleton, FormPageSkeleton } = await import('./page-skeletons');
+  const list = renderToStaticMarkup(<ListPageSkeleton label="Loading API keys…" sections={2} action />);
+  expect(list).toContain('Loading API keys…');
+  expect(list).toContain('aria-busy="true"');
+  expect(list.match(/divide-y rounded-xl border/g)?.length).toBe(2);
+  expect(renderToStaticMarkup(<FormPageSkeleton label="Loading roadmap…" />)).toContain('Loading roadmap…');
+});
