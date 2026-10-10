@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from '@/components/ui/input';
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { TICKET_TYPES as TYPES, TypeBadge, TypePicker } from '@/components/ticket-type';
-import { TicketDialog } from '@/components/board/ticket-dialog';
+import { TICKET_DIALOG_WIDTH, TicketDialog } from '@/components/board/ticket-dialog';
 import { EstimateSelect } from '@/components/board/estimate';
 import { RefinementMode } from '@/components/project/refinement';
 import type { EstimateScale } from '@/lib/estimates';
@@ -285,7 +285,7 @@ function AddDialog({ open, onOpenChange, projectId, token, onAdd }: {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className={`max-h-[90vh] overflow-y-auto ${TICKET_DIALOG_WIDTH}`}>
         <form onSubmit={submit} className="grid gap-4">
           <DialogHeader>
             <DialogTitle>Add to backlog</DialogTitle>

@@ -29,6 +29,10 @@ type Props = {
   scale?: EstimateScale; // the board's; no estimate field when absent or 'none'
 };
 
+// TICKET_DIALOG_WIDTH: creating and editing a ticket get room to work, 2/3 of the screen (phones: full width).
+// Every ticket create/edit dialog uses it, so they look the same.
+export const TICKET_DIALOG_WIDTH = 'sm:max-w-[66vw]';
+
 export function TicketDialog({ open, onOpenChange, token, projectId, columnId, ticket, onSaved, onDeleted, onSentToBacklog, done, scale = 'none' }: Props) {
   const [title, setTitle] = useState(ticket?.title ?? '');
   const [description, setDescription] = useState(ticket?.description ?? '');
@@ -117,8 +121,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       {/* default shadcn width (sm:max-w-sm) is too narrow for this form + 4 footer actions */}
-      {/* editing a ticket gets room to work: 2/3 of the screen (creating stays compact) */}
-      <DialogContent className={`max-h-[90vh] overflow-y-auto ${ticket ? 'sm:max-w-[66vw]' : 'sm:max-w-lg'}`}>
+      <DialogContent className={`max-h-[90vh] overflow-y-auto ${TICKET_DIALOG_WIDTH}`}>
         <DialogHeader>
           <DialogTitle>{editing ? 'Edit ticket' : 'Add a ticket'}</DialogTitle>
           <DialogDescription>Give the work a clear title. Details are optional.</DialogDescription>

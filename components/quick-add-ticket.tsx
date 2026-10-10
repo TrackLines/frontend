@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from '@/components/ui/input';
 import { backlog, boards, projects, type Project, type TicketType } from '@/lib/api';
 import { useToken } from '@/lib/use-token';
+import { TICKET_DIALOG_WIDTH } from '@/components/board/ticket-dialog';
 
 // Fired after a quick-add so an open backlog list can refresh itself.
 export const BACKLOG_CHANGED = 'tracklines:backlog-changed';
@@ -82,7 +83,7 @@ function QuickAddDialog({ scope, onClose }: { scope: NonNullable<ReturnType<type
 
   return (
     <Dialog open onOpenChange={(o) => !o && onClose()}>
-      <DialogContent>
+      <DialogContent className={`max-h-[90vh] overflow-y-auto ${TICKET_DIALOG_WIDTH}`}>
         <form onSubmit={submit} className="grid gap-4">
           <DialogHeader>
             <DialogTitle>New ticket</DialogTitle>
