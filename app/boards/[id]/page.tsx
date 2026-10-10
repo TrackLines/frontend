@@ -106,7 +106,7 @@ export default function BoardPage() {
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col">
-      <header className="flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b px-6 py-4">
+      <header className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b px-6 py-4">
         <Link href={`/projects/${board.project_id}`} className="text-sm text-muted-foreground hover:underline">← Project</Link>
         <EditableTitle
           value={board.name}
@@ -119,33 +119,38 @@ export default function BoardPage() {
             setBoard((current) => current && { ...current, name });
           }}
         />
-        {board.description && <p className="w-full text-muted-foreground">{board.description}</p>}
         <LabelFilter
           options={labelCounts((board.columns ?? []).flatMap((c) => c.tickets))}
           labels={labelFilter}
           onLabelsChange={setLabelFilter}
         />
-        {boardEditMode && (
-          <>
-            {boardIsAdmin && <Button type="button" variant="outline" size="sm" onClick={() => setSavingTemplate(true)}>Save as template</Button>}
-            <StyleSetting boardId={board.id} style={board.style ?? 'sprints'} token={token} onChanged={() => void load(true)} />
-            <ScaleSetting
-              boardId={board.id}
-              scale={board.estimate_scale ?? 'none'}
-              estimated={(board.columns ?? []).flatMap((c) => c.tickets).filter((t) => t.estimate).length}
-              token={token}
-              onChanged={() => void load(true)}
-            />
-          </>
-        )}
-        <CopyLink path={`/boards/${board.id}`} className="ml-auto" />
-        {!standup && <Button type="button" variant="outline" size="sm" disabled={startingStandup} onClick={() => void beginStandup(board)}>
-          {startingStandup ? 'Starting…' : 'Standup'}
-        </Button>}
-        {boardCanManage && !standup && <Button type="button" variant={editMode ? 'secondary' : 'outline'} size="sm" aria-pressed={editMode} onClick={() => setEditMode((editing) => !editing)}>
-          {editMode ? 'Done editing' : 'Edit board'}
-        </Button>}
+        {/* the same actions in and out of edit mode, so the header doesn't jump around */}
+        <div className="ml-auto flex flex-wrap items-center gap-2">
+          <CopyLink path={`/boards/${board.id}`} />
+          {/* standup is for running the board, not configuring it */}
+          {!standup && !boardEditMode && <Button type="button" variant="outline" size="sm" disabled={startingStandup} onClick={() => void beginStandup(board)}>
+            {startingStandup ? 'Starting…' : 'Standup'}
+          </Button>}
+          {boardCanManage && !standup && <Button type="button" variant={editMode ? 'secondary' : 'outline'} size="sm" aria-pressed={editMode} onClick={() => setEditMode((editing) => !editing)}>
+            {editMode ? 'Done editing' : 'Edit board'}
+          </Button>}
+        </div>
+        {board.description && <p className="w-full text-muted-foreground">{board.description}</p>}
       </header>
+      {boardEditMode && (
+        // board settings get their own strip under the header while editing
+        <section aria-label="Board settings" className="flex flex-wrap items-center gap-x-6 gap-y-2 border-b bg-muted/40 px-6 py-3 text-sm">
+          <StyleSetting boardId={board.id} style={board.style ?? 'sprints'} token={token} onChanged={() => void load(true)} />
+          <ScaleSetting
+            boardId={board.id}
+            scale={board.estimate_scale ?? 'none'}
+            estimated={(board.columns ?? []).flatMap((c) => c.tickets).filter((t) => t.estimate).length}
+            token={token}
+            onChanged={() => void load(true)}
+          />
+          {boardIsAdmin && <Button type="button" variant="outline" size="sm" className="ml-auto" onClick={() => setSavingTemplate(true)}>Save as template</Button>}
+        </section>
+      )}
       {permissionError && <p role="status" className="border-b px-6 py-2 text-sm text-muted-foreground">Couldn’t verify board permissions. Board settings are hidden until permissions can be checked.</p>}
       {permissionBoardId === board.id && !boardCanManage && <p role="note" className="border-b px-6 py-2 text-sm text-muted-foreground">Board settings are managed by organization admins and this board’s team leaders.</p>}
       {focus && !board.columns?.some((c) => c.tickets.some((t) => t.id === focus)) && (
