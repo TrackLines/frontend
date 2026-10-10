@@ -79,3 +79,17 @@ test('members keep sprint history and charts but cannot close a sprint', () => {
   expect(html).toContain('Charts');
   expect(html).not.toContain('Close sprint');
 });
+
+// Edit mode configures the board; running it (start/close, history, charts) waits until editing's done.
+test('edit mode shows only configuration', () => {
+  const running = { id: 's', board_id: 'b', number: 3, length_days: 14, starts_at: '2026-10-01T09:00:00Z', ends_at: new Date(Date.now() + 86_400_000).toISOString(), closed_at: null };
+  const editing = renderToStaticMarkup(<SprintBar board={{ ...board, sprint: running }} token="t" canManage editMode onChanged={() => {}} />);
+  expect(editing).toContain('Change length');
+  for (const action of ['Close sprint', 'Past sprints', 'Charts']) expect(editing).not.toContain(action);
+  const using = renderToStaticMarkup(<SprintBar board={{ ...board, sprint: running }} token="t" canManage onChanged={() => {}} />);
+  for (const action of ['Close sprint', 'Past sprints', 'Charts']) expect(using).toContain(action);
+  expect(using).not.toContain('Change length');
+  const noSprint = (editMode: boolean) => renderToStaticMarkup(<SprintBar board={board} token="t" canManage editMode={editMode} onChanged={() => {}} />);
+  expect(noSprint(true)).not.toContain('Start sprint');
+  expect(noSprint(false)).toContain('Start sprint');
+});

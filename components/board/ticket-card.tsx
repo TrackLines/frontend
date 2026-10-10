@@ -24,9 +24,10 @@ type Props = {
   openOnLoad?: { columnName: string }; // deep link (/boards/<id>?ticket=<this>): start with the View modal open
   done?: boolean; // in the board's last column: attachments locked
   scale?: EstimateScale; // the board's estimate scale
+  readOnly?: boolean; // the board is being edited: tickets can be viewed, not changed
 };
 
-export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, done, scale }: Props) {
+export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, done, scale, readOnly = false }: Props) {
   const [viewOpen, setViewOpen] = useState(Boolean(openOnLoad));
   const [editOpen, setEditOpen] = useState(false);
   const [columnName, setColumnName] = useState(openOnLoad?.columnName ?? '');
@@ -45,9 +46,9 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
           <Button type="button" variant="link" onClick={openView} className="h-auto min-w-0 flex-1 justify-start p-0 text-left leading-5 whitespace-normal text-foreground">
             {ticket.title}
           </Button>
-          <Button type="button" variant="ghost" size="icon" className="-mt-1 -mr-1.5 size-7 shrink-0 text-muted-foreground" aria-label={`Edit ${ticket.title}`} onClick={() => setEditOpen(true)}>
+          {!readOnly && <Button type="button" variant="ghost" size="icon" className="-mt-1 -mr-1.5 size-7 shrink-0 text-muted-foreground" aria-label={`Edit ${ticket.title}`} onClick={() => setEditOpen(true)}>
             <PencilIcon className="size-3.5" aria-hidden />
-          </Button>
+          </Button>}
         </div>
         {(ticket.blocked || ticket.estimate || (ticket.type && ticket.type !== 'task') || (ticket.priority && ticket.priority !== 'medium')) && (
           <div className="flex flex-wrap gap-1 px-3">
@@ -73,7 +74,7 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
         columnName={columnName}
         token={token}
         done={done}
-        onEdit={() => { setViewOpen(false); setEditOpen(true); }}
+        onEdit={readOnly ? undefined : () => { setViewOpen(false); setEditOpen(true); }}
       />
       <TicketDialog
         open={editOpen}

@@ -81,13 +81,14 @@ export function DroppableColumn({ id, ticketIds, children }: { id: string; ticke
 }
 
 // SortableTicket makes its child (a ticket card) draggable.
-export function SortableTicket({ id, children }: { id: string; children: ReactNode }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+// disabled: tickets stay put (e.g. while the board is being edited)
+export function SortableTicket({ id, disabled = false, children }: { id: string; disabled?: boolean; children: ReactNode }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id, disabled });
   return (
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`min-w-0 cursor-grab touch-none active:cursor-grabbing ${isDragging ? 'opacity-50' : ''}`}
+      className={`min-w-0 ${disabled ? '' : 'cursor-grab touch-none active:cursor-grabbing'} ${isDragging ? 'opacity-50' : ''}`}
       {...attributes}
       {...listeners}
       // keyboard drag only when the card itself is focused, so Enter/Space on "Edit ticket" still edits

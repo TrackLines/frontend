@@ -17,7 +17,7 @@ type Props = {
   onOpenChange: (open: boolean) => void;
   ticket: Ticket;
   columnName: string;
-  onEdit: () => void;
+  onEdit?: () => void; // absent: view only (e.g. while the board is being edited)
   token?: string; // enables the Attachments section
   done?: boolean; // in the board's last column: attachments locked
 };
@@ -67,7 +67,7 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
         <DialogFooter>
           <CopyLink path={`/tickets/${ticket.id}`} className="sm:mr-auto" />
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Close</Button>
-          <Button type="button" onClick={onEdit}>Edit</Button>
+          {onEdit && <Button type="button" onClick={onEdit}>Edit</Button>}
         </DialogFooter>
       </DialogContent>
     </Dialog>

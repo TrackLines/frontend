@@ -51,12 +51,13 @@ export function SprintBar({ board, token, canManage, editMode = false, onChanged
       ) : (
         <>
           <span className="text-muted-foreground">No sprint running — tickets aren&apos;t time-boxed.</span>
-          {canManage && <Button size="sm" onClick={() => setStarting(true)}>Start sprint</Button>}
+          {canManage && !editMode && <Button size="sm" onClick={() => setStarting(true)}>Start sprint</Button>}
         </>
       )}
       {/* closing a sprint opens the next, so number > 1 means there's history; no sprint, nothing to chart */}
-      {sprint && sprintStarted && sprint.number > 1 && <PastSprints boardId={board.id} token={token} />}
-      {sprint && sprintStarted && <Charts boardId={board.id} token={token} />}
+      {/* reporting is for running the board: hidden while editing */}
+      {!editMode && sprint && sprintStarted && sprint.number > 1 && <PastSprints boardId={board.id} token={token} />}
+      {!editMode && sprint && sprintStarted && <Charts boardId={board.id} token={token} />}
       {canManage && <StartDialog open={starting} onOpenChange={setStarting} boardId={board.id} token={token} onStarted={onChanged} />}
       {canManage && sprint && <ChangeLengthDialog key={sprint.id} open={editingLength} onOpenChange={setEditingLength} sprint={sprint} token={token} onChanged={onChanged} />}
       {canManage && sprint && sprintStarted && <CloseDialog key={sprint.id} open={closing} onOpenChange={setClosing} board={board} sprint={sprint} token={token} onClosed={onChanged} />}

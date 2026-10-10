@@ -119,11 +119,11 @@ export default function BoardPage() {
             setBoard((current) => current && { ...current, name });
           }}
         />
-        <LabelFilter
+        {!boardEditMode && <LabelFilter
           options={labelCounts((board.columns ?? []).flatMap((c) => c.tickets))}
           labels={labelFilter}
           onLabelsChange={setLabelFilter}
-        />
+        />}
         {/* the same actions in and out of edit mode, so the header doesn't jump around */}
         <div className="ml-auto flex flex-wrap items-center gap-2">
           <CopyLink path={`/boards/${board.id}`} />
@@ -181,7 +181,8 @@ export default function BoardPage() {
         {board.columns?.map((col) => {
           const cols = board.columns ?? [];
           const turn = standup && speaker(standup); // standup: only the speaker's tickets
-          const shown = filterTicketsByLabels(col.tickets, labelFilter).filter((t) => !turn || t.assigned_to === turn.id);
+          // editing shows every ticket: the label filter is hidden then
+          const shown = (boardEditMode ? col.tickets : filterTicketsByLabels(col.tickets, labelFilter)).filter((t) => !turn || t.assigned_to === turn.id);
           const done = col.id === cols.at(-1)?.id; // last column = Done
           return (
             <div key={col.id} className="min-w-72 flex-1">
@@ -193,12 +194,13 @@ export default function BoardPage() {
               >
                 <DroppableColumn id={col.id} ticketIds={shown.map((t) => t.id)}>
                   {shown.map((t) => (
-                    <SortableTicket key={t.id} id={t.id}>
+                    <SortableTicket key={t.id} id={t.id} disabled={boardEditMode}>
                       <TicketCard
                         ticket={t}
                         openOnLoad={t.id === focus ? { columnName: col.name } : undefined}
                         done={done}
                         scale={board.estimate_scale}
+                        readOnly={boardEditMode}
                         token={token}
                         onUpdated={(nt) => updateTickets(col.id, (ts) => ts.map((x) => (x.id === nt.id ? nt : x)))}
                         onDeleted={(tid) => updateTickets(col.id, (ts) => ts.filter((x) => x.id !== tid))}
@@ -206,8 +208,8 @@ export default function BoardPage() {
                     </SortableTicket>
                   ))}
                 </DroppableColumn>
-                {/* tickets reach Done by being moved there, not created in it */}
-                {!(done && cols.length > 1) && (
+                {/* tickets reach Done by being moved there, not created in it; none are added while editing */}
+                {!boardEditMode && !(done && cols.length > 1) && (
                   <Button variant="ghost" className="justify-start" onClick={() => setAddingTo(col.id)}>+ Add ticket</Button>
                 )}
               </Column>
