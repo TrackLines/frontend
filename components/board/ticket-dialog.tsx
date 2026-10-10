@@ -117,7 +117,8 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       {/* default shadcn width (sm:max-w-sm) is too narrow for this form + 4 footer actions */}
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
+      {/* editing a ticket gets room to work: 2/3 of the screen (creating stays compact) */}
+      <DialogContent className={`max-h-[90vh] overflow-y-auto ${ticket ? 'sm:max-w-[66vw]' : 'sm:max-w-lg'}`}>
         <DialogHeader>
           <DialogTitle>{editing ? 'Edit ticket' : 'Add a ticket'}</DialogTitle>
           <DialogDescription>Give the work a clear title. Details are optional.</DialogDescription>
