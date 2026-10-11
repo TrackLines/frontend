@@ -71,9 +71,8 @@ export function RepositoriesView({ linked, admin, connected, provider, choices, 
   const linkedNames = new Set((linked ?? []).map((r) => `${r.provider}:${r.full_name.toLowerCase()}`));
   const available = (choices ?? []).filter((r) => provider && !linkedNames.has(`${provider}:${r.full_name.toLowerCase()}`));
   return (
-    <section className="mt-10" aria-label="Repositories">
-      <h2 className="text-xl font-semibold tracking-tight">Repositories</h2>
-      <p className="mb-4 text-sm text-muted-foreground">Pull requests in these repositories that mention a ticket&apos;s key (e.g. in the branch name) show on the ticket; merging one closes it.</p>
+    <section aria-label="Repositories">
+      <p className="mb-4 text-muted-foreground">Pull requests in these repositories that mention a ticket&apos;s key (e.g. in the branch name) show on the ticket; merging one closes it.</p>
       {linked === null ? <p className="text-sm text-muted-foreground">Loading…</p>
         : linked.length === 0 ? <p className="text-sm text-muted-foreground">No repositories linked yet.</p>
         : (

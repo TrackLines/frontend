@@ -7,7 +7,6 @@ import { NameDialog } from '@/components/name-dialog';
 import { DEFAULT_TEMPLATE, TemplatePicker } from '@/components/board/template-picker';
 import { EditableTitle } from '@/components/editable-title';
 import { Backlog } from '@/components/project/backlog';
-import { ProjectRepositories } from '@/components/project/repositories';
 import { BoardCard } from '@/components/project/board-card';
 import { RoadmapEditorForm } from '@/components/roadmap-editor-form';
 import { VisibilityBadge } from '@/components/roadmap/visibility';
@@ -73,6 +72,10 @@ export default function ProjectPage() {
         <CopyButton value={project.id} label="Copy ID" size="sm" ariaLabel="Copy project ID" />
       </p>
       <ProjectKeyPrefix project={project} token={token} editable={canEditKeyPrefix} onChanged={(key_prefix) => setProject((current) => current && { ...current, key_prefix })} />
+      {/* project setup lives on its own pages, not at the bottom of this one */}
+      <p className="mt-2 text-sm">
+        <Link href={`/projects/${project.id}/repositories`} className="font-medium text-muted-foreground hover:text-foreground hover:underline">Repositories →</Link>
+      </p>
       {project.description && <p className="mt-2 text-muted-foreground">{project.description}</p>}
 
       <Section title="Boards" hint="One board per team." action={<Button onClick={() => setDialog('board')}>New board</Button>}>
@@ -96,8 +99,6 @@ export default function ProjectPage() {
           </ul>
         )}
       </Section>
-
-      <ProjectRepositories projectId={project.id} token={token} admin={canEditKeyPrefix} />
 
       <NameDialog
         open={dialog === 'board'}
