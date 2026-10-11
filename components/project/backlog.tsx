@@ -247,7 +247,8 @@ export function Backlog({ projectId, boards, token }: Props) {
           ticket={editing as unknown as Ticket}
           scale={editScale}
           onSaved={(nt) => { setData((d) => d && { ...d, tickets: d.tickets.map((x) => (x.id === nt.id ? { ...x, ...nt, column_id: null, type: nt.type ?? x.type } : x)) }); void load(); }}
-          onDeleted={refining ? (id) => { drop(id); void load(); } : undefined} // deleting is a refine-mode decision
+          onDeleted={(id) => { drop(id); void load(); }} // the edit dialog can delete (it asks first)
+          onWontDo={(id) => { drop(id); void load(); }}
         />
       )}
       <AddDialog

@@ -19,6 +19,8 @@ export type Ticket = {
   started_at?: string | null; // first move out of the board's first column; null for historical tickets
   planned_sprint_id?: string | null; // a backlog ticket planned into a board's upcoming sprint (refinement)
   external_source?: string | null; external_url?: string | null; // made by an integration, e.g. a Bugfixes report
+  resolution?: 'done' | 'wont_do' | null; // how a resolved backlog ticket was closed (null = done)
+  review_requested_at?: string | null; // an agent finished it on a review board: waiting for a person
 };
 // A project ticket not on any board or sprint yet.
 export type BacklogTicket = Omit<Ticket, 'column_id'> & { column_id: null; project_id: string; type: TicketType };
@@ -336,6 +338,9 @@ export const tickets = {
     params.set('limit', String(q.limit ?? 20));
     return api<TicketSearchResult[]>(`/search?${params}`, { token });
   },
+  // resolve closes a backlog ticket in place: done, or wont_do (decided against; the reason becomes a comment)
+  resolve: (id: string, token: T, resolution: 'done' | 'wont_do' = 'done', reason = '') =>
+    api<void>(`/tickets/${id}/resolve`, { method: 'POST', body: { resolution, ...(reason.trim() && { reason: reason.trim() }) }, token }),
   // assign hands a ticket to you (your user id) or an agent (API key name); null unassigns
   assign: (id: string, assignee: string | null, token: T) => api<Ticket>(`/tickets/${id}/assignee`, { method: 'PUT', body: { assignee }, token }),
   assignees: (token: T) => api<Assignee[]>('/assignees', { token }),

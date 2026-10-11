@@ -1,5 +1,6 @@
 'use client';
 
+import { MarkdownPreview } from '@/components/markdown';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -28,6 +29,7 @@ type Props = {
   onSaved: (ticket: Ticket) => void;
   onDeleted?: (id: string) => void;
   onSentToBacklog?: (id: string) => void; // ticket leaves the board for the project backlog
+  onWontDo?: (id: string) => void; // backlog only: closed as won't do (it stays, with the reason)
   done?: boolean; // in the board's last column: attachments locked
   scale?: EstimateScale; // the board's; no estimate field when absent or 'none'
 };
@@ -36,7 +38,7 @@ type Props = {
 // Every ticket create/edit dialog uses it, so they look the same.
 export const TICKET_DIALOG_WIDTH = 'sm:max-w-[66vw]';
 
-export function TicketDialog({ open, onOpenChange, token, projectId, columnId, ticket, onSaved, onDeleted, onSentToBacklog, done, scale = 'none' }: Props) {
+export function TicketDialog({ open, onOpenChange, token, projectId, columnId, ticket, onSaved, onDeleted, onSentToBacklog, onWontDo, done, scale = 'none' }: Props) {
   const [title, setTitle] = useState(ticket?.title ?? '');
   const [description, setDescription] = useState(ticket?.description ?? '');
   const [type, setType] = useState<TicketType>(ticket?.type ?? 'task');
@@ -46,6 +48,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [wontDo, setWontDo] = useState<string | null>(null); // the reason, while confirming won't do
   const [error, setError] = useState('');
   const [missing, setMissing] = useState<{ title: boolean; estimate: boolean }>({ title: false, estimate: false });
   const titleInput = useRef<HTMLInputElement>(null);
@@ -62,12 +65,28 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
       setLabels(ticket?.labels ?? []);
       setEstimate(ticket?.estimate ?? '');
       setConfirmDelete(false);
+      setWontDo(null);
       setError('');
       setMissing({ title: false, estimate: false });
     }
     // only on opening (or another ticket): a background refresh hands us a fresh copy of the same
     // ticket every 30s, and resetting then wiped whatever was being typed (TL-141)
   }, [open, ticket?.id]);
+
+  async function closeWontDo() {
+    if (!ticket || !onWontDo || wontDo === null) return;
+    setSaving(true);
+    setError('');
+    try {
+      await tickets.resolve(ticket.id, token, 'wont_do', wontDo);
+      onWontDo(ticket.id);
+      onOpenChange(false);
+    } catch {
+      setError('Could not close this ticket. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  }
 
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -158,6 +177,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
               className="w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
             />
           </label>
+          <MarkdownPreview text={description} />
           {/* the short pickers share a row (the dialog is wide); they stack on phones */}
           <div className="grid gap-4 sm:grid-cols-3">
             <TypePicker value={type} onChange={setType} />
@@ -193,10 +213,25 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
               </div>
             </div>
           )}
+          {wontDo !== null && (
+            <div role="alert" className="grid gap-2 rounded-lg border p-3 text-sm">
+              <p>Close this ticket as <strong>won&apos;t do</strong>? It leaves the backlog but is kept, so whoever raised it can be told.</p>
+              <label className="grid gap-1.5 font-medium">
+                <span>Reason <span className="font-normal text-muted-foreground">(optional, added as a comment)</span></span>
+                <textarea value={wontDo} maxLength={10000} rows={2} onChange={(e) => setWontDo(e.target.value)}
+                  className="w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm font-normal outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50" />
+              </label>
+              <div className="flex gap-2">
+                <Button type="button" size="sm" disabled={saving} onClick={closeWontDo}>{saving ? 'Closing…' : 'Close as won’t do'}</Button>
+                <Button type="button" size="sm" variant="outline" disabled={saving} onClick={() => setWontDo(null)}>Keep it open</Button>
+              </div>
+            </div>
+          )}
           <DialogFooter className="sm:flex-wrap">
-            {editing && !confirmDelete && (
+            {editing && !confirmDelete && wontDo === null && (
               <div className="flex gap-2 sm:mr-auto">
                 {onDeleted && <Button type="button" variant="destructive" disabled={saving} onClick={() => setConfirmDelete(true)}>Delete</Button>}
+                {onWontDo && <Button type="button" variant="outline" disabled={saving} onClick={() => setWontDo('')}>Won&apos;t do</Button>}
                 {onSentToBacklog && <Button type="button" variant="ghost" disabled={saving} onClick={toBacklog}>Send to backlog</Button>}
               </div>
             )}

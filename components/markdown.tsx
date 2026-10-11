@@ -28,3 +28,20 @@ export function plainText(md: string): string {
     .replace(/\n{2,}/g, '\n')
     .trim();
 }
+
+// looksLikeMarkdown: the text uses markdown (emphasis, code, headings, lists, links, quotes, tables),
+// so editors show a live preview under it.
+export function looksLikeMarkdown(text: string): boolean {
+  return /(\*\*|__|~~|`|\[[^\]]+\]\([^)]+\))|^\s{0,3}(#{1,6}\s|>\s|[-*+]\s|\d+[.)]\s|\|.*\|)/m.test(text);
+}
+
+// MarkdownPreview: the live preview editors show while the text uses markdown.
+export function MarkdownPreview({ text }: { text: string }) {
+  if (!looksLikeMarkdown(text)) return null;
+  return (
+    <div aria-label="Preview" className="grid gap-1 rounded-lg border border-dashed p-3 text-sm font-normal">
+      <span className="text-xs text-muted-foreground">Preview</span>
+      <Markdown>{text}</Markdown>
+    </div>
+  );
+}

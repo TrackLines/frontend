@@ -1,6 +1,6 @@
 'use client';
 
-import { Markdown } from '@/components/markdown';
+import { Markdown, MarkdownPreview } from '@/components/markdown';
 import { ListSkeleton } from '@/components/page-skeletons';
 import { When } from '@/components/when';
 import { useEffect, useState, type FormEvent } from 'react';
@@ -92,6 +92,7 @@ export function TicketComments({ ticketId, token }: { ticketId: string; token: s
           onChange={(event) => setBody(event.target.value)}
           className="min-w-0 w-full resize-y rounded-lg border border-input bg-transparent px-3 py-2 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
         />
+        <MarkdownPreview text={body} />
         {postError && <p role="alert" className="text-sm text-destructive">{postError}</p>}
         <div className="flex flex-wrap items-center justify-between gap-2">
           <span className="text-xs text-muted-foreground">{body.length}/{maxLength}</span>

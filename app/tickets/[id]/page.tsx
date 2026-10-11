@@ -20,7 +20,8 @@ import { EstimateBadge } from '@/components/board/estimate';
 import { TypeBadge } from '@/components/ticket-type';
 import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
-import { ApiError, tickets, type TicketDetail } from '@/lib/api';
+import { ApiError, tickets, type Ticket, type TicketDetail } from '@/lib/api';
+import { TicketDialog } from '@/components/board/ticket-dialog';
 import { personLabel } from '@/lib/people';
 import { useToken } from '@/lib/use-token';
 import { useCachedState } from '@/lib/page-cache';
@@ -37,6 +38,7 @@ export default function TicketPage() {
   const [labels, setLabels] = useState<string[]>([]);
   const [savingLabels, setSavingLabels] = useState(false);
   const [labelError, setLabelError] = useState('');
+  const [editing, setEditing] = useState(false);
 
   const loaded = token !== null;
   useEffect(() => {
@@ -94,13 +96,18 @@ export default function TicketPage() {
           <EstimateBadge estimate={t.estimate} />
           {t.sprint_number != null && <Badge variant="secondary">Sprint {t.sprint_number}</Badge>}
           {t.blocked && <BlockedBadge />}
+          {t.resolution === 'wont_do' && <Badge variant="outline" title="Closed as decided against">Won&apos;t do</Badge>}
         </div>
-        <div className="flex flex-wrap items-center gap-3"><TicketKey value={t.key} copy /><h1 className="text-3xl font-bold tracking-tight">{t.title}</h1></div>
+        <div className="flex flex-wrap items-center gap-3">
+          <TicketKey value={t.key} copy /><h1 className="text-3xl font-bold tracking-tight">{t.title}</h1>
+          {/* board and backlog tickets alike: edit (and delete, inside the dialog) right here */}
+          {token && <Button type="button" variant="outline" size="sm" className="ml-auto" onClick={() => setEditing(true)}>Edit</Button>}
+        </div>
         <PartOf ticket={t} />
         <p className="text-sm text-muted-foreground">
           Created by {personLabel(t.created_by)}{t.created_at && <> <When iso={t.created_at} /></>}
           {t.updated_at && t.updated_at !== t.created_at && <> · updated <When iso={t.updated_at} /></>}
-          {t.done_at && <> · {t.resolved_at ? 'resolved' : 'done'} <When iso={t.done_at} /></>}
+          {t.done_at && <> · {t.resolution === 'wont_do' ? 'closed as won’t do' : t.resolved_at ? 'resolved' : 'done'} <When iso={t.done_at} /></>}
           {!token && (t.assigned_to ? ` · assigned to ${personLabel(t.assigned_to)}` : ' · unassigned')}
         </p>
         {!token && <TicketLabels labels={t.labels} />}{/* signed in, the label editor below shows them */}
@@ -125,6 +132,22 @@ export default function TicketPage() {
       {token && <BugfixesPanel ticket={t} token={token} />}
       {token && <Attachments ticketId={t.id} token={token} locked={t.done} />}
       {token && <TicketComments ticketId={t.id} token={token} />}
+      {token && (
+        <TicketDialog
+          open={editing}
+          onOpenChange={setEditing}
+          token={token}
+          projectId={t.project_id}
+          columnId={t.column_id ?? ''}
+          ticket={t as Ticket}
+          scale={t.estimate_scale}
+          done={t.done}
+          onSaved={() => { void tickets.get(t.id, token).then(setT); }}
+          onDeleted={() => router.push(t.board_id ? `/boards/${t.board_id}` : `/projects/${t.project_id}#backlog`)}
+          onSentToBacklog={t.board_id ? () => { void tickets.get(t.id, token).then(setT); } : undefined}
+          onWontDo={!t.board_id && !t.done ? () => { void tickets.get(t.id, token).then(setT); } : undefined}
+        />
+      )}
       <div className="flex flex-wrap gap-2">
         {t.board_id && (
           <>
