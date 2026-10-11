@@ -518,3 +518,17 @@ export const projectRepos = {
   unlink: (projectId: string, provider: ProjectRepo['provider'], fullName: string, token: T) =>
     api<void>(`/projects/${projectId}/repos?${new URLSearchParams({ provider, full_name: fullName })}`, { method: 'DELETE', token }),
 };
+
+// Notifications: the signed-in user's inbox (internal; external channels later).
+export type NotificationKind = 'assigned' | 'mention' | 'finished' | 'wont_do' | 'review' | 'sent_back' | 'approval';
+export type AppNotification = {
+  id: string; kind: NotificationKind; text: string; actor: string;
+  ticket_id: string | null; ticket_key: string | null; board_id: string | null;
+  created_at: string; read_at: string | null;
+};
+export const notifications = {
+  list: (token: T, page = 1, perPage = 20) => api<AppNotification[]>(`/notifications?page=${page}&per_page=${perPage}`, { token }),
+  unreadCount: (token: T) => api<{ count: number }>('/notifications/unread-count', { token }),
+  read: (id: string, token: T) => api<void>(`/notifications/${id}/read`, { method: 'POST', token }),
+  readAll: (token: T) => api<void>('/notifications/read-all', { method: 'POST', token }),
+};

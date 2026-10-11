@@ -7,6 +7,7 @@ import { ThemeChooser } from '@/components/theme-chooser';
 import { UserMenu } from '@/components/user-menu';
 import { QuickAddTicket } from '@/components/quick-add-ticket';
 import { TicketSearch } from '@/components/ticket-search';
+import { NotificationsBell } from '@/components/notifications-bell';
 import { OrgSwitcher } from '@/components/org-switcher';
 import { FeatureFlags } from '@/components/feature-flags';
 import './globals.css';
@@ -37,6 +38,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               {/* QuickAddTicket only renders on some pages, so it goes first: the toggle and avatar never move */}
               <Show when="signed-in"><QuickAddTicket /></Show>
               <Show when="signed-in"><TicketSearch /></Show>
+              <Show when="signed-in"><NotificationsBell /></Show>
               <ThemeChooser />
               <Show when="signed-out">
                 <Link href="/sign-in" className="text-sm text-muted-foreground hover:text-foreground">Sign in</Link>
