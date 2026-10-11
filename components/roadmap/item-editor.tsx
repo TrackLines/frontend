@@ -1,5 +1,6 @@
 'use client';
 
+import { Textarea } from '@/components/ui/textarea';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -112,13 +113,12 @@ export function ItemEditor({ roadmapId, projectId, items, token }: Props) {
               </label>
               <label className="grid gap-1.5 text-sm font-medium">
                 <span>Description <span className="font-normal text-muted-foreground">(optional)</span></span>
-                <textarea
+                <Textarea
                   value={item.description}
                   maxLength={4000}
                   rows={3}
                   placeholder="What will be included in this milestone?"
                   onChange={(event) => update(index, { description: event.target.value })}
-                  className="w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
                 />
               </label>
               <div className="flex flex-wrap gap-3">

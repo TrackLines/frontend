@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { Markdown, MarkdownPreview, looksLikeMarkdown, plainText } from './markdown';
+import { Markdown, MarkdownPreview, MarkdownTextarea, looksLikeMarkdown, plainText } from './markdown';
 
 test('renders GitHub-style markdown', () => {
   const html = renderToStaticMarkup(<Markdown>{'**Fix** the `login`\n\n- one\n- two\n\n| a | b |\n|---|---|\n| 1 | 2 |\n\n[docs](https://example.com)'}</Markdown>);
@@ -30,4 +30,11 @@ test('editors preview only once markdown is in use', () => {
   const html = renderToStaticMarkup(<MarkdownPreview text={'- **one**'} />);
   expect(html).toContain('Preview');
   expect(html).toContain('<strong>one</strong>');
+});
+
+test('MarkdownTextarea: the shared input, with the live preview once markdown is used', () => {
+  const plain = renderToStaticMarkup(<MarkdownTextarea value="just words" onChange={() => {}} aria-label="Details" />);
+  expect(plain).toContain('data-slot="textarea"');
+  expect(plain).not.toContain('Preview');
+  expect(renderToStaticMarkup(<MarkdownTextarea value="- **done**" onChange={() => {}} />)).toContain('<strong>done</strong>');
 });

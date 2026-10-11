@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { TypeBadge } from '@/components/ticket-type';
 import { When } from '@/components/when';
+import { Markdown } from '@/components/markdown';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ApiError, intake, type IntakeSubmission } from '@/lib/api';
@@ -69,7 +70,8 @@ export function Triage({ projectId, token }: { projectId: string; token: string 
   );
 }
 
-// TriageView: the list (pure, for tests). Request text is shown as plain text: it's from the public.
+// TriageView: the list (pure, for tests). Details render as markdown, as they will on the ticket; raw
+// HTML from the public is never run (components/markdown).
 export function TriageView({ items, status, error, busy, onPromote, onDismiss }: {
   items: IntakeSubmission[] | null; status: Status; error: string; busy: string | null;
   onPromote: (s: IntakeSubmission) => void; onDismiss: (s: IntakeSubmission) => void;
@@ -88,7 +90,7 @@ export function TriageView({ items, status, error, busy, onPromote, onDismiss }:
                 <span className="min-w-0 flex-1 font-medium break-words">{s.title}</span>
                 <span className="text-xs text-muted-foreground">Received <When iso={s.created_at} /></span>
               </div>
-              {s.details && <p className="text-sm break-words whitespace-pre-wrap text-muted-foreground">{s.details}</p>}
+              {s.details && <Markdown className="text-sm text-muted-foreground">{s.details}</Markdown>}
               {s.contact && <p className="text-xs text-muted-foreground">Contact: <span className="text-foreground">{s.contact}</span></p>}
               {status === 'pending' ? (
                 <div className="flex flex-wrap gap-2">

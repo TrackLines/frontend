@@ -1,5 +1,6 @@
 'use client';
 
+import { Textarea } from '@/components/ui/textarea';
 import { FormPageSkeleton } from '@/components/page-skeletons';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
@@ -76,11 +77,10 @@ function Details({ roadmap, token, onSaved }: { roadmap: Roadmap; token: string;
       </label>
       <label className="grid gap-1.5 text-sm font-medium">
         <span>Description <span className="font-normal text-muted-foreground">(optional)</span></span>
-        <textarea
+        <Textarea
           rows={3}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
         />
       </label>
       <VisibilitySelect name="visibility" value={visibility} onChange={setVisibility} />

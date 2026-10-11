@@ -1,6 +1,6 @@
 'use client';
 
-import { plainText } from '@/components/markdown';
+import { MarkdownTextarea, plainText } from '@/components/markdown';
 import { When } from '@/components/when';
 import Link from 'next/link';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
@@ -308,8 +308,7 @@ function AddDialog({ open, onOpenChange, projectId, token, onAdd }: {
           <TypePicker value={type} onChange={setType} />
           <LabelDrawer projectId={projectId} token={token} labels={labels} onChange={setLabels} disabled={saving} />
           <Input autoFocus required maxLength={200} placeholder="What's wrong / what's needed?" value={title} onChange={(e) => setTitle(e.target.value)} />
-          <textarea
-            className="min-h-24 rounded-md border bg-background px-3 py-2 text-sm"
+          <MarkdownTextarea
             placeholder="Details, steps to reproduce… (optional)"
             value={description}
             onChange={(e) => setDescription(e.target.value)}

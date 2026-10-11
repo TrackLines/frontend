@@ -1,5 +1,7 @@
+import type { ComponentProps } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { Textarea } from '@/components/ui/textarea';
 
 // Markdown renders ticket details and comments (GitHub style: lists, tables, code, links). Raw HTML
 // in the text is shown as text, never run; links open in a new tab.
@@ -43,5 +45,16 @@ export function MarkdownPreview({ text }: { text: string }) {
       <span className="text-xs text-muted-foreground">Preview</span>
       <Markdown>{text}</Markdown>
     </div>
+  );
+}
+
+// MarkdownTextarea: the one input for text that renders as markdown (ticket details, comments, notes
+// that become comments, public requests): our Textarea, with the live preview once markdown is used.
+export function MarkdownTextarea({ value, ...props }: ComponentProps<typeof Textarea> & { value: string }) {
+  return (
+    <>
+      <Textarea value={value} {...props} />
+      <MarkdownPreview text={value} />
+    </>
   );
 }

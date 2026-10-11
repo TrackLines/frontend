@@ -1,5 +1,6 @@
 'use client';
 
+import { Textarea } from '@/components/ui/textarea';
 import { useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -55,8 +56,7 @@ export function RoadmapEditorForm({ open, onOpenChange, projectId, onSubmit }: P
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
-          <textarea
-            className="flex min-h-[3rem] w-full rounded-md border bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          <Textarea
             placeholder="What's this roadmap about? (optional)"
             value={description}
             onChange={(e) => setDescription(e.target.value)}

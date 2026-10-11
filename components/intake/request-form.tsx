@@ -1,5 +1,6 @@
 'use client';
 
+import { MarkdownTextarea } from '@/components/markdown';
 import { useEffect, useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -93,9 +94,8 @@ export function RequestFormView({ state, onSend, onAnother }: { state: FormState
       </label>
       <label className="grid gap-1.5 text-sm font-medium">
         <span>Details <span className="font-normal text-muted-foreground">(optional)</span></span>
-        <textarea value={details} maxLength={5000} rows={6} onChange={(e) => setDetails(e.target.value)}
-          placeholder={type === 'bug' ? 'What happened, what you expected, and how to make it happen again.' : 'What would it help you do?'}
-          className="w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm font-normal outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50" />
+        <MarkdownTextarea value={details} maxLength={5000} rows={6} onChange={(e) => setDetails(e.target.value)}
+          placeholder={type === 'bug' ? 'What happened, what you expected, and how to make it happen again.' : 'What would it help you do?'} />
       </label>
       <label className="grid gap-1.5 text-sm font-medium">
         <span>How can we reach you? <span className="font-normal text-muted-foreground">(optional, seen by the team only)</span></span>

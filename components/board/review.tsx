@@ -1,5 +1,6 @@
 'use client';
 
+import { MarkdownTextarea } from '@/components/markdown';
 import { useState } from 'react';
 import { EyeIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -84,8 +85,7 @@ export function ReviewActions({ ticket, token, onReviewed }: { ticket: Pick<Tick
         <div className="grid gap-2">
           <label className="grid gap-1.5 font-medium">
             <span>What needs doing <span className="font-normal text-muted-foreground">(added as a comment)</span></span>
-            <textarea value={sending} rows={2} maxLength={10000} onChange={(e) => setSending(e.target.value)}
-              className="w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm font-normal outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50" />
+            <MarkdownTextarea value={sending} rows={2} maxLength={10000} onChange={(e) => setSending(e.target.value)} />
           </label>
           <div className="flex flex-wrap gap-2">
             <Button type="button" size="sm" variant="destructive" disabled={busy || !sending.trim()} onClick={() => void review(false, sending)}>{busy ? 'Sending…' : 'Send back'}</Button>

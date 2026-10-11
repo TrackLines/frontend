@@ -1,6 +1,6 @@
 'use client';
 
-import { MarkdownPreview } from '@/components/markdown';
+import { MarkdownTextarea } from '@/components/markdown';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -168,16 +168,14 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
           </label>
           <label className="grid gap-1.5 text-sm font-medium">
             <span>Details <span className="font-normal text-muted-foreground">(optional, Markdown supported)</span></span>
-            <textarea
+            <MarkdownTextarea
               value={description}
               maxLength={10000}
               rows={5}
               placeholder="Add useful context or acceptance notes."
               onChange={(event) => setDescription(event.target.value)}
-              className="w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
             />
           </label>
-          <MarkdownPreview text={description} />
           {/* the short pickers share a row (the dialog is wide); they stack on phones */}
           <div className="grid gap-4 sm:grid-cols-3">
             <TypePicker value={type} onChange={setType} />
@@ -218,8 +216,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
               <p>Close this ticket as <strong>won&apos;t do</strong>? It leaves the backlog but is kept, so whoever raised it can be told.</p>
               <label className="grid gap-1.5 font-medium">
                 <span>Reason <span className="font-normal text-muted-foreground">(optional, added as a comment)</span></span>
-                <textarea value={wontDo} maxLength={10000} rows={2} onChange={(e) => setWontDo(e.target.value)}
-                  className="w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm font-normal outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50" />
+                <MarkdownTextarea value={wontDo} maxLength={10000} rows={2} onChange={(e) => setWontDo(e.target.value)} />
               </label>
               <div className="flex gap-2">
                 <Button type="button" size="sm" disabled={saving} onClick={closeWontDo}>{saving ? 'Closing…' : 'Close as won’t do'}</Button>

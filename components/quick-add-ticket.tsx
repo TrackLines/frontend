@@ -1,5 +1,6 @@
 'use client';
 
+import { MarkdownTextarea } from '@/components/markdown';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState, type FormEvent } from 'react';
 import { attachAll, PendingAttachments, type PendingFile } from '@/components/ticket/pending-attachments';
@@ -105,8 +106,7 @@ function QuickAddDialog({ scope, onClose }: { scope: NonNullable<ReturnType<type
           <TypePicker value={type} onChange={setType} />
           <LabelDrawer projectId={projectId} token={token ?? ''} labels={labels} onChange={setLabels} disabled={!token || saving} />
           <Input autoFocus required maxLength={200} placeholder="What's wrong / what's needed?" value={title} onChange={(e) => setTitle(e.target.value)} />
-          <textarea
-            className="min-h-24 rounded-md border bg-background px-3 py-2 text-sm"
+          <MarkdownTextarea
             placeholder="Details (optional)"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
