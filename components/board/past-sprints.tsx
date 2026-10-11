@@ -10,6 +10,8 @@ import { EstimateBadge } from './estimate';
 import { PriorityBadge } from './priority-badge';
 import { BurnChart } from './velocity';
 import { sprints, type Sprint, type SprintDetail } from '@/lib/api';
+import Link from 'next/link';
+import { TicketKey, ticketPath } from '@/components/ticket/ticket-key';
 
 const day = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short' });
 const range = (s: Sprint) => `${day.format(new Date(s.starts_at))} – ${day.format(new Date(s.closed_at ?? s.ends_at))}`;
@@ -78,6 +80,7 @@ export function SprintView({ id, token, onBack }: { id: string; token: string; o
             {d.carried_over !== null && `, ${d.carried_over} carried over to the next sprint`}
           </DialogDescription>
         )}
+        {d?.goal && <p className="text-sm"><span className="text-muted-foreground">Goal:</span> <span className="font-medium">{d.goal}</span></p>}
       </DialogHeader>
       {failed && <p role="alert" className="text-sm text-destructive">Couldn&apos;t load this sprint. Please try again.</p>}
       {!d && !failed && <Skeleton role="status" aria-label="Loading sprint…" className="h-56 w-full" />}
@@ -99,7 +102,7 @@ export function SprintDetailBody({ detail: d }: { detail: SprintDetail }) {
           <ul className="divide-y rounded-lg border">
             {d.tickets.map((t) => (
               <li key={t.id} className="flex flex-wrap items-center gap-2 px-4 py-2 text-sm">
-                <a href={`/tickets/${t.id}`} className="min-w-0 flex-1 truncate font-medium hover:underline">{t.title}</a>
+                <Link href={ticketPath(t)} className="min-w-0 flex-1 truncate font-medium hover:underline"><TicketKey value={t.key} />{t.title}</Link>
                 {t.type && t.type !== 'task' && <TypeBadge type={t.type} />}
                 <PriorityBadge priority={t.priority} hideDefault />
                 <EstimateBadge estimate={t.estimate} />

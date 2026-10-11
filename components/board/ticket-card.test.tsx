@@ -6,12 +6,13 @@ const base = { id: 't', column_id: 'c', title: 'Integrate uploadthing', descript
 const card = (extra: object) => renderToStaticMarkup(<TicketCard ticket={{ ...base, ...extra }} token="x" onUpdated={() => {}} onDeleted={() => {}} />);
 
 test('clean card: readable people, only meaningful badges, compact actions', () => {
-  const html = card({ type: 'feature', priority: 'urgent', assigned_to: 'claude' });
+  const html = card({ key: 'TL-123', type: 'feature', priority: 'urgent', assigned_to: 'claude' });
   expect(html).not.toContain('user_3KHx');
   expect(html).toContain('by You');
   expect(html).toContain('>claude<');
   expect(html).toContain('>Urgent<');
   expect(html).toContain('>feature<');
+  expect(html).toContain('TL-123');
   expect(html).toContain('aria-label="Edit Integrate uploadthing"');
   expect(html).not.toContain('>View<');
   expect(html).not.toContain('Edit ticket');
@@ -41,4 +42,9 @@ test('while the board is being edited, cards are view only', () => {
   const html = renderToStaticMarkup(<TicketCard ticket={{ ...base, type: 'task' }} token="x" onUpdated={() => {}} onDeleted={() => {}} readOnly />);
   expect(html).toContain('Integrate uploadthing'); // still readable
   expect(html).not.toContain('aria-label="Edit Integrate uploadthing"');
+});
+
+test('tickets Bugfixes made are marked', () => {
+  expect(card({ type: 'bug', external_source: 'bugfixes' })).toContain('>Bugfixes<');
+  expect(card({ type: 'bug' })).not.toContain('>Bugfixes<');
 });

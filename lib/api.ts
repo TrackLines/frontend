@@ -8,7 +8,7 @@ export type Visibility = 'public' | 'login_only' | 'team';
 
 export type TicketType = 'bug' | 'feature' | 'task';
 export type Ticket = {
-  id: string; column_id: string; title: string; description: string; position: number;
+  id: string; key?: string; column_id: string; title: string; description: string; position: number;
   project_id?: string; labels?: string[];
   type?: TicketType; sprint_id?: string | null;
   created_by: string; assigned_to?: string | null; priority?: string;
@@ -17,6 +17,7 @@ export type Ticket = {
   created_at?: string; updated_at?: string; // UTC ISO; show with <When>
   done_at?: string | null; resolved_at?: string | null; // set once it reached Done / was resolved
   planned_sprint_id?: string | null; // a backlog ticket planned into a board's upcoming sprint (refinement)
+  external_source?: string | null; external_url?: string | null; // made by an integration, e.g. a Bugfixes report
 };
 // A project ticket not on any board or sprint yet.
 export type BacklogTicket = Omit<Ticket, 'column_id'> & { column_id: null; project_id: string; type: TicketType };
@@ -25,6 +26,7 @@ export type BacklogPage = { tickets: BacklogTicket[]; counts: Record<TicketType 
 export type Sprint = {
   id: string; board_id: string; number: number; length_days: number;
   starts_at: string; ends_at: string; closed_at: string | null;
+  goal?: string; // one line the sprint is for; "" = none
 };
 export type Column = { id: string; name: string; position: number; tickets: Ticket[]; wip_limit?: number | null };
 export type BoardStyle = 'sprints' | 'kanban';
@@ -58,7 +60,7 @@ export type Roadmap = {
 };
 // A project holds a board per team plus its roadmaps; boards/roadmaps are only filled by projects.get.
 export type Project = {
-  id: string; name: string; description: string; created_at: string; updated_at: string;
+  id: string; name: string; description: string; key_prefix?: string; created_at: string; updated_at: string;
   boards?: Board[]; roadmaps?: Roadmap[];
   stats?: ProjectStats; // list only
 };
@@ -189,7 +191,7 @@ export const projects = {
   list: (token: T) => api<Project[]>('/projects', { token }),
   get: (id: string, token: T) => api<Project>(`/projects/${id}`, { token }),
   create: (p: { name: string; description?: string }, token: T) => api<Project>('/projects', { method: 'POST', body: p, token }),
-  update: (id: string, p: { name: string; description: string }, token: T) => api<void>(`/projects/${id}`, { method: 'PATCH', body: p, token }),
+  update: (id: string, p: { name: string; description: string; key_prefix?: string }, token: T) => api<void>(`/projects/${id}`, { method: 'PATCH', body: p, token }),
   remove: (id: string, token: T) => api<void>(`/projects/${id}`, { method: 'DELETE', token }),
   labels: (id: string, token: T) => api<ProjectLabel[]>(`/projects/${id}/labels`, { token }),
 };
@@ -235,11 +237,27 @@ export type TicketDetail = Omit<Ticket, 'column_id'> & {
   parent?: Dep | null; // this is a sub-ticket of parent
   children?: Dep[]; // its sub-tickets
 };
+export type TicketSearchResult = Ticket & {
+  project_name: string; board_id: string | null; board_name: string | null; column_name: string | null;
+  done: boolean; snippet: string;
+};
 
 export type Assignee = { id: string; label: string; kind?: 'person' | 'ai' | 'service' };
 
 export const tickets = {
   get: (id: string, token: T) => api<TicketDetail>(`/tickets/${id}`, { token }),
+  getByKey: (key: string, token: T) => api<TicketDetail>(`/ticket-keys/${encodeURIComponent(key)}`, { token }),
+  // the Bugfixes panel for a ticket Bugfixes made (404 otherwise)
+  bugfixes: (id: string, token: T) => api<TicketBugfixes>(`/tickets/${id}/bugfixes`, { token }),
+  search: (q: { text?: string; project?: string; types?: TicketType[]; assignee?: string; limit?: number }, token: T) => {
+    const params = new URLSearchParams();
+    if (q.text?.trim()) params.set('q', q.text.trim());
+    if (q.project) params.set('project', q.project);
+    for (const type of q.types ?? []) params.append('type', type);
+    if (q.assignee) params.set('assignee', q.assignee);
+    params.set('limit', String(q.limit ?? 20));
+    return api<TicketSearchResult[]>(`/search?${params}`, { token });
+  },
   // assign hands a ticket to you (your user id) or an agent (API key name); null unassigns
   assign: (id: string, assignee: string | null, token: T) => api<Ticket>(`/tickets/${id}/assignee`, { method: 'PUT', body: { assignee }, token }),
   assignees: (token: T) => api<Assignee[]>('/assignees', { token }),
@@ -303,12 +321,15 @@ export type Capacity = {
   unit: 'points' | 'tickets'; velocity: number | null; cap: number | null; used: number; unestimated: number;
   over: boolean; approved_total: number | null; approved_by: string | null; approved_at: string | null; needs_approval: boolean;
 };
-export type PlannedSprint = { id: string; board_id: string; position: number; number: number; length_days: number; tickets: Ticket[]; capacity: Capacity };
+export type PlannedSprint = { id: string; board_id: string; position: number; number: number; length_days: number; goal?: string; tickets: Ticket[]; capacity: Capacity };
 
 export const plannedSprints = {
   list: (boardId: string, token: T) => api<PlannedSprint[]>(`/boards/${boardId}/planned-sprints`, { token }),
-  plan: (boardId: string, lengthDays: number, token: T) =>
-    api<PlannedSprint[]>(`/boards/${boardId}/planned-sprints`, { method: 'POST', body: { length_days: lengthDays }, token }),
+  plan: (boardId: string, lengthDays: number, token: T, goal?: string) =>
+    api<PlannedSprint[]>(`/boards/${boardId}/planned-sprints`, { method: 'POST', body: { length_days: lengthDays, ...(goal && { goal }) }, token }),
+  // length and/or goal ("" clears); the goal carries into the sprint when it starts
+  update: (id: string, change: { length_days?: number; goal?: string }, token: T) =>
+    api<PlannedSprint[]>(`/planned-sprints/${id}`, { method: 'PATCH', body: change, token }),
   remove: (id: string, token: T) => api<void>(`/planned-sprints/${id}`, { method: 'DELETE', token }),
   approve: (id: string, token: T) => api<PlannedSprint>(`/planned-sprints/${id}/approve`, { method: 'POST', token }),
   // plannedId null takes the ticket out; estimate on the planned board's scale
@@ -318,8 +339,9 @@ export const plannedSprints = {
 
 export const sprints = {
   list: (boardId: string, token: T) => api<Sprint[]>(`/boards/${boardId}/sprints`, { token }),
-  start: (boardId: string, lengthDays: number, token: T) =>
-    api<Sprint>(`/boards/${boardId}/sprints`, { method: 'POST', body: { length_days: lengthDays }, token }),
+  start: (boardId: string, lengthDays: number, token: T, goal?: string) =>
+    api<Sprint>(`/boards/${boardId}/sprints`, { method: 'POST', body: { length_days: lengthDays, ...(goal && { goal }) }, token }),
+  setGoal: (id: string, goal: string, token: T) => api<Sprint>(`/sprints/${id}`, { method: 'PATCH', body: { goal }, token }), // "" clears
   updateLength: (id: string, lengthDays: number, token: T) =>
     api<Sprint>(`/sprints/${id}`, { method: 'PATCH', body: { length_days: lengthDays }, token }),
   close: (id: string, token: T, next: { next_length_days: number; next_starts_at?: string }) =>
@@ -350,10 +372,11 @@ export const backlog = {
   list: (projectId: string, token: T, type?: TicketType) =>
     api<BacklogTicket[]>(`/projects/${projectId}/backlog${type ? `?type=${type}` : ''}`, { token }),
   // one page, filtered and ordered (ready before blocked) by the server; counts drive the type tabs
-  page: (projectId: string, q: { type?: TicketType; labels?: string[]; page: number; perPage: number }, token: T) => {
+  page: (projectId: string, q: { type?: TicketType; labels?: string[]; priorities?: string[]; page: number; perPage: number }, token: T) => {
     const params = new URLSearchParams({ page: String(q.page), per_page: String(q.perPage) });
     if (q.type) params.set('type', q.type);
     for (const l of q.labels ?? []) params.append('label', l);
+    for (const priority of q.priorities ?? []) params.append('priority', priority);
     return api<BacklogPage>(`/projects/${projectId}/backlog/page?${params}`, { token });
   },
   create: (projectId: string, t: { title: string; description?: string; type: TicketType; priority?: string; labels?: string[] }, token: T) =>
@@ -372,4 +395,12 @@ export const attachments = {
   add: (ticketId: string, f: { key: string; url: string; name: string; size: number; content_type: string }, token: T) =>
     api<Attachment>(`/tickets/${ticketId}/attachments`, { method: 'POST', body: f, token }),
   remove: (id: string, token: T) => api<void>(`/attachments/${id}`, { method: 'DELETE', token }),
+};
+
+// TicketBugfixes is a Bugfixes-made ticket's panel. available false: linked, but no live details
+// (not_connected: the org hasn't connected Bugfixes; unavailable: Bugfixes couldn't be reached).
+export type TicketBugfixes = {
+  source: 'bugfixes'; project: string; report_id: string; url: string;
+  available: boolean; reason?: 'not_connected' | 'unavailable'; regressed: boolean;
+  report?: { title: string; occurrences: number; status: 'open' | 'resolved' | 'ignored'; last_seen: string; levels: string[]; file: string; line: number };
 };

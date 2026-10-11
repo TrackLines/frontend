@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useCallback, useEffect, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -11,12 +11,18 @@ import { ApiError, backlog, organization, plannedSprints, type BacklogTicket, ty
 import { canManageBoard } from '@/lib/board-access';
 import type { EstimateScale } from '@/lib/estimates';
 import { capacityView, MAX_PLANNED } from '@/lib/refinement';
+import { PriorityFilter } from '@/components/board/priority-filter';
+import { TicketKey, ticketPath } from '@/components/ticket/ticket-key';
+import { Input } from '@/components/ui/input';
+import { GOAL_MAX } from '@/components/board/sprint-bar';
 
 type Props = {
   projectId: string; boards: Board[]; token: string; onClose: () => void;
   version?: number; // bumps when the backlog changed (edited, moved, deleted): reload
   onOpen?: (ticket: Ticket, scale: EstimateScale) => void; // open a ticket's editor in place, staying in refine mode
   ticketActions?: (ticket: BacklogTicket) => ReactNode; // e.g. move to a board, delete
+  priorities?: string[];
+  onPrioritiesChange?: (priorities: string[]) => void;
 };
 
 // RefinementMode plans the project's next sprints from the backlog: unplanned backlog tickets on one
@@ -24,23 +30,26 @@ type Props = {
 // with one click and are sized in place on that board's scale; each sprint shows how full it is
 // against the team's velocity, and an over-full one needs approving.
 // ponytail: buttons, not drag and drop; add DnD if planning lots of tickets gets tedious.
-export function RefinementMode({ projectId, boards, token, onClose, version = 0, onOpen, ticketActions }: Props) {
+export function RefinementMode({ projectId, boards, token, onClose, version = 0, onOpen, ticketActions, priorities = [], onPrioritiesChange = () => {} }: Props) {
   const sprintBoards = boards.filter((b) => b.style !== 'kanban');
   const [plans, setPlans] = useState<Record<string, PlannedSprint[]> | null>(null); // by board id
   const [tickets, setTickets] = useState<BacklogTicket[]>([]);
   const [role, setRole] = useState<OrganizationRole | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const latestLoad = useRef(0);
   const boardIds = sprintBoards.map((b) => b.id).join(',');
 
   const load = useCallback(async () => {
+    const request = ++latestLoad.current;
     const [lists, page] = await Promise.all([
       Promise.all(sprintBoards.map((b) => plannedSprints.list(b.id, token))),
-      backlog.page(projectId, { page: 1, perPage: 100 }, token),
+      backlog.page(projectId, { page: 1, perPage: 100, priorities }, token),
     ]);
+    if (request !== latestLoad.current) return;
     setPlans(Object.fromEntries(sprintBoards.map((b, i) => [b.id, lists[i]])));
     setTickets(page.tickets.filter((t) => !t.planned_sprint_id)); // planned ones show in their sprint
-  }, [boardIds, projectId, token]);
+  }, [boardIds, projectId, token, priorities.join(',')]);
 
   useEffect(() => {
     load().catch(() => setError('Couldn’t load the backlog and planned sprints. Please try again.'));
@@ -77,13 +86,19 @@ export function RefinementMode({ projectId, boards, token, onClose, version = 0,
         : plans === null ? <p className="text-sm text-muted-foreground">Loading…</p> : (
         <div className="grid gap-6 md:grid-cols-2">
           <div className="grid content-start gap-2">
-            <h3 className="font-medium">To plan</h3>
-            {tickets.length === 0 && <p className="text-sm text-muted-foreground">Nothing left to plan.</p>}
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <h3 className="font-medium">To plan</h3>
+              <PriorityFilter priorities={priorities} onPrioritiesChange={onPrioritiesChange} />
+            </div>
+            {tickets.length === 0 && (priorities.length > 0
+              ? <p className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">No tickets match these priorities.<Button type="button" size="sm" variant="link" className="h-auto p-0" onClick={() => onPrioritiesChange([])}>Clear filters</Button></p>
+              : <p className="text-sm text-muted-foreground">Nothing left to plan.</p>)}
             {tickets.length > 0 && targets.length === 0 && <p className="text-sm text-muted-foreground">Plan a sprint on a board to start adding tickets.</p>}
             <ul className="grid gap-2">
               {tickets.map((t) => (
                 <li key={t.id} className="flex flex-wrap items-center gap-2 rounded-lg border p-3 text-sm">
                   <TypeBadge type={t.type} />
+                  <TicketKey value={t.key} copy />
                   <TicketTitle ticket={t} onOpen={onOpen && (() => onOpen(t as unknown as Ticket, 'none'))} className="font-medium" />
                   {targets.map(({ board, plan }) => (
                     <Button key={plan.id} size="sm" variant="outline" disabled={busy}
@@ -150,6 +165,9 @@ export function PlannedSprintCard({ plan, scale, canManage, busy, token, act, on
           </Button>
         )}
       </div>
+      {canManage
+        ? <PlannedGoal key={plan.goal ?? ''} plan={plan} busy={busy} save={(goal) => act(() => plannedSprints.update(plan.id, { goal }, token), 'Couldn’t save the goal. Please try again.')} />
+        : plan.goal && <p><span className="text-muted-foreground">Goal:</span> <span className="font-medium">{plan.goal}</span></p>}
       <div className="grid gap-1">
         {view.percent !== null && <Progress value={view.percent} aria-label={`Sprint ${plan.number} capacity`} />}
         <p className={view.state === 'over' ? 'font-medium text-destructive' : 'text-muted-foreground'}>{view.label}</p>
@@ -167,6 +185,7 @@ export function PlannedSprintCard({ plan, scale, canManage, busy, token, act, on
           <ul className="grid gap-2">
             {plan.tickets.map((t) => (
               <li key={t.id} className="flex flex-wrap items-center gap-2">
+                <TicketKey value={t.key} copy />
                 <TicketTitle ticket={t} onOpen={onOpen && (() => onOpen(t))} />
                 {scale !== 'none' && (
                   <div className="w-36">
@@ -187,8 +206,21 @@ export function PlannedSprintCard({ plan, scale, canManage, busy, token, act, on
 }
 
 // TicketTitle opens the ticket's editor in place when it can (so refine mode stays open), else links to it.
-function TicketTitle({ ticket, onOpen, className = '' }: { ticket: { id: string; title: string }; onOpen?: () => void; className?: string }) {
+function TicketTitle({ ticket, onOpen, className = '' }: { ticket: { id: string; key?: string; title: string }; onOpen?: () => void; className?: string }) {
   return onOpen
     ? <Button type="button" variant="link" onClick={onOpen} className={`h-auto min-w-0 flex-1 justify-start p-0 text-left whitespace-normal text-foreground ${className}`}>{ticket.title}</Button>
-    : <Link href={`/tickets/${ticket.id}`} className={`min-w-0 flex-1 hover:underline ${className}`}>{ticket.title}</Link>;
+    : <Link href={ticketPath(ticket)} className={`min-w-0 flex-1 hover:underline ${className}`}>{ticket.title}</Link>;
+}
+
+// PlannedGoal edits a planned sprint's goal in place: saved when the field loses focus or on Enter.
+function PlannedGoal({ plan, busy, save }: { plan: PlannedSprint; busy: boolean; save: (goal: string) => Promise<void> }) {
+  const [goal, setGoal] = useState(plan.goal ?? '');
+  const commit = () => { if (goal.trim() !== (plan.goal ?? '')) void save(goal.trim()); };
+  return (
+    <Input
+      value={goal} maxLength={GOAL_MAX} disabled={busy} aria-label={`Sprint ${plan.number} goal`} placeholder="Goal for this sprint (optional)"
+      onChange={(e) => setGoal(e.target.value)} onBlur={commit}
+      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); commit(); } }}
+    />
+  );
 }

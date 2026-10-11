@@ -11,24 +11,27 @@ type Props = {
   options: ProjectLabel[] | null; // labels on the tickets being filtered (null = still loading)
   labels: string[];
   onLabelsChange: (labels: string[]) => void;
+  syncUrl?: boolean;
 };
 
 // LabelFilter lists only the labels on the tickets it filters (a board's, or the backlog's), not the whole project's.
-export function LabelFilter({ options, labels, onLabelsChange }: Props) {
+export function LabelFilter({ options, labels, onLabelsChange, syncUrl = true }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   // Sync from URL on mount and when searchParams change
   useEffect(() => {
+    if (!syncUrl) return;
     const raw = searchParams.get('label');
     if (raw && raw.trim()) {
       const parsed = raw.split(',').map((s) => s.trim()).filter(Boolean);
       if (parsed.length > 0) onLabelsChange(parsed);
     }
-  }, [searchParams]);
+  }, [searchParams, syncUrl]);
 
   // Sync selections back to URL
   useEffect(() => {
+    if (!syncUrl) return;
     const params = new URLSearchParams(searchParams.toString());
     if (labels.length > 0) {
       params.set('label', labels.join(','));
@@ -39,7 +42,7 @@ export function LabelFilter({ options, labels, onLabelsChange }: Props) {
     if (next !== searchParams.toString()) {
       router.replace(`${window.location.pathname}?${next}`, { scroll: false });
     }
-  }, [labels, router, searchParams]);
+  }, [labels, router, searchParams, syncUrl]);
 
   const toggle = useCallback(
     (label: string) => {

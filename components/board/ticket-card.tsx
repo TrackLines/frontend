@@ -1,6 +1,7 @@
 'use client';
 
 import { When } from '@/components/when';
+import { Badge } from '@/components/ui/badge';
 import { useState, type MouseEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { PencilIcon } from 'lucide-react';
@@ -14,6 +15,7 @@ import type { Ticket } from '@/lib/api';
 import { TicketDialog } from './ticket-dialog';
 import { TicketView } from './ticket-view';
 import { EstimateBadge } from './estimate';
+import { TicketKey } from '@/components/ticket/ticket-key';
 import type { EstimateScale } from '@/lib/estimates';
 
 type Props = {
@@ -44,18 +46,20 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
         <div className="flex items-start gap-1 px-3">
           {/* the title opens the read-only view; the pencil edits */}
           <Button type="button" variant="link" onClick={openView} className="h-auto min-w-0 flex-1 justify-start p-0 text-left leading-5 whitespace-normal text-foreground">
+            {ticket.key && <TicketKey value={ticket.key} />}
             {ticket.title}
           </Button>
           {!readOnly && <Button type="button" variant="ghost" size="icon" className="-mt-1 -mr-1.5 size-7 shrink-0 text-muted-foreground" aria-label={`Edit ${ticket.title}`} onClick={() => setEditOpen(true)}>
             <PencilIcon className="size-3.5" aria-hidden />
           </Button>}
         </div>
-        {(ticket.blocked || ticket.estimate || (ticket.type && ticket.type !== 'task') || (ticket.priority && ticket.priority !== 'medium')) && (
+        {(ticket.blocked || ticket.estimate || ticket.external_source === 'bugfixes' || (ticket.type && ticket.type !== 'task') || (ticket.priority && ticket.priority !== 'medium')) && (
           <div className="flex flex-wrap gap-1 px-3">
             {ticket.type && ticket.type !== 'task' && <TypeBadge type={ticket.type} />}
             <PriorityBadge priority={ticket.priority} hideDefault />
             <EstimateBadge estimate={ticket.estimate} />
             {ticket.blocked && <BlockedBadge />}
+            {ticket.external_source === 'bugfixes' && <Badge variant="outline" title="Reported by Bugfixes">Bugfixes</Badge>}
           </div>
         )}
         <TicketLabels labels={ticket.labels} className="px-3" />

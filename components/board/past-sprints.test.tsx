@@ -19,10 +19,11 @@ test('a past sprint lists what it finished, with the closed-scope note', () => {
   const html = renderToStaticMarkup(<SprintDetailBody detail={{
     ...sprint(2), closed_at: '2026-10-14T00:00:00Z', unit: 'points', carried_over: 2,
     burn: { number: 2, starts_at: '2026-10-01T00:00:00Z', ends_at: '2026-10-14T00:00:00Z', total: 8, unestimated: 0, done: [{ at: '2026-10-05T00:00:00Z', value: 5 }] },
-    tickets: [{ id: 't1', column_id: 'c', title: 'Shipped it', description: '', position: 0, created_by: 'u', estimate: '5' }],
+    tickets: [{ id: 't1', key: 'TL-1', column_id: 'c', title: 'Shipped it', description: '', position: 0, created_by: 'u', estimate: '5' }],
   }} />);
   expect(html).toContain('Shipped it');
-  expect(html).toContain('href="/tickets/t1"');
+  expect(html).toContain('TL-1');
+  expect(html).toContain('href="/tickets/TL-1"');
   expect(html).toContain('5 of 8 points done in sprint 2');
   expect(html).toContain('what the sprint held when it closed');
 });

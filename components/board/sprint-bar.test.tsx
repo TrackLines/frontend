@@ -93,3 +93,15 @@ test('edit mode shows only configuration', () => {
   expect(noSprint(true)).not.toContain('Start sprint');
   expect(noSprint(false)).toContain('Start sprint');
 });
+
+test('the sprint goal shows on the bar; managers set or edit it in edit mode', () => {
+  const sprint = { id: 's', board_id: 'b', number: 4, length_days: 14, starts_at: '2026-10-01T09:00:00Z', ends_at: new Date(Date.now() + 86_400_000).toISOString(), closed_at: null };
+  const bar = (goal: string, editMode: boolean, canManage = true) =>
+    renderToStaticMarkup(<SprintBar board={{ ...board, sprint: { ...sprint, goal } }} token="t" canManage={canManage} editMode={editMode} onChanged={() => {}} />);
+  expect(bar('Ship search', false)).toContain('Ship search');
+  expect(bar('Ship search', false)).not.toContain('Edit goal'); // config: edit mode only
+  expect(bar('Ship search', true)).toContain('Edit goal');
+  expect(bar('', true)).toContain('Set goal');
+  expect(bar('', false)).not.toContain('Goal:');
+  expect(bar('Ship search', true, false)).not.toContain('Edit goal');
+});

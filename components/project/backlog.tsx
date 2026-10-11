@@ -22,7 +22,10 @@ import { useAutoRefresh } from '@/lib/use-auto-refresh';
 import { useCachedState } from '@/lib/page-cache';
 import { ListSkeleton } from '@/components/page-skeletons';
 import { LabelFilter } from '@/components/board/label-filter';
+import { parseLabels, parsePriorities, PriorityFilter, ticketFilterQuery } from '@/components/board/priority-filter';
 import { pageItems } from '@/lib/pagination';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { TicketKey, ticketPath } from '@/components/ticket/ticket-key';
 
 type Props = { projectId: string; boards: Board[]; token: string };
 
@@ -30,10 +33,13 @@ const PER_PAGE = 25;
 
 // Backlog: tickets in the project that aren't on any board or sprint yet (e.g. triaged bugs).
 export function Backlog({ projectId, boards, token }: Props) {
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [data, setData] = useCachedState<BacklogPage>(`backlog-page:${projectId}`); // instant on revisit, refreshed on mount
   const [failed, setFailed] = useState(false);
   const [filter, setFilter] = useState<TicketType | 'all'>('all');
-  const [labelFilter, setLabelFilter] = useState<string[]>([]);
+  const [labelFilter, setLabelFilter] = useState<string[]>(() => parseLabels(searchParams));
+  const [priorityFilter, setPriorityFilter] = useState<string[]>(() => parsePriorities(searchParams));
   const [page, setPage] = useState(1);
   const [adding, setAdding] = useState(false);
   const [busy, setBusy] = useState<string | null>(null); // ticket id being moved/deleted
@@ -50,7 +56,7 @@ export function Backlog({ projectId, boards, token }: Props) {
   const load = async (quiet = false) => {
     const req = ++latest.current;
     try {
-      const d = await backlog.page(projectId, { type: filter === 'all' ? undefined : filter, labels: labelFilter, page, perPage: PER_PAGE }, token);
+      const d = await backlog.page(projectId, { type: filter === 'all' ? undefined : filter, labels: labelFilter, priorities: priorityFilter, page, perPage: PER_PAGE }, token);
       if (req !== latest.current) return;
       const last = Math.max(1, Math.ceil(d.counts[filter] / PER_PAGE));
       if (page > last) return setPage(last); // e.g. the last ticket on the last page moved away
@@ -65,7 +71,11 @@ export function Backlog({ projectId, boards, token }: Props) {
   const loadRef = useRef(load);
   useEffect(() => { loadRef.current = load; }); // declared before the effects that call it, so they see this render's filters
 
-  useEffect(() => { void loadRef.current(); }, [projectId, filter, labelFilter, page]); // token refreshes must not refetch
+  useEffect(() => {
+    setLabelFilter(parseLabels(searchParams));
+    setPriorityFilter(parsePriorities(searchParams));
+  }, [searchParams]);
+  useEffect(() => { void loadRef.current(); }, [projectId, filter, labelFilter, priorityFilter, page]); // token refreshes must not refetch
   useEffect(() => {
     const onChange = (e: Event) => { if ((e as CustomEvent).detail?.projectId === projectId) void loadRef.current(); };
     window.addEventListener(BACKLOG_CHANGED, onChange);
@@ -77,7 +87,19 @@ export function Backlog({ projectId, boards, token }: Props) {
   const shown = data?.tickets ?? [];
   const lastPage = data ? Math.max(1, Math.ceil(data.counts[filter] / PER_PAGE)) : 1;
   const changeFilter = (f: TicketType | 'all') => { setFilter(f); setPage(1); };
-  const changeLabels = (l: string[]) => { setLabelFilter(l); setPage(1); };
+  const changeFilters = (labels: string[], priorities: string[]) => {
+    setLabelFilter(labels);
+    setPriorityFilter(priorities);
+    setPage(1);
+    const query = ticketFilterQuery(searchParams.toString(), labels, priorities);
+    router.replace(`${window.location.pathname}${query ? `?${query}` : ''}#backlog`, { scroll: false });
+  };
+  const changeLabels = (labels: string[]) => changeFilters(labels, priorityFilter);
+  const changePriorities = (priorities: string[]) => changeFilters(labelFilter, priorities);
+  const clearFilters = () => {
+    setFilter('all');
+    changeFilters([], []);
+  };
   const drop = (id: string) => setData((d) => d && { ...d, tickets: d.tickets.filter((x) => x.id !== id) });
 
   // moveTo puts t at the bottom of the board's first column, inside its open sprint. A board with an
@@ -135,6 +157,7 @@ export function Backlog({ projectId, boards, token }: Props) {
       {refining ? (
         <RefinementMode
           projectId={projectId} boards={boards} token={token} version={changes}
+          priorities={priorityFilter} onPrioritiesChange={changePriorities}
           onClose={() => { setRefining(false); void load(); }}
           onOpen={(t, scale) => openEditor(t as unknown as BacklogTicket, scale)}
           ticketActions={(t) => (
@@ -164,7 +187,8 @@ export function Backlog({ projectId, boards, token }: Props) {
         ))}
       </div>
       <div className="mb-3">
-        <LabelFilter options={data?.labels ?? null} labels={labelFilter} onLabelsChange={changeLabels} />
+        <LabelFilter options={data?.labels ?? null} labels={labelFilter} onLabelsChange={changeLabels} syncUrl={false} />
+        <span className="ml-2 inline-flex"><PriorityFilter priorities={priorityFilter} onPrioritiesChange={changePriorities} /></span>
       </div>
 
       {error && <p role="alert" className="mb-3 text-sm text-destructive">{error}</p>}
@@ -174,7 +198,11 @@ export function Backlog({ projectId, boards, token }: Props) {
         <ListSkeleton />
       ) : shown.length === 0 ? (
         <p className="rounded-xl border border-dashed p-6 text-sm text-muted-foreground">
-          {labelFilter.length > 0 ? 'No tickets with these labels in the backlog.' : data.counts.all === 0 ? 'The backlog is empty.' : 'Nothing of this type in the backlog.'}
+          {labelFilter.length > 0 || priorityFilter.length > 0 ? (
+            <span className="flex flex-wrap items-center gap-2">No tickets match these filters.<Button type="button" size="sm" variant="link" className="h-auto p-0" onClick={clearFilters}>Clear filters</Button></span>
+          ) : data.counts.all === 0 ? 'The backlog is empty.' : filter !== 'all' ? (
+            <span className="flex flex-wrap items-center gap-2">Nothing of this type in the backlog.<Button type="button" size="sm" variant="link" className="h-auto p-0" onClick={clearFilters}>Clear filters</Button></span>
+          ) : 'The backlog is empty.'}
         </p>
       ) : (
         <ul className="divide-y rounded-xl border">
@@ -184,7 +212,7 @@ export function Backlog({ projectId, boards, token }: Props) {
               {t.blocked && <BlockedBadge />}
               <TicketLabels labels={t.labels} />
               <div className="min-w-0 flex-1">
-                <Link href={`/tickets/${t.id}`} className="font-medium hover:underline">{t.title}</Link>
+                <Link href={ticketPath(t)} className="font-medium hover:underline"><TicketKey value={t.key} />{t.title}</Link>
                 {t.description && <p className="line-clamp-1 text-sm text-muted-foreground">{t.description}</p>}
                 {t.created_at && <p className="text-xs text-muted-foreground">Created <When iso={t.created_at} /></p>}
               </div>

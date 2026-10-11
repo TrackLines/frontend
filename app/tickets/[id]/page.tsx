@@ -2,10 +2,11 @@
 
 import { When } from '@/components/when';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { CopyLink } from '@/components/copy-link';
 import { Attachments } from '@/components/ticket/attachments';
+import { BugfixesPanel } from '@/components/ticket/bugfixes-panel';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
 import { AssigneeSelect } from '@/components/ticket/assignee-select';
 import { Dependencies } from '@/components/ticket/dependencies';
@@ -23,10 +24,12 @@ import { personLabel } from '@/lib/people';
 import { useToken } from '@/lib/use-token';
 import { useCachedState } from '@/lib/page-cache';
 import { TicketSkeleton } from '@/components/page-skeletons';
+import { isTicketKey, TicketKey, ticketPath } from '@/components/ticket/ticket-key';
 
 // A shareable page for one ticket — works for board and backlog tickets.
 export default function TicketPage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const token = useToken();
   const [t, setT] = useCachedState<TicketDetail>(`ticket:${id}`); // last-seen ticket shows instantly, then refreshes
   const [error, setError] = useState<number | null>(null);
@@ -36,7 +39,13 @@ export default function TicketPage() {
 
   const loaded = token !== null;
   useEffect(() => {
-    if (loaded) tickets.get(id, token).then(setT, (e) => setError(e instanceof ApiError ? e.status : 500));
+    if (loaded) {
+      const byKey = isTicketKey(id);
+      (byKey ? tickets.getByKey(id, token) : tickets.get(id, token)).then((ticket) => {
+        setT(ticket);
+        if (byKey) router.replace(`/tickets/${ticket.id}`);
+      }, (e) => setError(e instanceof ApiError ? e.status : 500));
+    }
   }, [id, loaded]); // load once; token refreshes must not refetch
 
   useEffect(() => {
@@ -85,7 +94,7 @@ export default function TicketPage() {
           {t.sprint_number != null && <Badge variant="secondary">Sprint {t.sprint_number}</Badge>}
           {t.blocked && <BlockedBadge />}
         </div>
-        <h1 className="text-3xl font-bold tracking-tight">{t.title}</h1>
+        <div className="flex flex-wrap items-center gap-3"><TicketKey value={t.key} copy /><h1 className="text-3xl font-bold tracking-tight">{t.title}</h1></div>
         <PartOf ticket={t} />
         <p className="text-sm text-muted-foreground">
           Created by {personLabel(t.created_by)}{t.created_at && <> <When iso={t.created_at} /></>}
@@ -112,6 +121,7 @@ export default function TicketPage() {
       </section>
       {token && <SubTickets ticket={t} token={token} onChanged={() => tickets.get(id, token).then(setT)} />}
       {token && <Dependencies ticket={t} token={token} onChanged={() => tickets.get(id, token).then(setT)} />}
+      {token && <BugfixesPanel ticket={t} token={token} />}
       {token && <Attachments ticketId={t.id} token={token} locked={t.done} />}
       {token && <TicketComments ticketId={t.id} token={token} />}
       <div className="flex flex-wrap gap-2">
@@ -122,7 +132,7 @@ export default function TicketPage() {
           </>
         )}
         <Link href={`/projects/${t.project_id}`} className={buttonVariants({ variant: 'outline' })}>Open project</Link>
-        <CopyLink path={`/tickets/${t.id}`} />
+        <CopyLink path={ticketPath(t)} />
       </div>
     </main>
   );

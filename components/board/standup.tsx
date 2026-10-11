@@ -5,11 +5,11 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { clock, goTo, pause, remaining, resume, reviewing, type Standup } from '@/lib/standup';
 
-type Props = { standup: Standup; onChange: (s: Standup) => void; onEnd: () => void };
+type Props = { standup: Standup; onChange: (s: Standup) => void; onEnd: () => void; goal?: string };
 
 // StandupPanel runs the standup over the board: who's speaking, their clock, and the running order.
 // The board under it shows the speaker's tickets (all tickets during the clean-board review).
-export function StandupPanel({ standup, onChange, onEnd }: Props) {
+export function StandupPanel({ standup, onChange, onEnd, goal }: Props) {
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
     const tick = setInterval(() => setNow(Date.now()), 1000);
@@ -24,6 +24,8 @@ export function StandupPanel({ standup, onChange, onEnd }: Props) {
 
   return (
     <section aria-label="Standup" className="grid gap-3 border-b bg-muted/40 px-6 py-3 text-sm">
+      {/* everyone's update is against the sprint goal */}
+      {goal && <p><span className="text-muted-foreground">Sprint goal:</span> <span className="font-medium">{goal}</span></p>}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <span className="font-semibold">
           {review ? 'Clean board: everything, together' : `${standup.people[standup.index].label}’s turn`}

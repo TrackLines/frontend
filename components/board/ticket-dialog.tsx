@@ -1,16 +1,19 @@
 'use client';
 
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { AssigneeSelect } from '@/components/ticket/assignee-select';
 import { LabelDrawer } from '@/components/ticket/labels';
 import { Attachments } from '@/components/ticket/attachments';
+import { BugfixesPanel } from '@/components/ticket/bugfixes-panel';
 import { attachAll, PendingAttachments, type PendingFile } from '@/components/ticket/pending-attachments';
 import { TypePicker } from '@/components/ticket-type';
 import { PrioritySelect } from './priority-select';
 import { EstimateSelect } from './estimate';
+import { missingTicketFields } from './ticket-validation';
+import { TicketKey } from '@/components/ticket/ticket-key';
 import type { EstimateScale } from '@/lib/estimates';
 import type { Ticket, TicketType } from '@/lib/api';
 import { backlog, tickets } from '@/lib/api';
@@ -44,6 +47,8 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [error, setError] = useState('');
+  const [missing, setMissing] = useState<{ title: boolean; estimate: boolean }>({ title: false, estimate: false });
+  const titleInput = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<PendingFile[]>([]); // create mode only
   const editing = Boolean(ticket);
   const estimating = scale !== 'none'; // the board has a scale, so an estimate is required
@@ -58,13 +63,21 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
       setEstimate(ticket?.estimate ?? '');
       setConfirmDelete(false);
       setError('');
+      setMissing({ title: false, estimate: false });
     }
   }, [open, ticket]);
 
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const cleanTitle = title.trim();
-    if (!cleanTitle) return;
+    const nextMissing = missingTicketFields(cleanTitle, estimate, estimating);
+    setMissing(nextMissing);
+    if (nextMissing.title || nextMissing.estimate) {
+      setError('Complete the highlighted required fields before adding this ticket.');
+      if (nextMissing.title) titleInput.current?.focus();
+      else document.getElementById('ticket-estimate')?.focus();
+      return;
+    }
     setSaving(true);
     setError('');
     try {
@@ -124,12 +137,13 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
       <DialogContent className={`max-h-[90vh] overflow-y-auto ${TICKET_DIALOG_WIDTH}`}>
         <DialogHeader>
           <DialogTitle>{editing ? 'Edit ticket' : 'Add a ticket'}</DialogTitle>
-          <DialogDescription>Give the work a clear title. Details are optional.</DialogDescription>
+          <DialogDescription className="flex flex-wrap items-center gap-2"><TicketKey value={ticket?.key} copy />Give the work a clear title. Details are optional.</DialogDescription>
         </DialogHeader>
         <form onSubmit={save} className="grid gap-4">
           <label className="grid gap-1.5 text-sm font-medium">
             Title
-            <Input autoFocus value={title} maxLength={200} required placeholder="What needs to be done?" onChange={(event) => setTitle(event.target.value)} />
+            <Input ref={titleInput} autoFocus value={title} maxLength={200} aria-required="true" aria-invalid={missing.title || undefined} aria-describedby={missing.title ? 'ticket-title-error' : undefined} placeholder="What needs to be done?" onChange={(event) => { setTitle(event.target.value); if (event.target.value.trim()) setMissing((current) => ({ ...current, title: false })); }} />
+            {missing.title && <span id="ticket-title-error" className="text-xs font-normal text-destructive">Enter a title.</span>}
           </label>
           <label className="grid gap-1.5 text-sm font-medium">
             <span>Details <span className="font-normal text-muted-foreground">(optional)</span></span>
@@ -152,7 +166,8 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
             {estimating && (
               <label className="grid gap-1.5 text-sm font-medium">
                 Estimate
-                <EstimateSelect scale={scale} value={estimate} onChange={setEstimate} required />
+                <EstimateSelect scale={scale} value={estimate} onChange={(value) => { setEstimate(value); if (value) setMissing((current) => ({ ...current, estimate: false })); }} required invalid={missing.estimate} describedBy={missing.estimate ? 'ticket-estimate-error' : undefined} />
+                {missing.estimate && <span id="ticket-estimate-error" className="text-xs font-normal text-destructive">Choose an estimate.</span>}
               </label>
             )}
           </div>
@@ -164,6 +179,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
               <AssigneeSelect ticketId={ticket.id} value={ticket.assigned_to} token={token} onChange={(t) => onSaved({ ...ticket, assigned_to: t.assigned_to })} />
             </label>
           )}
+          {ticket && <BugfixesPanel ticket={ticket} token={token} />}
           {ticket ? <Attachments ticketId={ticket.id} token={token} locked={done} /> : <PendingAttachments files={files} onChange={setFiles} />}
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           {confirmDelete && (
@@ -183,7 +199,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
               </div>
             )}
             <Button type="button" variant="outline" disabled={saving || deleting} onClick={() => onOpenChange(false)}>Cancel</Button>
-            <Button type="submit" disabled={saving || deleting || !title.trim() || (estimating && !estimate)}>{saving ? 'Saving…' : editing ? 'Save changes' : 'Add ticket'}</Button>
+            <Button type="submit" disabled={saving || deleting}>{saving ? 'Saving…' : editing ? 'Save changes' : 'Add ticket'}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

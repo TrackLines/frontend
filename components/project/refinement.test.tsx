@@ -62,3 +62,12 @@ test('in refine mode a ticket opens in place, not on its own page (which would l
   expect(inPlace).not.toContain('href="/tickets/a"');
   expect(card(p, true)).toContain('href="/tickets/a"'); // without an opener it falls back to the link
 });
+
+test('a planned sprint goal: editable for managers, read-only for members', () => {
+  const p = plan({ goal: 'Bugfixes panel live' });
+  expect(card(p, true)).toContain('value="Bugfixes panel live"');
+  expect(card(p, true)).toContain('aria-label="Sprint 5 goal"');
+  const member = card(p, false);
+  expect(member).toContain('Bugfixes panel live');
+  expect(member).not.toContain('aria-label="Sprint 5 goal"');
+});

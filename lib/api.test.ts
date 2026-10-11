@@ -1,5 +1,5 @@
 import { afterEach, expect, test } from 'bun:test';
-import { api, sprints, tickets } from './api';
+import { api, backlog, projects, sprints, tickets } from './api';
 
 const g = globalThis as unknown as { window?: unknown; fetch: typeof fetch };
 const realFetch = g.fetch;
@@ -63,4 +63,40 @@ test('sprint controls send updated length and next sprint schedule', async () =>
     { method: 'PATCH', body: { length_days: 10 } },
     { method: 'POST', body: { next_length_days: 7, next_starts_at: '2026-11-01T00:00:00.000Z' } },
   ]);
+});
+
+test('backlog page sends repeatable priority filters with labels and type', async () => {
+  let requested = '';
+  g.fetch = (async (url: string) => { requested = url; return Response.json({}); }) as unknown as typeof fetch;
+  await backlog.page('project-1', { type: 'bug', labels: ['frontend'], priorities: ['urgent', 'high'], page: 2, perPage: 25 }, 'token');
+  const query = new URL(requested, 'http://localhost').searchParams;
+  expect(query.get('type')).toBe('bug');
+  expect(query.getAll('label')).toEqual(['frontend']);
+  expect(query.getAll('priority')).toEqual(['urgent', 'high']);
+  expect(query.get('page')).toBe('2');
+});
+
+test('ticket lookup by key uses the key endpoint', async () => {
+  let requested = '';
+  g.fetch = (async (url: string) => { requested = url; return Response.json({ id: 'ticket-1' }); }) as unknown as typeof fetch;
+  await tickets.getByKey('TL-123', 'token');
+  expect(requested).toContain('/ticket-keys/TL-123');
+});
+
+test('project updates can change the ticket key prefix', async () => {
+  let body: unknown;
+  g.fetch = (async (_url: string, init: RequestInit) => { body = JSON.parse(String(init.body)); return new Response(null, { status: 204 }); }) as unknown as typeof fetch;
+  await projects.update('project-1', { name: 'TrackLines', description: '', key_prefix: 'TRK' }, 'token');
+  expect(body).toEqual({ name: 'TrackLines', description: '', key_prefix: 'TRK' });
+});
+
+test('ticket search sends text and repeatable type filters', async () => {
+  let requested = '';
+  g.fetch = (async (url: string) => { requested = url; return Response.json([]); }) as unknown as typeof fetch;
+  await tickets.search({ text: ' TL-123 ', project: 'p1', types: ['bug', 'task'], assignee: 'me' }, 'token');
+  const query = new URL(requested, 'http://localhost').searchParams;
+  expect(query.get('q')).toBe('TL-123');
+  expect(query.get('project')).toBe('p1');
+  expect(query.getAll('type')).toEqual(['bug', 'task']);
+  expect(query.get('assignee')).toBe('me');
 });

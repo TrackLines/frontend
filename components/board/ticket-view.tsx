@@ -3,6 +3,7 @@
 import { When } from '@/components/when';
 import { CopyLink } from '@/components/copy-link';
 import { Attachments } from '@/components/ticket/attachments';
+import { BugfixesPanel } from '@/components/ticket/bugfixes-panel';
 import { TicketComments } from '@/components/ticket/comments';
 import { TicketLabels } from '@/components/ticket/labels';
 import { Badge } from '@/components/ui/badge';
@@ -11,6 +12,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import type { Ticket } from '@/lib/api';
 import { EstimateBadge } from './estimate';
 import { personLabel } from '@/lib/people';
+import { TicketKey, ticketPath } from '@/components/ticket/ticket-key';
 
 type Props = {
   open: boolean;
@@ -30,7 +32,7 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
         onPointerDown={(event) => event.stopPropagation()}
       >
         <DialogHeader>
-          <DialogTitle className="pr-8">{ticket.title}</DialogTitle>
+          <DialogTitle className="pr-8 flex flex-wrap items-center gap-2"><TicketKey value={ticket.key} copy />{ticket.title}</DialogTitle>
           <DialogDescription className="flex items-center gap-2">
             Status <Badge variant="secondary">{columnName}</Badge>
             <EstimateBadge estimate={ticket.estimate} />
@@ -62,10 +64,11 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
             <p className="text-muted-foreground">No details provided.</p>
           )}
         </section>
+        {open && token && <BugfixesPanel ticket={ticket} token={token} />}
         {open && token && <Attachments ticketId={ticket.id} token={token} locked={done} />}
         {open && token && <TicketComments ticketId={ticket.id} token={token} />}
         <DialogFooter>
-          <CopyLink path={`/tickets/${ticket.id}`} className="sm:mr-auto" />
+          <CopyLink path={ticketPath(ticket)} className="sm:mr-auto" />
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Close</Button>
           {onEdit && <Button type="button" onClick={onEdit}>Edit</Button>}
         </DialogFooter>

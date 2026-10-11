@@ -26,6 +26,7 @@ export function SprintBar({ board, token, canManage, editMode = false, onChanged
   const [starting, setStarting] = useState(false);
   const [closing, setClosing] = useState(false);
   const [editingLength, setEditingLength] = useState(false);
+  const [editingGoal, setEditingGoal] = useState(false);
   const sprint = board.sprint;
   const sprintStarted = sprint ? new Date(sprint.starts_at).getTime() <= Date.now() : false;
 
@@ -40,11 +41,15 @@ export function SprintBar({ board, token, canManage, editMode = false, onChanged
           {sprintStarted
             ? <Status endsAt={sprint.ends_at} />
             : <Badge variant="secondary">Scheduled · starts {day.format(new Date(sprint.starts_at))}</Badge>}
+          {sprint.goal && (
+            <span className="min-w-0"><span className="text-muted-foreground">Goal:</span> <span className="font-medium">{sprint.goal}</span></span>
+          )}
           {sprintStarted && sprintLocked(sprint.ends_at) && (
             <span role="note" className="text-muted-foreground">Scope locked: the sprint ends today, so new tickets go to the backlog.</span>
           )}
           {/* a board setting: only while editing the board, like its scale and style */}
           {canManage && editMode && <Button size="sm" variant="outline" onClick={() => setEditingLength(true)}>Change length</Button>}
+          {canManage && editMode && <Button size="sm" variant="outline" onClick={() => setEditingGoal(true)}>{sprint.goal ? 'Edit goal' : 'Set goal'}</Button>}
           {/* closing is running the board, not configuring it: hidden while editing */}
           {canManage && !editMode && sprintStarted && <Button size="sm" variant="outline" onClick={() => setClosing(true)}>Close sprint</Button>}
         </>
@@ -60,6 +65,7 @@ export function SprintBar({ board, token, canManage, editMode = false, onChanged
       {!editMode && sprint && sprintStarted && <Charts boardId={board.id} token={token} />}
       {canManage && <StartDialog open={starting} onOpenChange={setStarting} boardId={board.id} token={token} onStarted={onChanged} />}
       {canManage && sprint && <ChangeLengthDialog key={sprint.id} open={editingLength} onOpenChange={setEditingLength} sprint={sprint} token={token} onChanged={onChanged} />}
+      {canManage && sprint && <GoalDialog key={`goal-${sprint.id}`} open={editingGoal} onOpenChange={setEditingGoal} sprint={sprint} token={token} onChanged={onChanged} />}
       {canManage && sprint && sprintStarted && <CloseDialog key={sprint.id} open={closing} onOpenChange={setClosing} board={board} sprint={sprint} token={token} onClosed={onChanged} />}
     </div>
   );
@@ -75,6 +81,7 @@ function StartDialog({ open, onOpenChange, boardId, token, onStarted }: {
 }) {
   const [choice, setChoice] = useState<number | 'custom'>(14);
   const [custom, setCustom] = useState('10');
+  const [goal, setGoal] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const days = choice === 'custom' ? Number(custom) : choice;
@@ -85,7 +92,7 @@ function StartDialog({ open, onOpenChange, boardId, token, onStarted }: {
     setSaving(true);
     setError('');
     try {
-      await sprints.start(boardId, days, token);
+      await sprints.start(boardId, days, token, goal.trim());
       onOpenChange(false);
       onStarted();
     } catch (err) {
@@ -121,6 +128,7 @@ function StartDialog({ open, onOpenChange, boardId, token, onStarted }: {
               days
             </label>
           </fieldset>
+          <GoalField value={goal} onChange={setGoal} />
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           <DialogFooter>
             <Button type="submit" disabled={saving || !valid}>{saving ? 'Starting…' : `Start ${valid ? days + '-day ' : ''}sprint`}</Button>
@@ -240,3 +248,57 @@ function CloseDialog({ open, onOpenChange, board, sprint, token, onClosed }: {
   );
 }
 
+
+export const GOAL_MAX = 200; // backend: sprints.goal
+
+// GoalField: the optional one-line sprint goal, shared by starting, editing and planning a sprint.
+export function GoalField({ value, onChange }: { value: string; onChange: (goal: string) => void }) {
+  return (
+    <label className="grid gap-1.5 text-sm font-medium">
+      <span>Goal <span className="font-normal text-muted-foreground">(optional)</span></span>
+      <Input value={value} maxLength={GOAL_MAX} placeholder="What should this sprint achieve?" onChange={(e) => onChange(e.target.value)} />
+    </label>
+  );
+}
+
+function GoalDialog({ open, onOpenChange, sprint, token, onChanged }: {
+  open: boolean; onOpenChange: (o: boolean) => void; sprint: Sprint; token: string; onChanged: () => void;
+}) {
+  const [goal, setGoal] = useState(sprint.goal ?? '');
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+
+  async function submit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setSaving(true);
+    setError('');
+    try {
+      await sprints.setGoal(sprint.id, goal.trim(), token);
+      onOpenChange(false);
+      onChanged();
+    } catch (err) {
+      setError(err instanceof ApiError && err.status === 403 ? 'Only organization admins and this board’s team leaders can manage sprints.' : 'Couldn’t save the goal. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <form onSubmit={submit} className="grid gap-4">
+          <DialogHeader>
+            <DialogTitle>Sprint {sprint.number} goal</DialogTitle>
+            <DialogDescription>One line the team is working towards. It shows on the board and in standup.</DialogDescription>
+          </DialogHeader>
+          <GoalField value={goal} onChange={setGoal} />
+          {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+            <Button type="submit" disabled={saving}>{saving ? 'Saving…' : goal.trim() ? 'Save goal' : 'Clear goal'}</Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}

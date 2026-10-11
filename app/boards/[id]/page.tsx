@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { AddColumn, Column } from '@/components/board/column';
 import { BoardDnd, DroppableColumn, SortableTicket } from '@/components/board/board-dnd';
@@ -23,10 +23,14 @@ import { prefetch, useCachedState } from '@/lib/page-cache';
 import { BoardSkeleton } from '@/components/page-skeletons';
 import { useAutoRefresh } from '@/lib/use-auto-refresh';
 import { LabelFilter, filterTicketsByLabels, labelCounts } from '@/components/board/label-filter';
+import { filterTicketsByPriorities, parseLabels, parsePriorities, PriorityFilter, ticketFilterQuery } from '@/components/board/priority-filter';
+import { AssigneeFilter, filterTicketsByAssignee } from '@/components/board/assignee-filter';
 
 export default function BoardPage() {
   const { id } = useParams<{ id: string }>();
   const focus = useSearchParams().get('ticket'); // /boards/<id>?ticket=<ticket> opens that ticket's modal
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const token = useToken();
   const [board, setBoard] = useCachedState<Board>(`board:${id}`); // last-seen board shows instantly, then refreshes
   const [error, setError] = useState<number | null>(null);
@@ -36,9 +40,12 @@ export default function BoardPage() {
   const [editMode, setEditMode] = useState(false);
   const [canManage, setCanManage] = useState<boolean | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState('');
   const [permissionBoardId, setPermissionBoardId] = useState('');
   const [permissionError, setPermissionError] = useState(false);
-  const [labelFilter, setLabelFilter] = useState<string[]>([]);
+  const [labelFilter, setLabelFilter] = useState<string[]>(() => parseLabels(searchParams));
+  const [priorityFilter, setPriorityFilter] = useState<string[]>(() => parsePriorities(searchParams));
+  const [assigneeFilter, setAssigneeFilter] = useState<AssigneeFilter>('all');
   const [standup, setStandup] = useState<Standup | null>(null);
   const [startingStandup, setStartingStandup] = useState(false);
 
@@ -49,6 +56,7 @@ export default function BoardPage() {
     try {
       const role = await organization.me(token);
       setIsAdmin(role.admin);
+      setCurrentUserId(role.user_id);
       setCanManage(canManageBoard(role, next.team_id));
       setPermissionBoardId(next.id);
       setPermissionError(false);
@@ -75,6 +83,19 @@ export default function BoardPage() {
   }, [board?.project_id, loaded]);
 
   useEffect(() => { if (canManage === false) setEditMode(false); }, [canManage]);
+  useEffect(() => {
+    setLabelFilter(parseLabels(searchParams));
+    setPriorityFilter(parsePriorities(searchParams));
+  }, [searchParams]);
+
+  const changeFilters = (labels: string[], priorities: string[]) => {
+    setLabelFilter(labels);
+    setPriorityFilter(priorities);
+    const query = ticketFilterQuery(searchParams.toString(), labels, priorities);
+    router.replace(`${window.location.pathname}${query ? `?${query}` : ''}`, { scroll: false });
+  };
+  const changeLabels = (labels: string[]) => changeFilters(labels, priorityFilter);
+  const changePriorities = (priorities: string[]) => changeFilters(labelFilter, priorities);
 
   // local edits: components call the API themselves and report back here
   const updateTickets = (columnId: string, fn: (ts: Ticket[]) => Ticket[]) =>
@@ -103,6 +124,11 @@ export default function BoardPage() {
   const boardIsAdmin = permissionBoardId === board.id && isAdmin;
   const boardEditMode = editMode && boardCanManage;
   const kanban = board.style === 'kanban';
+  const turn = standup && speaker(standup);
+  const hasVisibleTickets = (board.columns ?? []).some((column) =>
+    filterTicketsByAssignee(filterTicketsByPriorities(filterTicketsByLabels(column.tickets, labelFilter), priorityFilter), assigneeFilter, currentUserId)
+      .some((ticket) => !turn || ticket.assigned_to === turn.id),
+  );
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col">
@@ -122,8 +148,14 @@ export default function BoardPage() {
         {!boardEditMode && <LabelFilter
           options={labelCounts((board.columns ?? []).flatMap((c) => c.tickets))}
           labels={labelFilter}
-          onLabelsChange={setLabelFilter}
+          onLabelsChange={changeLabels}
+          syncUrl={false}
         />}
+        {!boardEditMode && <PriorityFilter priorities={priorityFilter} onPrioritiesChange={changePriorities} />}
+        {!boardEditMode && <div role="group" aria-label="Quick filter by assignee" className="flex gap-1">
+          <Button type="button" size="sm" variant={assigneeFilter === 'mine' ? 'secondary' : 'ghost'} aria-pressed={assigneeFilter === 'mine'} onClick={() => setAssigneeFilter((filter) => filter === 'mine' ? 'all' : 'mine')}>My tickets</Button>
+          <Button type="button" size="sm" variant={assigneeFilter === 'unassigned' ? 'secondary' : 'ghost'} aria-pressed={assigneeFilter === 'unassigned'} onClick={() => setAssigneeFilter((filter) => filter === 'unassigned' ? 'all' : 'unassigned')}>Unassigned</Button>
+        </div>}
         {/* the same actions in and out of edit mode, so the header doesn't jump around */}
         <div className="ml-auto flex flex-wrap items-center gap-2">
           <CopyLink path={`/boards/${board.id}`} />
@@ -166,11 +198,17 @@ export default function BoardPage() {
           <Button type="button" variant="ghost" size="sm" onClick={() => setToBacklog(null)}>Dismiss</Button>
         </p>
       )}
-      {standup && <StandupPanel standup={standup} onChange={setStandup} onEnd={() => setStandup(null)} />}
+      {standup && <StandupPanel standup={standup} onChange={setStandup} onEnd={() => setStandup(null)} goal={board.sprint?.goal} />}
       {/* sprint start/close changes which tickets the board shows, so reload */}
       {kanban
         ? <p className="border-b px-6 py-3 text-sm text-muted-foreground">Kanban board: work flows continuously. Keep each column within its WIP limit.</p>
         : <SprintBar board={board} token={token} canManage={boardCanManage} editMode={boardEditMode} onChanged={load} />}
+      {!boardEditMode && !hasVisibleTickets && (labelFilter.length > 0 || priorityFilter.length > 0 || assigneeFilter !== 'all') && (
+        <p role="status" className="mx-6 mt-4 flex flex-wrap items-center gap-2 rounded-lg border border-dashed p-3 text-sm text-muted-foreground">
+          No tickets match these filters.
+          <Button type="button" variant="link" size="sm" className="h-auto p-0" onClick={() => { changeFilters([], []); setAssigneeFilter('all'); }}>Clear filters</Button>
+        </p>
+      )}
       <BoardDnd
         boardId={board.id}
         columns={board.columns ?? []}
@@ -180,9 +218,8 @@ export default function BoardPage() {
       <div className="flex flex-1 items-start gap-4 overflow-x-auto p-6">
         {board.columns?.map((col) => {
           const cols = board.columns ?? [];
-          const turn = standup && speaker(standup); // standup: only the speaker's tickets
           // editing shows every ticket: the label filter is hidden then
-          const shown = (boardEditMode ? col.tickets : filterTicketsByLabels(col.tickets, labelFilter)).filter((t) => !turn || t.assigned_to === turn.id);
+          const shown = (boardEditMode ? col.tickets : filterTicketsByAssignee(filterTicketsByPriorities(filterTicketsByLabels(col.tickets, labelFilter), priorityFilter), assigneeFilter, currentUserId)).filter((t) => !turn || t.assigned_to === turn.id);
           const done = col.id === cols.at(-1)?.id; // last column = Done
           return (
             <div key={col.id} className="min-w-72 flex-1">
