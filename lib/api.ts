@@ -534,3 +534,23 @@ export const notifications = {
   dismiss: (id: string, token: T) => api<void>(`/notifications/${id}`, { method: 'DELETE', token }),
   clearRead: (token: T) => api<void>('/notifications/read', { method: 'DELETE', token }),
 };
+
+// Request intake: a project's public, unlisted form (no account) and the team's triage of what comes in.
+export type IntakeSettings = { open: boolean; token: string | null };
+export type IntakeRequest = { type: 'bug' | 'feature'; title: string; details?: string; contact?: string; website?: string };
+export type IntakeSubmission = {
+  id: string; project_id: string; type: 'bug' | 'feature'; title: string; details: string; contact: string;
+  status: 'pending' | 'promoted' | 'dismissed'; ticket_id: string | null; ticket_key: string | null;
+  decided_by: string | null; decided_at: string | null; created_at: string;
+};
+export const intake = {
+  form: (token: string) => api<{ open: boolean }>(`/intake/${encodeURIComponent(token)}`),
+  submit: (token: string, body: IntakeRequest) => api<void>(`/intake/${encodeURIComponent(token)}`, { method: 'POST', body }),
+  settings: (projectId: string, t: T) => api<IntakeSettings>(`/projects/${projectId}/intake`, { token: t }),
+  setOpen: (projectId: string, open: boolean, t: T, rotate = false) =>
+    api<IntakeSettings>(`/projects/${projectId}/intake`, { method: 'PUT', body: { open, ...(rotate && { rotate }) }, token: t }),
+  submissions: (projectId: string, t: T, status: IntakeSubmission['status'] = 'pending') =>
+    api<IntakeSubmission[]>(`/projects/${projectId}/intake/submissions?status=${status}`, { token: t }),
+  promote: (id: string, t: T) => api<IntakeSubmission>(`/intake-submissions/${id}/promote`, { method: 'POST', token: t }),
+  dismiss: (id: string, t: T) => api<void>(`/intake-submissions/${id}/dismiss`, { method: 'POST', token: t }),
+};

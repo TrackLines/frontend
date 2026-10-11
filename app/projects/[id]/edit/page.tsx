@@ -8,6 +8,7 @@ import { ListPageSkeleton } from '@/components/page-skeletons';
 import { ProjectKeyPrefix } from '@/components/project/key-prefix';
 import { NewBoardButton } from '@/components/project/new-board';
 import { ProjectRepositories } from '@/components/project/repositories';
+import { IntakeSettingsSection } from '@/components/intake/intake-settings';
 import { organization, projects, type Project } from '@/lib/api';
 import { useCachedState } from '@/lib/page-cache';
 import { useToken } from '@/lib/use-token';
@@ -59,6 +60,10 @@ export default function EditProjectPage() {
           {project.boards?.length ?? 0} board{project.boards?.length === 1 ? '' : 's'}. One board per team.
         </p>
         <NewBoardButton projectId={project.id} token={token} variant="outline" />
+      </Section>
+
+      <Section title="Request form">
+        <IntakeSettingsSection projectId={project.id} token={token} />
       </Section>
 
       <Section title="Repositories">

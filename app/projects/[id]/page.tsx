@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { Backlog } from '@/components/project/backlog';
 import { BoardCard } from '@/components/project/board-card';
 import { NewBoardButton } from '@/components/project/new-board';
+import { RequestsLink } from '@/components/intake/requests-link';
 import { RoadmapEditorForm } from '@/components/roadmap-editor-form';
 import { VisibilityBadge } from '@/components/roadmap/visibility';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -44,7 +45,10 @@ export default function ProjectPage() {
       <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-3xl font-bold tracking-tight">{project.name}</h1>
         {/* setup (name, key prefix, more boards, repositories) lives on its own page */}
-        <Link href={`/projects/${project.id}/edit`} className={buttonVariants({ variant: 'outline', size: 'sm' })}>Edit project</Link>
+        <span className="flex gap-2">
+          <RequestsLink projectId={project.id} token={token} />
+          <Link href={`/projects/${project.id}/edit`} className={buttonVariants({ variant: 'outline', size: 'sm' })}>Edit project</Link>
+        </span>
       </div>
       {/* integrations (ChewedFeed, BugFixes) ask for this */}
       <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
