@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
+import { Pager } from '@/components/pager';
 import { TICKET_TYPES as TYPES, TypeBadge, TypePicker } from '@/components/ticket-type';
 import { TICKET_DIALOG_WIDTH, TicketDialog } from '@/components/board/ticket-dialog';
 import { EstimateSelect } from '@/components/board/estimate';
@@ -23,13 +23,12 @@ import { useCachedState } from '@/lib/page-cache';
 import { ListSkeleton } from '@/components/page-skeletons';
 import { LabelFilter } from '@/components/board/label-filter';
 import { parseLabels, parsePriorities, PriorityFilter, ticketFilterQuery } from '@/components/board/priority-filter';
-import { pageItems } from '@/lib/pagination';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { TicketKey, ticketPath } from '@/components/ticket/ticket-key';
 
 type Props = { projectId: string; boards: Board[]; token: string };
 
-const PER_PAGE = 25;
+const PER_PAGE = 10;
 
 // Backlog: tickets in the project that aren't on any board or sprint yet (e.g. triaged bugs).
 export function Backlog({ projectId, boards, token }: Props) {
@@ -225,25 +224,7 @@ export function Backlog({ projectId, boards, token }: Props) {
           ))}
         </ul>
       )}
-      {lastPage > 1 && (
-        <Pagination className="mt-4">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious href="#backlog" aria-disabled={page === 1} className={page === 1 ? 'pointer-events-none opacity-50' : undefined} onClick={(e) => { e.preventDefault(); if (page > 1) setPage(page - 1); }} />
-            </PaginationItem>
-            {pageItems(page, lastPage).map((p, i) => (
-              <PaginationItem key={p === 'gap' ? `gap${i}` : p}>
-                {p === 'gap' ? <PaginationEllipsis /> : (
-                  <PaginationLink href="#backlog" isActive={p === page} onClick={(e) => { e.preventDefault(); setPage(p); }}>{p}</PaginationLink>
-                )}
-              </PaginationItem>
-            ))}
-            <PaginationItem>
-              <PaginationNext href="#backlog" aria-disabled={page === lastPage} className={page === lastPage ? 'pointer-events-none opacity-50' : undefined} onClick={(e) => { e.preventDefault(); if (page < lastPage) setPage(page + 1); }} />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      )}
+      <Pager page={page} lastPage={lastPage} onPage={setPage} anchor="#backlog" />
       </>}
 
       {sizing && (

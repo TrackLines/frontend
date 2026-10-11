@@ -3,6 +3,7 @@
 import { ListPageSkeleton } from '@/components/page-skeletons';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { Pager } from '@/components/pager';
 import { VisibilityBadge } from '@/components/roadmap/visibility';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { projects, roadmaps, type Project, type Roadmap } from '@/lib/api';
@@ -10,12 +11,15 @@ import { useToken } from '@/lib/use-token';
 
 type RoadmapEntry = { roadmap: Roadmap; project?: Project };
 
+const PER_PAGE = 10; // ponytail: pages in the browser; the list is the org's roadmaps, small enough to load at once
+
 export default function RoadmapsPage() {
   const token = useToken();
   const [entries, setEntries] = useState<RoadmapEntry[] | null>(null);
   const [failed, setFailed] = useState(false);
   const [deleteError, setDeleteError] = useState('');
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
 
   const loaded = token !== null;
   useEffect(() => {
@@ -46,6 +50,8 @@ export default function RoadmapsPage() {
 
   if (failed) return <Message title="Couldn't load your roadmaps" body="Please refresh to try again." />;
   if (!entries || !token) return <ListPageSkeleton label="Loading roadmaps…" />;
+  const lastPage = Math.max(1, Math.ceil(entries.length / PER_PAGE));
+  const current = Math.min(page, lastPage); // e.g. the last roadmap on the last page was deleted
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
@@ -62,8 +68,8 @@ export default function RoadmapsPage() {
           <Link href="/dashboard" className={buttonVariants({ variant: 'outline' })}>Browse projects</Link>
         </div>
       ) : (
-        <ul className="divide-y rounded-xl border">
-          {entries.map(({ roadmap, project }) => (
+        <ul id="roadmaps" className="divide-y rounded-xl border">
+          {entries.slice((current - 1) * PER_PAGE, current * PER_PAGE).map(({ roadmap, project }) => (
             <li key={roadmap.id} className="flex flex-wrap items-center gap-x-4 gap-y-3 p-4">
               <div className="min-w-48 flex-1">
                 <p className="font-medium">{roadmap.title}</p>
@@ -84,6 +90,7 @@ export default function RoadmapsPage() {
           ))}
         </ul>
       )}
+      <Pager page={current} lastPage={lastPage} onPage={setPage} anchor="#roadmaps" />
     </main>
   );
 }
