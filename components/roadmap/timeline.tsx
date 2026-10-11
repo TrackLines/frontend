@@ -43,10 +43,10 @@ function Gantt({ items }: { items: RoadmapItem[] }) {
   const months = monthSegments(range.start, range.days);
 
   return (
-    <div className="grid gap-6">
-      <section aria-label="Gantt chart" className="rounded-xl border p-4">
+    <div className="grid min-w-0 max-w-full gap-6">
+      <section aria-label="Gantt chart" className="min-w-0 max-w-full rounded-xl border p-4">
         <h2 className="mb-4 font-semibold">Gantt chart</h2>
-        <div className="overflow-x-auto pb-2">
+        <div className="w-full min-w-0 max-w-full overflow-x-auto pb-2">
           <div className="relative" style={{ width: LABEL_WIDTH + COLUMN_GAP + width }}>
             <div className="mb-3 grid items-end gap-3 text-xs text-muted-foreground" style={{ gridTemplateColumns: `${LABEL_WIDTH}px ${width}px` }} aria-hidden="true">
               <div />
@@ -141,7 +141,7 @@ export function Timeline({ id, items, progress }: { id: string; items: RoadmapIt
   }
   const groups = groupByMonth(items);
   return (
-    <div className="grid gap-8">
+    <div className="grid min-w-0 max-w-full gap-8">
       <section aria-label="Roadmap progress" className="rounded-xl border p-4">
         {progress && progress.total > 0 ? (
           <>
