@@ -1,5 +1,6 @@
 'use client';
 
+import { NeedsReviewBadge } from './review';
 import { plainText } from '@/components/markdown';
 import { When } from '@/components/when';
 import { Badge } from '@/components/ui/badge';
@@ -27,9 +28,10 @@ type Props = {
   done?: boolean; // in the board's last column: attachments locked
   scale?: EstimateScale; // the board's estimate scale
   readOnly?: boolean; // the board is being edited: tickets can be viewed, not changed
+  onReviewed?: () => void; // approved or sent back: it changed column, so the board reloads
 };
 
-export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, done, scale, readOnly = false }: Props) {
+export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, done, scale, readOnly = false, onReviewed }: Props) {
   const [viewOpen, setViewOpen] = useState(Boolean(openOnLoad));
   const [editOpen, setEditOpen] = useState(false);
   const [columnName, setColumnName] = useState(openOnLoad?.columnName ?? '');
@@ -49,6 +51,7 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
           {ticket.type && ticket.type !== 'task' && <TypeBadge type={ticket.type} />}
           <PriorityBadge priority={ticket.priority} hideDefault />
           {ticket.blocked && <BlockedBadge />}
+          <NeedsReviewBadge ticket={ticket} />
           {ticket.external_source === 'bugfixes' && <Badge variant="outline" title="Reported by Bugfixes">Bugfixes</Badge>}
           <span className="ml-auto flex shrink-0 items-center gap-1">
             {ticket.estimate && <Badge variant="outline" className="size-6 justify-center rounded-full p-0" title="Estimate" aria-label={`Estimate ${ticket.estimate}`}>{ticket.estimate}</Badge>}
@@ -78,6 +81,7 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
         token={token}
         done={done}
         onEdit={readOnly ? undefined : () => { setViewOpen(false); setEditOpen(true); }}
+        onReviewed={readOnly ? undefined : () => { setViewOpen(false); onReviewed?.(); }}
       />
       <TicketDialog
         open={editOpen}

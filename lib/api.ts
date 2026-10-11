@@ -40,6 +40,7 @@ export type Board = {
   style?: BoardStyle;
   hidden_done?: number; // kanban: Done tickets finished over 14 days ago, left off the board
   estimate_scale?: EstimateScale;
+  agent_review?: boolean; // agents' moves into Done wait for a person's review
   sprint?: Sprint; // open sprint, absent when the board doesn't run sprints
   stats?: BoardStats; // a project's boards only
 };
@@ -267,7 +268,7 @@ export const boards = {
   create: (projectId: string, b: { name: string; description?: string; template_id?: string }, token: T) =>
     api<Board>(`/projects/${projectId}/boards`, { method: 'POST', body: b, token }),
   // Update the board name and/or settings; switching estimate_scale clears open tickets' estimates.
-  update: (id: string, b: { name?: string; estimate_scale?: EstimateScale; style?: BoardStyle }, token: T) => api<void>(`/boards/${id}`, { method: 'PATCH', body: b, token }),
+  update: (id: string, b: { name?: string; estimate_scale?: EstimateScale; style?: BoardStyle; agent_review?: boolean }, token: T) => api<void>(`/boards/${id}`, { method: 'PATCH', body: b, token }),
   remove: (id: string, token: T) => api<void>(`/boards/${id}`, { method: 'DELETE', token }),
 };
 
@@ -338,6 +339,9 @@ export const tickets = {
     params.set('limit', String(q.limit ?? 20));
     return api<TicketSearchResult[]>(`/search?${params}`, { token });
   },
+  // review settles an agent's finished ticket: approve → Done, else back to the first column (comment added)
+  review: (id: string, approve: boolean, comment: string, token: T) =>
+    api<void>(`/tickets/${id}/review`, { method: 'POST', body: { approve, ...(comment.trim() && { comment: comment.trim() }) }, token }),
   // resolve closes a backlog ticket in place: done, or wont_do (decided against; the reason becomes a comment)
   resolve: (id: string, token: T, resolution: 'done' | 'wont_do' = 'done', reason = '') =>
     api<void>(`/tickets/${id}/resolve`, { method: 'POST', body: { resolution, ...(reason.trim() && { reason: reason.trim() }) }, token }),

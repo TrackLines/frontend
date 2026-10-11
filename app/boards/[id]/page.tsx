@@ -1,5 +1,6 @@
 'use client';
 
+import { AgentReviewSetting } from '@/components/board/review';
 import Link from 'next/link';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -192,6 +193,7 @@ export default function BoardPage() {
             token={token}
             onChanged={() => void load(true)}
           />
+          <AgentReviewSetting boardId={board.id} on={!!board.agent_review} token={token} onChanged={() => void load(true)} />
           {boardIsAdmin && <Button type="button" variant="outline" size="sm" className="ml-auto" onClick={() => setSavingTemplate(true)}>Save as template</Button>}
         </section>
       )}
@@ -258,6 +260,7 @@ export default function BoardPage() {
                         readOnly={boardEditMode}
                         token={token}
                         onUpdated={(nt) => updateTickets(col.id, (ts) => ts.map((x) => (x.id === nt.id ? nt : x)))}
+                        onReviewed={() => void load(true)}
                         onDeleted={(tid) => updateTickets(col.id, (ts) => ts.filter((x) => x.id !== tid))}
                       />
                     </SortableTicket>

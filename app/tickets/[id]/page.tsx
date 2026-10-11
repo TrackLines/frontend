@@ -1,5 +1,6 @@
 'use client';
 
+import { NeedsReviewBadge, ReviewActions } from '@/components/board/review';
 import { Markdown } from '@/components/markdown';
 import { When } from '@/components/when';
 import Link from 'next/link';
@@ -96,6 +97,7 @@ export default function TicketPage() {
           <EstimateBadge estimate={t.estimate} />
           {t.sprint_number != null && <Badge variant="secondary">Sprint {t.sprint_number}</Badge>}
           {t.blocked && <BlockedBadge />}
+          <NeedsReviewBadge ticket={t} />
           {t.resolution === 'wont_do' && <Badge variant="outline" title="Closed as decided against">Won&apos;t do</Badge>}
         </div>
         <div className="flex flex-wrap items-center gap-3">
@@ -124,6 +126,7 @@ export default function TicketPage() {
           {labelError && <p role="alert" className="text-sm text-destructive">{labelError}</p>}
         </div>
       )}
+      {token && <ReviewActions ticket={t} token={token} onReviewed={() => { void tickets.get(t.id, token).then(setT); }} />}
       <section aria-label="Ticket details" className="rounded-xl border p-5 text-sm">
         {t.description ? <Markdown>{t.description}</Markdown> : <p className="text-muted-foreground">No details provided.</p>}
       </section>

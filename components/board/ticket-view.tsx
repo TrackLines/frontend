@@ -1,5 +1,6 @@
 'use client';
 
+import { NeedsReviewBadge, ReviewActions } from './review';
 import { Markdown } from '@/components/markdown';
 import { When } from '@/components/when';
 import { CopyLink } from '@/components/copy-link';
@@ -23,9 +24,10 @@ type Props = {
   onEdit?: () => void; // absent: view only (e.g. while the board is being edited)
   token?: string; // enables the Attachments section
   done?: boolean; // in the board's last column: attachments locked
+  onReviewed?: () => void; // enables Approve / Send back on a ticket waiting for review
 };
 
-export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, token, done }: Props) {
+export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, token, done, onReviewed }: Props) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -37,6 +39,7 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
           <DialogDescription className="flex items-center gap-2">
             Status <Badge variant="secondary">{columnName}</Badge>
             <EstimateBadge estimate={ticket.estimate} />
+            <NeedsReviewBadge ticket={ticket} />
           </DialogDescription>
         </DialogHeader>
         <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
@@ -57,6 +60,7 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
           <dt className="text-muted-foreground">Assigned to</dt>
           <dd>{ticket.assigned_to ? personLabel(ticket.assigned_to) : <span className="text-muted-foreground italic">Unassigned</span>}</dd>
         </dl>
+        {token && onReviewed && <ReviewActions ticket={ticket} token={token} onReviewed={onReviewed} />}
         <TicketLabels labels={ticket.labels} />
         <section aria-label="Ticket details" className="min-h-20 rounded-md bg-muted/50 p-3 text-sm">
           {ticket.description ? (
