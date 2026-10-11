@@ -7,6 +7,7 @@ import { NameDialog } from '@/components/name-dialog';
 import { DEFAULT_TEMPLATE, TemplatePicker } from '@/components/board/template-picker';
 import { EditableTitle } from '@/components/editable-title';
 import { Backlog } from '@/components/project/backlog';
+import { ProjectRepositories } from '@/components/project/repositories';
 import { BoardCard } from '@/components/project/board-card';
 import { RoadmapEditorForm } from '@/components/roadmap-editor-form';
 import { VisibilityBadge } from '@/components/roadmap/visibility';
@@ -95,6 +96,8 @@ export default function ProjectPage() {
           </ul>
         )}
       </Section>
+
+      <ProjectRepositories projectId={project.id} token={token} admin={canEditKeyPrefix} />
 
       <NameDialog
         open={dialog === 'board'}

@@ -467,3 +467,30 @@ export type TicketBugfixes = {
   available: boolean; reason?: 'not_connected' | 'unavailable'; regressed: boolean;
   report?: { title: string; occurrences: number; status: 'open' | 'resolved' | 'ignored'; last_seen: string; levels: string[]; file: string; line: number };
 };
+
+// Integrations: an org connects Bugfixes (an access token), GitHub (the app) and Bitbucket (OAuth).
+export type IntegrationProvider = 'bugfixes' | 'github' | 'bitbucket';
+export type IntegrationStatus = { provider: IntegrationProvider; connected: boolean; account?: string; base_url?: string; updated_by?: string; updated_at?: string };
+export type GitRepo = { full_name: string; default_branch: string; private: boolean };
+export type ProjectRepo = { provider: 'github' | 'bitbucket'; full_name: string; default_branch: string; created_at?: string };
+
+export const integrations = {
+  status: (provider: IntegrationProvider, token: T) => api<IntegrationStatus>(`/integrations/${provider}`, { token }),
+  // Bugfixes: paste an access token
+  connect: (provider: 'bugfixes', input: { token: string; base_url?: string }, token: T) =>
+    api<void>(`/integrations/${provider}`, { method: 'PUT', body: input, token }),
+  disconnect: (provider: IntegrationProvider, token: T) => api<void>(`/integrations/${provider}`, { method: 'DELETE', token }),
+  // GitHub / Bitbucket: go to url, then the provider sends the admin back to /settings/integrations/<provider>
+  connectURL: (provider: 'github' | 'bitbucket', token: T) => api<{ url: string }>(`/integrations/${provider}/connect`, { token }),
+  complete: (provider: 'github' | 'bitbucket', input: { state: string; installation_id?: string; code?: string }, token: T) =>
+    api<void>(`/integrations/${provider}/complete`, { method: 'POST', body: input, token }),
+  repos: (provider: 'github' | 'bitbucket', token: T) => api<GitRepo[]>(`/integrations/${provider}/repos`, { token }),
+};
+
+export const projectRepos = {
+  list: (projectId: string, token: T) => api<ProjectRepo[]>(`/projects/${projectId}/repos`, { token }),
+  link: (projectId: string, provider: ProjectRepo['provider'], fullName: string, token: T) =>
+    api<ProjectRepo>(`/projects/${projectId}/repos`, { method: 'POST', body: { provider, full_name: fullName }, token }),
+  unlink: (projectId: string, provider: ProjectRepo['provider'], fullName: string, token: T) =>
+    api<void>(`/projects/${projectId}/repos?${new URLSearchParams({ provider, full_name: fullName })}`, { method: 'DELETE', token }),
+};

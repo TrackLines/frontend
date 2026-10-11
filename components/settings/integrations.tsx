@@ -1,0 +1,120 @@
+'use client';
+
+import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { integrations, organization, type IntegrationProvider, type IntegrationStatus } from '@/lib/api';
+import { integrationError, PROVIDER_NAMES } from '@/lib/integrations';
+
+const ABOUT: Record<IntegrationProvider, string> = {
+  bugfixes: 'Bug tickets Bugfixes creates show the crash report’s live details: occurrences, last seen, where, and whether it came back.',
+  github: 'Link repositories to projects. Pull requests that mention a ticket’s key (e.g. TL-123) show on the ticket, and merging one closes it.',
+  bitbucket: 'Link repositories to projects. Pull requests that mention a ticket’s key (e.g. TL-123) show on the ticket, and merging one closes it.',
+};
+
+// IntegrationsSettings: the org's connections to other tools. Org admins connect and disconnect;
+// everyone else sees what's connected.
+export function IntegrationsSettings({ token }: { token: string }) {
+  const [admin, setAdmin] = useState<boolean | null>(null);
+  useEffect(() => {
+    organization.me(token).then((r) => setAdmin(r.admin), () => setAdmin(false));
+  }, []); // token refreshes must not refetch
+  return (
+    <div className="grid gap-6">
+      {admin === false && <p role="note" className="text-sm text-muted-foreground">Organization admins connect integrations. You can see what&apos;s connected.</p>}
+      {(['bugfixes', 'github', 'bitbucket'] as const).map((p) => <ProviderCard key={p} provider={p} token={token} canManage={admin === true} />)}
+    </div>
+  );
+}
+
+function ProviderCard({ provider, token, canManage }: { provider: IntegrationProvider; token: string; canManage: boolean }) {
+  const [status, setStatus] = useState<IntegrationStatus | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const load = () => integrations.status(provider, token).then(setStatus, (err) => {
+    setStatus({ provider, connected: false });
+    setError(integrationError(err, 'Couldn’t load the connection.'));
+  });
+  useEffect(() => { void load(); }, []); // token refreshes must not refetch
+
+  async function run(action: () => Promise<unknown>, failed: string) {
+    setBusy(true);
+    setError('');
+    try {
+      await action();
+      await load();
+    } catch (err) {
+      setError(integrationError(err, failed));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const connect = provider === 'bugfixes' ? undefined : () => run(async () => {
+    const { url } = await integrations.connectURL(provider, token);
+    window.location.assign(url); // the provider sends the admin back to /settings/integrations/<provider>
+  }, `Couldn’t start connecting ${PROVIDER_NAMES[provider]}.`);
+  const disconnect = () => confirm(`Disconnect ${PROVIDER_NAMES[provider]}? Its details stop showing until it's connected again.`) &&
+    run(() => integrations.disconnect(provider, token), `Couldn’t disconnect ${PROVIDER_NAMES[provider]}.`);
+
+  return (
+    <ProviderCardView provider={provider} status={status} canManage={canManage} busy={busy} error={error} onConnect={connect} onDisconnect={disconnect}>
+      {provider === 'bugfixes' && canManage && (
+        <BugfixesTokenForm busy={busy} connected={!!status?.connected}
+          onSave={(t, base) => run(() => integrations.connect('bugfixes', { token: t, ...(base && { base_url: base }) }, token), 'Couldn’t connect Bugfixes.')} />
+      )}
+    </ProviderCardView>
+  );
+}
+
+// ProviderCardView: one provider's status and actions (pure, for tests).
+export function ProviderCardView({ provider, status, canManage, busy, error, onConnect, onDisconnect, children }: {
+  provider: IntegrationProvider; status: IntegrationStatus | null; canManage: boolean; busy: boolean; error: string;
+  onConnect?: () => void; onDisconnect: () => void; children?: ReactNode;
+}) {
+  const name = PROVIDER_NAMES[provider];
+  return (
+    <section aria-label={name} className="grid gap-3 rounded-xl border p-5">
+      <div className="flex flex-wrap items-center gap-2">
+        <h2 className="text-lg font-semibold">{name}</h2>
+        {status === null ? <Badge variant="secondary">Checking…</Badge>
+          : status.connected ? <Badge>Connected{status.account ? ` as ${status.account}` : ''}</Badge>
+          : <Badge variant="outline">Not connected</Badge>}
+        {canManage && status?.connected && (
+          <Button size="sm" variant="ghost" className="ml-auto text-destructive" disabled={busy} onClick={onDisconnect}>Disconnect</Button>
+        )}
+        {canManage && status && !status.connected && onConnect && (
+          <Button size="sm" className="ml-auto" disabled={busy} onClick={onConnect}>{busy ? 'Opening…' : `Connect ${name}`}</Button>
+        )}
+      </div>
+      <p className="text-sm text-muted-foreground">{ABOUT[provider]}</p>
+      {children}
+      {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+    </section>
+  );
+}
+
+// BugfixesTokenForm: Bugfixes connects with an access token from its own settings.
+export function BugfixesTokenForm({ busy, connected, onSave }: { busy: boolean; connected: boolean; onSave: (token: string, baseURL: string) => void }) {
+  const [value, setValue] = useState('');
+  const [base, setBase] = useState('');
+  function submit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (value.trim()) onSave(value.trim(), base.trim());
+  }
+  return (
+    <form onSubmit={submit} className="grid gap-3 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+      <label className="grid gap-1.5 text-sm font-medium">
+        <span>{connected ? 'Replace access token' : 'Access token'}</span>
+        <Input type="password" autoComplete="off" value={value} onChange={(e) => setValue(e.target.value)} placeholder="From Bugfixes → Settings → Access tokens" />
+      </label>
+      <label className="grid gap-1.5 text-sm font-medium">
+        <span>API URL <span className="font-normal text-muted-foreground">(optional)</span></span>
+        <Input value={base} onChange={(e) => setBase(e.target.value)} placeholder="https://api.bugfix.es" />
+      </label>
+      <Button type="submit" disabled={busy || !value.trim()}>{busy ? 'Saving…' : connected ? 'Update' : 'Connect'}</Button>
+      <p className="text-xs text-muted-foreground sm:col-span-3">A viewer-role token is enough. It’s stored encrypted and never shown again.</p>
+    </form>
+  );
+}
