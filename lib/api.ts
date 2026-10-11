@@ -16,6 +16,7 @@ export type Ticket = {
   estimate?: string | null; // on the board's estimate scale
   created_at?: string; updated_at?: string; // UTC ISO; show with <When>
   done_at?: string | null; resolved_at?: string | null; // set once it reached Done / was resolved
+  started_at?: string | null; // first move out of the board's first column; null for historical tickets
   planned_sprint_id?: string | null; // a backlog ticket planned into a board's upcoming sprint (refinement)
   external_source?: string | null; external_url?: string | null; // made by an integration, e.g. a Bugfixes report
 };
@@ -312,12 +313,18 @@ export const tickets = {
   getByKey: (key: string, token: T) => api<TicketDetail>(`/ticket-keys/${encodeURIComponent(key)}`, { token }),
   // the Bugfixes panel for a ticket Bugfixes made (404 otherwise)
   bugfixes: (id: string, token: T) => api<TicketBugfixes>(`/tickets/${id}/bugfixes`, { token }),
-  search: (q: { text?: string; project?: string; types?: TicketType[]; assignee?: string; limit?: number }, token: T) => {
+  // also "My work": assignee 'me', status 'open', newest change first, paged
+  search: (q: { text?: string; project?: string; board?: string; types?: TicketType[]; priorities?: string[]; assignee?: string;
+    status?: 'open' | 'done'; limit?: number; page?: number }, token: T) => {
     const params = new URLSearchParams();
     if (q.text?.trim()) params.set('q', q.text.trim());
     if (q.project) params.set('project', q.project);
+    if (q.board) params.set('board', q.board);
     for (const type of q.types ?? []) params.append('type', type);
+    for (const p of q.priorities ?? []) params.append('priority', p);
     if (q.assignee) params.set('assignee', q.assignee);
+    if (q.status) params.set('status', q.status);
+    if (q.page && q.page > 1) params.set('page', String(q.page));
     params.set('limit', String(q.limit ?? 20));
     return api<TicketSearchResult[]>(`/search?${params}`, { token });
   },
