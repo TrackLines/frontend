@@ -41,7 +41,7 @@ export default function ProjectPage() {
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
       <Link href="/dashboard" className="text-sm text-muted-foreground hover:underline">← Projects</Link>
-      <div className="mt-2 flex flex-wrap items-center gap-3">
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-3xl font-bold tracking-tight">{project.name}</h1>
         {/* setup (name, key prefix, more boards, repositories) lives on its own page */}
         <Link href={`/projects/${project.id}/edit`} className={buttonVariants({ variant: 'outline', size: 'sm' })}>Edit project</Link>
