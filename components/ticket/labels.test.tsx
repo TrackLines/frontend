@@ -29,3 +29,15 @@ test('label editor helpers enforce backend limits', () => {
   expect(addLabels([], 'x'.repeat(51)).error).toContain('50 characters');
   expect(addLabels(Array.from({ length: 20 }, (_, i) => `label-${i}`), 'extra').error).toContain('at most 20');
 });
+
+test('lists show two labels; the rest go behind a +N dropdown', () => {
+  const html = renderToStaticMarkup(<TicketLabels labels={['backend', 'frontend', 'refinement', 'standup']} max={2} />);
+  expect(html).toContain('>backend<');
+  expect(html).toContain('>frontend<');
+  expect(html).not.toContain('>refinement<'); // inside the closed dropdown
+  expect(html).toContain('+2');
+  expect(html).toContain('aria-label="2 more labels: refinement, standup"');
+  // two or fewer, or no max (detail views): everything shows, no dropdown
+  expect(renderToStaticMarkup(<TicketLabels labels={['a', 'b']} max={2} />)).not.toContain('more labels');
+  expect(renderToStaticMarkup(<TicketLabels labels={['a', 'b', 'c']} />)).toContain('>c<');
+});

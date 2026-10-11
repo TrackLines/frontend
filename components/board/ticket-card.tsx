@@ -60,7 +60,7 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
         <Button type="button" variant="link" onClick={openView} className="mx-3 h-auto min-w-0 justify-start p-0 text-left text-base leading-5 font-medium whitespace-normal text-foreground">
           {ticket.title}
         </Button>
-        <TicketLabels labels={ticket.labels} className="px-3" />
+        <TicketLabels labels={ticket.labels} className="px-3" max={2} />
         {ticket.description && (
           <p className="line-clamp-2 break-words px-3 text-sm whitespace-pre-line text-muted-foreground">{ticket.description}</p>
         )}

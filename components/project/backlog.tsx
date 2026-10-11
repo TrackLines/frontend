@@ -208,13 +208,16 @@ export function Backlog({ projectId, boards, token }: Props) {
         <ul className="divide-y rounded-xl border">
           {shown.map((t) => (
             <li key={t.id} className="flex flex-wrap items-center gap-x-3 gap-y-2 p-4">
-              <TypeBadge type={t.type} />
+              {/* type with when it was made under it; then labels (two, the rest in a dropdown) */}
+              <div className="grid justify-items-start gap-1">
+                <TypeBadge type={t.type} />
+                {t.created_at && <span className="text-xs whitespace-nowrap text-muted-foreground">Created <When iso={t.created_at} /></span>}
+              </div>
               {t.blocked && <BlockedBadge />}
-              <TicketLabels labels={t.labels} />
+              <TicketLabels labels={t.labels} max={2} />
               <div className="min-w-0 flex-1">
-                <Link href={ticketPath(t)} className="font-medium hover:underline"><TicketKey value={t.key} />{t.title}</Link>
+                <Link href={ticketPath(t)} className="inline-flex items-baseline gap-2 font-medium hover:underline"><TicketKey value={t.key} />{t.title}</Link>
                 {t.description && <p className="line-clamp-1 text-sm text-muted-foreground">{t.description}</p>}
-                {t.created_at && <p className="text-xs text-muted-foreground">Created <When iso={t.created_at} /></p>}
               </div>
               {/* moving to a board and deleting are planning decisions: they live in refine mode */}
               <Button size="sm" variant="ghost" disabled={busy === t.id} onClick={() => openEditor(t)}>Edit</Button>

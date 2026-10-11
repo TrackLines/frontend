@@ -5,19 +5,36 @@ import { XIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
 import { projects } from '@/lib/api';
 import { addLabels, removeLabel } from '@/lib/labels';
 
-export function TicketLabels({ labels, className = '' }: { labels?: string[]; className?: string }) {
+// max (lists): past it, the rest go in a "+N" dropdown rather than wrapping the row.
+export function TicketLabels({ labels, className = '', max }: { labels?: string[]; className?: string; max?: number }) {
   if (!labels?.length) return null;
+  const shown = max && labels.length > max ? labels.slice(0, max) : labels;
+  const rest = labels.slice(shown.length);
   return (
     <div aria-label="Ticket labels" className={`flex min-w-0 flex-wrap gap-1 ${className}`}>
-      {labels.map((label) => (
+      {shown.map((label) => (
         <Badge key={label.toLowerCase()} variant="outline" title={label} className="max-w-40">
           <span className="truncate">{label}</span>
         </Badge>
       ))}
+      {rest.length > 0 && (
+        <DropdownMenu>
+          <DropdownMenuTrigger render={<Badge render={<button type="button" />} variant="outline" className="cursor-pointer hover:bg-muted" aria-label={`${rest.length} more labels: ${rest.join(', ')}`} />}>
+            +{rest.length}
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-auto min-w-36">
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>More labels</DropdownMenuLabel>
+              {rest.map((label) => <DropdownMenuItem key={label.toLowerCase()}>{label}</DropdownMenuItem>)}
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
     </div>
   );
 }
