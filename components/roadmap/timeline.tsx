@@ -6,6 +6,7 @@ import { groupByMonth } from './group';
 import { buildGanttItems, DAY_MS, dayStamp, getGanttRange, monthSegments } from './gantt';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Pager } from '@/components/pager';
 
 const day = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
 const statusLabel: Record<NonNullable<RoadmapItem['status']>, string> = {
@@ -17,6 +18,7 @@ const statusLabel: Record<NonNullable<RoadmapItem['status']>, string> = {
 const chartDay = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
 const LABEL_WIDTH = 192;
 const COLUMN_GAP = 12;
+const PAGE_SIZE = 20;
 
 function Gantt({ items }: { items: RoadmapItem[] }) {
   const today = useMemo(() => dayStamp(new Date().toISOString().slice(0, 10)), []);
@@ -129,7 +131,9 @@ function Gantt({ items }: { items: RoadmapItem[] }) {
 
 export function Timeline({ id, items, progress }: { id: string; items: RoadmapItem[]; progress?: { done: number; total: number } }) {
   const [view, setView] = useState<'timeline' | 'gantt'>('timeline');
+  const [page, setPage] = useState(1);
   useEffect(() => {
+    setPage(1);
     try {
       const saved = window.localStorage.getItem(`roadmap-view:${id}`);
       if (saved === 'timeline' || saved === 'gantt') setView(saved);
@@ -137,9 +141,18 @@ export function Timeline({ id, items, progress }: { id: string; items: RoadmapIt
   }, [id]);
   function chooseView(next: 'timeline' | 'gantt') {
     setView(next);
+    setPage(1);
     try { window.localStorage.setItem(`roadmap-view:${id}`, next); } catch { /* The view still works without storage. */ }
   }
-  const groups = groupByMonth(items);
+  const timelineItems = groupByMonth(items).flatMap((group) => group.items);
+  const ganttItems = [...items].sort((a, b) => a.position - b.position);
+  const orderedItems = view === 'gantt' ? ganttItems : timelineItems;
+  const pageCount = Math.ceil(orderedItems.length / PAGE_SIZE);
+  const currentPage = Math.min(page, Math.max(1, pageCount));
+  const pageItems = orderedItems.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+  const groups = view === 'timeline' ? groupByMonth(pageItems) : [];
+  const firstItem = orderedItems.length ? (currentPage - 1) * PAGE_SIZE + 1 : 0;
+  const lastItem = Math.min(currentPage * PAGE_SIZE, orderedItems.length);
   return (
     <div className="grid min-w-0 max-w-full gap-8">
       <section aria-label="Roadmap progress" className="rounded-xl border p-4">
@@ -165,13 +178,13 @@ export function Timeline({ id, items, progress }: { id: string; items: RoadmapIt
         )}
       </section>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-lg font-semibold">Roadmap schedule</h2>
+        <h2 id="roadmap-schedule" className="text-lg font-semibold">Roadmap schedule</h2>
         <div role="group" aria-label="Roadmap view" className="inline-flex rounded-lg border p-1">
           <Button type="button" size="sm" variant={view === 'timeline' ? 'secondary' : 'ghost'} aria-pressed={view === 'timeline'} onClick={() => chooseView('timeline')}>Timeline</Button>
           <Button type="button" size="sm" variant={view === 'gantt' ? 'secondary' : 'ghost'} aria-pressed={view === 'gantt'} onClick={() => chooseView('gantt')}>Gantt</Button>
         </div>
       </div>
-      {view === 'gantt' ? <Gantt items={items} /> : !groups.length ? <p className="text-muted-foreground">Nothing on this roadmap yet.</p> : (
+      {view === 'gantt' ? <Gantt items={pageItems} /> : !groups.length ? <p className="text-muted-foreground">Nothing on this roadmap yet.</p> : (
         <ol className="space-y-10">
           {groups.map((g) => (
             <li key={g.label}>
@@ -196,6 +209,12 @@ export function Timeline({ id, items, progress }: { id: string; items: RoadmapIt
             </li>
           ))}
         </ol>
+      )}
+      {pageCount > 1 && (
+        <div className="grid justify-items-center gap-2">
+          <p aria-live="polite" className="text-sm text-muted-foreground">Showing {firstItem}–{lastItem} of {orderedItems.length} items</p>
+          <Pager page={currentPage} lastPage={pageCount} onPage={setPage} anchor="#roadmap-schedule" className="" />
+        </div>
       )}
     </div>
   );
