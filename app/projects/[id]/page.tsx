@@ -1,13 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { NameDialog } from '@/components/name-dialog';
-import { DEFAULT_TEMPLATE, TemplatePicker } from '@/components/board/template-picker';
-import { EditableTitle } from '@/components/editable-title';
 import { Backlog } from '@/components/project/backlog';
 import { BoardCard } from '@/components/project/board-card';
+import { NewBoardButton } from '@/components/project/new-board';
 import { RoadmapEditorForm } from '@/components/roadmap-editor-form';
 import { VisibilityBadge } from '@/components/roadmap/visibility';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -16,27 +14,18 @@ import { useToken } from '@/lib/use-token';
 import { prefetch, useCachedState } from '@/lib/page-cache';
 import { ProjectSkeleton } from '@/components/page-skeletons';
 import { CopyButton } from '@/components/copy-link';
-import { Input } from '@/components/ui/input';
-import { organization } from '@/lib/api';
 
 export default function ProjectPage() {
   const { id } = useParams<{ id: string }>();
-  const router = useRouter();
   const token = useToken();
   const [project, setProject] = useCachedState<Project>(`project:${id}`); // last-seen project shows instantly, then refreshes
-  const [, setProjects] = useCachedState<Project[]>('projects');
   const [error, setError] = useState<number | null>(null);
-  const [template, setTemplate] = useState(DEFAULT_TEMPLATE);
-  const [dialog, setDialog] = useState<'board' | 'roadmap' | null>(null);
-  const [canEditKeyPrefix, setCanEditKeyPrefix] = useState(false);
+  const [dialog, setDialog] = useState<'roadmap' | null>(null);
 
   const loaded = token !== null;
   useEffect(() => {
     if (loaded) projects.get(id, token).then(setProject, (e) => setError(e instanceof ApiError ? e.status : 500));
   }, [id, loaded]); // load once; token refreshes must not refetch
-  useEffect(() => {
-    if (loaded) organization.me(token).then((role) => setCanEditKeyPrefix(role.admin), () => setCanEditKeyPrefix(false));
-  }, [loaded]);
   // its boards are the likely next click (one per team, so only a few)
   useEffect(() => {
     if (loaded) for (const b of project?.boards ?? []) prefetch(`board:${b.id}`, () => boards.get(b.id, token));
@@ -52,18 +41,10 @@ export default function ProjectPage() {
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
       <Link href="/dashboard" className="text-sm text-muted-foreground hover:underline">← Projects</Link>
-      <div className="mt-2">
-        <EditableTitle
-          value={project.name}
-          label="project"
-          editable
-          className="text-3xl font-bold tracking-tight"
-          onSave={async (name) => {
-            await projects.update(project.id, { name, description: project.description }, token);
-            setProject((current) => current && { ...current, name });
-            setProjects((current) => current?.map((item) => item.id === project.id ? { ...item, name } : item) ?? current);
-          }}
-        />
+      <div className="mt-2 flex flex-wrap items-center gap-3">
+        <h1 className="text-3xl font-bold tracking-tight">{project.name}</h1>
+        {/* setup (name, key prefix, more boards, repositories) lives on its own page */}
+        <Link href={`/projects/${project.id}/edit`} className={buttonVariants({ variant: 'outline', size: 'sm' })}>Edit project</Link>
       </div>
       {/* integrations (ChewedFeed, BugFixes) ask for this */}
       <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
@@ -71,14 +52,10 @@ export default function ProjectPage() {
         <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs text-foreground select-all">{project.id}</code>
         <CopyButton value={project.id} label="Copy ID" size="sm" ariaLabel="Copy project ID" />
       </p>
-      <ProjectKeyPrefix project={project} token={token} editable={canEditKeyPrefix} onChanged={(key_prefix) => setProject((current) => current && { ...current, key_prefix })} />
-      {/* project setup lives on its own pages, not at the bottom of this one */}
-      <p className="mt-2 text-sm">
-        <Link href={`/projects/${project.id}/repositories`} className="font-medium text-muted-foreground hover:text-foreground hover:underline">Repositories →</Link>
-      </p>
       {project.description && <p className="mt-2 text-muted-foreground">{project.description}</p>}
 
-      <Section title="Boards" hint="One board per team." action={<Button onClick={() => setDialog('board')}>New board</Button>}>
+      {/* past one board, adding more is setup: it moves to Edit project */}
+      <Section title="Boards" hint="One board per team." action={boardList.length <= 1 && <NewBoardButton projectId={project.id} token={token} />}>
         {boardList.length === 0 ? (
           <Empty>No boards yet. Add one for each team, e.g. Backend, Design.</Empty>
         ) : (
@@ -100,20 +77,6 @@ export default function ProjectPage() {
         )}
       </Section>
 
-      <NameDialog
-        open={dialog === 'board'}
-        onOpenChange={(o) => !o && setDialog(null)}
-        title="New board"
-        description="Start from a template; you can change columns and settings afterwards."
-        placeholder="e.g. Backend"
-        submitLabel="Create board"
-        onSubmit={async (name) => {
-          const b = await boards.create(project.id, { name, template_id: template }, token).catch(() => { throw new Error('Couldn’t create the board. Please try again.'); });
-          router.push(`/boards/${b.id}`);
-        }}
-      >
-        {dialog === 'board' && <TemplatePicker value={template} onChange={setTemplate} token={token} />}
-      </NameDialog>
       <RoadmapEditorForm
         open={dialog === 'roadmap'}
         onOpenChange={(o) => !o && setDialog(null)}
@@ -124,44 +87,6 @@ export default function ProjectPage() {
         }}
       />
     </main>
-  );
-}
-
-function ProjectKeyPrefix({ project, token, editable, onChanged }: { project: Project; token: string; editable: boolean; onChanged: (prefix: string) => void }) {
-  const [editing, setEditing] = useState(false);
-  const [prefix, setPrefix] = useState(project.key_prefix ?? '');
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
-
-  async function save(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setSaving(true);
-    setError('');
-    try {
-      await projects.update(project.id, { name: project.name, description: project.description, key_prefix: prefix.trim().toUpperCase() }, token);
-      onChanged(prefix.trim().toUpperCase());
-      setEditing(false);
-    } catch (err) {
-      setError(err instanceof ApiError && err.status === 409 ? 'That ticket prefix is already used by another project.'
-        : err instanceof ApiError && err.status === 400 ? err.message : 'Couldn’t update the ticket prefix. Please try again.');
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  return (
-    <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-      <span>Ticket key prefix</span>
-      {!editing ? <><code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs text-foreground">{project.key_prefix ?? '—'}</code>{editable && <Button type="button" variant="ghost" size="sm" onClick={() => { setPrefix(project.key_prefix ?? ''); setEditing(true); }}>Change</Button>}</> : (
-        <form onSubmit={save} className="flex flex-wrap items-center gap-2">
-          <Input aria-label="Ticket key prefix" value={prefix} onChange={(event) => setPrefix(event.target.value.toUpperCase())} minLength={2} maxLength={6} pattern="[A-Z][A-Z0-9]{1,5}" required className="w-24" />
-          <span className="text-xs">2–6 letters or digits, starting with a letter. Existing keys will change.</span>
-          <Button type="submit" size="sm" disabled={saving}>{saving ? 'Saving…' : 'Save prefix'}</Button>
-          <Button type="button" size="sm" variant="ghost" disabled={saving} onClick={() => { setEditing(false); setError(''); }}>Cancel</Button>
-          {error && <span role="alert" className="basis-full text-destructive">{error}</span>}
-        </form>
-      )}
-    </div>
   );
 }
 
@@ -187,7 +112,7 @@ function RoadmapRow({ roadmap }: { roadmap: Roadmap }) {
   );
 }
 
-function Section({ title, hint, action, children }: { title: string; hint: string; action: React.ReactNode; children: React.ReactNode }) {
+function Section({ title, hint, action, children }: { title: string; hint: string; action?: React.ReactNode; children: React.ReactNode }) {
   return (
     <section className="mt-10">
       <div className="mb-4 flex items-end justify-between gap-4">

@@ -10,7 +10,7 @@ type Props = {
   label: string; // what it names, e.g. "board": "Rename board", "Board name"
   editable: boolean; // when false it's plain text
   onSave: (name: string) => Promise<void>; // throw to keep editing and show the error
-  as?: 'h1' | 'h2';
+  as?: 'h1' | 'h2' | 'p';
   className?: string;
   maxLength?: number;
 };
