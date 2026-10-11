@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { auth } from '@clerk/nextjs/server';
 import Link from 'next/link';
-import { BotIcon, BugIcon, LockIcon, MapIcon, type LucideIcon } from 'lucide-react';
+import { BotIcon, BugIcon, LockIcon, MapIcon, ShieldCheckIcon, UsersIcon, type LucideIcon } from 'lucide-react';
 import { buttonVariants } from '@/components/ui/button';
 import { McpConnect } from '@/components/mcp-connect';
 import { Card } from '@/components/ui/card';
@@ -35,7 +35,7 @@ export default async function Home() {
       <section className="border-t bg-muted/30">
         <div className="mx-auto max-w-6xl px-6 py-16">
           <h2 className="text-3xl font-bold tracking-tight">What makes it different</h2>
-          <ul className="mt-10 grid gap-8 sm:grid-cols-2">
+          <ul className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map((f) => <Feature key={f.title} {...f} />)}
           </ul>
         </div>
@@ -47,6 +47,9 @@ export default async function Home() {
           <h2 className="text-3xl font-bold tracking-tight">Your agents pick up tickets like teammates</h2>
           <p className="mt-4 text-muted-foreground">
             Give an agent its own API key and it can read the board, claim the highest-priority ticket, move it along and leave a comment when it&apos;s done. Every change shows who made it, person or agent.
+          </p>
+          <p className="mt-3 text-muted-foreground">
+            You stay in charge: on boards with review turned on, an agent&apos;s finished work waits for a person to approve it before it counts as done.
           </p>
           <p className="mt-3 text-muted-foreground">
             Connect Claude, Codex or any MCP client to the built-in MCP server and just ask it to pick up work. Prefer to script it? The same actions are a documented HTTP API, with the same permissions.
@@ -66,7 +69,8 @@ claude mcp add -s user --transport http tracklines \\
 
   list_backlog → claim_ticket → move_ticket
   … does the work …
-  add_comment "Fixed in #42, tests pass"`}
+  add_comment "Fixed in #42, tests pass"
+  → needs review: you approve, it's Done`}
         </pre>
       </section>
 
@@ -85,9 +89,11 @@ claude mcp add -s user --transport http tracklines \\
 
 const FEATURES: { icon: LucideIcon; title: string; body: string }[] = [
   { icon: BotIcon, title: 'Agents as teammates', body: 'Connect agents over MCP with their own keys; they claim tickets and show up on the board next to everyone else.' },
+  { icon: ShieldCheckIcon, title: 'Agent work gets reviewed', body: 'Turn on review for a board and an agent’s finished ticket waits for a person to approve it or send it back with a note.' },
   { icon: LockIcon, title: 'Blockers that hold', body: 'A ticket waiting on unfinished work can’t be claimed, by a person or an agent.' },
-  { icon: BugIcon, title: 'Errors become tickets', body: 'Connect Bugfixes and the errors it catches land on your board as bug tickets.' },
-  { icon: MapIcon, title: 'Roadmaps anyone can read', body: 'Send a public link to customers; they don’t need an account to see what’s coming.' },
+  { icon: UsersIcon, title: 'Standup and refinement built in', body: 'Run standup with a shared timer everyone sees, and plan the next sprints against your team’s real pace, with sign-off before taking on more.' },
+  { icon: BugIcon, title: 'Errors become tickets', body: 'Bugfixes files the errors it catches as bug tickets, with live details: how often, when it was last seen, and a warning if it comes back after it’s fixed.' },
+  { icon: MapIcon, title: 'Customers stay in the loop', body: 'Share a request form and a public roadmap; no account needed. They send bugs and ideas, see what’s coming, and hear back when something won’t be done.' },
 ];
 
 function Feature({ icon: Icon, title, body }: (typeof FEATURES)[number]) {
