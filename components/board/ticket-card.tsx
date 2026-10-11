@@ -14,7 +14,6 @@ import { TypeBadge } from '@/components/ticket-type';
 import type { Ticket } from '@/lib/api';
 import { TicketDialog } from './ticket-dialog';
 import { TicketView } from './ticket-view';
-import { EstimateBadge } from './estimate';
 import { TicketKey } from '@/components/ticket/ticket-key';
 import type { EstimateScale } from '@/lib/estimates';
 
@@ -43,32 +42,33 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
   return (
     <>
       <Card className="w-full min-w-0 gap-2 py-3 shadow-xs">
-        <div className="flex items-start gap-1 px-3">
-          {/* the key on its own line above the title; the title opens the read-only view, the pencil edits */}
-          <div className="grid min-w-0 flex-1 gap-0.5">
-            {ticket.key && <TicketKey value={ticket.key} />}
-            <Button type="button" variant="link" onClick={openView} className="h-auto min-w-0 justify-start p-0 text-left leading-5 whitespace-normal text-foreground">
-              {ticket.title}
-            </Button>
-          </div>
-          {!readOnly && <Button type="button" variant="ghost" size="icon" className="-mt-1 -mr-1.5 size-7 shrink-0 text-muted-foreground" aria-label={`Edit ${ticket.title}`} onClick={() => setEditOpen(true)}>
-            <PencilIcon className="size-3.5" aria-hidden />
-          </Button>}
+        {/* TL-134 layout: key and type, then estimate and pencil, on top; the title underneath */}
+        <div className="flex items-center gap-2 px-3">
+          {ticket.key && <TicketKey value={ticket.key} />}
+          {ticket.type && ticket.type !== 'task' && <TypeBadge type={ticket.type} />}
+          <span className="ml-auto flex shrink-0 items-center gap-1">
+            {ticket.estimate && <Badge variant="outline" className="size-6 justify-center rounded-full p-0" title="Estimate" aria-label={`Estimate ${ticket.estimate}`}>{ticket.estimate}</Badge>}
+            {!readOnly && <Button type="button" variant="ghost" size="icon" className="-mr-1.5 size-7 text-muted-foreground" aria-label={`Edit ${ticket.title}`} onClick={() => setEditOpen(true)}>
+              <PencilIcon className="size-3.5" aria-hidden />
+            </Button>}
+          </span>
         </div>
-        {(ticket.blocked || ticket.estimate || ticket.external_source === 'bugfixes' || (ticket.type && ticket.type !== 'task') || (ticket.priority && ticket.priority !== 'medium')) && (
+        {/* the title opens the read-only view, the pencil edits */}
+        <Button type="button" variant="link" onClick={openView} className="mx-3 h-auto min-w-0 justify-start p-0 text-left text-base leading-5 font-medium whitespace-normal text-foreground">
+          {ticket.title}
+        </Button>
+        {(ticket.blocked || ticket.external_source === 'bugfixes' || (ticket.priority && ticket.priority !== 'medium')) && (
           <div className="flex flex-wrap gap-1 px-3">
-            {ticket.type && ticket.type !== 'task' && <TypeBadge type={ticket.type} />}
             <PriorityBadge priority={ticket.priority} hideDefault />
-            <EstimateBadge estimate={ticket.estimate} />
             {ticket.blocked && <BlockedBadge />}
             {ticket.external_source === 'bugfixes' && <Badge variant="outline" title="Reported by Bugfixes">Bugfixes</Badge>}
           </div>
         )}
         <TicketLabels labels={ticket.labels} className="px-3" />
         {ticket.description && (
-          <p className="line-clamp-2 break-words px-3 text-xs whitespace-pre-line text-muted-foreground">{ticket.description}</p>
+          <p className="line-clamp-2 break-words px-3 text-sm whitespace-pre-line text-muted-foreground">{ticket.description}</p>
         )}
-        <div className="flex items-center justify-between gap-2 px-3 text-xs text-muted-foreground">
+        <div className="mt-auto flex items-center justify-between gap-2 px-3 pt-2 text-xs text-muted-foreground">
           <span className="truncate">{ticket.assigned_to ? personLabel(ticket.assigned_to) : <span className="italic">Unassigned</span>}</span>
           <span className="truncate">by {personLabel(ticket.created_by)}{ticket.created_at && <>, <When iso={ticket.created_at} /></>}</span>
         </div>
