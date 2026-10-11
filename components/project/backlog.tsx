@@ -1,5 +1,6 @@
 'use client';
 
+import { plainText } from '@/components/markdown';
 import { When } from '@/components/when';
 import Link from 'next/link';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
@@ -216,7 +217,7 @@ export function Backlog({ projectId, boards, token }: Props) {
               <TicketLabels labels={t.labels} max={2} />
               <div className="min-w-0 flex-1">
                 <Link href={ticketPath(t)} className="inline-flex items-baseline gap-2 font-medium hover:underline"><TicketKey value={t.key} />{t.title}</Link>
-                {t.description && <p className="line-clamp-1 text-sm text-muted-foreground">{t.description}</p>}
+                {t.description && <p className="line-clamp-1 text-sm text-muted-foreground">{plainText(t.description)}</p>}
               </div>
               {/* moving to a board and deleting are planning decisions: they live in refine mode */}
               <Button size="sm" variant="ghost" disabled={busy === t.id} onClick={() => openEditor(t)}>Edit</Button>

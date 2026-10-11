@@ -148,7 +148,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
             {missing.title && <span id="ticket-title-error" className="text-xs font-normal text-destructive">Enter a title.</span>}
           </label>
           <label className="grid gap-1.5 text-sm font-medium">
-            <span>Details <span className="font-normal text-muted-foreground">(optional)</span></span>
+            <span>Details <span className="font-normal text-muted-foreground">(optional, Markdown supported)</span></span>
             <textarea
               value={description}
               maxLength={10000}

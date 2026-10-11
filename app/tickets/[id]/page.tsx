@@ -1,5 +1,6 @@
 'use client';
 
+import { Markdown } from '@/components/markdown';
 import { When } from '@/components/when';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
@@ -117,7 +118,7 @@ export default function TicketPage() {
         </div>
       )}
       <section aria-label="Ticket details" className="rounded-xl border p-5 text-sm">
-        {t.description ? <p className="whitespace-pre-wrap break-words">{t.description}</p> : <p className="text-muted-foreground">No details provided.</p>}
+        {t.description ? <Markdown>{t.description}</Markdown> : <p className="text-muted-foreground">No details provided.</p>}
       </section>
       {token && <SubTickets ticket={t} token={token} onChanged={() => tickets.get(id, token).then(setT)} />}
       {token && <Dependencies ticket={t} token={token} onChanged={() => tickets.get(id, token).then(setT)} />}

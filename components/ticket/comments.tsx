@@ -1,5 +1,6 @@
 'use client';
 
+import { Markdown } from '@/components/markdown';
 import { ListSkeleton } from '@/components/page-skeletons';
 import { When } from '@/components/when';
 import { useEffect, useState, type FormEvent } from 'react';
@@ -109,7 +110,7 @@ function Comment({ node, depth, onReply }: { node: CommentNode; depth: number; o
         <span className="text-sm font-medium">{personLabel(comment.author)}</span>
         <When iso={comment.created_at} className="text-xs text-muted-foreground" />
       </div>
-      <p className="mt-2 whitespace-pre-wrap break-words text-sm">{comment.body}</p>
+      <Markdown className="mt-2 text-sm">{comment.body}</Markdown>
       <Button type="button" variant="ghost" size="sm" className="mt-1 -ml-2" onClick={() => onReply(comment)}>Reply</Button>
       {node.replies.length > 0 && (
         <div className="mt-2 grid gap-2 border-l pl-3 sm:pl-4">

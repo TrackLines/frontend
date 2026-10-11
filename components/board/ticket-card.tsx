@@ -1,5 +1,6 @@
 'use client';
 
+import { plainText } from '@/components/markdown';
 import { When } from '@/components/when';
 import { Badge } from '@/components/ui/badge';
 import { useState, type MouseEvent } from 'react';
@@ -62,7 +63,7 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
         </Button>
         <TicketLabels labels={ticket.labels} className="px-3" max={2} />
         {ticket.description && (
-          <p className="line-clamp-2 break-words px-3 text-sm whitespace-pre-line text-muted-foreground">{ticket.description}</p>
+          <p className="line-clamp-2 break-words px-3 text-sm whitespace-pre-line text-muted-foreground">{plainText(ticket.description)}</p>
         )}
         <div className="mt-auto flex items-center justify-between gap-2 px-3 pt-2 text-xs text-muted-foreground">
           <span className="truncate">{ticket.assigned_to ? personLabel(ticket.assigned_to) : <span className="italic">Unassigned</span>}</span>

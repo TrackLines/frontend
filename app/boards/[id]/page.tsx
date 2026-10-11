@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { AddColumn, Column } from '@/components/board/column';
 import { BoardDnd, DroppableColumn, SortableTicket } from '@/components/board/board-dnd';
 import { SprintBar } from '@/components/board/sprint-bar';
+import { FlowCharts } from '@/components/board/flow-charts';
 import { StandupPanel } from '@/components/board/standup';
 import { TicketCard } from '@/components/board/ticket-card';
 import { ScaleSetting } from '@/components/board/estimate';
@@ -215,7 +216,10 @@ export default function BoardPage() {
       }} goal={board.sprint?.goal} />}
       {/* sprint start/close changes which tickets the board shows, so reload */}
       {kanban
-        ? <p className="border-b px-6 py-3 text-sm text-muted-foreground">Kanban board: work flows continuously. Keep each column within its WIP limit.</p>
+        ? <div className="flex flex-wrap items-center justify-between gap-2 border-b px-6 py-3">
+            <p className="text-sm text-muted-foreground">Kanban board: work flows continuously. Keep each column within its WIP limit.</p>
+            {!boardEditMode && <FlowCharts boardId={board.id} token={token} />}
+          </div>
         : <SprintBar board={board} token={token} canManage={boardCanManage} editMode={boardEditMode} onChanged={load} />}
       {!boardEditMode && !hasVisibleTickets && (labelFilter.length > 0 || priorityFilter.length > 0 || assigneeFilter !== 'all') && (
         <p role="status" className="mx-6 mt-4 flex flex-wrap items-center gap-2 rounded-lg border border-dashed p-3 text-sm text-muted-foreground">

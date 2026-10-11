@@ -1,5 +1,6 @@
 'use client';
 
+import { Markdown } from '@/components/markdown';
 import { When } from '@/components/when';
 import { CopyLink } from '@/components/copy-link';
 import { Attachments } from '@/components/ticket/attachments';
@@ -59,7 +60,7 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
         <TicketLabels labels={ticket.labels} />
         <section aria-label="Ticket details" className="min-h-20 rounded-md bg-muted/50 p-3 text-sm">
           {ticket.description ? (
-            <p className="whitespace-pre-wrap break-words">{ticket.description}</p>
+            <Markdown>{ticket.description}</Markdown>
           ) : (
             <p className="text-muted-foreground">No details provided.</p>
           )}
