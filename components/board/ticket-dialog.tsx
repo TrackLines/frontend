@@ -65,7 +65,9 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
       setError('');
       setMissing({ title: false, estimate: false });
     }
-  }, [open, ticket]);
+    // only on opening (or another ticket): a background refresh hands us a fresh copy of the same
+    // ticket every 30s, and resetting then wiped whatever was being typed (TL-141)
+  }, [open, ticket?.id]);
 
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

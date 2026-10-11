@@ -106,7 +106,7 @@ export function TicketSearch() {
         <DialogContent className="top-[12%] max-h-[76vh] translate-y-0 overflow-hidden p-0 sm:max-w-2xl">
           <DialogHeader className="px-4 pt-4">
             <DialogTitle>Search tickets</DialogTitle>
-            <DialogDescription>Search titles, details, comments, or enter a ticket key such as TL-123.</DialogDescription>
+            <DialogDescription>Search titles, details, comments, or enter a ticket key or number, such as TL-123 or 123.</DialogDescription>
           </DialogHeader>
           <div className="grid gap-3 px-4">
             <Input autoFocus role="combobox" aria-expanded="true" aria-autocomplete="list" value={query} onChange={(event) => setQuery(event.target.value)} onKeyDown={onInputKeyDown} placeholder="Search tickets…" aria-label="Search tickets" aria-controls="ticket-search-results" aria-activedescendant={results[active] ? `search-result-${results[active].id}` : undefined} />
