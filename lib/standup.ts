@@ -19,7 +19,7 @@ export function participants(teamIds: string[], tickets: Ticket[], names: Map<st
 
 // index: whose turn it is; people.length means the clean-board review. The clock is time spent
 // before the current run plus the run since runningSince (null = paused).
-export type Standup = { people: Participant[]; index: number; spentMs: number; runningSince: number | null };
+export type Standup = { people: Participant[]; index: number; spentMs: number; runningSince: number | null; startedBy?: string };
 
 export const start = (people: Participant[], now: number): Standup => ({ people, index: 0, spentMs: 0, runningSince: now });
 

@@ -16,8 +16,9 @@ import { NameDialog } from '@/components/name-dialog';
 import { CopyLink } from '@/components/copy-link';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { ApiError, boardTemplates, boards, organization, projects, teams, tickets, type Board, type Ticket } from '@/lib/api';
-import { participants, speaker, start as startStandup, type Standup } from '@/lib/standup';
+import { participants, speaker } from '@/lib/standup';
 import { useToken } from '@/lib/use-token';
+import { useBoardLive } from '@/lib/use-board-live';
 import { canManageBoard } from '@/lib/board-access';
 import { prefetch, useCachedState } from '@/lib/page-cache';
 import { BoardSkeleton } from '@/components/page-skeletons';
@@ -46,8 +47,10 @@ export default function BoardPage() {
   const [labelFilter, setLabelFilter] = useState<string[]>(() => parseLabels(searchParams));
   const [priorityFilter, setPriorityFilter] = useState<string[]>(() => parsePriorities(searchParams));
   const [assigneeFilter, setAssigneeFilter] = useState<AssigneeFilter>('all');
-  const [standup, setStandup] = useState<Standup | null>(null);
+  const { standup, connected: liveConnected, start: startSharedStandup, act: actOnStandup } = useBoardLive(id, token);
+  const [joinedStandup, setJoinedStandup] = useState(false);
   const [startingStandup, setStartingStandup] = useState(false);
+  const [standupError, setStandupError] = useState('');
 
   const loaded = token !== null;
   const load = (background = false) => boards.get(id, token).then(async (next) => {
@@ -102,8 +105,11 @@ export default function BoardPage() {
     setBoard((b) => b && { ...b, columns: b.columns?.map((c) => (c.id === columnId ? { ...c, tickets: fn(c.tickets) } : c)) });
 
   // everyone on the board's team plus anyone with tickets on it; names from the assignee list
+  useEffect(() => { if (!standup) setJoinedStandup(false); }, [standup]);
+
   async function beginStandup(b: Board) {
     setStartingStandup(true);
+    setStandupError('');
     try {
       const [names, members] = await Promise.all([
         tickets.assignees(token).catch(() => []),
@@ -111,7 +117,10 @@ export default function BoardPage() {
       ]);
       const people = participants(members.map((m) => m.user_id), (b.columns ?? []).flatMap((c) => c.tickets), new Map(names.map((a) => [a.id, a.label])));
       setEditMode(false);
-      setStandup(startStandup(people, Date.now()));
+      await startSharedStandup(people);
+      setJoinedStandup(true);
+    } catch {
+      setStandupError('Couldn’t start the shared standup. Please try again.');
     } finally {
       setStartingStandup(false);
     }
@@ -124,7 +133,7 @@ export default function BoardPage() {
   const boardIsAdmin = permissionBoardId === board.id && isAdmin;
   const boardEditMode = editMode && boardCanManage;
   const kanban = board.style === 'kanban';
-  const turn = standup && speaker(standup);
+  const turn = joinedStandup && standup ? speaker(standup) : null;
   const hasVisibleTickets = (board.columns ?? []).some((column) =>
     filterTicketsByAssignee(filterTicketsByPriorities(filterTicketsByLabels(column.tickets, labelFilter), priorityFilter), assigneeFilter, currentUserId)
       .some((ticket) => !turn || ticket.assigned_to === turn.id),
@@ -160,10 +169,12 @@ export default function BoardPage() {
         <div className="ml-auto flex flex-wrap items-center gap-2">
           <CopyLink path={`/boards/${board.id}`} />
           {/* standup is for running the board, not configuring it */}
-          {!standup && !boardEditMode && <Button type="button" variant="outline" size="sm" disabled={startingStandup} onClick={() => void beginStandup(board)}>
-            {startingStandup ? 'Starting…' : 'Standup'}
+          {!joinedStandup && !boardEditMode && <Button type="button" variant="outline" size="sm" disabled={startingStandup} onClick={() => standup ? setJoinedStandup(true) : void beginStandup(board)}>
+            {startingStandup ? 'Starting…' : standup ? 'Join standup' : 'Standup'}
           </Button>}
-          {boardCanManage && !standup && <Button type="button" variant={editMode ? 'secondary' : 'outline'} size="sm" aria-pressed={editMode} onClick={() => setEditMode((editing) => !editing)}>
+          {liveConnected && <span role="status" className="text-xs text-muted-foreground">Live</span>}
+          {!liveConnected && standup && <span role="status" className="text-xs text-muted-foreground">Reconnecting…</span>}
+          {boardCanManage && !joinedStandup && <Button type="button" variant={editMode ? 'secondary' : 'outline'} size="sm" aria-pressed={editMode} onClick={() => setEditMode((editing) => !editing)}>
             {editMode ? 'Done editing' : 'Edit board'}
           </Button>}
         </div>
@@ -184,6 +195,7 @@ export default function BoardPage() {
         </section>
       )}
       {permissionError && <p role="status" className="border-b px-6 py-2 text-sm text-muted-foreground">Couldn’t verify board permissions. Board settings are hidden until permissions can be checked.</p>}
+      {standupError && <p role="alert" className="border-b px-6 py-2 text-sm text-destructive">{standupError}</p>}
       {permissionBoardId === board.id && !boardCanManage && <p role="note" className="border-b px-6 py-2 text-sm text-muted-foreground">Board settings are managed by organization admins and this board’s team leaders.</p>}
       {focus && !board.columns?.some((c) => c.tickets.some((t) => t.id === focus)) && (
         <p role="status" className="border-b px-6 py-3 text-sm text-muted-foreground">
@@ -198,7 +210,9 @@ export default function BoardPage() {
           <Button type="button" variant="ghost" size="sm" onClick={() => setToBacklog(null)}>Dismiss</Button>
         </p>
       )}
-      {standup && <StandupPanel standup={standup} onChange={setStandup} onEnd={() => setStandup(null)} goal={board.sprint?.goal} />}
+      {joinedStandup && standup && <StandupPanel standup={standup} onAction={(action, index) => {
+        void actOnStandup(action, index).then(() => setStandupError(''), () => setStandupError('Couldn’t update the shared standup. Please try again.'));
+      }} goal={board.sprint?.goal} />}
       {/* sprint start/close changes which tickets the board shows, so reload */}
       {kanban
         ? <p className="border-b px-6 py-3 text-sm text-muted-foreground">Kanban board: work flows continuously. Keep each column within its WIP limit.</p>

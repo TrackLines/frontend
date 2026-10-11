@@ -82,6 +82,12 @@ export type Invitation = {
   expires_at: string; accepted_by?: string; accepted_at?: string; created_at: string;
 };
 
+export type LiveParticipant = { id: string; label: string };
+export type LiveStandup = {
+  people: LiveParticipant[]; index: number; spentMs: number; runningSince: number | null; startedBy: string;
+};
+export type BoardLiveEvent = { id: number; type: 'standup' | 'standup-ended' | 'refinement' | string; payload?: unknown };
+
 export const organization = {
   members: (token: T, offset = 0) => api<OrganizationMemberPage>(`/organizations/members?limit=500&offset=${offset}`, { token }),
   me: (token: T) => api<OrganizationRole>('/organizations/me', { token }),
@@ -184,6 +190,55 @@ export async function api<T>(path: string, { method = 'GET', body, token }: Opti
   return (res.status === 204 ? undefined : await res.json()) as T;
 }
 
+// Fetch based SSE keeps the same Bearer auth and token refresh behavior as JSON API calls.
+export async function streamBoardLive(
+  boardId: string, token: T, signal: AbortSignal,
+  onEvent: (event: BoardLiveEvent) => void, onOpen?: () => void,
+): Promise<void> {
+  const request = async (skipCache: boolean) => {
+    const t = await liveToken(token, skipCache);
+    const headers: Record<string, string> = { Accept: 'text/event-stream' };
+    if (t) headers.Authorization = `Bearer ${t}`;
+    return fetch(`${base()}/boards/${encodeURIComponent(boardId)}/live`, { headers, cache: 'no-store', signal });
+  };
+  let response = await request(false);
+  if (response.status === 401 && token && typeof window !== 'undefined') response = await request(true);
+  if (!response.ok) throw new ApiError(response.status, (await response.text()).trim() || response.statusText);
+  if (!response.body) throw new Error('Live stream has no response body');
+  onOpen?.();
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+  try {
+    while (!signal.aborted) {
+      const { value, done } = await reader.read();
+      if (done) return;
+      buffer += decoder.decode(value, { stream: true });
+      let boundary = buffer.indexOf('\n\n');
+      while (boundary >= 0) {
+        const frame = buffer.slice(0, boundary).replace(/\r/g, '');
+        buffer = buffer.slice(boundary + 2);
+        let eventName = '';
+        const data: string[] = [];
+        for (const line of frame.split('\n')) {
+          if (line.startsWith('event:')) eventName = line.slice(6).trim();
+          else if (line.startsWith('data:')) data.push(line.slice(5).trimStart());
+        }
+        if (data.length) {
+          try {
+            const parsed = JSON.parse(data.join('\n')) as BoardLiveEvent;
+            onEvent({ ...parsed, type: parsed.type || eventName });
+          } catch { /* Ignore malformed frames and keep the connection alive. */ }
+        }
+        boundary = buffer.indexOf('\n\n');
+      }
+    }
+  } finally {
+    reader.releaseLock();
+  }
+}
+
 type T = string | null | undefined;
 
 // One line per backend route (see backend/internal/service.go).
@@ -203,6 +258,14 @@ export const boards = {
   // Update the board name and/or settings; switching estimate_scale clears open tickets' estimates.
   update: (id: string, b: { name?: string; estimate_scale?: EstimateScale; style?: BoardStyle }, token: T) => api<void>(`/boards/${id}`, { method: 'PATCH', body: b, token }),
   remove: (id: string, token: T) => api<void>(`/boards/${id}`, { method: 'DELETE', token }),
+};
+
+export const liveViews = {
+  standup: (boardId: string, token: T) => api<LiveStandup>(`/boards/${boardId}/live/standup`, { token }),
+  startStandup: (boardId: string, people: LiveParticipant[], token: T) =>
+    api<LiveStandup>(`/boards/${boardId}/live/standup`, { method: 'POST', body: { people }, token }),
+  standupAction: (boardId: string, action: 'next' | 'previous' | 'jump' | 'pause' | 'resume' | 'end', token: T, index?: number) =>
+    api<LiveStandup | void>(`/boards/${boardId}/live/standup/action`, { method: 'POST', body: { action, ...(index === undefined ? {} : { index }) }, token }),
 };
 
 // Board templates: built-ins (ids "builtin:…") plus the org's own; creating and deleting is for org admins.

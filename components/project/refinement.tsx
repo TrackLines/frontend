@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { TypeBadge } from '@/components/ticket-type';
 import { EstimateSelect } from '@/components/board/estimate';
-import { ApiError, backlog, organization, plannedSprints, type BacklogTicket, type Board, type OrganizationRole, type PlannedSprint, type Ticket } from '@/lib/api';
+import { ApiError, backlog, organization, plannedSprints, streamBoardLive, type BacklogTicket, type Board, type OrganizationRole, type PlannedSprint, type Ticket } from '@/lib/api';
 import { canManageBoard } from '@/lib/board-access';
 import type { EstimateScale } from '@/lib/estimates';
 import { capacityView, MAX_PLANNED } from '@/lib/refinement';
@@ -37,6 +37,7 @@ export function RefinementMode({ projectId, boards, token, onClose, version = 0,
   const [role, setRole] = useState<OrganizationRole | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [liveBoards, setLiveBoards] = useState<Record<string, boolean>>({});
   const latestLoad = useRef(0);
   const boardIds = sprintBoards.map((b) => b.id).join(',');
 
@@ -50,6 +51,8 @@ export function RefinementMode({ projectId, boards, token, onClose, version = 0,
     setPlans(Object.fromEntries(sprintBoards.map((b, i) => [b.id, lists[i]])));
     setTickets(page.tickets.filter((t) => !t.planned_sprint_id)); // planned ones show in their sprint
   }, [boardIds, projectId, token, priorities.join(',')]);
+  const loadRef = useRef(load);
+  loadRef.current = load;
 
   useEffect(() => {
     load().catch(() => setError('Couldn’t load the backlog and planned sprints. Please try again.'));
@@ -57,6 +60,30 @@ export function RefinementMode({ projectId, boards, token, onClose, version = 0,
   useEffect(() => {
     organization.me(token).then(setRole, () => setRole({ user_id: '', org_id: '', admin: false, leads: [] })); // fail closed
   }, [load, token]);
+
+  useEffect(() => {
+    if (!boardIds) return;
+    const controller = new AbortController();
+    const ids = boardIds.split(',');
+    for (const boardId of ids) {
+      void (async () => {
+        let backoff = 500;
+        while (!controller.signal.aborted) {
+          try {
+            await streamBoardLive(boardId, token, controller.signal, (event) => {
+              if (event.type === 'refinement') loadRef.current().catch(() => setError('Couldn’t refresh the live refinement view.'));
+            }, () => setLiveBoards((current) => ({ ...current, [boardId]: true })));
+          } catch {
+            if (controller.signal.aborted) break;
+          }
+          setLiveBoards((current) => ({ ...current, [boardId]: false }));
+          await reconnectDelay(backoff, controller.signal);
+          backoff = Math.min(backoff * 2, 10_000);
+        }
+      })();
+    }
+    return () => controller.abort();
+  }, [boardIds, token]);
 
   // act runs a change, then reloads (capacity is worked out by the server)
   async function act(change: () => Promise<unknown>, failed: string) {
@@ -79,6 +106,9 @@ export function RefinementMode({ projectId, boards, token, onClose, version = 0,
     <section aria-label="Refinement" className="grid gap-4">
       <div className="flex flex-wrap items-center gap-3">
         <p className="text-sm text-muted-foreground">Plan backlog tickets into each team’s next sprints and size them. A sprint holds the team’s velocity + 10%.</p>
+        {sprintBoards.length > 0 && <Badge variant={sprintBoards.every((board) => liveBoards[board.id]) ? 'secondary' : 'outline'} role="status">
+          {sprintBoards.every((board) => liveBoards[board.id]) ? 'Live' : 'Reconnecting…'}
+        </Badge>}
         <Button size="sm" variant="outline" className="ml-auto" onClick={onClose}>Done refining</Button>
       </div>
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
@@ -142,6 +172,15 @@ export function RefinementMode({ projectId, boards, token, onClose, version = 0,
       )}
     </section>
   );
+}
+
+function reconnectDelay(ms: number, signal: AbortSignal) {
+  return new Promise<void>((resolve) => {
+    if (signal.aborted) return resolve();
+    const finish = () => { clearTimeout(timer); signal.removeEventListener('abort', finish); resolve(); };
+    const timer = setTimeout(finish, ms);
+    signal.addEventListener('abort', finish, { once: true });
+  });
 }
 
 export function PlannedSprintCard({ plan, scale, canManage, busy, token, act, onOpen }: {

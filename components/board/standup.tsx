@@ -3,13 +3,13 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { clock, goTo, pause, remaining, resume, reviewing, type Standup } from '@/lib/standup';
+import { clock, remaining, reviewing, type Standup } from '@/lib/standup';
 
-type Props = { standup: Standup; onChange: (s: Standup) => void; onEnd: () => void; goal?: string };
+type Props = { standup: Standup; onAction: (action: 'next' | 'previous' | 'jump' | 'pause' | 'resume' | 'end', index?: number) => void; goal?: string };
 
 // StandupPanel runs the standup over the board: who's speaking, their clock, and the running order.
 // The board under it shows the speaker's tickets (all tickets during the clean-board review).
-export function StandupPanel({ standup, onChange, onEnd, goal }: Props) {
+export function StandupPanel({ standup, onAction, goal }: Props) {
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
     const tick = setInterval(() => setNow(Date.now()), 1000);
@@ -20,7 +20,7 @@ export function StandupPanel({ standup, onChange, onEnd, goal }: Props) {
   const paused = standup.runningSince === null;
   const review = reviewing(standup);
   const last = standup.index === standup.people.length; // the review is the last step
-  const jump = (index: number) => onChange(goTo(standup, index, Date.now()));
+  const jump = (index: number) => onAction('jump', index);
 
   return (
     <section aria-label="Standup" className="grid gap-3 border-b bg-muted/40 px-6 py-3 text-sm">
@@ -34,14 +34,14 @@ export function StandupPanel({ standup, onChange, onEnd, goal }: Props) {
           {clock(left)}{paused && ' (paused)'}
         </span>
         <div className="ml-auto flex flex-wrap gap-2">
-          <Button size="sm" variant="outline" disabled={standup.index === 0} onClick={() => jump(standup.index - 1)}>Previous</Button>
-          <Button size="sm" variant="outline" onClick={() => onChange(paused ? resume(standup, Date.now()) : pause(standup, Date.now()))}>
+          <Button size="sm" variant="outline" disabled={standup.index === 0} onClick={() => onAction('previous')}>Previous</Button>
+          <Button size="sm" variant="outline" onClick={() => onAction(paused ? 'resume' : 'pause')}>
             {paused ? 'Resume' : 'Pause'}
           </Button>
           {last
-            ? <Button size="sm" onClick={onEnd}>Finish standup</Button>
-            : <Button size="sm" onClick={() => jump(standup.index + 1)}>{standup.index === standup.people.length - 1 ? 'Clean board' : 'Next'}</Button>}
-          {!last && <Button size="sm" variant="ghost" onClick={onEnd}>End</Button>}
+            ? <Button size="sm" onClick={() => onAction('end')}>Finish standup</Button>
+            : <Button size="sm" onClick={() => onAction('next')}>{standup.index === standup.people.length - 1 ? 'Clean board' : 'Next'}</Button>}
+          {!last && <Button size="sm" variant="ghost" onClick={() => onAction('end')}>End</Button>}
         </div>
       </div>
       <ol className="flex flex-wrap gap-2" aria-label="Running order">
