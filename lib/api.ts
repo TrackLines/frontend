@@ -531,4 +531,6 @@ export const notifications = {
   unreadCount: (token: T) => api<{ count: number }>('/notifications/unread-count', { token }),
   read: (id: string, token: T) => api<void>(`/notifications/${id}/read`, { method: 'POST', token }),
   readAll: (token: T) => api<void>('/notifications/read-all', { method: 'POST', token }),
+  dismiss: (id: string, token: T) => api<void>(`/notifications/${id}`, { method: 'DELETE', token }),
+  clearRead: (token: T) => api<void>('/notifications/read', { method: 'DELETE', token }),
 };

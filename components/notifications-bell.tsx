@@ -1,6 +1,6 @@
 'use client';
 
-import { BellIcon } from 'lucide-react';
+import { BellIcon, XIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { When } from '@/components/when';
@@ -22,6 +22,7 @@ export function NotificationsBell() {
   const [items, setItems] = useState<AppNotification[] | null>(null);
   const [people, setPeople] = useState<Assignee[]>([]);
   const [failed, setFailed] = useState(false);
+  const [showRead, setShowRead] = useState(false); // read ones are hidden unless asked for
   const [permission, setPermission] = useState<NotificationPermission | 'unsupported'>('unsupported');
   const since = useRef<string | null>(null); // desktop popups have shown everything up to here
   const lastCount = useRef(0);
@@ -75,6 +76,20 @@ export function NotificationsBell() {
     if (href) router.push(href);
   }
 
+  async function dismiss(n: AppNotification) {
+    if (!token) return;
+    await notifications.dismiss(n.id, token).catch(() => {});
+    if (!n.read_at) setCount((c) => Math.max(0, c - 1));
+    setItems((list) => list?.filter((x) => x.id !== n.id) ?? list);
+  }
+
+  async function clearRead() {
+    if (!token) return;
+    await notifications.clearRead(token).catch(() => {});
+    setItems((list) => list?.filter((x) => !x.read_at) ?? list);
+    setShowRead(false);
+  }
+
   async function readAll() {
     if (!token) return;
     await notifications.readAll(token).catch(() => {});
@@ -90,7 +105,7 @@ export function NotificationsBell() {
 
   if (!token) return null;
   return (
-    <DropdownMenu onOpenChange={(o) => { if (o) void load(); }}>
+    <DropdownMenu onOpenChange={(o) => { if (o) { setShowRead(false); void load(); } }}>
       <DropdownMenuTrigger render={<Button type="button" variant="ghost" size="icon" className="relative" aria-label={count ? `Notifications, ${count} unread` : 'Notifications'} />}>
         <BellIcon aria-hidden />
         {count > 0 && (
@@ -100,7 +115,9 @@ export function NotificationsBell() {
         )}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-96 max-w-[calc(100vw-2rem)] p-0">
-        <NotificationsList items={items} people={people} failed={failed} unread={count} onOpen={(n) => void open(n)} onReadAll={() => void readAll()} />
+        <NotificationsList items={items} people={people} failed={failed} unread={count} showRead={showRead}
+          onOpen={(n) => void open(n)} onDismiss={(n) => void dismiss(n)} onReadAll={() => void readAll()}
+          onShowRead={setShowRead} onClearRead={() => void clearRead()} />
         {permission === 'default' && (
           <div className="border-t px-3 py-2 text-xs">
             <button type="button" className="font-medium hover:underline" onClick={() => void enableDesktop()}>Turn on desktop notifications</button>
@@ -114,10 +131,14 @@ export function NotificationsBell() {
 }
 
 // NotificationsList: the inbox (pure, for tests): unread marked, newest-first within read/unread.
-export function NotificationsList({ items, people, failed, unread, onOpen, onReadAll }: {
-  items: AppNotification[] | null; people: Assignee[]; failed: boolean; unread: number;
-  onOpen: (n: AppNotification) => void; onReadAll: () => void;
+// Read ones are hidden unless showRead: opening or dismissing one takes it out of the bell.
+export function NotificationsList({ items, people, failed, unread, showRead = false, onOpen, onDismiss, onReadAll, onShowRead, onClearRead }: {
+  items: AppNotification[] | null; people: Assignee[]; failed: boolean; unread: number; showRead?: boolean;
+  onOpen: (n: AppNotification) => void; onDismiss?: (n: AppNotification) => void; onReadAll: () => void;
+  onShowRead?: (show: boolean) => void; onClearRead?: () => void;
 }) {
+  const shown = items?.filter((n) => showRead || !n.read_at) ?? null;
+  const readCount = items?.filter((n) => n.read_at).length ?? 0;
   return (
     <div className="grid">
       <div className="flex items-center justify-between border-b px-3 py-2">
@@ -125,23 +146,37 @@ export function NotificationsList({ items, people, failed, unread, onOpen, onRea
         {unread > 0 && <button type="button" className="text-xs font-medium text-muted-foreground hover:text-foreground hover:underline" onClick={onReadAll}>Mark all read</button>}
       </div>
       {failed ? <p role="alert" className="px-3 py-6 text-center text-sm text-destructive">Couldn&apos;t load notifications.</p>
-        : items === null ? <p role="status" className="px-3 py-6 text-center text-sm text-muted-foreground">Loading…</p>
-        : items.length === 0 ? <p className="px-3 py-6 text-center text-sm text-muted-foreground">You&apos;re all caught up.</p>
+        : shown === null ? <p role="status" className="px-3 py-6 text-center text-sm text-muted-foreground">Loading…</p>
+        : shown.length === 0 ? <p className="px-3 py-6 text-center text-sm text-muted-foreground">You&apos;re all caught up.</p>
         : (
           <ul className="max-h-96 divide-y overflow-y-auto">
-            {items.map((n) => (
-              <li key={n.id}>
-                <button type="button" onClick={() => onOpen(n)} className={`flex w-full gap-2 px-3 py-2.5 text-left text-sm hover:bg-muted ${n.read_at ? 'text-muted-foreground' : ''}`}>
+            {shown.map((n) => (
+              <li key={n.id} className="group flex items-start hover:bg-muted">
+                <button type="button" onClick={() => onOpen(n)} className={`flex min-w-0 flex-1 gap-2 py-2.5 pl-3 text-left text-sm ${n.read_at ? 'text-muted-foreground' : ''}`}>
                   <span aria-label={n.read_at ? undefined : 'Unread'} className={`mt-1.5 size-2 shrink-0 rounded-full ${n.read_at ? '' : 'bg-primary'}`} />
                   <span className="grid min-w-0 gap-0.5">
                     <span className="break-words">{notificationLine(n, people)}</span>
                     <span className="text-xs text-muted-foreground"><When iso={n.created_at} /></span>
                   </span>
                 </button>
+                {onDismiss && (
+                  <button type="button" aria-label={`Clear: ${notificationLine(n, people)}`} title="Clear"
+                    className="m-1.5 rounded p-1 text-muted-foreground hover:bg-background hover:text-foreground" onClick={() => onDismiss(n)}>
+                    <XIcon className="size-3.5" aria-hidden />
+                  </button>
+                )}
               </li>
             ))}
           </ul>
         )}
+      {onShowRead && readCount > 0 && (
+        <div className="flex items-center justify-between border-t px-3 py-2 text-xs text-muted-foreground">
+          <button type="button" className="font-medium hover:text-foreground hover:underline" onClick={() => onShowRead(!showRead)}>
+            {showRead ? 'Hide read' : `Show read (${readCount})`}
+          </button>
+          {showRead && onClearRead && <button type="button" className="font-medium hover:text-foreground hover:underline" onClick={onClearRead}>Clear read</button>}
+        </div>
+      )}
     </div>
   );
 }
