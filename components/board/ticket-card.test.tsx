@@ -57,10 +57,10 @@ test('the key sits on its own line above the title and never wraps', () => {
   expect(html).toMatch(/<button[^>]*>PR webhooks: link PRs to tickets, merge closes the ticket<\/button>/);
 });
 
-test('TL-134 layout: key, type, estimate and pencil on top; then title, labels, description, people', () => {
-  const html = card({ key: 'TL-133', title: 'Project repositories on their own page', type: 'bug', estimate: '1', labels: ['frontend'], assigned_to: 'Claude' });
+test('TL-134 layout: key, type, priority, blocked, estimate and pencil on top; then title, labels, description, people', () => {
+  const html = card({ key: 'TL-133', title: 'Project repositories on their own page', type: 'bug', priority: 'urgent', blocked: true, estimate: '1', labels: ['frontend'], assigned_to: 'Claude' });
   const at = (s: string) => html.indexOf(s);
-  const order = ['TL-133', '>bug<', 'Estimate 1', 'Edit Project', '>Project repositories', '>frontend<', 'long details', 'by '].map(at);
+  const order = ['TL-133', '>bug<', '>Urgent<', ' Blocked<', 'Estimate 1', 'Edit Project', '>Project repositories', '>frontend<', 'long details', 'by '].map(at);
   expect(order.every((i) => i >= 0)).toBe(true);
   expect(order).toEqual([...order].sort((a, b) => a - b));
   expect(html).toContain('rounded-full'); // the estimate is a round badge

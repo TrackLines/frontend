@@ -42,10 +42,13 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
   return (
     <>
       <Card className="w-full min-w-0 gap-2 py-3 shadow-xs">
-        {/* TL-134 layout: key and type, then estimate and pencil, on top; the title underneath */}
-        <div className="flex items-center gap-2 px-3">
+        {/* TL-134 layout: key, type, priority, blocked; then estimate and pencil, on top; the title underneath */}
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 px-3">
           {ticket.key && <TicketKey value={ticket.key} />}
           {ticket.type && ticket.type !== 'task' && <TypeBadge type={ticket.type} />}
+          <PriorityBadge priority={ticket.priority} hideDefault />
+          {ticket.blocked && <BlockedBadge />}
+          {ticket.external_source === 'bugfixes' && <Badge variant="outline" title="Reported by Bugfixes">Bugfixes</Badge>}
           <span className="ml-auto flex shrink-0 items-center gap-1">
             {ticket.estimate && <Badge variant="outline" className="size-6 justify-center rounded-full p-0" title="Estimate" aria-label={`Estimate ${ticket.estimate}`}>{ticket.estimate}</Badge>}
             {!readOnly && <Button type="button" variant="ghost" size="icon" className="-mr-1.5 size-7 text-muted-foreground" aria-label={`Edit ${ticket.title}`} onClick={() => setEditOpen(true)}>
@@ -57,13 +60,6 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
         <Button type="button" variant="link" onClick={openView} className="mx-3 h-auto min-w-0 justify-start p-0 text-left text-base leading-5 font-medium whitespace-normal text-foreground">
           {ticket.title}
         </Button>
-        {(ticket.blocked || ticket.external_source === 'bugfixes' || (ticket.priority && ticket.priority !== 'medium')) && (
-          <div className="flex flex-wrap gap-1 px-3">
-            <PriorityBadge priority={ticket.priority} hideDefault />
-            {ticket.blocked && <BlockedBadge />}
-            {ticket.external_source === 'bugfixes' && <Badge variant="outline" title="Reported by Bugfixes">Bugfixes</Badge>}
-          </div>
-        )}
         <TicketLabels labels={ticket.labels} className="px-3" />
         {ticket.description && (
           <p className="line-clamp-2 break-words px-3 text-sm whitespace-pre-line text-muted-foreground">{ticket.description}</p>
