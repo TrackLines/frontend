@@ -48,3 +48,11 @@ test('tickets Bugfixes made are marked', () => {
   expect(card({ type: 'bug', external_source: 'bugfixes' })).toContain('>Bugfixes<');
   expect(card({ type: 'bug' })).not.toContain('>Bugfixes<');
 });
+
+test('the key sits on its own line above the title and never wraps', () => {
+  const html = card({ key: 'TL-113', title: 'PR webhooks: link PRs to tickets, merge closes the ticket', type: 'feature' });
+  expect(html).toContain('whitespace-nowrap');
+  expect(html.indexOf('TL-113')).toBeLessThan(html.indexOf('PR webhooks'));
+  // the title button holds only the title
+  expect(html).toMatch(/<button[^>]*>PR webhooks: link PRs to tickets, merge closes the ticket<\/button>/);
+});

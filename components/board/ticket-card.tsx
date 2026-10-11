@@ -44,11 +44,13 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
     <>
       <Card className="w-full min-w-0 gap-2 py-3 shadow-xs">
         <div className="flex items-start gap-1 px-3">
-          {/* the title opens the read-only view; the pencil edits */}
-          <Button type="button" variant="link" onClick={openView} className="h-auto min-w-0 flex-1 justify-start p-0 text-left leading-5 whitespace-normal text-foreground">
+          {/* the key on its own line above the title; the title opens the read-only view, the pencil edits */}
+          <div className="grid min-w-0 flex-1 gap-0.5">
             {ticket.key && <TicketKey value={ticket.key} />}
-            {ticket.title}
-          </Button>
+            <Button type="button" variant="link" onClick={openView} className="h-auto min-w-0 justify-start p-0 text-left leading-5 whitespace-normal text-foreground">
+              {ticket.title}
+            </Button>
+          </div>
           {!readOnly && <Button type="button" variant="ghost" size="icon" className="-mt-1 -mr-1.5 size-7 shrink-0 text-muted-foreground" aria-label={`Edit ${ticket.title}`} onClick={() => setEditOpen(true)}>
             <PencilIcon className="size-3.5" aria-hidden />
           </Button>}
