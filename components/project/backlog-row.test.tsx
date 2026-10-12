@@ -21,6 +21,19 @@ test('TL-174: key, type and age on the left; labels (extra ones under them) besi
   expect(at('Roadmap updates and subscriber notifications')).toBeLessThan(at('Let roadmap owners publish updates'));
   expect(html).not.toContain('>notifications<'); // behind the +2
   expect(html).toContain('>Edit<');
-  // the left column is sized to its content (a fixed width let "Created 19 minutes ago" spill over)
-  expect(html).not.toMatch(/class="grid w-\d+ shrink-0/);
+  // TL-177 grid: labels stacked beside key/type, +N in its own column, the title beside it,
+  // "Created" under the left column and the description under the +N and title
+  expect(html).toMatch(/class="[^"]*col-start-2 row-span-2[^"]*flex-col/);
+  expect(html).toMatch(/class="col-start-3 row-span-2 row-start-1"><button/);
+  expect(html).toMatch(/class="col-span-2 col-start-3 row-start-3[^"]*">Let roadmap/);
+  // Edit pinned to the top right, the date to the bottom left
+  expect(html).toMatch(/class="[^"]*col-start-5 row-start-1 self-start justify-self-end[^"]*"[^>]*>Edit</);
+  expect(html).toMatch(/class="col-span-2 col-start-1 row-start-3 self-end[^"]*">Created/);
+});
+
+test('no labels: no label column or +N, the title still in place', () => {
+  const html = renderToStaticMarkup(<ul><BacklogRow t={{ ...t, labels: [] }} busy={false} onEdit={() => {}} /></ul>);
+  expect(html).not.toContain('Ticket labels');
+  expect(html).not.toContain('more labels');
+  expect(html).toContain('Roadmap updates and subscriber notifications');
 });

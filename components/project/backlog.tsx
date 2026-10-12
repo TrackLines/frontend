@@ -15,7 +15,7 @@ import { EstimateSelect } from '@/components/board/estimate';
 import { RefinementMode } from '@/components/project/refinement';
 import type { EstimateScale } from '@/lib/estimates';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
-import { LabelDrawer, TicketLabels } from '@/components/ticket/labels';
+import { LabelDrawer, MoreLabels, splitLabels, TicketLabels } from '@/components/ticket/labels';
 import { attachAll, PendingAttachments, type PendingFile } from '@/components/ticket/pending-attachments';
 import { BACKLOG_CHANGED } from '@/components/quick-add-ticket';
 import { ApiError, backlog, BacklogTicket, type BacklogPage, type BacklogSort, boards as boardsApi, tickets, type Board, type Ticket, type TicketType } from '@/lib/api';
@@ -354,25 +354,21 @@ function SizeDialog({ ticket, board, onCancel, onMove }: {
 // BacklogRow: one backlog line (TL-174): key, type and age on the left; labels with the extra ones
 // under them, beside the title; the description underneath; Edit on the right.
 export function BacklogRow({ t, busy, onEdit }: { t: BacklogTicket; busy: boolean; onEdit: () => void }) {
+  const [shown, rest] = splitLabels(t.labels, 2);
+  // TL-177 layout, a grid: key and type on the left with the two shown labels stacked beside them,
+  // the +N then the title centred across those two rows; "Created …" under the left column and the
+  // description under the +N and title; Edit pinned top right, the date bottom left.
   return (
-    <li className="flex items-start gap-4 p-4">
-      {/* TL-174 layout: key, type and age on the left; labels (the rest under them) beside
-          the title; the description underneath both; Edit on the right */}
-      <div className="grid shrink-0 justify-items-start gap-1.5">{/* sized to its content: "Created 19 minutes ago" never runs into the description */}
-        <TicketKey value={t.key} />
-        <TypeBadge type={t.type} />
-        {t.blocked && <BlockedBadge />}
-        {t.created_at && <span className="text-xs whitespace-nowrap text-muted-foreground">Created <When iso={t.created_at} /></span>}
-      </div>
-      <div className="grid min-w-0 flex-1 gap-1.5">
-        <div className="flex min-w-0 flex-wrap items-start gap-x-3 gap-y-1">
-          <TicketLabels labels={t.labels} max={2} moreBelow />
-          <Link href={ticketPath(t)} className="min-w-0 flex-1 font-medium hover:underline">{t.title}</Link>
-        </div>
-        {t.description && <p className="line-clamp-1 text-sm text-muted-foreground">{plainText(t.description)}</p>}
-      </div>
+    <li className="grid grid-cols-[auto_auto_auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1.5 p-4">
+      <span className="col-start-1 row-start-1"><TicketKey value={t.key} /></span>
+      <span className="col-start-1 row-start-2 flex flex-wrap gap-1"><TypeBadge type={t.type} />{t.blocked && <BlockedBadge />}</span>
+      {t.created_at && <span className="col-span-2 col-start-1 row-start-3 self-end text-xs whitespace-nowrap text-muted-foreground">Created <When iso={t.created_at} /></span>}
+      {shown.length > 0 && <TicketLabels labels={shown} className="col-start-2 row-span-2 row-start-1 flex-col items-start" />}
+      {rest.length > 0 && <span className="col-start-3 row-span-2 row-start-1"><MoreLabels labels={rest} /></span>}
+      <Link href={ticketPath(t)} className="col-start-4 row-span-2 row-start-1 min-w-0 font-medium hover:underline">{t.title}</Link>
+      {t.description && <p className="col-span-2 col-start-3 row-start-3 line-clamp-1 text-sm text-muted-foreground">{plainText(t.description)}</p>}
       {/* moving to a board and deleting are planning decisions: they live in refine mode */}
-      <Button size="sm" variant="ghost" disabled={busy} onClick={onEdit}>Edit</Button>
+      <Button size="sm" variant="ghost" className="col-start-5 row-start-1 self-start justify-self-end" disabled={busy} onClick={onEdit}>Edit</Button>
     </li>
   );
 }

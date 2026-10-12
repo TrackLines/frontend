@@ -10,39 +10,42 @@ import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, Dr
 import { projects } from '@/lib/api';
 import { addLabels, removeLabel } from '@/lib/labels';
 
-// max (lists): past it, the rest go in a "+N" dropdown rather than wrapping the row.
-export function TicketLabels({ labels, className = '', max, moreBelow = false }: { labels?: string[]; className?: string; max?: number; moreBelow?: boolean }) {
-  if (!labels?.length) return null;
-  const shown = max && labels.length > max ? labels.slice(0, max) : labels;
-  const rest = labels.slice(shown.length);
-  const moreMenu = rest.length > 0 && (
+// MoreLabels: the "+N" dropdown holding labels that didn't fit; nothing when there are none.
+export function MoreLabels({ labels }: { labels: string[] }) {
+  if (!labels.length) return null;
+  return (
     <DropdownMenu>
-      <DropdownMenuTrigger render={<Badge render={<button type="button" />} variant="outline" className="cursor-pointer hover:bg-muted" aria-label={`${rest.length} more labels: ${rest.join(', ')}`} />}>
-        +{rest.length}
+      <DropdownMenuTrigger render={<Badge render={<button type="button" />} variant="outline" className="cursor-pointer hover:bg-muted" aria-label={`${labels.length} more labels: ${labels.join(', ')}`} />}>
+        +{labels.length}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-auto min-w-36">
         <DropdownMenuGroup>
           <DropdownMenuLabel>More labels</DropdownMenuLabel>
-          {rest.map((label) => <DropdownMenuItem key={label.toLowerCase()}>{label}</DropdownMenuItem>)}
+          {labels.map((label) => <DropdownMenuItem key={label.toLowerCase()}>{label}</DropdownMenuItem>)}
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );
-  const labelRow = (
+}
+
+// splitLabels: the first max labels to show, and the rest for MoreLabels.
+export function splitLabels(labels: string[] | undefined, max?: number): [string[], string[]] {
+  const all = labels ?? [];
+  return max && all.length > max ? [all.slice(0, max), all.slice(max)] : [all, []];
+}
+
+// max (lists): past it, the rest go in a "+N" dropdown rather than wrapping the row.
+export function TicketLabels({ labels, className = '', max }: { labels?: string[]; className?: string; max?: number }) {
+  if (!labels?.length) return null;
+  const [shown, rest] = splitLabels(labels, max);
+  return (
     <div aria-label="Ticket labels" className={`flex min-w-0 flex-wrap gap-1 ${className}`}>
       {shown.map((label) => (
         <Badge key={label.toLowerCase()} variant="outline" title={label} className="max-w-40">
           <span className="truncate">{label}</span>
         </Badge>
       ))}
-      {!moreBelow && moreMenu}
-    </div>
-  );
-  if (!moreBelow) return labelRow;
-  return (
-    <div className="grid justify-items-start gap-1">
-      {labelRow}
-      {rest.length > 0 && <div className="flex">{moreMenu}</div>}
+      <MoreLabels labels={rest} />
     </div>
   );
 }
