@@ -13,13 +13,14 @@ export type PendingFile = { key: string; url: string; name: string; size: number
 // call attachAll once it's created.
 // ponytail: files uploaded then abandoned (dialog cancelled) stay on UploadThing unattached;
 // add a cleanup sweep if that ever matters.
-export function PendingAttachments({ files, onChange }: { files: PendingFile[]; onChange: (f: PendingFile[]) => void }) {
+// projectId: the project the new ticket goes in (uploads are checked against it); '' until chosen.
+export function PendingAttachments({ files, onChange, projectId }: { files: PendingFile[]; onChange: (f: PendingFile[]) => void; projectId: string }) {
   return (
     <div className="grid gap-2">
       {/* the button sits by its label, like "Add labels" above it */}
       <div className="flex flex-wrap items-center gap-3">
         <span className="text-sm font-medium">Attachments <span className="font-normal text-muted-foreground">(optional)</span></span>
-        <AttachFilesButton onUploaded={(up) => onChange([...files, ...up])} />
+        <AttachFilesButton target={projectId ? { projectId } : null} onUploaded={(up) => onChange([...files, ...up])} />
       </div>
       {files.length > 0 && (
         <ul className="grid gap-1 text-sm">

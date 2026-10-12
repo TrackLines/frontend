@@ -221,21 +221,7 @@ export function Backlog({ projectId, boards, token }: Props) {
       ) : (
         <ul className="divide-y rounded-xl border">
           {shown.map((t) => (
-            <li key={t.id} className="flex flex-wrap items-center gap-x-3 gap-y-2 p-4">
-              {/* type with when it was made under it; then labels (two, the rest in a dropdown) */}
-              <div className="grid justify-items-start gap-1">
-                <TypeBadge type={t.type} />
-                {t.created_at && <span className="text-xs whitespace-nowrap text-muted-foreground">Created <When iso={t.created_at} /></span>}
-              </div>
-              {t.blocked && <BlockedBadge />}
-              <TicketLabels labels={t.labels} max={2} />
-              <div className="min-w-0 flex-1">
-                <Link href={ticketPath(t)} className="inline-flex items-baseline gap-2 font-medium hover:underline"><TicketKey value={t.key} />{t.title}</Link>
-                {t.description && <p className="line-clamp-1 text-sm text-muted-foreground">{plainText(t.description)}</p>}
-              </div>
-              {/* moving to a board and deleting are planning decisions: they live in refine mode */}
-              <Button size="sm" variant="ghost" disabled={busy === t.id} onClick={() => openEditor(t)}>Edit</Button>
-            </li>
+            <BacklogRow key={t.id} t={t} busy={busy === t.id} onEdit={() => openEditor(t)} />
           ))}
         </ul>
       )}
@@ -327,7 +313,7 @@ function AddDialog({ open, onOpenChange, projectId, token, onAdd }: {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
-          <PendingAttachments files={files} onChange={setFiles} />
+          <PendingAttachments files={files} onChange={setFiles} projectId={projectId} />
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           <DialogFooter>
             <Button type="submit" disabled={saving || !title.trim()}>{saving ? 'Adding…' : 'Add to backlog'}</Button>
@@ -362,5 +348,31 @@ function SizeDialog({ ticket, board, onCancel, onMove }: {
         </form>
       </DialogContent>
     </Dialog>
+  );
+}
+
+// BacklogRow: one backlog line (TL-174): key, type and age on the left; labels with the extra ones
+// under them, beside the title; the description underneath; Edit on the right.
+export function BacklogRow({ t, busy, onEdit }: { t: BacklogTicket; busy: boolean; onEdit: () => void }) {
+  return (
+    <li className="flex items-start gap-4 p-4">
+      {/* TL-174 layout: key, type and age on the left; labels (the rest under them) beside
+          the title; the description underneath both; Edit on the right */}
+      <div className="grid shrink-0 justify-items-start gap-1.5">{/* sized to its content: "Created 19 minutes ago" never runs into the description */}
+        <TicketKey value={t.key} />
+        <TypeBadge type={t.type} />
+        {t.blocked && <BlockedBadge />}
+        {t.created_at && <span className="text-xs whitespace-nowrap text-muted-foreground">Created <When iso={t.created_at} /></span>}
+      </div>
+      <div className="grid min-w-0 flex-1 gap-1.5">
+        <div className="flex min-w-0 flex-wrap items-start gap-x-3 gap-y-1">
+          <TicketLabels labels={t.labels} max={2} moreBelow />
+          <Link href={ticketPath(t)} className="min-w-0 flex-1 font-medium hover:underline">{t.title}</Link>
+        </div>
+        {t.description && <p className="line-clamp-1 text-sm text-muted-foreground">{plainText(t.description)}</p>}
+      </div>
+      {/* moving to a board and deleting are planning decisions: they live in refine mode */}
+      <Button size="sm" variant="ghost" disabled={busy} onClick={onEdit}>Edit</Button>
+    </li>
   );
 }

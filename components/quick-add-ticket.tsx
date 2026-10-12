@@ -111,7 +111,7 @@ function QuickAddDialog({ scope, onClose }: { scope: NonNullable<ReturnType<type
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
-          <PendingAttachments files={files} onChange={setFiles} />
+          <PendingAttachments files={files} onChange={setFiles} projectId={projectId} />
           {added && <p role="status" className="text-sm text-muted-foreground">{added}</p>}
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           <DialogFooter>

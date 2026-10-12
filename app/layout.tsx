@@ -8,6 +8,7 @@ import { UserMenu } from '@/components/user-menu';
 import { QuickAddTicket } from '@/components/quick-add-ticket';
 import { TicketSearch } from '@/components/ticket-search';
 import { NotificationsBell } from '@/components/notifications-bell';
+import { CacheGuard } from '@/components/cache-guard';
 import { OrgSwitcher } from '@/components/org-switcher';
 import { FeatureFlags } from '@/components/feature-flags';
 import './globals.css';
@@ -29,6 +30,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange storageKey="tracklines-theme">
         <ClerkProvider appearance={{ theme: shadcn }}>
         <FeatureFlags>
+          <CacheGuard />
           <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
             <div className="flex items-center gap-4">
               <Link href="/" className="font-semibold tracking-tight">Tracklines</Link>

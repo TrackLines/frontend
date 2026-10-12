@@ -41,6 +41,7 @@ export function Attachments({ ticketId, token, locked = false }: { ticketId: str
         </h2>
         {!locked && (
           <AttachFilesButton
+            target={{ ticketId }}
             onUploaded={async (files) => {
               setError('');
               for (const f of files) {

@@ -200,7 +200,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
             </label>
           )}
           {ticket && <BugfixesPanel ticket={ticket} token={token} />}
-          {ticket ? <Attachments ticketId={ticket.id} token={token} locked={done} /> : <PendingAttachments files={files} onChange={setFiles} />}
+          {ticket ? <Attachments ticketId={ticket.id} token={token} locked={done} /> : <PendingAttachments files={files} onChange={setFiles} projectId={projectId ?? ''} />}
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           {confirmDelete && (
             <div role="alert" className="grid gap-2 rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm">

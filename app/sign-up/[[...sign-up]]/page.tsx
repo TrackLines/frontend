@@ -1,3 +1,4 @@
+import { safeRedirect } from '@/lib/safe-redirect';
 import { SignUp } from '@clerk/nextjs';
 
 export const metadata = { title: 'Create account | Tracklines' };
@@ -20,7 +21,3 @@ export default async function SignUpPage({ searchParams }: PageProps) {
   );
 }
 
-function safeRedirect(value: string | string[] | undefined): string {
-  if (typeof value !== 'string' || !value.startsWith('/') || value.startsWith('//')) return '/dashboard';
-  return value;
-}
