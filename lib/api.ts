@@ -19,7 +19,8 @@ export type Ticket = {
   started_at?: string | null; // first move out of the board's first column; null for historical tickets
   planned_sprint_id?: string | null; // a backlog ticket planned into a board's upcoming sprint (refinement)
   external_source?: string | null; external_url?: string | null; // made by an integration, e.g. a Bugfixes report
-  resolution?: 'done' | 'wont_do' | null; // how a resolved backlog ticket was closed (null = done)
+  resolution?: 'done' | 'wont_do' | 'duplicate' | null; // how a backlog ticket was closed
+  duplicate_of_id?: string | null; duplicate_of_key?: string | null; duplicate_of_title?: string | null;
   review_requested_at?: string | null; // an agent finished it on a review board: waiting for a person
 };
 // A project ticket not on any board or sprint yet.
@@ -317,6 +318,7 @@ export type TicketDetail = Omit<Ticket, 'column_id'> & {
   blocked_by: Dep[]; blocks: Dep[];
   parent?: Dep | null; // this is a sub-ticket of parent
   children?: Dep[]; // its sub-tickets
+  duplicates?: { id: string; key: string; title: string }[];
 };
 export type TicketSearchResult = Ticket & {
   project_name: string; board_id: string | null; board_name: string | null; column_name: string | null;
@@ -351,6 +353,8 @@ export const tickets = {
   // resolve closes a backlog ticket in place: done, or wont_do (decided against; the reason becomes a comment)
   resolve: (id: string, token: T, resolution: 'done' | 'wont_do' = 'done', reason = '') =>
     api<void>(`/tickets/${id}/resolve`, { method: 'POST', body: { resolution, ...(reason.trim() && { reason: reason.trim() }) }, token }),
+  duplicate: (id: string, duplicateOf: string, options: { copy_labels?: boolean; copy_comments?: boolean }, token: T) =>
+    api<void>(`/tickets/${id}/duplicate`, { method: 'POST', body: { duplicate_of: duplicateOf, ...options }, token }),
   // assign hands a ticket to you (your user id) or an agent (API key name); null unassigns
   assign: (id: string, assignee: string | null, token: T) => api<Ticket>(`/tickets/${id}/assignee`, { method: 'PUT', body: { assignee }, token }),
   assignees: (token: T) => api<Assignee[]>('/assignees', { token }),
@@ -560,4 +564,12 @@ export const intake = {
     api<IntakeSubmission[]>(`/projects/${projectId}/intake/submissions?status=${status}`, { token: t }),
   promote: (id: string, t: T) => api<IntakeSubmission>(`/intake-submissions/${id}/promote`, { method: 'POST', token: t }),
   dismiss: (id: string, t: T) => api<void>(`/intake-submissions/${id}/dismiss`, { method: 'POST', token: t }),
+};
+
+// Web Push: notifications on this device even when Tracklines is closed (if the server has VAPID keys).
+export type PushSettings = { enabled: boolean; public_key?: string };
+export const push = {
+  settings: (t: T) => api<PushSettings>('/push', { token: t }),
+  subscribe: (subscription: PushSubscriptionJSON, t: T) => api<void>('/push/subscriptions', { method: 'POST', body: subscription, token: t }),
+  unsubscribe: (endpoint: string, t: T) => api<void>('/push/subscriptions', { method: 'DELETE', body: { endpoint }, token: t }),
 };

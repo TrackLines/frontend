@@ -13,6 +13,7 @@ import { BlockedBadge } from '@/components/ticket/blocked-badge';
 import { AssigneeSelect } from '@/components/ticket/assignee-select';
 import { Dependencies } from '@/components/ticket/dependencies';
 import { PartOf, SubTickets } from '@/components/ticket/sub-tickets';
+import { DuplicateLinks, MarkDuplicate } from '@/components/ticket/duplicates';
 import { TicketComments } from '@/components/ticket/comments';
 import { LabelDrawer, TicketLabels } from '@/components/ticket/labels';
 import { Button } from '@/components/ui/button';
@@ -99,17 +100,20 @@ export default function TicketPage() {
           {t.blocked && <BlockedBadge />}
           <NeedsReviewBadge ticket={t} />
           {t.resolution === 'wont_do' && <Badge variant="outline" title="Closed as decided against">Won&apos;t do</Badge>}
+          {t.resolution === 'duplicate' && <Badge variant="outline">Duplicate</Badge>}
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <TicketKey value={t.key} copy /><h1 className="text-3xl font-bold tracking-tight">{t.title}</h1>
+          <span className={t.duplicate_of_id ? 'line-through' : undefined}><TicketKey value={t.key} copy /></span><h1 className={`text-3xl font-bold tracking-tight ${t.duplicate_of_id ? 'line-through text-muted-foreground' : ''}`}>{t.title}</h1>
           {/* board and backlog tickets alike: edit (and delete, inside the dialog) right here */}
           {token && <Button type="button" variant="outline" size="sm" className="ml-auto" onClick={() => setEditing(true)}>Edit</Button>}
         </div>
         <PartOf ticket={t} />
+      <DuplicateLinks ticket={t} />
+      {token && <MarkDuplicate ticket={t} token={token} onChanged={() => { void tickets.get(t.id, token).then(setT); }} />}
         <p className="text-sm text-muted-foreground">
           Created by {personLabel(t.created_by)}{t.created_at && <> <When iso={t.created_at} /></>}
           {t.updated_at && t.updated_at !== t.created_at && <> · updated <When iso={t.updated_at} /></>}
-          {t.done_at && <> · {t.resolution === 'wont_do' ? 'closed as won’t do' : t.resolved_at ? 'resolved' : 'done'} <When iso={t.done_at} /></>}
+          {t.done_at && <> · {t.resolution === 'duplicate' ? 'marked duplicate' : t.resolution === 'wont_do' ? 'closed as won’t do' : t.resolved_at ? 'resolved' : 'done'} <When iso={t.done_at} /></>}
           {!token && (t.assigned_to ? ` · assigned to ${personLabel(t.assigned_to)}` : ' · unassigned')}
         </p>
         {!token && <TicketLabels labels={t.labels} />}{/* signed in, the label editor below shows them */}

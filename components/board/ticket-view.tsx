@@ -15,6 +15,7 @@ import type { Ticket } from '@/lib/api';
 import { EstimateBadge } from './estimate';
 import { personLabel } from '@/lib/people';
 import { TicketKey, ticketPath } from '@/components/ticket/ticket-key';
+import Link from 'next/link';
 
 type Props = {
   open: boolean;
@@ -38,10 +39,12 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
           <DialogTitle className="pr-8 flex flex-wrap items-center gap-2"><TicketKey value={ticket.key} copy />{ticket.title}</DialogTitle>
           <DialogDescription className="flex items-center gap-2">
             Status <Badge variant="secondary">{columnName}</Badge>
+            {ticket.duplicate_of_key && <Badge variant="outline">Duplicate of {ticket.duplicate_of_key}</Badge>}
             <EstimateBadge estimate={ticket.estimate} />
             <NeedsReviewBadge ticket={ticket} />
           </DialogDescription>
         </DialogHeader>
+        {ticket.duplicate_of_id && ticket.duplicate_of_title && <p className="text-sm text-muted-foreground">Original: <Link href={`/tickets/${ticket.duplicate_of_id}`} className="font-medium text-foreground hover:underline"><TicketKey value={ticket.duplicate_of_key} /> {ticket.duplicate_of_title}</Link></p>}
         <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
           <dt className="text-muted-foreground">Created by</dt>
           <dd>{personLabel(ticket.created_by)}{ticket.created_at && <span className="text-muted-foreground">, <When iso={ticket.created_at} /></span>}</dd>
@@ -53,7 +56,7 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
           )}
           {ticket.done_at && (
             <>
-              <dt className="text-muted-foreground">Done</dt>
+              <dt className="text-muted-foreground">{ticket.resolution === 'duplicate' ? 'Duplicate' : 'Done'}</dt>
               <dd><When iso={ticket.done_at} /></dd>
             </>
           )}

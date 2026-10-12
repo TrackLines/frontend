@@ -2,6 +2,7 @@
 
 import { MarkdownTextarea } from '@/components/markdown';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -14,9 +15,9 @@ import { TypePicker } from '@/components/ticket-type';
 import { PrioritySelect } from './priority-select';
 import { EstimateSelect } from './estimate';
 import { missingTicketFields } from './ticket-validation';
-import { TicketKey } from '@/components/ticket/ticket-key';
+import { TicketKey, ticketPath } from '@/components/ticket/ticket-key';
 import type { EstimateScale } from '@/lib/estimates';
-import type { Ticket, TicketType } from '@/lib/api';
+import type { Ticket, TicketSearchResult, TicketType } from '@/lib/api';
 import { backlog, tickets } from '@/lib/api';
 
 type Props = {
@@ -51,6 +52,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
   const [wontDo, setWontDo] = useState<string | null>(null); // the reason, while confirming won't do
   const [error, setError] = useState('');
   const [missing, setMissing] = useState<{ title: boolean; estimate: boolean }>({ title: false, estimate: false });
+  const [duplicateSuggestions, setDuplicateSuggestions] = useState<TicketSearchResult[]>([]);
   const titleInput = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<PendingFile[]>([]); // create mode only
   const editing = Boolean(ticket);
@@ -72,6 +74,21 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
     // only on opening (or another ticket): a background refresh hands us a fresh copy of the same
     // ticket every 30s, and resetting then wiped whatever was being typed (TL-141)
   }, [open, ticket?.id]);
+
+  useEffect(() => {
+    const words = title.trim().split(/\s+/).filter((word) => word.length >= 3);
+    if (!open || ticket || !projectId || words.length < 2) {
+      setDuplicateSuggestions([]);
+      return;
+    }
+    let cancelled = false;
+    const timer = setTimeout(() => {
+      void tickets.search({ text: words.slice(0, 5).join(' '), project: projectId, limit: 5 }, token).then((found) => {
+        if (!cancelled) setDuplicateSuggestions(found.filter((candidate) => !candidate.duplicate_of_id));
+      }, () => { if (!cancelled) setDuplicateSuggestions([]); });
+    }, 250);
+    return () => { cancelled = true; clearTimeout(timer); };
+  }, [open, ticket, projectId, title, token]);
 
   async function closeWontDo() {
     if (!ticket || !onWontDo || wontDo === null) return;
@@ -166,6 +183,9 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
             <Input ref={titleInput} autoFocus value={title} maxLength={200} aria-required="true" aria-invalid={missing.title || undefined} aria-describedby={missing.title ? 'ticket-title-error' : undefined} placeholder="What needs to be done?" onChange={(event) => { setTitle(event.target.value); if (event.target.value.trim()) setMissing((current) => ({ ...current, title: false })); }} />
             {missing.title && <span id="ticket-title-error" className="text-xs font-normal text-destructive">Enter a title.</span>}
           </label>
+          {duplicateSuggestions.length > 0 && <div className="-mt-3 grid gap-1 text-xs text-muted-foreground">Similar tickets in this project:
+            {duplicateSuggestions.map((suggestion) => <Link key={suggestion.id} href={ticketPath(suggestion)} className="hover:underline"><TicketKey value={suggestion.key} /> {suggestion.title}</Link>)}
+          </div>}
           <label className="grid gap-1.5 text-sm font-medium">
             <span>Details <span className="font-normal text-muted-foreground">(optional, Markdown supported)</span></span>
             <MarkdownTextarea

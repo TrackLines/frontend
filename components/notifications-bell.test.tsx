@@ -42,3 +42,16 @@ test('loading, error and empty states', () => {
   expect(view({ failed: true })).toContain('Couldn&#x27;t load notifications');
   expect(view({ items: [] })).toContain('all caught up');
 });
+
+test('Notify me on this device: off, on, blocked; nothing when push is not available', async () => {
+  const { PushControl } = await import('./notifications-bell');
+  const off = renderToStaticMarkup(<PushControl state="off" busy={false} onToggle={() => {}} />);
+  expect(off).toContain('Notify me on this device');
+  expect(off).toContain('>Turn on<');
+  const on = renderToStaticMarkup(<PushControl state="on" busy={false} onToggle={() => {}} />);
+  expect(on).toContain('even when Tracklines is closed');
+  expect(on).toContain('>Turn off<');
+  expect(on).toContain('aria-pressed="true"');
+  expect(renderToStaticMarkup(<PushControl state="blocked" busy={false} onToggle={() => {}} />)).toContain('blocked for this site');
+  expect(renderToStaticMarkup(<PushControl state="unavailable" busy={false} onToggle={() => {}} />)).toBe('');
+});

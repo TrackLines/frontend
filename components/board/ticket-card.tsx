@@ -47,7 +47,8 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
       <Card className="w-full min-w-0 gap-2 py-3 shadow-xs">
         {/* TL-134 layout: key, type, priority, blocked; then estimate and pencil, on top; the title underneath */}
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 px-3">
-          {ticket.key && <TicketKey value={ticket.key} />}
+          {ticket.key && <span className={ticket.duplicate_of_id ? 'line-through' : undefined}><TicketKey value={ticket.key} /></span>}
+          {ticket.duplicate_of_key && <Badge variant="outline" title="Marked as a duplicate">Duplicate of {ticket.duplicate_of_key}</Badge>}
           {ticket.type && ticket.type !== 'task' && <TypeBadge type={ticket.type} />}
           <PriorityBadge priority={ticket.priority} hideDefault />
           {ticket.blocked && <BlockedBadge />}
@@ -61,7 +62,7 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
           </span>
         </div>
         {/* the title opens the read-only view, the pencil edits */}
-        <Button type="button" variant="link" onClick={openView} className="mx-3 h-auto min-w-0 justify-start p-0 text-left text-base leading-5 font-medium whitespace-normal text-foreground">
+        <Button type="button" variant="link" onClick={openView} className={`mx-3 h-auto min-w-0 justify-start p-0 text-left text-base leading-5 font-medium whitespace-normal text-foreground ${ticket.duplicate_of_id ? 'line-through text-muted-foreground' : ''}`}>
           {ticket.title}
         </Button>
         <TicketLabels labels={ticket.labels} className="px-3" max={2} />

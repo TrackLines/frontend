@@ -360,12 +360,15 @@ export function BacklogRow({ t, busy, onEdit }: { t: BacklogTicket; busy: boolea
   // description under the +N and title; Edit pinned top right, the date bottom left.
   return (
     <li className="grid grid-cols-[auto_auto_auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1.5 p-4">
-      <span className="col-start-1 row-start-1"><TicketKey value={t.key} /></span>
+      <span className={`col-start-1 row-start-1 ${t.duplicate_of_id ? 'line-through' : ''}`}><TicketKey value={t.key} /></span>
       <span className="col-start-1 row-start-2 flex flex-wrap gap-1"><TypeBadge type={t.type} />{t.blocked && <BlockedBadge />}</span>
       {t.created_at && <span className="col-span-2 col-start-1 row-start-3 self-end text-xs whitespace-nowrap text-muted-foreground">Created <When iso={t.created_at} /></span>}
       {shown.length > 0 && <TicketLabels labels={shown} className="col-start-2 row-span-2 row-start-1 flex-col items-start" />}
       {rest.length > 0 && <span className="col-start-3 row-span-2 row-start-1"><MoreLabels labels={rest} /></span>}
-      <Link href={ticketPath(t)} className="col-start-4 row-span-2 row-start-1 min-w-0 font-medium hover:underline">{t.title}</Link>
+      <span className="col-start-4 row-span-2 row-start-1 min-w-0">
+        <Link href={ticketPath(t)} className={`font-medium hover:underline ${t.duplicate_of_id ? 'line-through text-muted-foreground' : ''}`}>{t.title}</Link>
+        {t.duplicate_of_key && <span className="ml-2 text-xs text-muted-foreground">Duplicate of {t.duplicate_of_key}</span>}
+      </span>
       {t.description && <p className="col-span-2 col-start-3 row-start-3 line-clamp-1 text-sm text-muted-foreground">{plainText(t.description)}</p>}
       {/* moving to a board and deleting are planning decisions: they live in refine mode */}
       <Button size="sm" variant="ghost" className="col-start-5 row-start-1 self-start justify-self-end" disabled={busy} onClick={onEdit}>Edit</Button>
