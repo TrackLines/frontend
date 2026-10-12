@@ -1,6 +1,7 @@
 'use client';
 
 import { AgentReviewSetting } from '@/components/board/review';
+import { ArchivedBanner, BoardLifecycle } from '@/components/board/board-lifecycle';
 import Link from 'next/link';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -131,6 +132,7 @@ export default function BoardPage() {
   if (error === 404) return <Message title="Board not found" body="It may have been deleted, or it belongs to another organization." />;
   if (error) return <Message title="Couldn't load this board" body="Please refresh to try again." />;
   if (!board || !token) return <BoardSkeleton />;
+  const archived = Boolean(board.archived_at); // read-only: history kept, no new work
   const boardCanManage = permissionBoardId === board.id && canManage === true;
   const boardIsAdmin = permissionBoardId === board.id && isAdmin;
   const boardEditMode = editMode && boardCanManage;
@@ -176,7 +178,7 @@ export default function BoardPage() {
           </Button>}
           {liveConnected && <span role="status" className="text-xs text-muted-foreground">Live</span>}
           {!liveConnected && standup && <span role="status" className="text-xs text-muted-foreground">Reconnecting…</span>}
-          {boardCanManage && !joinedStandup && <Button type="button" variant={editMode ? 'secondary' : 'outline'} size="sm" aria-pressed={editMode} onClick={() => setEditMode((editing) => !editing)}>
+          {boardCanManage && !archived && !joinedStandup && <Button type="button" variant={editMode ? 'secondary' : 'outline'} size="sm" aria-pressed={editMode} onClick={() => setEditMode((editing) => !editing)}>
             {editMode ? 'Done editing' : 'Edit board'}
           </Button>}
         </div>
@@ -194,9 +196,13 @@ export default function BoardPage() {
             onChanged={() => void load(true)}
           />
           <AgentReviewSetting boardId={board.id} on={!!board.agent_review} token={token} onChanged={() => void load(true)} />
-          {boardIsAdmin && <Button type="button" variant="outline" size="sm" className="ml-auto" onClick={() => setSavingTemplate(true)}>Save as template</Button>}
+          <span className="ml-auto flex flex-wrap gap-2">
+            {boardIsAdmin && <Button type="button" variant="outline" size="sm" onClick={() => setSavingTemplate(true)}>Save as template</Button>}
+            <BoardLifecycle board={board} isAdmin={boardIsAdmin} canManage={boardCanManage} token={token} />
+          </span>
         </section>
       )}
+      <ArchivedBanner board={board} canManage={boardCanManage} token={token} onRestored={() => void load(true)} />
       {permissionError && <p role="status" className="border-b px-6 py-2 text-sm text-muted-foreground">Couldn’t verify board permissions. Board settings are hidden until permissions can be checked.</p>}
       {standupError && <p role="alert" className="border-b px-6 py-2 text-sm text-destructive">{standupError}</p>}
       {permissionBoardId === board.id && !boardCanManage && <p role="note" className="border-b px-6 py-2 text-sm text-muted-foreground">Board settings are managed by organization admins and this board’s team leaders.</p>}
@@ -251,13 +257,13 @@ export default function BoardPage() {
               >
                 <DroppableColumn id={col.id} ticketIds={shown.map((t) => t.id)}>
                   {shown.map((t) => (
-                    <SortableTicket key={t.id} id={t.id} disabled={boardEditMode}>
+                    <SortableTicket key={t.id} id={t.id} disabled={boardEditMode || archived}>
                       <TicketCard
                         ticket={t}
                         openOnLoad={t.id === focus ? { columnName: col.name } : undefined}
                         done={done}
                         scale={board.estimate_scale}
-                        readOnly={boardEditMode}
+                        readOnly={boardEditMode || archived}
                         token={token}
                         onUpdated={(nt) => updateTickets(col.id, (ts) => ts.map((x) => (x.id === nt.id ? nt : x)))}
                         onReviewed={() => void load(true)}
@@ -267,7 +273,7 @@ export default function BoardPage() {
                   ))}
                 </DroppableColumn>
                 {/* tickets reach Done by being moved there, not created in it; none are added while editing */}
-                {!boardEditMode && !(done && cols.length > 1) && (
+                {!boardEditMode && !archived && !(done && cols.length > 1) && (
                   <Button variant="ghost" className="justify-start" onClick={() => setAddingTo(col.id)}>+ Add ticket</Button>
                 )}
               </Column>

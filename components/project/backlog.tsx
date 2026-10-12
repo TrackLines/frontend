@@ -18,7 +18,7 @@ import { BlockedBadge } from '@/components/ticket/blocked-badge';
 import { LabelDrawer, TicketLabels } from '@/components/ticket/labels';
 import { attachAll, PendingAttachments, type PendingFile } from '@/components/ticket/pending-attachments';
 import { BACKLOG_CHANGED } from '@/components/quick-add-ticket';
-import { ApiError, backlog, BacklogTicket, type BacklogPage, boards as boardsApi, tickets, type Board, type Ticket, type TicketType } from '@/lib/api';
+import { ApiError, backlog, BacklogTicket, type BacklogPage, type BacklogSort, boards as boardsApi, tickets, type Board, type Ticket, type TicketType } from '@/lib/api';
 import { useAutoRefresh } from '@/lib/use-auto-refresh';
 import { useCachedState } from '@/lib/page-cache';
 import { ListSkeleton } from '@/components/page-skeletons';
@@ -40,6 +40,7 @@ export function Backlog({ projectId, boards, token }: Props) {
   const [filter, setFilter] = useState<TicketType | 'all'>('all');
   const [labelFilter, setLabelFilter] = useState<string[]>(() => parseLabels(searchParams));
   const [priorityFilter, setPriorityFilter] = useState<string[]>(() => parsePriorities(searchParams));
+  const [sort, setSort] = useState<BacklogSort>('manual');
   const [page, setPage] = useState(1);
   const [adding, setAdding] = useState(false);
   const [busy, setBusy] = useState<string | null>(null); // ticket id being moved/deleted
@@ -51,12 +52,12 @@ export function Backlog({ projectId, boards, token }: Props) {
   const [changes, setChanges] = useState(0); // bumps on every reload, so refine mode refreshes too
   const openEditor = (t: BacklogTicket, scale: EstimateScale = 'none') => { setEditScale(scale); setEditing(t); };
 
-  // server does the filtering, ordering (ready first, blocked after) and paging; only the latest request may land
+  // server does the filtering, ordering and paging; only the latest request may land
   const latest = useRef(0);
   const load = async (quiet = false) => {
     const req = ++latest.current;
     try {
-      const d = await backlog.page(projectId, { type: filter === 'all' ? undefined : filter, labels: labelFilter, priorities: priorityFilter, page, perPage: PER_PAGE }, token);
+      const d = await backlog.page(projectId, { type: filter === 'all' ? undefined : filter, labels: labelFilter, priorities: priorityFilter, sort, page, perPage: PER_PAGE }, token);
       if (req !== latest.current) return;
       const last = Math.max(1, Math.ceil(d.counts[filter] / PER_PAGE));
       if (page > last) return setPage(last); // e.g. the last ticket on the last page moved away
@@ -75,7 +76,7 @@ export function Backlog({ projectId, boards, token }: Props) {
     setLabelFilter(parseLabels(searchParams));
     setPriorityFilter(parsePriorities(searchParams));
   }, [searchParams]);
-  useEffect(() => { void loadRef.current(); }, [projectId, filter, labelFilter, priorityFilter, page]); // token refreshes must not refetch
+  useEffect(() => { void loadRef.current(); }, [projectId, filter, labelFilter, priorityFilter, sort, page]); // token refreshes must not refetch
   useEffect(() => {
     const onChange = (e: Event) => { if ((e as CustomEvent).detail?.projectId === projectId) void loadRef.current(); };
     window.addEventListener(BACKLOG_CHANGED, onChange);
@@ -186,9 +187,22 @@ export function Backlog({ projectId, boards, token }: Props) {
           </Button>
         ))}
       </div>
-      <div className="mb-3">
+      <div className="mb-3 flex flex-wrap items-center gap-2">
         <LabelFilter options={data?.labels ?? null} labels={labelFilter} onLabelsChange={changeLabels} syncUrl={false} />
         <span className="ml-2 inline-flex"><PriorityFilter priorities={priorityFilter} onPrioritiesChange={changePriorities} /></span>
+        <span className="ml-auto inline-flex items-center gap-2 pl-2 text-sm text-muted-foreground">
+          <label htmlFor="backlog-sort">Sort</label>
+          <Select value={sort} onValueChange={(value) => { if (value) { setSort(value as BacklogSort); setPage(1); } }}>
+            <SelectTrigger id="backlog-sort" size="sm" aria-label="Sort backlog by date">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="manual">Manual order</SelectItem>
+              <SelectItem value="newest">Newest first</SelectItem>
+              <SelectItem value="oldest">Oldest first</SelectItem>
+            </SelectContent>
+          </Select>
+        </span>
       </div>
 
       {error && <p role="alert" className="mb-3 text-sm text-destructive">{error}</p>}

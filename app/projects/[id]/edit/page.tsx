@@ -59,7 +59,11 @@ export default function EditProjectPage() {
         <p className="mb-3 text-sm text-muted-foreground">
           {project.boards?.length ?? 0} board{project.boards?.length === 1 ? '' : 's'}. One board per team.
         </p>
-        <NewBoardButton projectId={project.id} token={token} variant="outline" />
+        <div className="flex flex-wrap items-center gap-3">
+          <NewBoardButton projectId={project.id} token={token} variant="outline" />
+          <Link href={`/projects/${project.id}/archived`} className="text-sm font-medium text-muted-foreground hover:text-foreground hover:underline">Archived boards →</Link>
+        </div>
+        <p className="mt-2 text-xs text-muted-foreground">To delete or archive a board, open it and use Edit board.</p>
       </Section>
 
       <Section title="Request form">

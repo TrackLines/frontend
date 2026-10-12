@@ -25,6 +25,7 @@ export type Ticket = {
 // A project ticket not on any board or sprint yet.
 export type BacklogTicket = Omit<Ticket, 'column_id'> & { column_id: null; project_id: string; type: TicketType };
 export type BacklogPage = { tickets: BacklogTicket[]; counts: Record<TicketType | 'all', number>; labels: ProjectLabel[] };
+export type BacklogSort = 'manual' | 'newest' | 'oldest';
 // A board's time box; the board shows only the open sprint's tickets.
 export type Sprint = {
   id: string; board_id: string; number: number; length_days: number;
@@ -41,6 +42,8 @@ export type Board = {
   hidden_done?: number; // kanban: Done tickets finished over 14 days ago, left off the board
   estimate_scale?: EstimateScale;
   agent_review?: boolean; // agents' moves into Done wait for a person's review
+  archived_at?: string | null; // archived: off the project page, history kept, no new work
+  deletable?: boolean; // never used (no tickets, no sprints): can be deleted; otherwise archive it
   sprint?: Sprint; // open sprint, absent when the board doesn't run sprints
   stats?: BoardStats; // a project's boards only
 };
@@ -269,7 +272,10 @@ export const boards = {
     api<Board>(`/projects/${projectId}/boards`, { method: 'POST', body: b, token }),
   // Update the board name and/or settings; switching estimate_scale clears open tickets' estimates.
   update: (id: string, b: { name?: string; estimate_scale?: EstimateScale; style?: BoardStyle; agent_review?: boolean }, token: T) => api<void>(`/boards/${id}`, { method: 'PATCH', body: b, token }),
-  remove: (id: string, token: T) => api<void>(`/boards/${id}`, { method: 'DELETE', token }),
+  remove: (id: string, token: T) => api<void>(`/boards/${id}`, { method: 'DELETE', token }), // never-used boards only
+  archive: (id: string, token: T) => api<void>(`/boards/${id}/archive`, { method: 'POST', token }),
+  restore: (id: string, token: T) => api<void>(`/boards/${id}/restore`, { method: 'POST', token }),
+  archived: (projectId: string, token: T) => api<Board[]>(`/projects/${projectId}/archived-boards`, { token }),
 };
 
 export const liveViews = {
@@ -458,10 +464,11 @@ export type Burn = {
 export const backlog = {
   list: (projectId: string, token: T, type?: TicketType) =>
     api<BacklogTicket[]>(`/projects/${projectId}/backlog${type ? `?type=${type}` : ''}`, { token }),
-  // one page, filtered and ordered (ready before blocked) by the server; counts drive the type tabs
-  page: (projectId: string, q: { type?: TicketType; labels?: string[]; priorities?: string[]; page: number; perPage: number }, token: T) => {
+  // one page, filtered and ordered by the server; counts drive the type tabs
+  page: (projectId: string, q: { type?: TicketType; labels?: string[]; priorities?: string[]; sort?: BacklogSort; page: number; perPage: number }, token: T) => {
     const params = new URLSearchParams({ page: String(q.page), per_page: String(q.perPage) });
     if (q.type) params.set('type', q.type);
+    if (q.sort && q.sort !== 'manual') params.set('sort', q.sort);
     for (const l of q.labels ?? []) params.append('label', l);
     for (const priority of q.priorities ?? []) params.append('priority', priority);
     return api<BacklogPage>(`/projects/${projectId}/backlog/page?${params}`, { token });

@@ -76,6 +76,15 @@ test('backlog page sends repeatable priority filters with labels and type', asyn
   expect(query.get('page')).toBe('2');
 });
 
+test('backlog page sends the requested date sort and omits the default manual sort', async () => {
+  const requested: string[] = [];
+  g.fetch = (async (url: string) => { requested.push(url); return Response.json({}); }) as unknown as typeof fetch;
+  await backlog.page('project-1', { sort: 'newest', page: 1, perPage: 10 }, 'token');
+  await backlog.page('project-1', { sort: 'manual', page: 1, perPage: 10 }, 'token');
+  expect(new URL(requested[0], 'http://localhost').searchParams.get('sort')).toBe('newest');
+  expect(new URL(requested[1], 'http://localhost').searchParams.has('sort')).toBe(false);
+});
+
 test('ticket lookup by key uses the key endpoint', async () => {
   let requested = '';
   g.fetch = (async (url: string) => { requested = url; return Response.json({ id: 'ticket-1' }); }) as unknown as typeof fetch;
