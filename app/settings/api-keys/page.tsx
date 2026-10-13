@@ -7,9 +7,8 @@ import { NameDialog } from '@/components/name-dialog';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { apiKeys, type ApiKey, type ApiKeyKind } from '@/lib/api';
+import { ApiKeyList, FreshKey, splitSecret } from '@/components/settings/api-keys';
 import { useToken } from '@/lib/use-token';
-
-const when = new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeStyle: 'short' });
 
 export default function ApiKeysPage() {
   const token = useToken();
@@ -46,35 +45,8 @@ export default function ApiKeysPage() {
         <code className="rounded bg-muted px-1">Authorization: Bearer tl_…</code> to <code className="rounded bg-muted px-1">/api</code>.
       </p>
 
-      {fresh && (
-        <div role="status" className="mb-6 rounded-xl border border-primary/40 bg-primary/5 p-4">
-          <p className="mb-2 font-medium">{fresh.kind === 'ai' ? 'AI key' : 'Service key'} for “{fresh.name}” — copy it now, it won&apos;t be shown again.</p>
-          <div className="flex items-center gap-2">
-            <code className="flex-1 overflow-x-auto rounded bg-background px-2 py-1.5 text-sm">{fresh.key}</code>
-            <Button size="sm" onClick={() => navigator.clipboard.writeText(fresh.key).then(() => setCopied(true))}>
-              {copied ? 'Copied' : 'Copy'}
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {list.length === 0 ? (
-        <p className="rounded-xl border border-dashed p-6 text-sm text-muted-foreground">No keys yet.</p>
-      ) : (
-        <ul className="divide-y rounded-xl border">
-          {list.map((k) => (
-            <li key={k.id} className="flex flex-wrap items-center gap-x-4 gap-y-1 p-4">
-              <span className="font-medium">{k.name}</span>
-              <span className="rounded-full border px-2 py-0.5 text-xs text-muted-foreground">{k.kind === 'ai' ? 'AI agent' : 'Server / API'}</span>
-              <code className="text-sm text-muted-foreground">{k.prefix}…</code>
-              <span className="text-sm text-muted-foreground">
-                {k.last_used_at ? `last used ${when.format(new Date(k.last_used_at))}` : 'never used'}
-              </span>
-              <Button variant="ghost" size="sm" className="ml-auto text-destructive" onClick={() => revoke(k)}>Revoke</Button>
-            </li>
-          ))}
-        </ul>
-      )}
+      {fresh && <FreshKey fresh={fresh} copied={copied} onCopy={() => navigator.clipboard.writeText(fresh.key).then(() => setCopied(true))} />}
+      <ApiKeyList list={list} onRevoke={(k) => void revoke(k)} />
 
       <NameDialog
         open={creating}
@@ -86,9 +58,9 @@ export default function ApiKeysPage() {
         onSubmit={async (name) => {
           const kind = creatingKind;
           const k = await apiKeys.create(name, kind, token).catch(() => { throw new Error('Couldn’t create the key. Please try again.'); });
-          const { key, ...meta } = k;
-          setList((l) => [...(l ?? []), meta]);
-          setFresh({ name, kind, key });
+          const { listed, secret } = splitSecret(k);
+          setList((l) => [...(l ?? []), listed]);
+          setFresh({ name, kind, key: secret });
           setCopied(false);
         }}
       >

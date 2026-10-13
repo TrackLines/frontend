@@ -31,3 +31,7 @@ export function prefetch<T>(key: string, load: () => Promise<T>) {
 export function forgetAllCached() {
   cache.clear();
 }
+
+// switched: the signed-in person or active org changed from one we'd seen (not the first load), so
+// pages cached for the old one must go. undefined = not seen yet; null = signed out.
+export const switched = (seen: string | null | undefined, now: string | null | undefined) => seen !== undefined && seen !== now;

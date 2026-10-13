@@ -29,6 +29,7 @@ import { useToken } from '@/lib/use-token';
 import { useCachedState } from '@/lib/page-cache';
 import { TicketSkeleton } from '@/components/page-skeletons';
 import { isTicketKey, TicketKey, ticketPath } from '@/components/ticket/ticket-key';
+import { afterDelete, closedAs, ticketActions } from '@/lib/ticket-page';
 
 // A shareable page for one ticket — works for board and backlog tickets.
 export default function TicketPage() {
@@ -113,7 +114,7 @@ export default function TicketPage() {
         <p className="text-sm text-muted-foreground">
           Created by {personLabel(t.created_by)}{t.created_at && <> <When iso={t.created_at} /></>}
           {t.updated_at && t.updated_at !== t.created_at && <> · updated <When iso={t.updated_at} /></>}
-          {t.done_at && <> · {t.resolution === 'duplicate' ? 'marked duplicate' : t.resolution === 'wont_do' ? 'closed as won’t do' : t.resolved_at ? 'resolved' : 'done'} <When iso={t.done_at} /></>}
+          {t.done_at && <> · {closedAs(t)} <When iso={t.done_at} /></>}
           {!token && (t.assigned_to ? ` · assigned to ${personLabel(t.assigned_to)}` : ' · unassigned')}
         </p>
         {!token && <TicketLabels labels={t.labels} />}{/* signed in, the label editor below shows them */}
@@ -150,9 +151,9 @@ export default function TicketPage() {
           scale={t.estimate_scale}
           done={t.done}
           onSaved={() => { void tickets.get(t.id, token).then(setT); }}
-          onDeleted={() => router.push(t.board_id ? `/boards/${t.board_id}` : `/projects/${t.project_id}#backlog`)}
-          onSentToBacklog={t.board_id ? () => { void tickets.get(t.id, token).then(setT); } : undefined}
-          onWontDo={!t.board_id && !t.done ? () => { void tickets.get(t.id, token).then(setT); } : undefined}
+          onDeleted={() => router.push(afterDelete(t))}
+          onSentToBacklog={ticketActions(t).sendToBacklog ? () => { void tickets.get(t.id, token).then(setT); } : undefined}
+          onWontDo={ticketActions(t).wontDo ? () => { void tickets.get(t.id, token).then(setT); } : undefined}
         />
       )}
       <div className="flex flex-wrap gap-2">

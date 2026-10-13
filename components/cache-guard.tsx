@@ -2,7 +2,7 @@
 
 import { useAuth } from '@clerk/nextjs';
 import { useEffect, useRef } from 'react';
-import { forgetAllCached } from '@/lib/page-cache';
+import { forgetAllCached, switched } from '@/lib/page-cache';
 
 // CacheGuard drops every cached page when the signed-in user changes, sign-out included, so on a
 // shared computer the next person never sees the last one's boards or tickets. Always mounted
@@ -12,7 +12,7 @@ export function CacheGuard() {
   const seen = useRef<string | null | undefined>(undefined);
   useEffect(() => {
     if (!isLoaded) return;
-    if (seen.current !== undefined && seen.current !== userId) forgetAllCached();
+    if (switched(seen.current, userId ?? null)) forgetAllCached();
     seen.current = userId ?? null;
   }, [userId, isLoaded]);
   return null;

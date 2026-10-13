@@ -1,0 +1,31 @@
+import { expect, test } from 'bun:test';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { Dependencies, DepRow, projectTickets } from './dependencies';
+import { afterEach } from 'bun:test';
+import type { TicketDetail } from '@/lib/api';
+
+const base = { id: 't', project_id: 'p', blocked_by: [], blocks: [] } as unknown as TicketDetail;
+
+test('nothing blocking reads as free to pick up; blockers link, with done ones struck through', () => {
+  expect(renderToStaticMarkup(<Dependencies ticket={base} token="tok" onChanged={() => {}} />)).toContain('Nothing — it can be picked up.');
+  const html = renderToStaticMarkup(<Dependencies ticket={{ ...base, blocked_by: [{ id: 'a', title: 'API first', done: false }, { id: 'b', title: 'Schema', done: true }],
+    blocks: [{ id: 'c', title: 'Release', done: false }] }} token="tok" onChanged={() => {}} />);
+  for (const s of ['href="/tickets/a"', 'API first', 'Stop waiting on API first', 'Blocks', 'Release', 'Add a blocker']) expect(html).toContain(s);
+  expect(html).toMatch(/line-through[^>]*>Schema/);
+  expect(html).not.toContain('Stop waiting on Release'); // what it blocks isn't editable here
+  expect(renderToStaticMarkup(<ul><DepRow d={{ id: 'x', title: 'X', done: false }} /></ul>)).not.toContain('<button');
+});
+
+const realFetch = globalThis.fetch;
+afterEach(() => { globalThis.fetch = realFetch; });
+
+test('projectTickets gathers every board’s tickets (last column = done) and the backlog', async () => {
+  globalThis.fetch = (async (url: string) => {
+    const path = new URL(url, 'http://x').pathname;
+    const body = path.endsWith('/projects/p') ? { id: 'p', boards: [{ id: 'b1' }] }
+      : path.endsWith('/projects/p/backlog') ? [{ id: 'k', title: 'later' }]
+      : { id: 'b1', columns: [{ tickets: [{ id: 'o', title: 'open' }] }, { tickets: [{ id: 'd', title: 'shipped' }] }] };
+    return Response.json(body);
+  }) as typeof fetch;
+  expect(await projectTickets('p', 'tok')).toEqual([{ id: 'o', title: 'open', done: false }, { id: 'd', title: 'shipped', done: true }, { id: 'k', title: 'later', done: false }]);
+});

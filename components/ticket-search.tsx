@@ -59,7 +59,7 @@ export function TicketSearch() {
       if (cancelled) return;
       setProjectOptions(projectList);
       setMe(role.user_id);
-      setAssigneeOptions(people.filter((person) => person.kind !== 'service'));
+      setAssigneeOptions(people);
     }).catch(() => { /* filters remain usable if optional choices fail */ });
     return () => { cancelled = true; };
   }, [open, token]);
@@ -124,34 +124,50 @@ export function TicketSearch() {
                 <option value="">Any assignee</option>
                 <option value="me">Assigned to me</option>
                 <option value="unassigned">Unassigned</option>
-                {assigneeOptions.filter((person) => person.id !== me).map((person) => <option key={person.id} value={person.id}>{person.label}</option>)}
+                {assigneeChoices(assigneeOptions, me).map((person) => <option key={person.id} value={person.id}>{person.label}</option>)}
               </select>
               {(project || types.length || assignee) ? <Button type="button" size="sm" variant="link" onClick={() => { setProject(''); setTypes([]); setAssignee(''); }}>Clear filters</Button> : null}
             </div>
           </div>
           <div id="ticket-search-results" role="listbox" aria-label="Ticket search results" className="max-h-[45vh] overflow-y-auto border-t px-2 py-2">
-            {error ? <p role="alert" className="p-3 text-sm text-destructive">{error}</p>
-              : loading && results.length === 0 ? <p role="status" className="p-3 text-sm text-muted-foreground">Searching…</p>
-              : results.length === 0 ? <p className="p-3 text-sm text-muted-foreground">No tickets match this search.</p>
-              : results.map((ticket, index) => (
-                <div key={ticket.id} className={`flex items-center gap-2 rounded-md px-2 py-1 ${active === index ? 'bg-accent' : ''}`}>
-                  <button id={`search-result-${ticket.id}`} type="button" role="option" aria-selected={active === index} className="flex min-w-0 flex-1 items-start gap-2 rounded-sm py-2 text-left" onMouseEnter={() => setActive(index)} onClick={() => choose(ticket)}>
-                    <TicketKey value={ticket.key} />
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate font-medium">{ticket.title}</span>
-                      {ticket.snippet && <span className="block truncate text-xs text-muted-foreground">{ticket.snippet}</span>}
-                      <span className="block truncate text-xs text-muted-foreground">{ticket.project_name} · {ticket.board_name ? `${ticket.board_name}${ticket.column_name ? ` · ${ticket.column_name}` : ''}` : 'Backlog'}</span>
-                    </span>
-                    {ticket.type && <TypeBadge type={ticket.type} />}
-                    <PriorityBadge priority={ticket.priority} hideDefault />
-                  </button>
-                  {ticket.key && <CopyButton value={ticket.key} label="Copy key" size="sm" ariaLabel={`Copy ticket key ${ticket.key}`} />}
-                </div>
-              ))}
+            <SearchResults results={results} loading={loading} error={error} active={active} onChoose={choose} onActive={setActive} />
           </div>
           <p className="border-t px-4 py-2 text-xs text-muted-foreground">↑↓ to move · Enter to open · Esc to close</p>
         </DialogContent>
       </Dialog>
+    </>
+  );
+}
+
+// assigneeChoices: people and agents to filter by, after "Assigned to me" (so not me) and never service keys.
+export const assigneeChoices = (people: Assignee[], me: string) => people.filter((p) => p.kind !== 'service' && p.id !== me);
+
+// SearchResults: the result list (pure, for tests): error, searching, nothing found, or the tickets
+// with where each lives, the active one highlighted.
+export function SearchResults({ results, loading, error, active, onChoose, onActive }: {
+  results: TicketSearchResult[]; loading: boolean; error: string; active: number;
+  onChoose: (ticket: TicketSearchResult) => void; onActive: (index: number) => void;
+}) {
+  return (
+    <>
+      {error ? <p role="alert" className="p-3 text-sm text-destructive">{error}</p>
+        : loading && results.length === 0 ? <p role="status" className="p-3 text-sm text-muted-foreground">Searching…</p>
+        : results.length === 0 ? <p className="p-3 text-sm text-muted-foreground">No tickets match this search.</p>
+        : results.map((ticket, index) => (
+          <div key={ticket.id} className={`flex items-center gap-2 rounded-md px-2 py-1 ${active === index ? 'bg-accent' : ''}`}>
+            <button id={`search-result-${ticket.id}`} type="button" role="option" aria-selected={active === index} className="flex min-w-0 flex-1 items-start gap-2 rounded-sm py-2 text-left" onMouseEnter={() => onActive(index)} onClick={() => onChoose(ticket)}>
+              <TicketKey value={ticket.key} />
+              <span className="min-w-0 flex-1">
+                <span className="block truncate font-medium">{ticket.title}</span>
+                {ticket.snippet && <span className="block truncate text-xs text-muted-foreground">{ticket.snippet}</span>}
+                <span className="block truncate text-xs text-muted-foreground">{ticket.project_name} · {ticket.board_name ? `${ticket.board_name}${ticket.column_name ? ` · ${ticket.column_name}` : ''}` : 'Backlog'}</span>
+              </span>
+              {ticket.type && <TypeBadge type={ticket.type} />}
+              <PriorityBadge priority={ticket.priority} hideDefault />
+            </button>
+            {ticket.key && <CopyButton value={ticket.key} label="Copy key" size="sm" ariaLabel={`Copy ticket key ${ticket.key}`} />}
+          </div>
+        ))}
     </>
   );
 }

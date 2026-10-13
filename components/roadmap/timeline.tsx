@@ -20,7 +20,7 @@ const LABEL_WIDTH = 192;
 const COLUMN_GAP = 12;
 const PAGE_SIZE = 20;
 
-function Gantt({ items }: { items: RoadmapItem[] }) {
+export function Gantt({ items }: { items: RoadmapItem[] }) {
   const today = useMemo(() => dayStamp(new Date().toISOString().slice(0, 10)), []);
   const { dated: ordered, undated } = buildGanttItems(items);
 

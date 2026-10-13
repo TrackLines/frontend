@@ -9,7 +9,7 @@ import type { RoadmapItem } from '@/lib/api';
 import { roadmaps } from '@/lib/api';
 import { ItemTickets } from './item-tickets';
 
-type DraftItem = Pick<RoadmapItem, 'title' | 'description' | 'target_date' | 'start_date' | 'manual_status'> & { key: string };
+export type DraftItem = Pick<RoadmapItem, 'title' | 'description' | 'target_date' | 'start_date' | 'manual_status'> & { key: string };
 
 type Props = {
   roadmapId: string;
@@ -18,8 +18,23 @@ type Props = {
   token: string;
 };
 
-const toDrafts = (items: RoadmapItem[]): DraftItem[] =>
+export const toDrafts = (items: RoadmapItem[]): DraftItem[] =>
   items.map(({ id, title, description, target_date, start_date, manual_status }) => ({ key: id, title, description, target_date, start_date, manual_status: manual_status ?? 'not_started' }));
+
+// moveDraft swaps item index with its neighbour (offset -1 up, +1 down); off either end changes nothing.
+export function moveDraft<T>(list: T[], index: number, offset: number): T[] {
+  const nextIndex = index + offset;
+  if (nextIndex < 0 || nextIndex >= list.length) return list;
+  const next = [...list];
+  [next[index], next[nextIndex]] = [next[nextIndex], next[index]];
+  return next;
+}
+
+// toPayload is what Save sends: trimmed text, empty dates as null, existing items keep their id (and
+// linked tickets), new ones get created.
+export const toPayload = (drafts: DraftItem[]) => drafts.map(({ key, title, description, target_date, start_date, manual_status }) => ({
+  start_date: start_date || null, manual_status, id: key, title: title.trim(), description: description.trim(), target_date: target_date || null,
+}));
 
 export function ItemEditor({ roadmapId, projectId, items, token }: Props) {
   const [saved, setSaved] = useState<RoadmapItem[]>(items); // server copy: real ids + linked tickets
@@ -33,13 +48,7 @@ export function ItemEditor({ roadmapId, projectId, items, token }: Props) {
   }
 
   function move(index: number, offset: number) {
-    setDrafts((current) => {
-      const nextIndex = index + offset;
-      if (nextIndex < 0 || nextIndex >= current.length) return current;
-      const next = [...current];
-      [next[index], next[nextIndex]] = [next[nextIndex], next[index]];
-      return next;
-    });
+    setDrafts((current) => moveDraft(current, index, offset));
   }
 
   async function save() {
@@ -53,18 +62,7 @@ export function ItemEditor({ roadmapId, projectId, items, token }: Props) {
     setError('');
     setMessage('');
     try {
-      await roadmaps.setItems(
-        roadmapId,
-        drafts.map(({ key, title, description, target_date, start_date, manual_status }) => ({
-          start_date: start_date || null, // carried through so saves never wipe it (input comes with T-032C)
-          manual_status,
-          id: key, // existing items keep their id (and linked tickets); new keys are created as new items
-          title: title.trim(),
-          description: description.trim(),
-          target_date: target_date || null,
-        })),
-        token,
-      );
+      await roadmaps.setItems(roadmapId, toPayload(drafts), token);
       const fresh = (await roadmaps.get(roadmapId, token)).items ?? [];
       setSaved(fresh);
       setDrafts(toDrafts(fresh));
