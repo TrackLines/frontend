@@ -7,7 +7,8 @@ export function mockDialog() {
   const pass = ({ children }: { children?: ReactNode }) => <div>{children}</div>;
   mock.module('@/components/ui/dialog', () => ({
     Dialog: ({ open, children }: { open?: boolean; children?: ReactNode }) => (open ? <div role="dialog">{children}</div> : null),
-    DialogContent: pass, DialogHeader: pass, DialogFooter: pass, DialogDescription: pass, DialogClose: pass, DialogTrigger: pass,
+    DialogContent: ({ className, children }: { className?: string; children?: ReactNode }) => <div className={className}>{children}</div>,
+    DialogHeader: pass, DialogFooter: pass, DialogDescription: pass, DialogClose: pass, DialogTrigger: pass,
     DialogTitle: ({ children }: { children?: ReactNode }) => <h2>{children}</h2>,
   }));
 }

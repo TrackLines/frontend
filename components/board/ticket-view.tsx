@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import type { Ticket } from '@/lib/api';
 import { EstimateBadge } from './estimate';
+import { TICKET_DIALOG_WIDTH } from './ticket-dialog';
 import { personLabel } from '@/lib/people';
 import { TicketKey, ticketPath } from '@/components/ticket/ticket-key';
 import Link from 'next/link';
@@ -37,7 +38,7 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="max-h-[85vh] overflow-y-auto sm:max-w-xl"
+        className={`max-h-[90vh] overflow-y-auto ${TICKET_DIALOG_WIDTH}`} // same size as editing it
         onPointerDown={(event) => event.stopPropagation()}
       >
         <DialogHeader>

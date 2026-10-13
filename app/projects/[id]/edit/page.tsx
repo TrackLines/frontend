@@ -11,6 +11,7 @@ import { ProjectRepositories } from '@/components/project/repositories';
 import { IntakeSettingsSection } from '@/components/intake/intake-settings';
 import { organization, projects, type Project } from '@/lib/api';
 import { useCachedState } from '@/lib/page-cache';
+import { useFlags } from '@flags-gg/react-library';
 import { useToken } from '@/lib/use-token';
 
 // Edit project: the project's setup, kept off its main page: name, ticket key prefix, more boards
@@ -18,6 +19,7 @@ import { useToken } from '@/lib/use-token';
 export default function EditProjectPage() {
   const { id } = useParams<{ id: string }>();
   const token = useToken();
+  const { is } = useFlags(); // flags.gg: Bitbucket is off until its flag is on
   const [project, setProject] = useCachedState<Project>(`project:${id}`); // shared with the project page
   const [, setProjects] = useCachedState<Project[]>('projects');
   const [admin, setAdmin] = useState(false);
@@ -71,7 +73,7 @@ export default function EditProjectPage() {
       </Section>
 
       <Section title="Repositories">
-        <ProjectRepositories projectId={project.id} token={token} admin={admin} />
+        <ProjectRepositories projectId={project.id} token={token} admin={admin} bitbucket={is('bitbucket').enabled()} />
       </Section>
     </main>
   );

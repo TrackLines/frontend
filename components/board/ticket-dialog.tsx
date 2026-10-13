@@ -35,8 +35,8 @@ type Props = {
   scale?: EstimateScale; // the board's; no estimate field when absent or 'none'
 };
 
-// TICKET_DIALOG_WIDTH: creating and editing a ticket get room to work, 2/3 of the screen (phones: full width).
-// Every ticket create/edit dialog uses it, so they look the same.
+// TICKET_DIALOG_WIDTH: ticket dialogs get room to work, 2/3 of the screen (phones: full width).
+// Every ticket dialog uses it (create, edit and the read-only view), so they look the same.
 export const TICKET_DIALOG_WIDTH = 'sm:max-w-[66vw]';
 
 export function TicketDialog({ open, onOpenChange, token, projectId, columnId, ticket, onSaved, onDeleted, onSentToBacklog, onWontDo, done, scale = 'none' }: Props) {

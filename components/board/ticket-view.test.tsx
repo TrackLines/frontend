@@ -49,3 +49,8 @@ test('a duplicate links to its original; a done ticket shows when', () => {
   expect(dup).toContain('href="/tickets/o1"');
   expect(view({ ticket: { ...ticket, done_at: '2026-10-04T10:00:00Z' } })).toContain('>Done<');
 });
+
+test('the view is as wide as the edit dialog', async () => {
+  const { TICKET_DIALOG_WIDTH } = await import('./ticket-dialog');
+  expect(view()).toContain(TICKET_DIALOG_WIDTH);
+});

@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { BugfixesTokenForm, ProviderCardView } from './integrations';
+import { BugfixesTokenForm, IntegrationsSettings, ProviderCardView } from './integrations';
 
 const view = (props: Partial<Parameters<typeof ProviderCardView>[0]>) => renderToStaticMarkup(
   <ProviderCardView provider="github" status={{ provider: 'github', connected: false }} canManage busy={false} error="" onConnect={() => {}} onDisconnect={() => {}} {...props} />,
@@ -35,4 +35,11 @@ test('Bugfixes connects with a token, never shown', () => {
   expect(html).toContain('type="password"');
   expect(html).toContain('viewer-role token');
   expect(renderToStaticMarkup(<BugfixesTokenForm busy={false} connected onSave={() => {}} />)).toContain('Replace access token');
+});
+
+test('with the Bitbucket flag off, settings offer only Bugfixes and GitHub', () => {
+  const off = renderToStaticMarkup(<IntegrationsSettings token="tok" />);
+  expect(off).toContain('GitHub');
+  expect(off).not.toContain('Bitbucket');
+  expect(renderToStaticMarkup(<IntegrationsSettings token="tok" bitbucket />)).toContain('Bitbucket');
 });

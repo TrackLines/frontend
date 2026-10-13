@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 import { ApiError } from './api';
-import { integrationError } from './integrations';
+import { connectHint, gitProviders, integrationError, integrationProviders } from './integrations';
 
 test('integration errors read as next steps', () => {
   const fallback = 'Something went wrong.';
@@ -12,4 +12,13 @@ test('integration errors read as next steps', () => {
   expect(integrationError(new ApiError(409, 'not connected'), fallback)).toBe('Connect it first.');
   expect(integrationError(new ApiError(502, ''), fallback)).toContain('provider refused');
   expect(integrationError(new Error('x'), fallback)).toBe(fallback);
+});
+
+test('Bitbucket shows only while its flags.gg flag is on (TL-205)', () => {
+  expect(gitProviders(false)).toEqual(['github']);
+  expect(gitProviders(true)).toEqual(['github', 'bitbucket']);
+  expect(integrationProviders(false)).toEqual(['bugfixes', 'github']);
+  expect(integrationProviders(true)).toEqual(['bugfixes', 'github', 'bitbucket']);
+  expect(connectHint(false)).toBe('GitHub');
+  expect(connectHint(true)).toBe('GitHub or Bitbucket');
 });
