@@ -3,7 +3,6 @@ import type { HostedSession } from './api';
 import { applyHosted, followedFilters, followedTicket, refineLabel, roleIn } from './hosted';
 
 const session: HostedSession = { host: 'ava', startedAt: 1, focus: { ticketId: 't1', filters: { labels: ['ui'] } }, people: ['ava', 'bo'] };
-const people = [{ id: 'user_ava', label: 'Ava Smith', kind: 'person' as const }];
 
 test('roles: the host, a follower once joined, otherwise outside', () => {
   expect(roleIn(session, 'ava', false)).toBe('host');
@@ -32,9 +31,7 @@ test('followers who are following see the host’s ticket and filters; nobody el
   expect(followedFilters({ ...session, focus: { ticketId: null } }, 'follower', true)).toEqual({});
 });
 
-test('the Refine button: start, join someone else’s, or go back to your own', () => {
-  expect(refineLabel(null, people, 'bo')).toBe('Refine');
-  const theirs = { ...session, host: 'user_ava' };
-  expect(refineLabel(theirs, people, 'user_bo')).toBe('Join refinement · Ava Smith is hosting');
-  expect(refineLabel(theirs, people, 'user_ava')).toBe('Back to your refinement');
+test('the Refine button: start one, or join the one running', () => {
+  expect(refineLabel(null)).toBe('Refine');
+  expect(refineLabel(session)).toBe('Join refinement');
 });

@@ -233,8 +233,8 @@ export function PlannedSprintCard({ plan, scale, canManage, busy, token, act, on
 // TicketTitle opens the ticket's editor in place when it can (so refine mode stays open), else links to it.
 function TicketTitle({ ticket, onOpen, className = '' }: { ticket: { id: string; key?: string; title: string }; onOpen?: () => void; className?: string }) {
   return onOpen
-    ? <Button type="button" variant="link" onClick={onOpen} className={`h-auto min-w-0 flex-1 justify-start p-0 text-left whitespace-normal text-foreground ${className}`}>{ticket.title}</Button>
-    : <Link href={ticketPath(ticket)} className={`min-w-0 flex-1 hover:underline ${className}`}>{ticket.title}</Link>;
+    ? <Button type="button" variant="link" onClick={onOpen} className={`h-auto min-w-0 flex-1 basis-48 justify-start p-0 text-left whitespace-normal wrap-anywhere text-foreground ${className}`}>{ticket.title}</Button>
+    : <Link href={ticketPath(ticket)} className={`min-w-0 flex-1 basis-48 wrap-anywhere hover:underline ${className}`}>{ticket.title}</Link>;
 }
 
 // PlannedGoal edits a planned sprint's goal in place: saved when the field loses focus or on Enter.

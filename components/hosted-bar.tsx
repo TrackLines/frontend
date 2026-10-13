@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { CrownIcon } from 'lucide-react';
 import { TicketView } from '@/components/board/ticket-view';
-import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
+import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
 import { tickets, type Assignee, type HostedSession, type Ticket, type TicketDetail } from '@/lib/api';
 import type { HostedRole } from '@/lib/hosted';
@@ -29,14 +29,17 @@ export function HostedBar(props: BarProps) {
           <DrawerDescription>{session.people.length} here</DrawerDescription>
         </DrawerHeader>
         <HostedPeople {...props} />
+        <DrawerFooter className="px-0 pb-0">
+          <HostedActions {...props} />
+          <DrawerClose render={<Button type="button" variant="ghost" />}>Close</DrawerClose>
+        </DrawerFooter>
       </DrawerContent>
     </Drawer>
   );
 }
 
-// HostedPeople: the drawer's contents: who's here (host marked) and what you can do: end or hand over
-// as the host; stop following or follow, and leave, as a follower (pure, for tests).
-export function HostedPeople({ session, role, following, people, onFollow, onLeave, onEnd, onHandOver, noun }: BarProps) {
+// HostedPeople: the drawer's body: who's here, host marked; the host can hand over to anyone (pure, for tests).
+export function HostedPeople({ session, role, people, onHandOver, noun }: BarProps) {
   const others = session.people.filter((p) => p !== session.host);
   return (
     <section aria-label={`Who's in the ${noun}`} className="grid gap-4 text-sm">
@@ -49,14 +52,22 @@ export function HostedPeople({ session, role, following, people, onFollow, onLea
           </li>
         ))}
       </ul>
-      <div className="flex flex-wrap gap-2">
-        {role === 'follower' && (following
-          ? <Button type="button" size="sm" variant="outline" onClick={() => onFollow(false)} title="Look around on your own; the host's tickets stop opening for you">Stop following</Button>
-          : <Button type="button" size="sm" onClick={() => onFollow(true)}>Follow host</Button>)}
-        {role === 'host' && onEnd && <Button type="button" size="sm" variant="outline" onClick={onEnd}>End {noun}</Button>}
-        {role === 'follower' && <Button type="button" size="sm" variant="ghost" onClick={onLeave}>Leave</Button>}
-      </div>
     </section>
+  );
+}
+
+// HostedActions: the drawer footer's actions: End for the host; Stop following / Follow host and
+// Leave for a follower (pure, for tests). Ending or leaving removes the drawer with the session.
+export function HostedActions({ role, following, onFollow, onLeave, onEnd, noun }: BarProps) {
+  if (role === 'host') return onEnd ? <Button type="button" variant="destructive" onClick={onEnd}>End {noun}</Button> : null;
+  if (role !== 'follower') return null;
+  return (
+    <>
+      {following
+        ? <Button type="button" variant="outline" onClick={() => onFollow(false)} title="Look around on your own; the host's tickets stop opening for you">Stop following</Button>
+        : <Button type="button" onClick={() => onFollow(true)}>Follow host</Button>}
+      <Button type="button" variant="outline" onClick={onLeave}>Leave {noun}</Button>
+    </>
   );
 }
 

@@ -175,7 +175,8 @@ export function Backlog({ projectId, boards, token }: Props) {
   return (
     <section id="backlog" className="mt-10">
       <div className="mb-4 flex flex-wrap items-end justify-between gap-4">
-        <div>
+        {/* the text takes what's left, so a long "Join refinement · … is hosting" doesn't push the buttons onto their own line */}
+        <div className="min-w-0 flex-1 basis-80">
           <h2 className="text-xl font-semibold tracking-tight">Backlog</h2>
           <p className="text-sm text-muted-foreground">Tickets not on a board yet. Move one to a board to put it in that team&apos;s sprint, or refine to plan the next sprints.</p>
         </div>
@@ -184,8 +185,8 @@ export function Backlog({ projectId, boards, token }: Props) {
             onFollow={session.setFollowing} onLeave={doneRefining} onEnd={doneRefining} onHandOver={session.handOver} />
         )}
         {!refining && (
-          <div className="flex gap-2">
-            {boards.some((b) => b.style !== 'kanban') && <Button variant="outline" onClick={() => void refine()}>{refineLabel(session.session, people, session.me)}</Button>}
+          <div className="ml-auto flex shrink-0 gap-2">
+            {boards.some((b) => b.style !== 'kanban') && <Button variant="outline" onClick={() => void refine()}>{refineLabel(session.session)}</Button>}
             <Button variant="outline" onClick={() => setAdding(true)}>Add to backlog</Button>
           </div>
         )}

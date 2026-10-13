@@ -1,5 +1,4 @@
-import type { Assignee, BoardLiveEvent, HostedSession } from './api';
-import { personLabel } from './people';
+import type { BoardLiveEvent, HostedSession } from './api';
 
 // Hosted sessions (TL-221): the rules, kept pure for tests. The hook (use-hosted) and the bar
 // (components/hosted-bar) are thin around these.
@@ -37,10 +36,6 @@ function isSession(v: unknown): v is HostedSession {
   return typeof s.host === 'string' && Array.isArray(s.people) && !!s.focus && typeof s.focus === 'object';
 }
 
-// refineLabel: the backlog's Refine button: "Refine" (you'll host), "Join refinement · Ava is
-// hosting" while someone else's session runs, or "Back to your refinement" for its host.
-export function refineLabel(session: HostedSession | null, people: Assignee[] | null, me: string | null): string {
-  if (!session) return 'Refine';
-  if (session.host === me) return 'Back to your refinement';
-  return `Join refinement · ${personLabel(session.host, people)} is hosting`;
-}
+// refineLabel: the backlog's Refine button: "Refine" (you'll host), or "Join refinement" while a
+// session runs. Who hosts shows in the who's-here drawer once you're in.
+export const refineLabel = (session: HostedSession | null): string => (session ? 'Join refinement' : 'Refine');

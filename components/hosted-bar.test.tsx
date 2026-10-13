@@ -4,12 +4,12 @@ import type { HostedSession } from '@/lib/api';
 
 mockDialog();
 const { renderToStaticMarkup } = await import('react-dom/server');
-const { FollowedTicket, HostedBar, HostedPeople } = await import('./hosted-bar');
+const { FollowedTicket, HostedActions, HostedBar, HostedPeople } = await import('./hosted-bar');
 
 const session: HostedSession = { host: 'user_ava', startedAt: 1, focus: { ticketId: 't1' }, people: ['user_ava', 'user_bo', 'user_cy'] };
 const people = [{ id: 'user_ava', label: 'Ava', kind: 'person' as const }, { id: 'user_bo', label: 'You', kind: 'person' as const }, { id: 'user_cy', label: 'Cy', kind: 'person' as const }];
 const props = (role: 'host' | 'follower', following = true) => ({ session, role, following, people, noun: 'refinement', onFollow: () => {}, onLeave: () => {}, onEnd: () => {}, onHandOver: () => {} });
-const bar = (role: 'host' | 'follower', following = true) => renderToStaticMarkup(
+const bar = (role: 'host' | 'follower', following = true) => renderToStaticMarkup(<HostedActions {...props(role, following)} />) + renderToStaticMarkup(
   <HostedPeople session={session} role={role} following={following} people={people} noun="refinement" onFollow={() => {}} onLeave={() => {}} onEnd={() => {}} onHandOver={() => {}} />);
 
 test('the page only gets a small button: who hosts and how many are here', () => {
@@ -34,7 +34,7 @@ test('the host can end the session and hand it over; followers can’t', () => {
 test('followers can stop following and come back, and leave', () => {
   expect(bar('follower')).toContain('Stop following');
   expect(bar('follower', false)).toContain('Follow host');
-  expect(bar('follower')).toContain('>Leave<');
+  expect(bar('follower')).toContain('>Leave refinement<');
 });
 
 test('the host’s ticket opens read-only for followers: no edit, comments or attachments', () => {

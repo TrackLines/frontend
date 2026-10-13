@@ -200,7 +200,8 @@ export default function BoardPage() {
           </Button>}
           {joinedStandup && hostedStandup.session && (
             <HostedBar session={hostedStandup.session} role={hostedStandup.role} following={hostedStandup.following} people={people} noun="standup"
-              onFollow={hostedStandup.setFollowing} onLeave={() => setJoinedStandup(false)} onHandOver={hostedStandup.handOver} />
+              onFollow={hostedStandup.setFollowing} onLeave={() => setJoinedStandup(false)} onHandOver={hostedStandup.handOver}
+              onEnd={() => void actOnStandup('end').catch(() => setStandupError('Couldn’t end the standup. Please try again.'))} />
           )}
           {(live === 'live' || standup) && <LiveBadge state={live} />}
           {boardCanManage && !archived && !joinedStandup && <Button type="button" variant={editMode ? 'secondary' : 'outline'} size="sm" aria-pressed={editMode} onClick={() => setEditMode((editing) => !editing)}>
