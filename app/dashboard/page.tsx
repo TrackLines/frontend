@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { DashboardWork } from '@/components/dashboard-work';
 import { NameDialog } from '@/components/name-dialog';
 import { ProjectCard } from '@/components/project/project-card';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -58,6 +59,7 @@ export default function Dashboard() {
           <Button onClick={() => setCreating(true)} disabled={!token}><PlusIcon />New project</Button>
         </div>
       </header>
+      {token && <DashboardWork token={token} />}
       {!list ? (
         <Loading label="Loading projects…" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[0, 1, 2].map((i) => <Skeleton key={i} className="h-44 rounded-xl" />)}

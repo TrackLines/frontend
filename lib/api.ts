@@ -537,6 +537,15 @@ export type AppNotification = {
   ticket_id: string | null; ticket_key: string | null; board_id: string | null;
   created_at: string; read_at: string | null;
 };
+// A ticket that @mentions the caller, as of its latest mention (GET /api/mentions).
+export type Mention = {
+  ticket_id: string; key: string; title: string; done: boolean; project_name: string;
+  actor: string; comment_id: string; mentioned_at: string;
+};
+export const mentions = {
+  list: (token: T, limit = 10) => api<Mention[]>(`/mentions?limit=${limit}`, { token }),
+};
+
 export const notifications = {
   list: (token: T, page = 1, perPage = 20) => api<AppNotification[]>(`/notifications?page=${page}&per_page=${perPage}`, { token }),
   unreadCount: (token: T) => api<{ count: number }>('/notifications/unread-count', { token }),
