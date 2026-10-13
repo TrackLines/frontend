@@ -53,7 +53,6 @@ export default function Dashboard() {
           <p className="mt-1 text-sm text-muted-foreground">Everyone in your organization sees these.</p>
         </div>
         <div className="flex items-center gap-2">
-          <Link href="/my-work" className={buttonVariants({ variant: 'ghost' })}>My work</Link>
           <Link href="/roadmaps" className={buttonVariants({ variant: 'ghost' })}>Roadmaps</Link>
           <Link href="/settings" className={buttonVariants({ variant: 'ghost' })}>Settings</Link>
           <Button onClick={() => setCreating(true)} disabled={!token}><PlusIcon />New project</Button>
