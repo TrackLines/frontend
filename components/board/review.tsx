@@ -85,7 +85,7 @@ export function ReviewActions({ ticket, token, onReviewed }: { ticket: Pick<Tick
         <div className="grid gap-2">
           <label className="grid gap-1.5 font-medium">
             <span>What needs doing <span className="font-normal text-muted-foreground">(added as a comment)</span></span>
-            <MarkdownTextarea value={sending} rows={2} maxLength={10000} onChange={(e) => setSending(e.target.value)} />
+            <MarkdownTextarea mentions={token} value={sending} rows={2} maxLength={10000} onChange={(e) => setSending(e.target.value)} />
           </label>
           <div className="flex flex-wrap gap-2">
             <Button type="button" size="sm" variant="destructive" disabled={busy || !sending.trim()} onClick={() => void review(false, sending)}>{busy ? 'Sending…' : 'Send back'}</Button>

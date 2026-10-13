@@ -1,5 +1,5 @@
 // Standup mode: everyone on the board gets a turn (2 min) with the board filtered to their tickets,
-// then a clean board with everything (5 min). Runs in the browser of whoever shares their screen.
+// then a board review with everything (5 min). Runs in the browser of whoever shares their screen.
 // ponytail: no shared state or history; a backend session can come later if teams want a synced view.
 import type { Ticket } from './api';
 
@@ -17,7 +17,7 @@ export function participants(teamIds: string[], tickets: Ticket[], names: Map<st
     .sort((a, b) => a.label.localeCompare(b.label));
 }
 
-// index: whose turn it is; people.length means the clean-board review. The clock is time spent
+// index: whose turn it is; people.length means the board review. The clock is time spent
 // before the current run plus the run since runningSince (null = paused).
 export type Standup = { people: Participant[]; index: number; spentMs: number; runningSince: number | null; startedBy?: string };
 

@@ -109,6 +109,7 @@ function QuickAddDialog({ scope, onClose }: { scope: NonNullable<ReturnType<type
           <MarkdownTextarea
             placeholder="Details (optional)"
             value={description}
+            mentions={token ?? undefined}
             onChange={(e) => setDescription(e.target.value)}
           />
           <PendingAttachments files={files} onChange={setFiles} projectId={projectId} />

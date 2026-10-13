@@ -8,7 +8,7 @@ import { clock, remaining, reviewing, type Standup } from '@/lib/standup';
 type Props = { standup: Standup; onAction: (action: 'next' | 'previous' | 'jump' | 'pause' | 'resume' | 'end', index?: number) => void; goal?: string };
 
 // StandupPanel runs the standup over the board: who's speaking, their clock, and the running order.
-// The board under it shows the speaker's tickets (all tickets during the clean-board review).
+// The board under it shows the speaker's tickets (all tickets during the board review).
 export function StandupPanel({ standup, onAction, goal }: Props) {
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
@@ -28,7 +28,7 @@ export function StandupPanel({ standup, onAction, goal }: Props) {
       {goal && <p><span className="text-muted-foreground">Sprint goal:</span> <span className="font-medium">{goal}</span></p>}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <span className="font-semibold">
-          {review ? 'Clean board: everything, together' : `${standup.people[standup.index].label}’s turn`}
+          {review ? 'Board Review: everything, together' : `${standup.people[standup.index].label}’s turn`}
         </span>
         <span role="timer" aria-live="off" className={cn('font-mono tabular-nums', left < 0 && 'font-semibold text-destructive')}>
           {clock(left)}{paused && ' (paused)'}
@@ -40,7 +40,7 @@ export function StandupPanel({ standup, onAction, goal }: Props) {
           </Button>
           {last
             ? <Button size="sm" onClick={() => onAction('end')}>Finish standup</Button>
-            : <Button size="sm" onClick={() => onAction('next')}>{standup.index === standup.people.length - 1 ? 'Clean board' : 'Next'}</Button>}
+            : <Button size="sm" onClick={() => onAction('next')}>{standup.index === standup.people.length - 1 ? 'Board Review' : 'Next'}</Button>}
           {!last && <Button size="sm" variant="ghost" onClick={() => onAction('end')}>End</Button>}
         </div>
       </div>
@@ -60,7 +60,7 @@ export function StandupPanel({ standup, onAction, goal }: Props) {
         ))}
         <li>
           <Button size="sm" variant={review ? 'default' : 'ghost'} aria-current={review ? 'step' : undefined} onClick={() => jump(standup.people.length)}>
-            Clean board
+            Board Review
           </Button>
         </li>
       </ol>

@@ -325,7 +325,7 @@ export type TicketSearchResult = Ticket & {
   done: boolean; snippet: string;
 };
 
-export type Assignee = { id: string; label: string; kind?: 'person' | 'ai' | 'service' };
+export type Assignee = { id: string; label: string; kind?: 'person' | 'ai' | 'service'; name?: string; username?: string }; // name, username: people only
 
 export const tickets = {
   get: (id: string, token: T) => api<TicketDetail>(`/tickets/${id}`, { token }),

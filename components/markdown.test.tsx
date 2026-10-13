@@ -38,3 +38,10 @@ test('MarkdownTextarea: the shared input, with the live preview once markdown is
   expect(plain).not.toContain('Preview');
   expect(renderToStaticMarkup(<MarkdownTextarea value="- **done**" onChange={() => {}} />)).toContain('<strong>done</strong>');
 });
+
+test('mentions turn on the @ picker; public forms stay plain', () => {
+  const on = renderToStaticMarkup(<MarkdownTextarea mentions="tok" value="hi" onChange={() => {}} />);
+  expect(on).toContain('aria-autocomplete="list"');
+  expect(on).toContain('>hi</textarea>');
+  expect(renderToStaticMarkup(<MarkdownTextarea value="hi" onChange={() => {}} />)).not.toContain('aria-autocomplete');
+});

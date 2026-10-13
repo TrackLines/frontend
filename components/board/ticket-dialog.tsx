@@ -190,6 +190,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
             <span>Details <span className="font-normal text-muted-foreground">(optional, Markdown supported)</span></span>
             <MarkdownTextarea
               value={description}
+              mentions={token}
               maxLength={10000}
               rows={5}
               placeholder="Add useful context or acceptance notes."
@@ -236,7 +237,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
               <p>Close this ticket as <strong>won&apos;t do</strong>? It leaves the backlog but is kept, so whoever raised it can be told.</p>
               <label className="grid gap-1.5 font-medium">
                 <span>Reason <span className="font-normal text-muted-foreground">(optional, added as a comment)</span></span>
-                <MarkdownTextarea value={wontDo} maxLength={10000} rows={2} onChange={(e) => setWontDo(e.target.value)} />
+                <MarkdownTextarea mentions={token} value={wontDo} maxLength={10000} rows={2} onChange={(e) => setWontDo(e.target.value)} />
               </label>
               <div className="flex gap-2">
                 <Button type="button" size="sm" disabled={saving} onClick={closeWontDo}>{saving ? 'Closing…' : 'Close as won’t do'}</Button>

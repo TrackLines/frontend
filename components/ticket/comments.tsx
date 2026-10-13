@@ -86,6 +86,7 @@ export function TicketComments({ ticketId, token }: { ticketId: string; token: s
         <MarkdownTextarea
           id={`comment-${ticketId}`}
           value={body}
+          mentions={token}
           maxLength={maxLength}
           rows={3}
           placeholder={replyTo ? 'Write a reply…' : 'Share an update or ask a question…'}

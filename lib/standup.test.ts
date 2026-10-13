@@ -11,7 +11,7 @@ test('participants: team members plus anyone with tickets, by name, once each', 
   expect(participants([], [ticket('codex')], new Map())).toEqual([{ id: 'codex', label: 'codex' }]); // unknown name: the id
 });
 
-test('turns run 2 minutes each, then a 5 minute clean board', () => {
+test('turns run 2 minutes each, then a 5 minute board review', () => {
   const people = [{ id: 'a', label: 'A' }, { id: 'b', label: 'B' }];
   let s = start(people, 0);
   expect(speaker(s)?.id).toBe('a');

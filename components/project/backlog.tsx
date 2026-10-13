@@ -311,6 +311,7 @@ function AddDialog({ open, onOpenChange, projectId, token, onAdd }: {
           <MarkdownTextarea
             placeholder="Details, steps to reproduce… (optional)"
             value={description}
+            mentions={token}
             onChange={(e) => setDescription(e.target.value)}
           />
           <PendingAttachments files={files} onChange={setFiles} projectId={projectId} />

@@ -1,6 +1,7 @@
 import type { ComponentProps } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { MentionTextarea } from '@/components/mention-textarea';
 import { Textarea } from '@/components/ui/textarea';
 
 // Markdown renders ticket details and comments (GitHub style: lists, tables, code, links). Raw HTML
@@ -50,10 +51,11 @@ export function MarkdownPreview({ text }: { text: string }) {
 
 // MarkdownTextarea: the one input for text that renders as markdown (ticket details, comments, notes
 // that become comments, public requests): our Textarea, with the live preview once markdown is used.
-export function MarkdownTextarea({ value, ...props }: ComponentProps<typeof Textarea> & { value: string }) {
+// mentions (a session token) turns on the @ people picker; public forms leave it off.
+export function MarkdownTextarea({ value, mentions, ...props }: ComponentProps<typeof Textarea> & { value: string; mentions?: string }) {
   return (
     <>
-      <Textarea value={value} {...props} />
+      {mentions ? <MentionTextarea token={mentions} value={value} {...props} /> : <Textarea value={value} {...props} />}
       <MarkdownPreview text={value} />
     </>
   );
