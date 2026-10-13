@@ -20,7 +20,9 @@ test('everyone else sees the team read-only', () => {
   const html = editor(false);
   expect(html).toContain('<h3 class="font-semibold">Platform</h3>');
   for (const never of ['>Save<', '>Delete<', 'Remove leader', 'Add member to']) expect(html).not.toContain(never);
-  expect(html).toMatch(/<button[^>]*disabled=""[^>]*>Linked</);
+  // the projects it's on, as text: no buttons that look like they'd change anything (TL-241)
+  expect(html).toContain('<li>TrackLines</li>');
+  expect(html).not.toContain('<button');
 });
 
 test('invitations for me: accept in Clerk, then complete here; nothing when there are none', () => {

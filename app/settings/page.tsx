@@ -3,13 +3,20 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { PlanCard } from '@/components/billing/plan-card';
 import { McpConnect } from '@/components/mcp-connect';
 import { Button } from '@/components/ui/button';
+import { OrganizationCard } from '@/components/settings/organization-card';
+import { organization } from '@/lib/api';
 import { useToken } from '@/lib/use-token';
 
 export default function SettingsPage() {
+  // organization and integrations are run by org admins (TL-241): everyone else can look, not manage
+  const token = useToken();
+  const [admin, setAdmin] = useState(false);
+  const signedIn = token !== null;
+  useEffect(() => { if (token) organization.me(token).then((r) => setAdmin(r.admin), () => setAdmin(false)); }, [signedIn]);
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
       <Link href="/dashboard" className="text-sm text-muted-foreground hover:underline">← Projects</Link>
@@ -19,14 +26,13 @@ export default function SettingsPage() {
       <Plan />
       <section className="mt-6 rounded-xl border p-5">
         <h2 className="text-lg font-semibold">Organization</h2>
-        <p className="mt-2 text-sm text-muted-foreground">View members, teams, project access, and leadership.</p>
-        <Link href="/settings/organization" className="mt-3 inline-block text-sm font-medium hover:underline">Manage organization →</Link>
+        <OrganizationCard admin={admin} />
       </section>
-      <section className="mt-6 rounded-xl border p-5">
+      {admin && <section className="mt-6 rounded-xl border p-5">
         <h2 className="text-lg font-semibold">Integrations</h2>
         <p className="mt-2 text-sm text-muted-foreground">Connect Bugfixes, GitHub and Bitbucket.</p>
         <Link href="/settings/integrations" className="mt-3 inline-block text-sm font-medium hover:underline">Manage integrations →</Link>
-      </section>
+      </section>}
       <section className="mt-6 rounded-xl border p-5">
         <h2 className="text-lg font-semibold">API keys and AI agents</h2>
         <p className="mt-2 text-sm text-muted-foreground">Keys let agents and scripts use the API as you. Connect an AI agent (Claude, Codex…) over MCP with its own key.</p>

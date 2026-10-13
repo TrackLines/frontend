@@ -56,9 +56,10 @@ export function TeamEditor({ team, members, people, projects, projectTeams, isAd
         </Select><Button size="sm" disabled={!memberToAdd || busy.includes(`${team.id}:`)} onClick={() => onChange('member', () => teamApi.addMember(team.id, memberToAdd, token), 'Member added to team.')}>Add</Button></div>}
       </div>
       <div><p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Project boards</p>
-        {projects.length === 0 ? <p className="text-sm text-muted-foreground">Create a project before linking this team.</p> : <ul className="space-y-2">{projects.map((project) => {
+        {!isAdmin ? (linkedProjects.length === 0 ? <p className="text-sm text-muted-foreground">Not on any project yet.</p> : <ul className="space-y-1 text-sm">{linkedProjects.map((project) => <li key={project.id}>{project.name}</li>)}</ul>)
+        : projects.length === 0 ? <p className="text-sm text-muted-foreground">Create a project before linking this team.</p> : <ul className="space-y-2">{projects.map((project) => {
           const linked = projectTeams[project.id]?.some((item) => item.id === team.id) ?? false;
-          return <li key={project.id} className="flex items-center justify-between gap-3 text-sm"><span>{project.name}</span><Button type="button" size="sm" variant={linked ? 'secondary' : 'outline'} aria-pressed={linked} disabled={!isAdmin || busy.includes(`${team.id}:`)} onClick={() => onChange('project', () => linked ? teamApi.removeProject(project.id, team.id, token) : teamApi.addProject(project.id, team.id, token), linked ? 'Team unlinked from project.' : 'Team linked to project.')}>{linked ? 'Linked' : 'Link team'}</Button></li>;
+          return <li key={project.id} className="flex items-center justify-between gap-3 text-sm"><span>{project.name}</span><Button type="button" size="sm" variant={linked ? 'secondary' : 'outline'} aria-pressed={linked} disabled={busy.includes(`${team.id}:`)} onClick={() => onChange('project', () => linked ? teamApi.removeProject(project.id, team.id, token) : teamApi.addProject(project.id, team.id, token), linked ? 'Team unlinked from project.' : 'Team linked to project.')}>{linked ? 'Linked' : 'Link team'}</Button></li>;
         })}</ul>}
         {linkedProjects.length > 0 && <p className="mt-2 text-xs text-muted-foreground">Boards linked to this team are managed by its leaders.</p>}
       </div>

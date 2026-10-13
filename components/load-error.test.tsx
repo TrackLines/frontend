@@ -30,6 +30,6 @@ test('the free plan’s project limit (402) opens the upgrade offer; other error
   expect(atProjectLimit(new ApiError(500, 'oops'))).toBe(false);
   expect(atProjectLimit(new Error('network'))).toBe(false);
   const html = renderToStaticMarkup(<UpgradeDialog open onOpenChange={() => {}} token="tok" />);
-  for (const s of ['Your free plan includes one project', '>Upgrade<', 'Not now']) expect(html).toContain(s);
+  for (const s of ['Your organization’s free plan includes one project', '>Upgrade<', 'Not now']) expect(html).toContain(s);
 });
 

@@ -10,21 +10,33 @@ import { ApiError, billing, type Subscription } from '@/lib/api';
 export function billingError(err: unknown, action: 'checkout' | 'portal'): string {
   if (err instanceof ApiError) {
     if (err.status === 503) return 'Billing isn’t set up on this server yet.';
+    if (err.status === 403) return 'Only organization admins can change the plan.';
     if (err.status === 409) return action === 'checkout'
-      ? 'You’re already subscribed — use Manage billing to change your plan.'
+      ? 'Your organization is already subscribed — use Manage billing to change the plan.'
       : 'There’s no subscription to manage yet — upgrade first.';
   }
   return 'Couldn’t reach billing. Please try again.';
 }
 
-// planAction is what the plan card offers: upgrade (free), manage billing (paid through Stripe),
-// or nothing (a plan granted by hand has no Stripe billing to manage).
+// planAction is what the plan card offers an org admin: upgrade (free), manage billing (paid through
+// Stripe), or nothing (a plan granted by hand has no Stripe billing to manage). Members get nothing:
+// the plan is the organization's (TL-243).
 export function planAction(plan: Subscription): 'upgrade' | 'manage' | null {
+  if (plan.can_manage === false) return null;
   if (!plan.paid) return 'upgrade';
   return plan.billed === false ? null : 'manage';
 }
 
-// PlanCard shows the current plan and the way to change it (Stripe checkout / customer portal).
+// planText: what the organization's plan includes, and for members, who can change it.
+export function planText(plan: Subscription): string {
+  const who = plan.can_manage === false ? ' Ask an organization admin to upgrade.' : ' Upgrade for unlimited projects.';
+  if (!plan.paid) return `${plan.project_limit} project with unlimited boards and roadmaps.${who}`;
+  if (plan.billed === false) return 'Unlimited projects, boards and roadmaps. This plan was granted to your organization, so there’s no billing to manage.';
+  return 'Unlimited projects, boards and roadmaps.';
+}
+
+// PlanCard shows the organization's plan and, for its admins, the way to change it (Stripe checkout /
+// customer portal).
 export function PlanCard({ token }: { token: string }) {
   const [plan, setPlan] = useState<Subscription | null>(null);
   const [failed, setFailed] = useState(false);
@@ -52,15 +64,11 @@ export function PlanCard({ token }: { token: string }) {
   return (
     <div className="rounded-xl border p-5">
       <div className="flex flex-wrap items-center gap-3">
-        <h2 className="text-lg font-semibold">Plan</h2>
+        <h2 className="text-lg font-semibold">Organization plan</h2>
         <Badge variant={plan.paid ? 'default' : 'secondary'}>{plan.paid ? 'Pro' : 'Free'}</Badge>
       </div>
       <p className="mt-2 text-sm text-muted-foreground">
-        {!plan.paid
-          ? `${plan.project_limit} project with unlimited boards and roadmaps. Upgrade for unlimited projects.`
-          : plan.billed === false
-            ? 'Unlimited projects, boards and roadmaps. This plan was granted to you, so there’s no billing to manage.'
-            : 'Unlimited projects, boards and roadmaps.'}
+        {planText(plan)}
       </p>
       {error && <p role="alert" className="mt-3 text-sm text-destructive">{error}</p>}
       <div className="mt-4">

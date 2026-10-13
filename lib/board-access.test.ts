@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { canManageBoard } from './board-access';
+import { canManageBoard, canRefine } from './board-access';
 
 test('organization admins can manage linked and unlinked boards', () => {
   expect(canManageBoard({ admin: true, leads: [] }, null)).toBe(true);
@@ -11,4 +11,13 @@ test('only leaders assigned to the board team can manage it', () => {
   expect(canManageBoard({ admin: false, leads: ['team-a'] }, 'team-b')).toBe(false);
   expect(canManageBoard({ admin: false, leads: ['team-a'] }, null)).toBe(false);
   expect(canManageBoard({ admin: false, leads: [] }, 'team-a')).toBe(false);
+});
+
+test('refinement is for org admins and the sprint boards’ team leaders (TL-241)', () => {
+  const boards = [{ style: 'sprints', team_id: 'web' }, { style: 'kanban', team_id: 'ops' }];
+  expect(canRefine({ admin: true, leads: [] }, boards)).toBe(true);
+  expect(canRefine({ admin: false, leads: ['web'] }, boards)).toBe(true);
+  expect(canRefine({ admin: false, leads: [] }, boards)).toBe(false); // a plain member
+  expect(canRefine({ admin: false, leads: ['ops'] }, boards)).toBe(false); // leads only a kanban board
+  expect(canRefine(null, boards)).toBe(false); // still loading
 });
