@@ -3,14 +3,15 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { clock, remaining, reviewing, waiting, type Standup } from '@/lib/standup';
+import type { Assignee } from '@/lib/api';
+import { clock, remaining, reviewing, speakerName, turnTitle, waiting, type Standup } from '@/lib/standup';
 
-type Props = { standup: Standup; onAction: (action: 'next' | 'previous' | 'jump' | 'pause' | 'resume' | 'end', index?: number) => void; goal?: string; canRun?: boolean };
+type Props = { standup: Standup; onAction: (action: 'next' | 'previous' | 'jump' | 'pause' | 'resume' | 'end', index?: number) => void; goal?: string; canRun?: boolean; people?: Assignee[] | null };
 
 // StandupPanel runs the standup over the board: who's speaking, their clock, and the running order.
 // The board under it shows the speaker's tickets (all tickets during the board review).
 // canRun: the host (TL-235); everyone else sees the turn, clock and order, but can't change them.
-export function StandupPanel({ standup, onAction, goal, canRun = true }: Props) {
+export function StandupPanel({ standup, onAction, goal, canRun = true, people = null }: Props) {
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
     const tick = setInterval(() => setNow(Date.now()), 1000);
@@ -30,7 +31,7 @@ export function StandupPanel({ standup, onAction, goal, canRun = true }: Props) 
       {goal && <p><span className="text-muted-foreground">Sprint goal:</span> <span className="font-medium">{goal}</span></p>}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <span className="font-semibold">
-          {review ? 'Board Review: everything, together' : `${standup.people[standup.index].label}’s turn`}
+          {review ? 'Board Review: everything, together' : turnTitle(speakerName(standup.people[standup.index], people))}
         </span>
         <span role="timer" aria-live="off" className={cn('font-mono tabular-nums', left < 0 && 'font-semibold text-destructive')}>
           {clock(left)}{notStarted ? ' (waiting to start)' : paused && ' (paused)'}
@@ -57,7 +58,7 @@ export function StandupPanel({ standup, onAction, goal, canRun = true }: Props) 
               tabIndex={canRun ? undefined : -1}
               onClick={canRun ? () => jump(i) : undefined}
             >
-              {p.label}
+              {speakerName(p, people)}
             </Button>
           </li>
         ))}

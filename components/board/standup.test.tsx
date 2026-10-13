@@ -38,3 +38,17 @@ test('only the host runs the standup: followers see the turn and clock, without 
   const host = renderToStaticMarkup(<StandupPanel standup={s} onAction={() => {}} />);
   for (const control of ['>Start<', '>Previous<', '>Next<', '>End<']) expect(host).toContain(control);
 });
+
+test('each viewer names people from their own list: "You" is only ever the viewer (TL-236)', () => {
+  // the starter (Max) saved himself as "You"; Other is watching
+  const s = { people: [{ id: 'user_other', label: 'other@develbox.info' }, { id: 'user_max', label: 'You' }], index: 1, spentMs: 0, runningSince: null };
+  const othersList = [{ id: 'user_other', label: 'You', kind: 'person' as const }, { id: 'user_max', label: 'Max Hooton', kind: 'person' as const }];
+  const html = renderToStaticMarkup(<StandupPanel standup={s} onAction={() => {}} people={othersList} />);
+  expect(html).toContain('Max Hooton’s turn');
+  expect(html).toContain('>You<'); // Other, in the running order
+  expect(html).not.toContain('You’s turn');
+  // on Other's own turn: "Your turn"
+  expect(renderToStaticMarkup(<StandupPanel standup={{ ...s, index: 0 }} onAction={() => {}} people={othersList} />)).toContain('Your turn');
+  // while the list loads, nobody else is called "You"
+  expect(renderToStaticMarkup(<StandupPanel standup={s} onAction={() => {}} />)).toContain('A teammate’s turn');
+});

@@ -1,7 +1,7 @@
 // Standup mode: everyone on the board gets a turn (2 min) with the board filtered to their tickets,
-// then a board review with everything (5 min). Runs in the browser of whoever shares their screen.
-// ponytail: no shared state or history; a backend session can come later if teams want a synced view.
-import type { Ticket } from './api';
+// then a board review with everything (5 min). Shared live through the backend; the host runs it.
+import type { Assignee, Ticket } from './api';
+import { personLabel } from './people';
 
 export const TURN_MS = 2 * 60_000;
 export const REVIEW_MS = 5 * 60_000;
@@ -20,6 +20,17 @@ export function participants(teamIds: string[], tickets: Ticket[], names: Map<st
 // index: whose turn it is; people.length means the board review. The clock is time spent
 // before the current run plus the run since runningSince (null = paused).
 export type Standup = { people: Participant[]; index: number; spentMs: number; runningSince: number | null; startedBy?: string };
+
+// speakerName: a participant's name as this viewer knows them. The standup carries the starter's
+// labels, where "You" meant the starter, so each viewer names people from their own list (TL-236).
+// people: the viewer's org people list (usePeople), or null while it loads.
+export function speakerName(p: Participant, people: Assignee[] | null): string {
+  if (people) return personLabel(p.id, people);
+  return p.label === 'You' ? 'A teammate' : p.label;
+}
+
+// turnTitle: "Your turn" for the viewer, "Ava’s turn" for anyone else.
+export const turnTitle = (name: string) => (name === 'You' ? 'Your turn' : `${name}’s turn`);
 
 export const start = (people: Participant[], now: number): Standup => ({ people, index: 0, spentMs: 0, runningSince: now });
 
