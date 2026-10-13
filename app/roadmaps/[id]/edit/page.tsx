@@ -3,6 +3,7 @@
 import { Textarea } from '@/components/ui/textarea';
 import { FormPageSkeleton } from '@/components/page-skeletons';
 import Link from 'next/link';
+import { LoadError } from '@/components/load-error';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState, type FormEvent } from 'react';
 import { ItemEditor } from '@/components/roadmap/item-editor';
@@ -23,8 +24,7 @@ export default function EditRoadmapPage() {
     if (loaded) roadmaps.get(id, token).then(setRoadmap, (e) => setError(e instanceof ApiError ? e.status : 500));
   }, [id, loaded]); // load once; token refreshes must not refetch
 
-  if (error === 404 || error === 403) return <Message title="Roadmap not found" body="It may have been deleted, or it belongs to another organization." />;
-  if (error) return <Message title="Couldn't load this roadmap" body="Please refresh to try again." />;
+  if (error) return <LoadError status={error} thing="roadmap" />;
   if (!roadmap || !token) return <FormPageSkeleton label="Loading roadmap…" />;
 
   return (
@@ -115,15 +115,5 @@ function DangerZone({ roadmap, token }: { roadmap: Roadmap; token: string }) {
       {error && <p role="alert" className="mt-2 text-sm text-destructive">{error}</p>}
       <Button variant="destructive" className="mt-3" disabled={busy} onClick={remove}>{busy ? 'Deleting…' : 'Delete roadmap'}</Button>
     </section>
-  );
-}
-
-function Message({ title, body }: { title: string; body: string }) {
-  return (
-    <main className="mx-auto flex min-h-[60vh] max-w-md flex-col items-center justify-center gap-3 px-6 text-center">
-      <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
-      <p className="text-muted-foreground">{body}</p>
-      <Link href="/dashboard" className={buttonVariants({ variant: 'outline' })}>Back to projects</Link>
-    </main>
   );
 }

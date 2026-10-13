@@ -1,6 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import { LoadError } from '@/components/load-error';
+import { RoadmapRow } from '@/components/project/roadmap-row';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Backlog } from '@/components/project/backlog';
@@ -8,9 +10,8 @@ import { BoardCard } from '@/components/project/board-card';
 import { NewBoardButton } from '@/components/project/new-board';
 import { RequestsLink } from '@/components/intake/requests-link';
 import { RoadmapEditorForm } from '@/components/roadmap-editor-form';
-import { VisibilityBadge } from '@/components/roadmap/visibility';
 import { Button, buttonVariants } from '@/components/ui/button';
-import { ApiError, boards, projects, roadmaps, type Project, type Roadmap } from '@/lib/api';
+import { ApiError, boards, projects, roadmaps, type Project } from '@/lib/api';
 import { useToken } from '@/lib/use-token';
 import { prefetch, useCachedState } from '@/lib/page-cache';
 import { ProjectSkeleton } from '@/components/page-skeletons';
@@ -32,8 +33,7 @@ export default function ProjectPage() {
     if (loaded) for (const b of project?.boards ?? []) prefetch(`board:${b.id}`, () => boards.get(b.id, token));
   }, [project?.id, loaded]);
 
-  if (error === 404) return <Message title="Project not found" body="It may have been deleted, or it belongs to another organization." />;
-  if (error) return <Message title="Couldn't load this project" body="Please refresh to try again." />;
+  if (error) return <LoadError status={error} thing="project" />;
   if (!project || !token) return <ProjectSkeleton />;
 
   const boardList = project.boards ?? [];
@@ -94,27 +94,6 @@ export default function ProjectPage() {
   );
 }
 
-function RoadmapRow({ roadmap }: { roadmap: Roadmap }) {
-  const [copied, setCopied] = useState(false);
-  const url = typeof window === 'undefined' ? `/r/${roadmap.id}` : `${window.location.origin}/r/${roadmap.id}`;
-  return (
-    <li className="flex flex-wrap items-center gap-3 p-4">
-      <span className="font-medium">{roadmap.title}</span>
-      <VisibilityBadge value={roadmap.visibility} />
-      <span className="ml-auto flex gap-2">
-        <Link href={`/roadmaps/${roadmap.id}/edit`} className={buttonVariants({ variant: 'ghost', size: 'sm' })}>Edit</Link>
-        <Link href={`/r/${roadmap.id}`} className={buttonVariants({ variant: 'ghost', size: 'sm' })}>View</Link>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => navigator.clipboard.writeText(url).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); })}
-        >
-          {copied ? 'Copied' : 'Copy link'}
-        </Button>
-      </span>
-    </li>
-  );
-}
 
 function Section({ title, hint, action, children }: { title: string; hint: string; action?: React.ReactNode; children: React.ReactNode }) {
   return (
@@ -133,14 +112,4 @@ function Section({ title, hint, action, children }: { title: string; hint: strin
 
 function Empty({ children }: { children: React.ReactNode }) {
   return <p className="rounded-xl border border-dashed p-6 text-sm text-muted-foreground">{children}</p>;
-}
-
-function Message({ title, body }: { title: string; body: string }) {
-  return (
-    <main className="mx-auto flex min-h-[60vh] max-w-md flex-col items-center justify-center gap-3 px-6 text-center">
-      <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
-      <p className="text-muted-foreground">{body}</p>
-      <Link href="/dashboard" className={buttonVariants({ variant: 'outline' })}>Back to projects</Link>
-    </main>
-  );
 }

@@ -3,6 +3,7 @@
 import { AgentReviewSetting } from '@/components/board/review';
 import { ArchivedBanner, BoardLifecycle } from '@/components/board/board-lifecycle';
 import Link from 'next/link';
+import { LoadError } from '@/components/load-error';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { AddColumn, Column } from '@/components/board/column';
@@ -17,7 +18,7 @@ import { TicketDialog } from '@/components/board/ticket-dialog';
 import { EditableTitle } from '@/components/editable-title';
 import { NameDialog } from '@/components/name-dialog';
 import { CopyLink } from '@/components/copy-link';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { ApiError, boardTemplates, boards, organization, projects, teams, tickets, type Board, type Ticket } from '@/lib/api';
 import { participants, speaker } from '@/lib/standup';
 import { useToken } from '@/lib/use-token';
@@ -26,9 +27,10 @@ import { canManageBoard } from '@/lib/board-access';
 import { prefetch, useCachedState } from '@/lib/page-cache';
 import { BoardSkeleton } from '@/components/page-skeletons';
 import { useAutoRefresh } from '@/lib/use-auto-refresh';
-import { LabelFilter, filterTicketsByLabels, labelCounts } from '@/components/board/label-filter';
-import { filterTicketsByPriorities, parseLabels, parsePriorities, PriorityFilter, ticketFilterQuery } from '@/components/board/priority-filter';
-import { AssigneeFilter, filterTicketsByAssignee } from '@/components/board/assignee-filter';
+import { LabelFilter, labelCounts } from '@/components/board/label-filter';
+import { parseLabels, parsePriorities, PriorityFilter, ticketFilterQuery } from '@/components/board/priority-filter';
+import type { AssigneeFilter } from '@/components/board/assignee-filter';
+import { boardAccess, canAddTicket, shownTickets } from '@/lib/board-view';
 
 export default function BoardPage() {
   const { id } = useParams<{ id: string }>();
@@ -129,19 +131,14 @@ export default function BoardPage() {
     }
   }
 
-  if (error === 404) return <Message title="Board not found" body="It may have been deleted, or it belongs to another organization." />;
-  if (error) return <Message title="Couldn't load this board" body="Please refresh to try again." />;
+  if (error) return <LoadError status={error} thing="board" />;
   if (!board || !token) return <BoardSkeleton />;
   const archived = Boolean(board.archived_at); // read-only: history kept, no new work
-  const boardCanManage = permissionBoardId === board.id && canManage === true;
-  const boardIsAdmin = permissionBoardId === board.id && isAdmin;
-  const boardEditMode = editMode && boardCanManage;
+  const { manage: boardCanManage, admin: boardIsAdmin, editing: boardEditMode } = boardAccess({ checkedBoard: permissionBoardId, board: board.id, canManage, isAdmin, editMode });
   const kanban = board.style === 'kanban';
   const turn = joinedStandup && standup ? speaker(standup) : null;
-  const hasVisibleTickets = (board.columns ?? []).some((column) =>
-    filterTicketsByAssignee(filterTicketsByPriorities(filterTicketsByLabels(column.tickets, labelFilter), priorityFilter), assigneeFilter, currentUserId)
-      .some((ticket) => !turn || ticket.assigned_to === turn.id),
-  );
+  const filters = { labels: labelFilter, priorities: priorityFilter, assignee: assigneeFilter, me: currentUserId, turn: turn?.id ?? null };
+  const hasVisibleTickets = (board.columns ?? []).some((column) => shownTickets(column.tickets, { ...filters, editing: false }).length > 0);
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col">
@@ -244,8 +241,7 @@ export default function BoardPage() {
       <div className="flex flex-1 items-start gap-4 overflow-x-auto p-6">
         {board.columns?.map((col) => {
           const cols = board.columns ?? [];
-          // editing shows every ticket: the label filter is hidden then
-          const shown = (boardEditMode ? col.tickets : filterTicketsByAssignee(filterTicketsByPriorities(filterTicketsByLabels(col.tickets, labelFilter), priorityFilter), assigneeFilter, currentUserId)).filter((t) => !turn || t.assigned_to === turn.id);
+          const shown = shownTickets(col.tickets, { ...filters, editing: boardEditMode });
           const done = col.id === cols.at(-1)?.id; // last column = Done
           return (
             <div key={col.id} className="min-w-72 flex-1">
@@ -273,7 +269,7 @@ export default function BoardPage() {
                   ))}
                 </DroppableColumn>
                 {/* tickets reach Done by being moved there, not created in it; none are added while editing */}
-                {!boardEditMode && !archived && !(done && cols.length > 1) && (
+                {canAddTicket({ editing: boardEditMode, archived, done, columns: cols.length }) && (
                   <Button variant="ghost" className="justify-start" onClick={() => setAddingTo(col.id)}>+ Add ticket</Button>
                 )}
               </Column>
@@ -316,16 +312,6 @@ export default function BoardPage() {
           onSaved={(t) => (t.column_id ? updateTickets(t.column_id, (ts) => [...ts, t]) : setToBacklog(t))}
         />
       )}
-    </main>
-  );
-}
-
-function Message({ title, body }: { title: string; body: string }) {
-  return (
-    <main className="mx-auto flex min-h-[60vh] max-w-md flex-col items-center justify-center gap-3 px-6 text-center">
-      <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
-      <p className="text-muted-foreground">{body}</p>
-      <Link href="/dashboard" className={buttonVariants({ variant: 'outline' })}>Back to projects</Link>
     </main>
   );
 }

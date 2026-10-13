@@ -5,13 +5,13 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { DashboardWork } from '@/components/dashboard-work';
 import { NameDialog } from '@/components/name-dialog';
+import { atProjectLimit, UpgradeDialog } from '@/components/billing/upgrade-dialog';
 import { ProjectCard } from '@/components/project/project-card';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Loading } from '@/components/page-skeletons';
 import { FolderKanbanIcon, PlusIcon } from 'lucide-react';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { ApiError, billing, projects, type Project } from '@/lib/api';
+import { projects, type Project } from '@/lib/api';
 import { useToken } from '@/lib/use-token';
 import { useCachedState } from '@/lib/page-cache';
 
@@ -34,12 +34,9 @@ export default function Dashboard() {
       const p = await projects.create({ name }, token);
       router.push(`/projects/${p.id}`);
     } catch (err) {
-      if (err instanceof ApiError && err.status === 402) {
-        setCreating(false);
-        setAtLimit(true);
-        return;
-      }
-      throw new Error('Couldn’t create the project. Please try again.');
+      if (!atProjectLimit(err)) throw new Error('Couldn’t create the project. Please try again.');
+      setCreating(false);
+      setAtLimit(true);
     }
   }
 
@@ -86,38 +83,9 @@ export default function Dashboard() {
             submitLabel="Create project"
             onSubmit={create}
           />
-          <Upgrade open={atLimit} onOpenChange={setAtLimit} token={token} />
+          <UpgradeDialog open={atLimit} onOpenChange={setAtLimit} token={token} />
         </>
       )}
     </main>
-  );
-}
-
-function Upgrade({ open, onOpenChange, token }: { open: boolean; onOpenChange: (o: boolean) => void; token: string }) {
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
-  async function upgrade() {
-    setBusy(true);
-    try {
-      window.location.href = (await billing.checkout(token)).url;
-    } catch {
-      setError('Upgrades are unavailable right now. Please try again later.');
-      setBusy(false);
-    }
-  }
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Your free plan includes one project</DialogTitle>
-          <DialogDescription>Add as many team boards and roadmaps as you like inside it, or upgrade for unlimited projects.</DialogDescription>
-        </DialogHeader>
-        {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>Not now</Button>
-          <Button onClick={upgrade} disabled={busy}>{busy ? 'Opening checkout…' : 'Upgrade'}</Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
   );
 }

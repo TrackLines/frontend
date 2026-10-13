@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { ApiError, liveViews, streamBoardLive, type BoardLiveEvent, type LiveParticipant, type LiveStandup } from './api';
+import { liveViews, streamBoardLive, type BoardLiveEvent, type LiveParticipant, type LiveStandup } from './api';
 import { applyLiveEvent, type LiveViewState } from './live-view';
 
 const empty: LiveViewState = { standup: null, refinementRevision: 0 };
@@ -19,41 +19,12 @@ export function useBoardLive(boardId: string, token: string | null | undefined) 
 
     void (async () => {
       try {
-        try {
-          const session = await liveViews.standup(boardId, token);
-          setState((current) => ({ ...current, standup: session }));
-        } catch (error) {
-          if (!(error instanceof ApiError && error.status === 404)) throw error;
-          setState((current) => ({ ...current, standup: null }));
-        }
-        let backoff = 500;
-        while (!controller.signal.aborted) {
-          try {
-            await streamBoardLive(boardId, token, controller.signal, onEvent, () => setConnected(true));
-            backoff = 500;
-          } catch {
-            if (controller.signal.aborted) break;
-          }
-          setConnected(false);
-          await wait(backoff, controller.signal);
-          backoff = Math.min(backoff * 2, 10_000);
-        }
+        const session = await liveViews.standup(boardId, token);
+        setState((current) => ({ ...current, standup: session }));
       } catch {
-        // The stream still retries after initial-state errors so a transient API outage can recover.
-        if (!controller.signal.aborted) {
-          let backoff = 1_000;
-          while (!controller.signal.aborted) {
-            try {
-              await streamBoardLive(boardId, token, controller.signal, onEvent, () => setConnected(true));
-            } catch {
-              if (controller.signal.aborted) break;
-            }
-            setConnected(false);
-            await wait(backoff, controller.signal);
-            backoff = Math.min(backoff * 2, 10_000);
-          }
-        }
+        // 404 = no standup running; anything else: stream anyway, so a transient API outage recovers
       }
+      await keepStreaming(() => streamBoardLive(boardId, token, controller.signal, onEvent, () => setConnected(true)), controller.signal, () => setConnected(false));
     })();
     return () => controller.abort();
   }, [boardId, token]);
@@ -74,7 +45,25 @@ export function useBoardLive(boardId: string, token: string | null | undefined) 
   return { standup: state.standup, refinementRevision: state.refinementRevision, connected, start, act };
 }
 
-function wait(ms: number, signal: AbortSignal) {
+// keepStreaming holds the live stream open: whenever it drops (or fails), it reconnects after a wait
+// that doubles up to 10s, back to the first wait once a connection worked; until signal aborts.
+export async function keepStreaming(connect: () => Promise<void>, signal: AbortSignal, onDrop: () => void,
+  sleep: (ms: number, signal: AbortSignal) => Promise<void> = wait, first = 500) {
+  let backoff = first;
+  while (!signal.aborted) {
+    try {
+      await connect();
+      backoff = first;
+    } catch {
+      if (signal.aborted) break;
+    }
+    onDrop();
+    await sleep(backoff, signal);
+    backoff = Math.min(backoff * 2, 10_000);
+  }
+}
+
+export function wait(ms: number, signal: AbortSignal) {
   return new Promise<void>((resolve) => {
     if (signal.aborted) return resolve();
     const done = () => { clearTimeout(timer); signal.removeEventListener('abort', done); resolve(); };

@@ -4,6 +4,7 @@ import { NeedsReviewBadge, ReviewActions } from '@/components/board/review';
 import { Markdown } from '@/components/markdown';
 import { When } from '@/components/when';
 import Link from 'next/link';
+import { LoadError } from '@/components/load-error';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { CopyLink } from '@/components/copy-link';
@@ -73,8 +74,7 @@ export default function TicketPage() {
     }
   }
 
-  if (error === 404) return <Message title="Ticket not found" body="It may have been deleted, or it belongs to another organization." />;
-  if (error) return <Message title="Couldn't load this ticket" body="Please refresh to try again." />;
+  if (error) return <LoadError status={error} thing="ticket" />;
   if (!t) return <TicketSkeleton />;
 
   return (
@@ -166,16 +166,6 @@ export default function TicketPage() {
         <Link href={`/projects/${t.project_id}`} className={buttonVariants({ variant: 'outline' })}>Open project</Link>
         <CopyLink path={ticketPath(t)} />
       </div>
-    </main>
-  );
-}
-
-function Message({ title, body }: { title: string; body: string }) {
-  return (
-    <main className="mx-auto flex min-h-[60vh] max-w-md flex-col items-center justify-center gap-3 px-6 text-center">
-      <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
-      <p className="text-muted-foreground">{body}</p>
-      <Link href="/dashboard" className={buttonVariants({ variant: 'outline' })}>Back to projects</Link>
     </main>
   );
 }

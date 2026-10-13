@@ -21,14 +21,7 @@ export function useAutoRefresh(
   useEffect(() => {
     if (!enabled) return;
 
-    let running = false;
-    const run = () => {
-      if (document.visibilityState === 'hidden' || running) return;
-      running = true;
-      void Promise.resolve(refreshRef.current()).finally(() => {
-        running = false;
-      });
-    };
+    const run = refresher(() => refreshRef.current(), () => document.visibilityState === 'hidden');
     const onVisibilityChange = () => {
       if (document.visibilityState === 'visible') run();
     };
@@ -43,4 +36,16 @@ export function useAutoRefresh(
       document.removeEventListener('visibilitychange', onVisibilityChange);
     };
   }, [enabled, intervalMs]);
+}
+
+// refresher: one refresh at a time, and none while the tab is hidden.
+export function refresher(refresh: () => void | Promise<void>, hidden: () => boolean) {
+  let running = false;
+  return () => {
+    if (hidden() || running) return;
+    running = true;
+    void Promise.resolve(refresh()).finally(() => {
+      running = false;
+    });
+  };
 }
