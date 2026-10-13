@@ -24,7 +24,9 @@ export function Markdown({ children, className = '', onToggleTask }: { children:
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
-          a: ({ node: _node, ...props }) => <a {...props} target="_blank" rel="noreferrer noopener" />,
+          // links within the site stay in the tab; anything else opens a new one
+          a: ({ node: _node, ...props }) => (props.href?.startsWith('/') && !props.href.startsWith('//')
+            ? <a {...props} /> : <a {...props} target="_blank" rel="noreferrer noopener" />),
           // checkboxes carry no source position, so their list item draws them (below)
           input: ({ node: _node, ...props }) => (props.type === 'checkbox' ? null : <input {...props} />),
           li: ({ node, children, ...props }) => {

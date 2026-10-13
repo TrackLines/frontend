@@ -83,5 +83,5 @@ These terms are governed by the law of ${LEGAL.law}, and the courts of ${LEGAL.l
 
 If a part of these terms can't be enforced, the rest still applies. If we don't enforce something straight away, we can still enforce it later. You can't transfer these terms to someone else without our agreement; we may transfer them if the business changes hands, in which case your rights continue.
 
-Questions? Email [${LEGAL.contact}](mailto:${LEGAL.contact}).
+Questions? Use our [contact form](${LEGAL.contact}).
 `;

@@ -563,6 +563,12 @@ export type IntakeSubmission = {
   status: 'pending' | 'promoted' | 'dismissed'; ticket_id: string | null; ticket_key: string | null;
   decided_by: string | null; decided_at: string | null; created_at: string;
 };
+// The public contact form (POST /api/enquiries): messages go to the Tracklines team's inbox.
+export type Enquiry = { name: string; email: string; company?: string; message: string; source_path?: string; website?: string };
+export const enquiries = {
+  send: (body: Enquiry) => api<void>('/enquiries', { method: 'POST', body }),
+};
+
 export const intake = {
   form: (token: string) => api<{ open: boolean }>(`/intake/${encodeURIComponent(token)}`),
   submit: (token: string, body: IntakeRequest) => api<void>(`/intake/${encodeURIComponent(token)}`, { method: 'POST', body }),

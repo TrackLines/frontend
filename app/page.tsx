@@ -7,10 +7,7 @@ import { McpConnect } from '@/components/mcp-connect';
 import { BoardPreview } from '@/components/landing/board-preview';
 import { Card } from '@/components/ui/card';
 
-// our own request form: a live example of the feature, and where visitors send us ideas and bugs
-const OUR_REQUEST_FORM = '/request/iyXfq6Q9tutz89opE1rcSJOW';
-// our own public roadmap: a live example of what customers see
-const OUR_ROADMAP = '/r/742012f3-7491-4da2-9688-00ee20c1f7d3';
+import { OUR_REQUEST_FORM, OUR_ROADMAP } from '@/lib/our-links';
 
 export default async function Home() {
   const { userId } = await auth();

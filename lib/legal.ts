@@ -5,7 +5,7 @@ export const LEGAL = {
   tradingAs: 'ChewedFeed',
   companyNumber: '16481416',
   registeredOffice: '', // TODO before launch: the virtual office, once it's the registered office
-  contact: 'hello@tracklin.es',
+  contact: '/contact', // the contact form (enquiries go to ChewedFeed HQ), not an email address
   law: 'England and Wales',
   updated: '13 October 2026',
   retentionDays: 30, // a deleted organization's data is purged after this (backend clerkhooks.Retention)

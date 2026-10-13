@@ -16,7 +16,7 @@ Tracklines is run by ${companyLine()} ("we", "us"). For the personal data in thi
 
 Your organization decides what goes into its projects. For that content we act on your organization's behalf, and its admins control it.
 
-You can reach us about anything in this policy at [${LEGAL.contact}](mailto:${LEGAL.contact}).
+You can ask us anything about this policy through our [contact form](${LEGAL.contact}).
 
 ## What we collect
 
@@ -75,7 +75,7 @@ We use only the cookies needed to keep you signed in, which are set by Clerk. Yo
 
 ## Your rights
 
-Under UK data protection law you can ask to see the personal data we hold about you, correct it, delete it, receive a copy in a portable format, restrict or object to how we use it, and withdraw consent where we rely on it. Email [${LEGAL.contact}](mailto:${LEGAL.contact}) and we'll respond within a month.
+Under UK data protection law you can ask to see the personal data we hold about you, correct it, delete it, receive a copy in a portable format, restrict or object to how we use it, and withdraw consent where we rely on it. Send your request through our [contact form](${LEGAL.contact}) and we'll respond within a month.
 
 If you're unhappy with how we've handled your data, you can complain to the Information Commissioner's Office at [ico.org.uk](https://ico.org.uk). We'd appreciate the chance to put it right first.
 

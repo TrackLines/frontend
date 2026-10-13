@@ -9,7 +9,7 @@ export function SiteFooter() {
       <nav aria-label="Legal" className="flex gap-4">
         <Link href="/privacy" className="hover:text-foreground hover:underline">Privacy</Link>
         <Link href="/terms" className="hover:text-foreground hover:underline">Terms</Link>
-        <a href={`mailto:${LEGAL.contact}`} className="hover:text-foreground hover:underline">Contact</a>
+        <Link href={LEGAL.contact} className="hover:text-foreground hover:underline">Contact</Link>
       </nav>
     </footer>
   );

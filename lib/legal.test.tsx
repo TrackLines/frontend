@@ -17,8 +17,15 @@ test('the privacy policy makes the promises the product keeps', () => {
   for (const s of [
     'We don\'t sell your data', 'we don\'t run analytics or tracking scripts',
     'Delete a ticket and its attachments go with it', '30 days', 'encrypted with a key that\'s kept outside the database', 'one-way hash',
-    'Keloran Limited', 'UK GDPR', 'ico.org.uk', 'Clerk', 'Stripe', 'UploadThing', 'Railway', 'ChewedFeed HQ', 'hello@tracklin.es',
+    'Keloran Limited', 'UK GDPR', 'ico.org.uk', 'Clerk', 'Stripe', 'UploadThing', 'Railway', 'ChewedFeed HQ', '[contact form](/contact)',
   ]) expect(PRIVACY).toContain(s);
+});
+
+test('nothing points people at an email address: questions go through the contact form', () => {
+  for (const text of [PRIVACY, TERMS, renderToStaticMarkup(<SiteFooter />)]) {
+    expect(text).not.toContain('mailto:');
+    expect(text).not.toMatch(/[\w.]+@tracklin\.es/);
+  }
 });
 
 test('the terms match the plans and the deletion policy', () => {
@@ -32,5 +39,5 @@ test('legal pages render their markdown; the footer links them from every page',
   expect(page).toContain('<h2>1. Your account</h2>');
   expect(page).toContain('Last updated 13 October 2026');
   const footer = renderToStaticMarkup(<SiteFooter />);
-  for (const s of ['href="/privacy"', 'href="/terms"', 'href="mailto:hello@tracklin.es"', 'Keloran Limited', '16481416']) expect(footer).toContain(s);
+  for (const s of ['href="/privacy"', 'href="/terms"', 'href="/contact"', 'Keloran Limited', '16481416']) expect(footer).toContain(s);
 });
