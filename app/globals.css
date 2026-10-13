@@ -124,6 +124,8 @@
     }
   body {
     @apply bg-background text-foreground;
+    /* long unbroken words (paths, URLs in ticket titles) wrap instead of spilling out of their box */
+    overflow-wrap: break-word;
     }
   html {
     @apply font-sans;

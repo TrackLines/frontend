@@ -179,6 +179,10 @@ export function Backlog({ projectId, boards, token }: Props) {
           <h2 className="text-xl font-semibold tracking-tight">Backlog</h2>
           <p className="text-sm text-muted-foreground">Tickets not on a board yet. Move one to a board to put it in that team&apos;s sprint, or refine to plan the next sprints.</p>
         </div>
+        {refining && session.session && session.role !== 'outside' && (
+          <HostedBar session={session.session} role={session.role} following={session.following} people={people} noun="refinement"
+            onFollow={session.setFollowing} onLeave={doneRefining} onEnd={doneRefining} onHandOver={session.handOver} />
+        )}
         {!refining && (
           <div className="flex gap-2">
             {boards.some((b) => b.style !== 'kanban') && <Button variant="outline" onClick={() => void refine()}>{refineLabel(session.session, people, session.me)}</Button>}
@@ -186,12 +190,6 @@ export function Backlog({ projectId, boards, token }: Props) {
           </div>
         )}
       </div>
-      {refining && session.session && session.role !== 'outside' && (
-        <div className="mb-4">
-          <HostedBar session={session.session} role={session.role} following={session.following} people={people} noun="refinement"
-            onFollow={session.setFollowing} onLeave={doneRefining} onEnd={doneRefining} onHandOver={session.handOver} />
-        </div>
-      )}
       {refining && <FollowedTicket ticketId={followedTicket(session.session, session.role, session.following)} token={token} onDismiss={() => session.setFollowing(false)} />}
       {refining ? (
         <RefinementMode

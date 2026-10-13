@@ -198,6 +198,10 @@ export default function BoardPage() {
           {!joinedStandup && !boardEditMode && <Button type="button" variant="outline" size="sm" disabled={startingStandup} onClick={() => standup ? setJoinedStandup(true) : void beginStandup(board)}>
             {startingStandup ? 'Starting…' : standup ? 'Join standup' : 'Standup'}
           </Button>}
+          {joinedStandup && hostedStandup.session && (
+            <HostedBar session={hostedStandup.session} role={hostedStandup.role} following={hostedStandup.following} people={people} noun="standup"
+              onFollow={hostedStandup.setFollowing} onLeave={() => setJoinedStandup(false)} onHandOver={hostedStandup.handOver} />
+          )}
           {(live === 'live' || standup) && <LiveBadge state={live} />}
           {boardCanManage && !archived && !joinedStandup && <Button type="button" variant={editMode ? 'secondary' : 'outline'} size="sm" aria-pressed={editMode} onClick={() => setEditMode((editing) => !editing)}>
             {editMode ? 'Done editing' : 'Edit board'}
@@ -238,12 +242,6 @@ export default function BoardPage() {
           <Link href={`/tickets/${toBacklog.id}`} className="font-medium text-foreground hover:underline">Open the ticket</Link>{' '}
           <Button type="button" variant="ghost" size="sm" onClick={() => setToBacklog(null)}>Dismiss</Button>
         </p>
-      )}
-      {joinedStandup && hostedStandup.session && (
-        <div className="border-b px-6 py-2">
-          <HostedBar session={hostedStandup.session} role={hostedStandup.role} following={hostedStandup.following} people={people} noun="standup"
-            onFollow={hostedStandup.setFollowing} onLeave={() => setJoinedStandup(false)} onHandOver={hostedStandup.handOver} />
-        </div>
       )}
       {joinedStandup && (
         <FollowedTicket ticketId={followedTicket(hostedStandup.session, hostedStandup.role, hostedStandup.following)} token={token}
