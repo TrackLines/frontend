@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { SiteFooter } from '@/components/site-footer';
 import Link from 'next/link';
 import { ClerkProvider, Show } from '@clerk/nextjs';
 import { shadcn } from '@clerk/themes';
@@ -50,6 +51,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             </nav>
           </header>
           {children}
+          <SiteFooter />
         </FeatureFlags>
         </ClerkProvider>
         </ThemeProvider>
