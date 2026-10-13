@@ -42,3 +42,16 @@ export function monthSegments(start: number, days: number) {
   }
   return segments;
 }
+
+// itemDone: a roadmap item is done when all its linked tickets are, or (no tickets) it's marked done.
+export function itemDone(item: RoadmapItem): boolean {
+  if (item.progress && item.progress.total > 0) return item.progress.done === item.progress.total;
+  return item.status === 'done' || item.manual_status === 'done';
+}
+
+// milestoneState: how a milestone's diamond shows: done (filled, checked), overdue (due before today
+// and not done), or upcoming.
+export function milestoneState(item: GanttItem, today: number): 'done' | 'overdue' | 'upcoming' {
+  if (itemDone(item)) return 'done';
+  return item.end < today ? 'overdue' : 'upcoming';
+}

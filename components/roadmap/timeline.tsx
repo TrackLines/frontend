@@ -3,7 +3,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { RoadmapItem } from '@/lib/api';
 import { groupByMonth } from './group';
-import { buildGanttItems, DAY_MS, dayStamp, getGanttRange, monthSegments } from './gantt';
+import { CheckIcon } from 'lucide-react';
+import { buildGanttItems, DAY_MS, dayStamp, getGanttRange, milestoneState, monthSegments } from './gantt';
+import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Pager } from '@/components/pager';
@@ -84,13 +86,7 @@ export function Gantt({ items }: { items: RoadmapItem[] }) {
                       </div>
                       <div className="relative h-10">
                         {item.milestone ? (
-                          <span
-                            role="img"
-                            className="absolute top-2.5 z-[1] size-5 rotate-45 border-2 border-primary bg-background"
-                            style={{ left: offset + Math.max(0, (barWidth - 20) / 2) }}
-                            aria-label={`${item.title}: milestone due ${endLabel}`}
-                            title={`${item.title}: due ${endLabel}`}
-                          />
+                          <Milestone state={milestoneState(item, today)} left={offset + Math.max(0, (barWidth - 20) / 2)} title={item.title} due={endLabel} />
                         ) : (
                           <div
                             role="img"
@@ -110,7 +106,12 @@ export function Gantt({ items }: { items: RoadmapItem[] }) {
             </div>
           </div>
         </div>
-        <p className="mt-3 flex items-center gap-2 text-xs text-muted-foreground"><span className="h-4 border-l-2 border-primary/70" aria-hidden="true" /> Today</p>
+        <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+          <span className="flex items-center gap-2"><span className="h-4 border-l-2 border-primary/70" aria-hidden="true" /> Today</span>
+          <span className="flex items-center gap-2"><span className="size-2.5 rotate-45 border-2 border-primary" aria-hidden="true" /> Milestone, on its due date</span>
+          <span className="flex items-center gap-2"><span className="size-2.5 rotate-45 bg-primary" aria-hidden="true" /> Milestone done</span>
+          <span className="flex items-center gap-2"><span className="size-2.5 rotate-45 border-2 border-destructive" aria-hidden="true" /> Overdue</span>
+        </p>
       </section>
       {undated.length > 0 && (
         <section aria-label="Undated roadmap items" className="rounded-xl border p-4">
@@ -217,5 +218,24 @@ export function Timeline({ id, items, progress }: { id: string; items: RoadmapIt
         </div>
       )}
     </div>
+  );
+}
+
+// Milestone: a diamond on the due date: outlined while upcoming, red outline when overdue, filled with a
+// check once done.
+export function Milestone({ state, left, title, due }: { state: 'done' | 'overdue' | 'upcoming'; left: number; title: string; due: string }) {
+  const said = state === 'done' ? 'done' : state === 'overdue' ? `overdue, was due ${due}` : `due ${due}`;
+  return (
+    <span
+      role="img"
+      data-state={state}
+      className={cn('absolute top-2.5 z-[1] grid size-5 rotate-45 place-items-center border-2 bg-background',
+        state === 'done' ? 'border-primary bg-primary text-primary-foreground' : state === 'overdue' ? 'border-destructive' : 'border-primary')}
+      style={{ left }}
+      aria-label={`${title}: milestone ${said}`}
+      title={`${title}: ${said}`}
+    >
+      {state === 'done' && <CheckIcon className="size-3.5 -rotate-45" strokeWidth={3} aria-hidden />}
+    </span>
   );
 }

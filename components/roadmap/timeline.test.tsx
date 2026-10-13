@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { Gantt, Timeline } from './timeline';
+import { Gantt, Milestone, Timeline } from './timeline';
 import type { RoadmapItem } from '@/lib/api';
 
 const item = (id: string, title: string, extra: Partial<RoadmapItem> = {}): RoadmapItem => ({ id, title, description: '', target_date: null, position: Number(id), ...extra });
@@ -38,4 +38,15 @@ test('the Gantt chart: dated items as bars or milestones with progress, undated 
   for (const s of ['Search: 1 Nov to 20 Nov', '1 of 2 tickets done', 'width:50%', 'Today', 'No target date', 'Someday', 'Starts 1 Feb']) expect(html).toContain(s);
   expect(html).toMatch(/Launch: (milestone due 1 Dec|\d+ \w+ to 1 Dec)/);
   expect(renderToStaticMarkup(<Gantt items={[item('9', 'Undated')]} />)).toContain('Add target dates');
+});
+
+test('a done milestone is a filled diamond with a check; overdue is marked', () => {
+  const done = renderToStaticMarkup(<Milestone state="done" left={0} title="Launch" due="31 Oct" />);
+  expect(done).toContain('data-state="done"');
+  expect(done).toContain('<svg'); // the check
+  expect(done).toContain('Launch: milestone done');
+  const late = renderToStaticMarkup(<Milestone state="overdue" left={0} title="Launch" due="1 Oct" />);
+  expect(late).toContain('border-destructive');
+  expect(late).not.toContain('<svg');
+  expect(late).toContain('overdue, was due 1 Oct');
 });

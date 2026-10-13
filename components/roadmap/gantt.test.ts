@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 import type { RoadmapItem } from '@/lib/api';
-import { buildGanttItems, DAY_MS, dayStamp, getGanttRange, monthSegments } from './gantt';
+import { buildGanttItems, DAY_MS, dayStamp, getGanttRange, milestoneState, monthSegments, type GanttItem } from './gantt';
 
 const item = (id: string, target_date: string | null, start_date: string | null = null, position = 0): RoadmapItem => ({
   id, title: id, description: '', target_date, start_date, position,
@@ -39,4 +39,15 @@ describe('roadmap Gantt data', () => {
     expect(segments.reduce((sum, segment) => sum + segment.width, 0)).toBe(20);
     expect(segments[1].left).toBe(7);
   });
+});
+
+test('milestones: done shows checked, past due and not done is overdue, else upcoming', () => {
+  const today = dayStamp('2026-10-13');
+  const m = (over: Partial<GanttItem>) => ({ id: 'm', title: 'Launch', start: dayStamp('2026-10-31'), end: dayStamp('2026-10-31'), milestone: true, ...over }) as GanttItem;
+  expect(milestoneState(m({}), today)).toBe('upcoming');
+  expect(milestoneState(m({ end: dayStamp('2026-10-01') }), today)).toBe('overdue');
+  expect(milestoneState(m({ end: dayStamp('2026-10-01'), manual_status: 'done' }), today)).toBe('done');
+  expect(milestoneState(m({ progress: { done: 3, total: 3 } }), today)).toBe('done');
+  expect(milestoneState(m({ progress: { done: 2, total: 3 }, manual_status: 'done' }), today)).toBe('upcoming'); // tickets decide when linked
+  expect(milestoneState(m({ end: today }), today)).toBe('upcoming'); // due today isn't late yet
 });

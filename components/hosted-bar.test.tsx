@@ -4,10 +4,10 @@ import type { HostedSession } from '@/lib/api';
 
 mockDialog();
 const { renderToStaticMarkup } = await import('react-dom/server');
-const { FollowedTicket, HostedActions, HostedBar, HostedPeople } = await import('./hosted-bar');
+const { FollowedTicket, HostedActions, HostedBar, HostedPeople, initials } = await import('./hosted-bar');
 
 const session: HostedSession = { host: 'user_ava', startedAt: 1, focus: { ticketId: 't1' }, people: ['user_ava', 'user_bo', 'user_cy'] };
-const people = [{ id: 'user_ava', label: 'Ava', kind: 'person' as const }, { id: 'user_bo', label: 'You', kind: 'person' as const }, { id: 'user_cy', label: 'Cy', kind: 'person' as const }];
+const people = [{ id: 'user_ava', label: 'Ava', kind: 'person' as const }, { id: 'user_bo', label: 'You', name: 'Bo', kind: 'person' as const }, { id: 'user_cy', label: 'Cy', kind: 'person' as const }];
 const props = (role: 'host' | 'follower', following = true) => ({ session, role, following, people, noun: 'refinement', onFollow: () => {}, onLeave: () => {}, onEnd: () => {}, onHandOver: () => {} });
 const bar = (role: 'host' | 'follower', following = true) => renderToStaticMarkup(<HostedActions {...props(role, following)} />) + renderToStaticMarkup(
   <HostedPeople session={session} role={role} following={following} people={people} noun="refinement" onFollow={() => {}} onLeave={() => {}} onEnd={() => {}} onHandOver={() => {}} />);
@@ -17,9 +17,23 @@ test('the page only gets a small button: who hosts and how many are here', () =>
   expect(renderToStaticMarkup(<HostedBar {...props('host')} />)).toContain('You’re hosting · 3 here');
 });
 
-test('the drawer lists everyone here, host marked', () => {
+test('the drawer lists the host, then who’s following, with avatars and "(you)" for the viewer', () => {
   const html = bar('follower');
-  for (const s of ['aria-label="Host"', '> Ava<', '>Cy<']) expect(html).toContain(s);
+  expect(html).toMatch(/aria-label="Host"[\s\S]*>Ava<[\s\S]*Running the refinement[\s\S]*> Host</); // host first, badged
+  expect(html).toContain('Following (2)');
+  expect(html).toContain('(you)'); // Bo, viewing
+  expect(html).toContain('>Cy<');
+  expect(html).toContain('>A<'); // initials when there's no picture
+  const withPicture = renderToStaticMarkup(<HostedPeople {...props('follower')} people={[{ ...people[0], image_url: 'https://img.clerk.com/ava' }, ...people.slice(1)]} />);
+  expect(withPicture).toContain('>A<'); // the fallback stays until the picture loads
+  expect(renderToStaticMarkup(<HostedPeople {...props('host')} session={{ ...session, people: ['user_ava'] }} />)).toContain('Nobody else has joined yet.');
+});
+
+test('initials', () => {
+  expect(initials('Max Hooton')).toBe('MH');
+  expect(initials('other@develbox.info')).toBe('O');
+  expect(initials('ada.lovelace')).toBe('AL');
+  expect(initials('')).toBe('?');
 });
 
 test('the host can end the session and hand it over; followers can’t', () => {

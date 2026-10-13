@@ -358,7 +358,7 @@ export type TicketSearchResult = Ticket & {
   done: boolean; snippet: string;
 };
 
-export type Assignee = { id: string; label: string; kind?: 'person' | 'ai' | 'service'; name?: string; username?: string }; // name, username: people only
+export type Assignee = { id: string; label: string; kind?: 'person' | 'ai' | 'service'; name?: string; username?: string; image_url?: string }; // name, username, image_url: people only
 
 export const tickets = {
   get: (id: string, token: T) => api<TicketDetail>(`/tickets/${id}`, { token }),
