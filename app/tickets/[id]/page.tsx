@@ -31,6 +31,8 @@ import { useCachedState } from '@/lib/page-cache';
 import { TicketSkeleton } from '@/components/page-skeletons';
 import { isTicketKey, TicketKey, ticketPath } from '@/components/ticket/ticket-key';
 import { afterDelete, closedAs, ticketActions } from '@/lib/ticket-page';
+import { ChecklistCount } from '@/components/ticket/checklist-count';
+import { toggleTask } from '@/lib/checklist';
 
 // A shareable page for one ticket — works for board and backlog tickets.
 export default function TicketPage() {
@@ -133,7 +135,12 @@ export default function TicketPage() {
       )}
       {token && <ReviewActions ticket={t} token={token} onReviewed={() => { void tickets.get(t.id, token).then(setT); }} />}
       <section aria-label="Ticket details" className="rounded-xl border p-5 text-sm">
-        {t.description ? <Markdown>{t.description}</Markdown> : <p className="text-muted-foreground">No details provided.</p>}
+        <ChecklistCount markdown={t.description} className="mb-3" />
+        {t.description ? <Markdown onToggleTask={token ? (line) => {
+          const next = toggleTask(t.description, line);
+          setT({ ...t, description: next }); // ticks show at once; put back if saving fails
+          void tickets.update(t.id, { title: t.title, description: next }, token).catch(() => setT(t));
+        } : undefined}>{t.description}</Markdown> : <p className="text-muted-foreground">No details provided.</p>}
       </section>
       {token && <SubTickets ticket={t} token={token} onChanged={() => tickets.get(id, token).then(setT)} />}
       {token && <Dependencies ticket={t} token={token} onChanged={() => tickets.get(id, token).then(setT)} />}

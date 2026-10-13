@@ -45,3 +45,20 @@ test('mentions turn on the @ picker; public forms stay plain', () => {
   expect(on).toContain('>hi</textarea>');
   expect(renderToStaticMarkup(<MarkdownTextarea value="hi" onChange={() => {}} />)).not.toContain('aria-autocomplete');
 });
+
+test('task lists render as checkboxes, clickable only when ticking can be saved', () => {
+  const md = 'Steps:\n\n- [x] one\n- [ ] two';
+  const readOnly = renderToStaticMarkup(<Markdown>{md}</Markdown>);
+  expect(readOnly.match(/type="checkbox"/g)?.length).toBe(2);
+  expect(readOnly.match(/disabled=""/g)?.length).toBe(2);
+  expect(readOnly.match(/checked=""/g)?.length).toBe(1);
+  const clickable = renderToStaticMarkup(<Markdown onToggleTask={() => {}}>{md}</Markdown>);
+  expect(clickable).not.toContain('disabled=""');
+  expect(clickable).toContain('aria-label="Not done: click to mark done"');
+  expect(clickable).toContain('aria-label="Done: click to mark not done"');
+  // each box reports its own line in the source, which is what toggleTask flips
+  expect(clickable).toMatch(/data-line="3"[^>]*aria-label="Done/);
+  expect(clickable).toMatch(/data-line="4"[^>]*aria-label="Not done/);
+  // loose lists (blank lines between items) put the box inside a paragraph: still one box each
+  expect(renderToStaticMarkup(<Markdown>{'- [ ] a\n\n- [x] b'}</Markdown>).match(/type="checkbox"/g)?.length).toBe(2);
+});

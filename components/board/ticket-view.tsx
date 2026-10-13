@@ -17,6 +17,8 @@ import { personLabel } from '@/lib/people';
 import { TicketKey, ticketPath } from '@/components/ticket/ticket-key';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
+import { ChecklistCount } from '@/components/ticket/checklist-count';
+import { toggleTask } from '@/lib/checklist';
 
 type Props = {
   open: boolean;
@@ -28,9 +30,10 @@ type Props = {
   done?: boolean; // in the board's last column: attachments locked
   onReviewed?: () => void; // enables Approve / Send back on a ticket waiting for review
   sample?: ReactNode; // landing page: static stand-ins for the live sections; no copy link
+  onDescription?: (next: string) => void; // checklist ticks save the details; absent: read-only
 };
 
-export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, token, done, onReviewed, sample }: Props) {
+export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, token, done, onReviewed, sample, onDescription }: Props) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -68,8 +71,9 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
         {token && onReviewed && <ReviewActions ticket={ticket} token={token} onReviewed={onReviewed} />}
         <TicketLabels labels={ticket.labels} />
         <section aria-label="Ticket details" className="min-h-20 rounded-md bg-muted/50 p-3 text-sm">
+          <ChecklistCount markdown={ticket.description} className="mb-2" />
           {ticket.description ? (
-            <Markdown>{ticket.description}</Markdown>
+            <Markdown onToggleTask={onDescription && ((line) => onDescription(toggleTask(ticket.description, line)))}>{ticket.description}</Markdown>
           ) : (
             <p className="text-muted-foreground">No details provided.</p>
           )}

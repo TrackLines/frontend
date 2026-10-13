@@ -4,14 +4,45 @@ import remarkGfm from 'remark-gfm';
 import { MentionTextarea } from '@/components/mention-textarea';
 import { Textarea } from '@/components/ui/textarea';
 
+type HastNode = { type: string; tagName?: string; properties?: Record<string, unknown>; children?: HastNode[] };
+
+// taskBox finds a task list item's checkbox (directly inside it, or inside its paragraph when loose).
+function taskBox(node?: HastNode): HastNode | undefined {
+  for (const c of node?.children ?? []) {
+    if (c.type === 'element' && c.tagName === 'input') return c;
+    if (c.type === 'element' && c.tagName === 'p') return c.children?.find((g) => g.type === 'element' && g.tagName === 'input');
+  }
+  return undefined;
+}
+
 // Markdown renders ticket details and comments (GitHub style: lists, tables, code, links). Raw HTML
-// in the text is shown as text, never run; links open in a new tab.
-export function Markdown({ children, className = '' }: { children: string; className?: string }) {
+// in the text is shown as text, never run; links open in a new tab. Task lists ("- [ ] …") render as
+// checkboxes; with onToggleTask they can be clicked, reporting the task's line in the source.
+export function Markdown({ children, className = '', onToggleTask }: { children: string; className?: string; onToggleTask?: (line: number) => void }) {
   return (
     <div className={`markdown break-words ${className}`}>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
-        components={{ a: ({ node: _node, ...props }) => <a {...props} target="_blank" rel="noreferrer noopener" /> }}
+        components={{
+          a: ({ node: _node, ...props }) => <a {...props} target="_blank" rel="noreferrer noopener" />,
+          // checkboxes carry no source position, so their list item draws them (below)
+          input: ({ node: _node, ...props }) => (props.type === 'checkbox' ? null : <input {...props} />),
+          li: ({ node, children, ...props }) => {
+            const box = taskBox(node as HastNode | undefined);
+            if (!box) return <li {...props}>{children}</li>;
+            const line = node?.position?.start.line;
+            const checked = Boolean(box.properties?.checked);
+            const clickable = Boolean(onToggleTask && line);
+            return (
+              <li {...props}>
+                <input type="checkbox" checked={checked} disabled={!clickable} readOnly={!clickable} className="mr-1.5 align-middle" data-line={line}
+                  aria-label={checked ? 'Done: click to mark not done' : 'Not done: click to mark done'}
+                  onChange={() => { if (clickable) onToggleTask!(line!); }} />
+                {children}
+              </li>
+            );
+          },
+        }}
       >
         {children}
       </ReactMarkdown>

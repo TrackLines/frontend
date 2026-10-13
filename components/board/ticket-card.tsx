@@ -13,7 +13,8 @@ import { PriorityBadge } from './priority-badge';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
 import { TicketLabels } from '@/components/ticket/labels';
 import { TypeBadge } from '@/components/ticket-type';
-import type { Ticket } from '@/lib/api';
+import { tickets, type Ticket } from '@/lib/api';
+import { ChecklistCount } from '@/components/ticket/checklist-count';
 import { TicketDialog } from './ticket-dialog';
 import { TicketView } from './ticket-view';
 import { TicketKey } from '@/components/ticket/ticket-key';
@@ -66,6 +67,7 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
           {ticket.title}
         </Button>
         <TicketLabels labels={ticket.labels} className="px-3" max={2} />
+        <ChecklistCount markdown={ticket.description} className="px-3" />
         {ticket.description && (
           <p className="line-clamp-2 break-words px-3 text-sm whitespace-pre-line text-muted-foreground">{plainText(ticket.description)}</p>
         )}
@@ -82,6 +84,10 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
         token={token}
         done={done}
         onEdit={readOnly ? undefined : () => { setViewOpen(false); setEditOpen(true); }}
+        onDescription={readOnly ? undefined : (next) => {
+          onUpdated({ ...ticket, description: next }); // ticks show at once; put back if saving fails
+          void tickets.update(ticket.id, { title: ticket.title, description: next }, token).catch(() => onUpdated(ticket));
+        }}
         onReviewed={readOnly ? undefined : () => { setViewOpen(false); onReviewed?.(); }}
       />
       <TicketDialog
