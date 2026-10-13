@@ -1,9 +1,9 @@
 import { redirect } from 'next/navigation';
 import { auth } from '@clerk/nextjs/server';
 import Link from 'next/link';
-import { BotIcon, BugIcon, LockIcon, MapIcon, ShieldCheckIcon, UsersIcon, type LucideIcon } from 'lucide-react';
 import { buttonVariants } from '@/components/ui/button';
 import { McpConnect } from '@/components/mcp-connect';
+import { FEATURES } from '@/components/landing/features';
 import { BoardPreview } from '@/components/landing/board-preview';
 import { Card } from '@/components/ui/card';
 
@@ -100,14 +100,6 @@ claude mcp add -s user --transport http tracklines \\
   );
 }
 
-const FEATURES: { icon: LucideIcon; title: string; body: string; links?: { href: string; label: string }[] }[] = [
-  { icon: BotIcon, title: 'Agents as teammates', body: 'Connect agents over MCP with their own keys; they claim tickets and show up on the board next to everyone else.' },
-  { icon: ShieldCheckIcon, title: 'Agent work gets reviewed', body: 'Turn on review for a board and an agent’s finished ticket waits for a person to approve it or send it back with a note.' },
-  { icon: LockIcon, title: 'Blockers that hold', body: 'A ticket waiting on unfinished work can’t be claimed, by a person or an agent.' },
-  { icon: UsersIcon, title: 'Standup and refinement built in', body: 'Run standup with a shared timer everyone sees, and plan the next sprints against your team’s real pace, with sign-off before taking on more.' },
-  { icon: BugIcon, title: 'Errors become tickets', body: 'Bugfixes files the errors it catches as bug tickets, with live details: how often, when it was last seen, and a warning if it comes back after it’s fixed.' },
-  { icon: MapIcon, title: 'Customers stay in the loop', body: 'Share a request form and a public roadmap; no account needed. They send bugs and ideas, see what’s coming, and hear back when something won’t be done.', links: [{ href: OUR_REQUEST_FORM, label: 'Try our request form →' }, { href: OUR_ROADMAP, label: 'See our roadmap →' }] },
-];
 
 function Feature({ icon: Icon, title, body, links }: (typeof FEATURES)[number]) {
   return (
