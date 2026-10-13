@@ -11,6 +11,9 @@ import { TicketLabels } from '@/components/ticket/labels';
 import { TypeBadge } from '@/components/ticket-type';
 import type { TicketType } from '@/lib/api';
 
+// our own request form: a live example of the feature, and where visitors send us ideas and bugs
+const OUR_REQUEST_FORM = '/request/iyXfq6Q9tutz89opE1rcSJOW';
+
 export default async function Home() {
   const { userId } = await auth();
   if (userId) redirect('/dashboard');
@@ -74,6 +77,18 @@ claude mcp add -s user --transport http tracklines \\
         </pre>
       </section>
 
+      <section className="border-t">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-6 px-6 py-12">
+          <div className="max-w-2xl">
+            <h2 className="text-2xl font-bold tracking-tight">Got an idea or found a bug?</h2>
+            <p className="mt-2 text-muted-foreground">
+              Tell us on our own request form, no account needed. It&apos;s the same form you can share with your customers, so you&apos;ll see exactly what they see.
+            </p>
+          </div>
+          <Link href={OUR_REQUEST_FORM} className={buttonVariants({ size: 'lg', variant: 'outline' })}>Send us a suggestion</Link>
+        </div>
+      </section>
+
       <section className="border-t bg-muted/30">
         <div className="mx-auto max-w-6xl px-6 py-16">
           <h2 className="text-3xl font-bold tracking-tight">Simple pricing</h2>
@@ -87,22 +102,23 @@ claude mcp add -s user --transport http tracklines \\
   );
 }
 
-const FEATURES: { icon: LucideIcon; title: string; body: string }[] = [
+const FEATURES: { icon: LucideIcon; title: string; body: string; link?: { href: string; label: string } }[] = [
   { icon: BotIcon, title: 'Agents as teammates', body: 'Connect agents over MCP with their own keys; they claim tickets and show up on the board next to everyone else.' },
   { icon: ShieldCheckIcon, title: 'Agent work gets reviewed', body: 'Turn on review for a board and an agent’s finished ticket waits for a person to approve it or send it back with a note.' },
   { icon: LockIcon, title: 'Blockers that hold', body: 'A ticket waiting on unfinished work can’t be claimed, by a person or an agent.' },
   { icon: UsersIcon, title: 'Standup and refinement built in', body: 'Run standup with a shared timer everyone sees, and plan the next sprints against your team’s real pace, with sign-off before taking on more.' },
   { icon: BugIcon, title: 'Errors become tickets', body: 'Bugfixes files the errors it catches as bug tickets, with live details: how often, when it was last seen, and a warning if it comes back after it’s fixed.' },
-  { icon: MapIcon, title: 'Customers stay in the loop', body: 'Share a request form and a public roadmap; no account needed. They send bugs and ideas, see what’s coming, and hear back when something won’t be done.' },
+  { icon: MapIcon, title: 'Customers stay in the loop', body: 'Share a request form and a public roadmap; no account needed. They send bugs and ideas, see what’s coming, and hear back when something won’t be done.', link: { href: OUR_REQUEST_FORM, label: 'Try ours →' } },
 ];
 
-function Feature({ icon: Icon, title, body }: (typeof FEATURES)[number]) {
+function Feature({ icon: Icon, title, body, link }: (typeof FEATURES)[number]) {
   return (
     <li className="flex gap-4">
       <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary"><Icon className="size-5" aria-hidden /></span>
       <span>
         <strong className="font-semibold">{title}</strong>
         <span className="mt-1 block text-sm text-muted-foreground">{body}</span>
+        {link && <Link href={link.href} className="mt-2 inline-block text-sm font-medium text-primary hover:underline">{link.label}</Link>}
       </span>
     </li>
   );
