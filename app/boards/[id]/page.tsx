@@ -247,9 +247,6 @@ export default function BoardPage() {
         <FollowedTicket ticketId={followedTicket(hostedStandup.session, hostedStandup.role, hostedStandup.following)} token={token}
           known={followedOnBoard} onDismiss={() => hostedStandup.setFollowing(false)} />
       )}
-      {joinedStandup && standup && <StandupPanel standup={standup} onAction={(action, index) => {
-        void actOnStandup(action, index).then(() => setStandupError(''), () => setStandupError('Couldn’t update the shared standup. Please try again.'));
-      }} goal={board.sprint?.goal} canRun={hostedStandup.role === 'host' || !hostedStandup.session} people={people} />}
       {/* sprint start/close changes which tickets the board shows, so reload */}
       {kanban
         ? <div className="flex flex-wrap items-center justify-between gap-2 border-b px-6 py-3">
@@ -269,7 +266,12 @@ export default function BoardPage() {
         onChange={(cols) => setBoard((b) => b && { ...b, columns: cols })}
         onMove={(ticketId, columnId, position) => tickets.move(ticketId, columnId, position, token)}
       >
-      <div className="flex flex-1 items-start gap-4 overflow-x-auto p-6">
+      {/* standup: its panel sits left of the columns, like Jira's (TL-237) */}
+      <div className="flex flex-1 items-start gap-4 p-6">
+      {joinedStandup && standup && <StandupPanel standup={standup} onAction={(action, index) => {
+        void actOnStandup(action, index).then(() => setStandupError(''), () => setStandupError('Couldn’t update the shared standup. Please try again.'));
+      }} goal={board.sprint?.goal} canRun={hostedStandup.role === 'host' || !hostedStandup.session} people={people} />}
+      <div className="flex min-w-0 flex-1 items-start gap-4 overflow-x-auto">
         {board.columns?.map((col) => {
           const cols = board.columns ?? [];
           const shown = shownTickets(col.tickets, { ...filters, editing: boardEditMode });
@@ -317,6 +319,7 @@ export default function BoardPage() {
             />
           </div>
         )}
+      </div>
       </div>
       </BoardDnd>
       <NameDialog

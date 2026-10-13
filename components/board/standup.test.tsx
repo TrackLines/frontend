@@ -18,14 +18,14 @@ test('the last step is the Board Review (it changes nothing)', () => {
 test('a new standup waits for the host: Start, not a running clock (TL-231)', () => {
   const fresh = { people: [{ id: 'a', label: 'Ava' }], index: 0, spentMs: 0, runningSince: null };
   const html = renderToStaticMarkup(<StandupPanel standup={fresh} onAction={() => {}} />);
-  expect(html).toContain('>Start<');
-  expect(html).toContain('(waiting to start)');
+  expect(html).toContain('aria-label="Start"');
+  expect(html).toContain('waiting to start');
   expect(html).toContain('2:00'); // the full turn, not counting down
-  expect(html).not.toContain('>Resume<');
+  expect(html).not.toContain('aria-label="Resume"');
   // once it's begun, pausing shows Resume as before
   const paused = renderToStaticMarkup(<StandupPanel standup={{ ...fresh, spentMs: 5000 }} onAction={() => {}} />);
-  expect(paused).toContain('>Resume<');
-  expect(paused).toContain('(paused)');
+  expect(paused).toContain('aria-label="Resume"');
+  expect(paused).toContain('· paused');
 });
 
 test('only the host runs the standup: followers see the turn and clock, without the controls (TL-235)', () => {
@@ -33,10 +33,10 @@ test('only the host runs the standup: followers see the turn and clock, without 
   const follower = renderToStaticMarkup(<StandupPanel standup={s} onAction={() => {}} canRun={false} />);
   expect(follower).toContain('Ava’s turn');
   expect(follower).toContain('2:00');
-  for (const control of ['>Start<', '>Previous<', '>Next<', '>End<']) expect(follower).not.toContain(control);
+  for (const control of ['aria-label="Start"', 'Previous', 'Next', '>End<']) expect(follower).not.toContain(control);
   expect(follower).toContain('tabindex="-1"'); // the running order is shown, not clickable
   const host = renderToStaticMarkup(<StandupPanel standup={s} onAction={() => {}} />);
-  for (const control of ['>Start<', '>Previous<', '>Next<', '>End<']) expect(host).toContain(control);
+  for (const control of ['aria-label="Start"', 'Previous', 'Next', '>End<']) expect(host).toContain(control);
 });
 
 test('each viewer names people from their own list: "You" is only ever the viewer (TL-236)', () => {
@@ -51,4 +51,14 @@ test('each viewer names people from their own list: "You" is only ever the viewe
   expect(renderToStaticMarkup(<StandupPanel standup={{ ...s, index: 0 }} onAction={() => {}} people={othersList} />)).toContain('Your turn');
   // while the list loads, nobody else is called "You"
   expect(renderToStaticMarkup(<StandupPanel standup={s} onAction={() => {}} />)).toContain('A teammate’s turn');
+});
+
+test('the running order is a list down the side, the speaker highlighted, the review last (TL-237)', () => {
+  const s = { people: [{ id: 'a', label: 'Ava' }, { id: 'b', label: 'Bo' }], index: 1, spentMs: 0, runningSince: 1 };
+  const html = renderToStaticMarkup(<StandupPanel standup={s} onAction={() => {}} />);
+  expect(html).toContain('<aside aria-label="Standup"');
+  expect(html).toMatch(/aria-current="step"[^>]*>Bo</);
+  expect(html).toMatch(/line-through[^>]*>Ava</); // done
+  expect(html.indexOf('>Bo<')).toBeLessThan(html.indexOf('>Board Review<'));
+  expect(html).toContain('aria-label="Pause"'); // running
 });

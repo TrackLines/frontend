@@ -1,16 +1,18 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { ChevronLeftIcon, ChevronRightIcon, PauseIcon, PlayIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 import type { Assignee } from '@/lib/api';
+import { cn } from '@/lib/utils';
 import { clock, remaining, reviewing, speakerName, turnTitle, waiting, type Standup } from '@/lib/standup';
 
 type Props = { standup: Standup; onAction: (action: 'next' | 'previous' | 'jump' | 'pause' | 'resume' | 'end', index?: number) => void; goal?: string; canRun?: boolean; people?: Assignee[] | null };
 
-// StandupPanel runs the standup over the board: who's speaking, their clock, and the running order.
-// The board under it shows the speaker's tickets (all tickets during the board review).
-// canRun: the host (TL-235); everyone else sees the turn, clock and order, but can't change them.
+// StandupPanel: the standup as a sidebar left of the board (TL-237, after Jira's): the clock with
+// play/pause, then the running order top to bottom with the speaker highlighted. The board beside it
+// shows the speaker's tickets (all tickets during the board review).
+// canRun: the host (TL-235); everyone else sees the clock and order, but can't change them.
 export function StandupPanel({ standup, onAction, goal, canRun = true, people = null }: Props) {
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
@@ -23,52 +25,53 @@ export function StandupPanel({ standup, onAction, goal, canRun = true, people = 
   const notStarted = waiting(standup); // opens stopped until the host starts it
   const review = reviewing(standup);
   const last = standup.index === standup.people.length; // the review is the last step
-  const jump = (index: number) => onAction('jump', index);
+  const steps = [...standup.people.map((p) => speakerName(p, people)), 'Board Review'];
 
   return (
-    <section aria-label="Standup" className="grid gap-3 border-b bg-muted/40 px-6 py-3 text-sm">
-      {/* everyone's update is against the sprint goal */}
-      {goal && <p><span className="text-muted-foreground">Sprint goal:</span> <span className="font-medium">{goal}</span></p>}
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <span className="font-semibold">
-          {review ? 'Board Review: everything, together' : turnTitle(speakerName(standup.people[standup.index], people))}
-        </span>
-        <span role="timer" aria-live="off" className={cn('font-mono tabular-nums', left < 0 && 'font-semibold text-destructive')}>
-          {clock(left)}{notStarted ? ' (waiting to start)' : paused && ' (paused)'}
-        </span>
-        {canRun && <div className="ml-auto flex flex-wrap gap-2">
-          <Button size="sm" variant="outline" disabled={standup.index === 0} onClick={() => onAction('previous')}>Previous</Button>
-          {notStarted
-            ? <Button size="sm" onClick={() => onAction('resume')} title="Start the clock once everyone has joined">Start</Button>
-            : <Button size="sm" variant="outline" onClick={() => onAction(paused ? 'resume' : 'pause')}>{paused ? 'Resume' : 'Pause'}</Button>}
-          {last
-            ? <Button size="sm" onClick={() => onAction('end')}>Finish standup</Button>
-            : <Button size="sm" onClick={() => onAction('next')}>{standup.index === standup.people.length - 1 ? 'Board Review' : 'Next'}</Button>}
-          {!last && <Button size="sm" variant="ghost" onClick={() => onAction('end')}>End</Button>}
-        </div>}
+    <aside aria-label="Standup" className="sticky top-0 grid w-64 shrink-0 content-start gap-4 self-start rounded-xl border bg-card p-4 text-sm">
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="font-semibold">Standup</h2>
+        {canRun && <Button size="sm" variant="ghost" onClick={() => onAction('end')}>{last ? 'Finish' : 'End'}</Button>}
       </div>
-      <ol className="flex flex-wrap gap-2" aria-label="Running order">
-        {standup.people.map((p, i) => (
-          <li key={p.id}>
+      {/* everyone's update is against the sprint goal */}
+      {goal && <p className="text-xs"><span className="text-muted-foreground">Sprint goal:</span> <span className="font-medium">{goal}</span></p>}
+
+      <div className="grid gap-1">
+        <div className="flex items-center gap-2">
+          <span role="timer" aria-live="off" className={cn('font-mono text-3xl tabular-nums', left < 0 && 'text-destructive')}>{clock(left)}</span>
+          {canRun && (notStarted || paused
+            ? <Button size="icon-sm" variant={notStarted ? 'default' : 'ghost'} aria-label={notStarted ? 'Start' : 'Resume'} title={notStarted ? 'Start the clock once everyone has joined' : 'Resume'} onClick={() => onAction('resume')}><PlayIcon /></Button>
+            : <Button size="icon-sm" variant="ghost" aria-label="Pause" onClick={() => onAction('pause')}><PauseIcon /></Button>)}
+        </div>
+        <p className="text-xs text-muted-foreground">
+          {review ? 'Board Review: everything, together' : turnTitle(steps[standup.index])}
+          {notStarted ? ' · waiting to start' : paused ? ' · paused' : ''}
+        </p>
+      </div>
+
+      <ol className="grid gap-0.5" aria-label="Running order">
+        {steps.map((label, i) => (
+          <li key={i}>
             <Button
               size="sm"
-              variant={i === standup.index ? 'default' : 'ghost'}
+              variant="ghost"
               aria-current={i === standup.index ? 'step' : undefined}
-              className={cn(i < standup.index && 'text-muted-foreground line-through', !canRun && 'pointer-events-none')}
+              className={cn('w-full justify-start', i === standup.index && 'bg-accent font-semibold', i < standup.index && 'text-muted-foreground line-through', !canRun && 'pointer-events-none')}
               tabIndex={canRun ? undefined : -1}
-              onClick={canRun ? () => jump(i) : undefined}
+              onClick={canRun ? () => onAction('jump', i) : undefined}
             >
-              {speakerName(p, people)}
+              {label}
             </Button>
           </li>
         ))}
-        <li>
-          <Button size="sm" variant={review ? 'default' : 'ghost'} aria-current={review ? 'step' : undefined} className={cn(!canRun && 'pointer-events-none')}
-            tabIndex={canRun ? undefined : -1} onClick={canRun ? () => jump(standup.people.length) : undefined}>
-            Board Review
-          </Button>
-        </li>
       </ol>
-    </section>
+
+      {canRun && (
+        <div className="flex justify-between gap-2">
+          <Button size="sm" variant="outline" disabled={standup.index === 0} onClick={() => onAction('previous')}><ChevronLeftIcon /> Previous</Button>
+          {!last && <Button size="sm" onClick={() => onAction('next')}>Next <ChevronRightIcon /></Button>}
+        </div>
+      )}
+    </aside>
   );
 }
