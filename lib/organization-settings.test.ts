@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 import { ApiError, type OrganizationMember, type Project, type Team } from '@/lib/api';
-import { adminSource, inviteInput, inviteReady, memberName, personIn, saveError, targetName } from './organization-settings';
+import { adminSource, inviteInput, inviteReady, memberName, personIn, saveError, sectionOf, targetName } from './organization-settings';
 
 const members: OrganizationMember[] = [
   { user_id: 'u1', first_name: 'Ava', last_name: 'Smith', identifier: 'ava@x.io' },
@@ -36,4 +36,13 @@ test('invitations: the org one needs no target, team and project ones do', () =>
   expect(targetName(teams, projects, { scope: 'team', target_id: 't1' })).toBe('Platform');
   expect(targetName(teams, projects, { scope: 'project', target_id: 'p1' })).toBe('TrackLines');
   expect(targetName(teams, projects, { scope: 'team', target_id: 'gone' })).toBe('team');
+});
+
+test('each change reports in the section that made it, so its result is on screen (TL-220)', () => {
+  expect(sectionOf('invite')).toBe('invites');
+  expect(sectionOf('revoke:i1')).toBe('invites');
+  expect(sectionOf('accept:i1')).toBe('received');
+  expect(sectionOf('admin:u1')).toBe('members');
+  expect(sectionOf('create-team')).toBe('teams');
+  expect(sectionOf('t1:member')).toBe('teams');
 });

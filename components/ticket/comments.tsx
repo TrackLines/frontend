@@ -5,7 +5,8 @@ import { ListSkeleton } from '@/components/page-skeletons';
 import { When } from '@/components/when';
 import { useEffect, useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
-import type { TicketComment } from '@/lib/api';
+import type { Assignee, TicketComment } from '@/lib/api';
+import { usePeople } from '@/lib/use-people';
 import { ticketComments } from '@/lib/api';
 import { personLabel } from '@/lib/people';
 import { commentThread, type CommentNode } from './comment-thread';
@@ -20,6 +21,7 @@ export function TicketComments({ ticketId, token }: { ticketId: string; token: s
   const [replyTo, setReplyTo] = useState<TicketComment | null>(null);
   const [posting, setPosting] = useState(false);
   const [postError, setPostError] = useState('');
+  const people = usePeople(token);
 
   useEffect(() => {
     let current = true;
@@ -68,12 +70,12 @@ export function TicketComments({ ticketId, token }: { ticketId: string; token: s
       ) : comments.length === 0 ? (
         <p className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">No comments yet. Add the first update.</p>
       ) : (
-        <CommentList comments={comments} onReply={setReplyTo} />
+        <CommentList comments={comments} onReply={setReplyTo} people={people} />
       )}
 
       {replyTo && (
         <div className="flex items-center justify-between gap-2 rounded-md bg-muted/50 px-3 py-2 text-sm">
-          <span>Replying to <strong>{personLabel(replyTo.author)}</strong></span>
+          <span>Replying to <strong>{personLabel(replyTo.author, people)}</strong></span>
           <Button type="button" variant="ghost" size="sm" onClick={() => setReplyTo(null)}>Cancel reply</Button>
         </div>
       )}
@@ -99,27 +101,27 @@ export function TicketComments({ ticketId, token }: { ticketId: string; token: s
 }
 
 // CommentList: the threaded comments. Without onReply it's read-only (the landing page sample).
-export function CommentList({ comments, onReply }: { comments: TicketComment[]; onReply?: (comment: TicketComment) => void }) {
+export function CommentList({ comments, onReply, people = null }: { comments: TicketComment[]; onReply?: (comment: TicketComment) => void; people?: Assignee[] | null }) {
   return (
     <div className="grid min-w-0 gap-3">
-      {commentThread(comments).map((node) => <Comment key={node.comment.id} node={node} depth={0} onReply={onReply} />)}
+      {commentThread(comments).map((node) => <Comment key={node.comment.id} node={node} depth={0} onReply={onReply} people={people} />)}
     </div>
   );
 }
 
-function Comment({ node, depth, onReply }: { node: CommentNode; depth: number; onReply?: (comment: TicketComment) => void }) {
+function Comment({ node, depth, onReply, people }: { node: CommentNode; depth: number; onReply?: (comment: TicketComment) => void; people: Assignee[] | null }) {
   const comment = node.comment;
   return (
     <article className={`min-w-0 rounded-lg border p-3 ${depth > 0 ? 'ml-3 border-l-2 bg-muted/20 sm:ml-6' : ''}`}>
       <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-        <span className="text-sm font-medium">{personLabel(comment.author)}</span>
+        <span className="text-sm font-medium">{personLabel(comment.author, people)}</span>
         <When iso={comment.created_at} className="text-xs text-muted-foreground" />
       </div>
       <Markdown className="mt-2 text-sm">{comment.body}</Markdown>
       {onReply && <Button type="button" variant="ghost" size="sm" className="mt-1 -ml-2" onClick={() => onReply(comment)}>Reply</Button>}
       {node.replies.length > 0 && (
         <div className="mt-2 grid gap-2 border-l pl-3 sm:pl-4">
-          {node.replies.map((reply) => <Comment key={reply.comment.id} node={reply} depth={depth + 1} onReply={onReply} />)}
+          {node.replies.map((reply) => <Comment key={reply.comment.id} node={reply} depth={depth + 1} onReply={onReply} people={people} />)}
         </div>
       )}
     </article>

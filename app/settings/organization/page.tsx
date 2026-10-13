@@ -9,8 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ApiError, invitations, organization, projects as projectApi, teams as teamApi, type Invitation, type OrganizationMember, type OrgAdmin, type Project, type Team, type TeamMember } from '@/lib/api';
 import { useToken } from '@/lib/use-token';
-import { ReceivedInvitations, TeamEditor } from '@/components/settings/organization';
-import { adminSource, inviteInput, inviteReady, memberName, personIn, saveError, targetName } from '@/lib/organization-settings';
+import { OutcomeNote, ReceivedInvitations, TeamEditor } from '@/components/settings/organization';
+import { adminSource, inviteInput, inviteReady, memberName, personIn, saveError, sectionOf, targetName, type Outcome } from '@/lib/organization-settings';
 
 type TeamState = { team: Team; members: TeamMember[] };
 type PageData = {
@@ -26,8 +26,7 @@ export default function OrganizationSettingsPage() {
   const [data, setData] = useState<PageData | null>(null);
   const [receivedInvites, setReceivedInvites] = useState<Invitation[]>([]);
   const [loadError, setLoadError] = useState('');
-  const [error, setError] = useState('');
-  const [notice, setNotice] = useState('');
+  const [outcome, setOutcome] = useState<Outcome | null>(null); // shown in the section where the change was made
   const [busy, setBusy] = useState('');
   const [newTeamName, setNewTeamName] = useState('');
   const [newTeamDescription, setNewTeamDescription] = useState('');
@@ -58,15 +57,19 @@ export default function OrganizationSettingsPage() {
 
   useEffect(() => { if (token) void load(token); }, [token]);
 
-  async function run(key: string, action: () => Promise<unknown>, success?: string) {
-    if (!token) return;
-    setBusy(key); setError(''); setNotice('');
+  // run makes a change, reloads, and reports where it was made; true when it worked.
+  async function run(key: string, action: () => Promise<unknown>, success?: string): Promise<boolean> {
+    if (!token) return false;
+    const section = sectionOf(key);
+    setBusy(key); setOutcome(null);
     try {
       await action();
       await load(token);
-      if (success) setNotice(success);
+      if (success) setOutcome({ section, ok: true, text: success });
+      return true;
     } catch (err) {
-      setError(saveError(key, err));
+      setOutcome({ section, ok: false, text: saveError(key, err) });
+      return false;
     } finally { setBusy(''); }
   }
 
@@ -74,19 +77,19 @@ export default function OrganizationSettingsPage() {
 
   async function createTeam(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    await run('create-team', () => teamApi.create(newTeamName, newTeamDescription, token!), 'Team created.');
-    setNewTeamName(''); setNewTeamDescription('');
+    if (await run('create-team', () => teamApi.create(newTeamName, newTeamDescription, token!), 'Team created.')) {
+      setNewTeamName(''); setNewTeamDescription('');
+    }
   }
 
   async function sendInvite(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const input = inviteInput(inviteEmail, inviteScope, inviteTarget);
-    await run('invite', () => invitations.create(input, token!), 'Invitation sent.');
-    setInviteEmail('');
+    if (await run('invite', () => invitations.create(input, token!), `Invitation sent to ${input.email_address}.`)) setInviteEmail(''); // kept if it failed
   }
 
   if (!token) return <ListPageSkeleton label="Loading organization settings…" sections={2} />;
-  if (loadError && !data) return <main className="mx-auto max-w-6xl px-6 py-10"><Link href="/settings" className="text-sm text-muted-foreground hover:underline">← Settings</Link><h1 className="mt-2 mb-6 text-3xl font-bold tracking-tight">Organization</h1>{error && <p role="alert" className="mb-4 text-sm text-destructive">{error}</p>}<ReceivedInvitations items={receivedInvites} token={token} run={run} /><p role="alert" className="mt-6 text-sm text-muted-foreground">{loadError}</p></main>;
+  if (loadError && !data) return <main className="mx-auto max-w-6xl px-6 py-10"><Link href="/settings" className="text-sm text-muted-foreground hover:underline">← Settings</Link><h1 className="mt-2 mb-6 text-3xl font-bold tracking-tight">Organization</h1><OutcomeNote outcome={outcome} section="received" /><ReceivedInvitations items={receivedInvites} token={token} run={run} /><p role="alert" className="mt-6 text-sm text-muted-foreground">{loadError}</p></main>;
   if (!data) return <ListPageSkeleton label="Loading members and teams…" sections={2} />;
 
   const administrators = new Set(data.admins.map((admin) => admin.user_id));
@@ -97,9 +100,7 @@ export default function OrganizationSettingsPage() {
         <h1 className="text-3xl font-bold tracking-tight">Organization</h1>
         <p className="mt-1 text-sm text-muted-foreground">View organization members, teams, and who can manage them.</p>
       </header>
-      {error && <p role="alert" className="mb-4 rounded-lg border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive">{error}</p>}
-      {notice && <p role="status" className="mb-4 rounded-lg border border-primary/40 bg-primary/5 p-3 text-sm">{notice}</p>}
-
+      <OutcomeNote outcome={outcome} section="received" />
       <ReceivedInvitations items={receivedInvites} token={token} run={run} />
 
       <section className={card}>
@@ -107,6 +108,7 @@ export default function OrganizationSettingsPage() {
           <div><h2 className="text-lg font-semibold">Members</h2><p className="text-sm text-muted-foreground">{data.members.length} of the organization’s members</p></div>
           {data.isAdmin && <Badge>Organization admin</Badge>}
         </div>
+        <OutcomeNote outcome={outcome} section="members" />
         {data.members.length === 0 ? <p className="text-sm text-muted-foreground">No members found.</p> : (
           <ul className="divide-y">
             {data.members.map((member) => {
@@ -128,6 +130,7 @@ export default function OrganizationSettingsPage() {
 
       <section className={`${card} mt-6`}>
         <div className="mb-4"><h2 className="text-lg font-semibold">Teams</h2><p className="text-sm text-muted-foreground">Teams connect members to project boards.</p></div>
+        <OutcomeNote outcome={outcome} section="teams" />
         {data.teams.length === 0 && <p className="mb-4 text-sm text-muted-foreground">No teams yet.</p>}
         <div className="space-y-4">
           {data.teams.map(({ team, members }) => <article key={team.id} className="rounded-lg border p-4">
@@ -158,6 +161,7 @@ export default function OrganizationSettingsPage() {
           </Select> : <span />}
           <Button disabled={busy === 'invite' || !inviteReady(inviteScope, inviteTarget)}>{busy === 'invite' ? 'Sending…' : 'Send invite'}</Button>
         </form>
+        <div className="mt-3"><OutcomeNote outcome={outcome} section="invites" /></div>
         <div className="mt-5 border-t pt-4">
           <h3 className="mb-2 font-medium">Invitations</h3>
           {data.invites.length === 0 ? <p className="text-sm text-muted-foreground">No invitations yet.</p> : <ul className="divide-y">

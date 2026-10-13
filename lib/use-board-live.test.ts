@@ -18,3 +18,13 @@ test('closing the board stops reconnecting', async () => {
   await keepStreaming(async () => { connects++; controller.abort(); throw new Error('aborted'); }, controller.signal, () => {}, async () => {});
   expect(connects).toBe(1);
 });
+
+test('each drop reports why: the failure, or nothing when the stream just ended', async () => {
+  const controller = new AbortController();
+  const failure = new Error('503');
+  const outcomes: (Error | null)[] = [failure, null];
+  const reasons: unknown[] = [];
+  await keepStreaming(async () => { const next = outcomes.shift(); if (next) throw next; }, controller.signal,
+    (err) => { reasons.push(err); if (reasons.length === 2) controller.abort(); }, async () => {});
+  expect(reasons).toEqual([failure, undefined]);
+});

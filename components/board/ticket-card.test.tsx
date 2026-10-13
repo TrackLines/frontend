@@ -8,7 +8,7 @@ const card = (extra: object) => renderToStaticMarkup(<TicketCard ticket={{ ...ba
 test('clean card: readable people, only meaningful badges, compact actions', () => {
   const html = card({ key: 'TL-123', type: 'feature', priority: 'urgent', assigned_to: 'claude' });
   expect(html).not.toContain('user_3KHx');
-  expect(html).toContain('by You');
+  expect(html).toContain('by A teammate'); // a person, before the org's people list loads: never assumed to be "You" (TL-229)
   expect(html).toContain('>claude<');
   expect(html).toContain('>Urgent<');
   expect(html).toContain('>feature<');

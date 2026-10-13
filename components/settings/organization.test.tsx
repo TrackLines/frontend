@@ -29,3 +29,13 @@ test('invitations for me: accept in Clerk, then complete here; nothing when ther
   for (const s of ['Invitations for you', 'team invitation', 'href="https://clerk.example/accept"', 'Complete acceptance']) expect(html).toContain(s);
   expect(renderToStaticMarkup(<ReceivedInvitations items={[]} token="tok" run={async () => {}} />)).toBe('');
 });
+
+test('a change’s result shows only in its own section: success as a status, failure as an alert', async () => {
+  const { OutcomeNote } = await import('./organization');
+  const sent = { section: 'invites' as const, ok: true, text: 'Invitation sent to ava@x.io.' };
+  expect(renderToStaticMarkup(<OutcomeNote outcome={sent} section="invites" />)).toMatch(/role="status"[^>]*>Invitation sent to ava@x.io./);
+  expect(renderToStaticMarkup(<OutcomeNote outcome={sent} section="members" />)).toBe('');
+  expect(renderToStaticMarkup(<OutcomeNote outcome={null} section="invites" />)).toBe('');
+  const failed = { section: 'invites' as const, ok: false, text: 'Only organization admins can make this change.' };
+  expect(renderToStaticMarkup(<OutcomeNote outcome={failed} section="invites" />)).toMatch(/role="alert"/);
+});

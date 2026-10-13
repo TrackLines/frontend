@@ -206,15 +206,23 @@ export async function api<T>(path: string, { method = 'GET', body, token }: Opti
 }
 
 // Fetch based SSE keeps the same Bearer auth and token refresh behavior as JSON API calls.
-export async function streamBoardLive(
+export function streamBoardLive(
   boardId: string, token: T, signal: AbortSignal,
+  onEvent: (event: BoardLiveEvent) => void, onOpen?: () => void,
+): Promise<void> {
+  return streamLive(`/boards/${encodeURIComponent(boardId)}/live`, token, signal, onEvent, onOpen);
+}
+
+// streamLive reads a live channel (a board's, or a project's for hosted refinement) as server-sent events.
+export async function streamLive(
+  path: string, token: T, signal: AbortSignal,
   onEvent: (event: BoardLiveEvent) => void, onOpen?: () => void,
 ): Promise<void> {
   const request = async (skipCache: boolean) => {
     const t = await liveToken(token, skipCache);
     const headers: Record<string, string> = { Accept: 'text/event-stream' };
     if (t) headers.Authorization = `Bearer ${t}`;
-    return fetch(`${base()}/boards/${encodeURIComponent(boardId)}/live`, { headers, cache: 'no-store', signal });
+    return fetch(`${base()}${path}`, { headers, cache: 'no-store', signal });
   };
   let response = await request(false);
   if (response.status === 401 && token && typeof window !== 'undefined') response = await request(true);
@@ -277,6 +285,29 @@ export const boards = {
   archive: (id: string, token: T) => api<void>(`/boards/${id}/archive`, { method: 'POST', token }),
   restore: (id: string, token: T) => api<void>(`/boards/${id}/restore`, { method: 'POST', token }),
   archived: (projectId: string, token: T) => api<Board[]>(`/projects/${projectId}/archived-boards`, { token }),
+};
+
+// Hosted sessions (TL-221): someone hosts a refinement (per project) or standup (per board); others
+// join and follow what the host has open.
+export type HostedFocus = { ticketId: string | null; filters?: Record<string, string[]> };
+export type HostedSession = { host: string; startedAt: number; focus: HostedFocus; people: string[] };
+export type HostedPaths = { kind: 'refinement' | 'standup'; stream: string; session: string; start?: string; end?: string; base: string };
+export const hostedPaths = {
+  refinement: (projectId: string): HostedPaths => ({ kind: 'refinement', stream: `/projects/${projectId}/live`,
+    session: `/projects/${projectId}/live/refinement`, start: `/projects/${projectId}/live/refinement`, end: `/projects/${projectId}/live/refinement`,
+    base: `/projects/${projectId}/live/refinement` }),
+  // a standup's session starts and ends with the standup itself
+  standup: (boardId: string): HostedPaths => ({ kind: 'standup', stream: `/boards/${boardId}/live`,
+    session: `/boards/${boardId}/live/standup/session`, base: `/boards/${boardId}/live/standup` }),
+};
+export const hosted = {
+  get: (p: HostedPaths, token: T) => api<HostedSession>(p.session, { token }),
+  start: (p: HostedPaths, token: T) => api<HostedSession>(p.start!, { method: 'POST', token }),
+  end: (p: HostedPaths, token: T) => api<void>(p.end!, { method: 'DELETE', token }),
+  join: (p: HostedPaths, token: T) => api<HostedSession>(`${p.base}/join`, { method: 'POST', token }),
+  leave: (p: HostedPaths, token: T) => api<void>(`${p.base}/leave`, { method: 'POST', token }),
+  focus: (p: HostedPaths, focus: HostedFocus, token: T) => api<HostedSession>(`${p.base}/focus`, { method: 'PUT', body: focus, token }),
+  handOver: (p: HostedPaths, userId: string, token: T) => api<HostedSession>(`${p.base}/host`, { method: 'PUT', body: { user_id: userId }, token }),
 };
 
 export const liveViews = {

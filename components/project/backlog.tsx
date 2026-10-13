@@ -3,7 +3,7 @@
 import { MarkdownTextarea, plainText } from '@/components/markdown';
 import { When } from '@/components/when';
 import Link from 'next/link';
-import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -13,12 +13,16 @@ import { TICKET_TYPES as TYPES, TypeBadge, TypePicker } from '@/components/ticke
 import { TICKET_DIALOG_WIDTH, TicketDialog } from '@/components/board/ticket-dialog';
 import { EstimateSelect } from '@/components/board/estimate';
 import { RefinementMode } from '@/components/project/refinement';
+import { FollowedTicket, HostedBar } from '@/components/hosted-bar';
+import { followedTicket, refineLabel } from '@/lib/hosted';
+import { useHosted } from '@/lib/use-hosted';
+import { usePeople } from '@/lib/use-people';
 import type { EstimateScale } from '@/lib/estimates';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
 import { LabelDrawer, MoreLabels, splitLabels, TicketLabels } from '@/components/ticket/labels';
 import { attachAll, PendingAttachments, type PendingFile } from '@/components/ticket/pending-attachments';
 import { BACKLOG_CHANGED } from '@/components/quick-add-ticket';
-import { ApiError, backlog, BacklogTicket, type BacklogPage, type BacklogSort, boards as boardsApi, tickets, type Board, type Ticket, type TicketType } from '@/lib/api';
+import { ApiError, backlog, BacklogTicket, type BacklogPage, type BacklogSort, boards as boardsApi, tickets, type Board, type Ticket, type TicketType, hostedPaths } from '@/lib/api';
 import { useAutoRefresh } from '@/lib/use-auto-refresh';
 import { useCachedState } from '@/lib/page-cache';
 import { ListSkeleton } from '@/components/page-skeletons';
@@ -51,6 +55,28 @@ export function Backlog({ projectId, boards, token }: Props) {
   const [editScale, setEditScale] = useState<EstimateScale>('none'); // a planned ticket is sized on its planned board's scale
   const [changes, setChanges] = useState(0); // bumps on every reload, so refine mode refreshes too
   const openEditor = (t: BacklogTicket, scale: EstimateScale = 'none') => { setEditScale(scale); setEditing(t); };
+
+  // hosted refinement (TL-224): Refine starts a session others can join; the host's open ticket opens
+  // read-only for followers, so nobody has to share their screen
+  const paths = useMemo(() => hostedPaths.refinement(projectId), [projectId]);
+  const session = useHosted(paths, token);
+  const people = usePeople(token);
+  const hosting = session.role === 'host';
+  useEffect(() => { if (refining && hosting) session.focus({ ticketId: editing?.id ?? null }); }, [editing?.id, refining, hosting]);
+  async function refine() {
+    setError('');
+    try {
+      if (session.session) await session.join(); else await session.start(); // joining also brings a returning host back
+    } catch {
+      setError('Couldn’t start the shared session; refining on your own.');
+    }
+    setRefining(true);
+  }
+  function doneRefining() {
+    if (hosting) void session.end(); else session.leave();
+    setRefining(false);
+    void load();
+  }
 
   // server does the filtering, ordering and paging; only the latest request may land
   const latest = useRef(0);
@@ -150,16 +176,23 @@ export function Backlog({ projectId, boards, token }: Props) {
         </div>
         {!refining && (
           <div className="flex gap-2">
-            {boards.some((b) => b.style !== 'kanban') && <Button variant="outline" onClick={() => setRefining(true)}>Refine</Button>}
+            {boards.some((b) => b.style !== 'kanban') && <Button variant="outline" onClick={() => void refine()}>{refineLabel(session.session, people, session.me)}</Button>}
             <Button variant="outline" onClick={() => setAdding(true)}>Add to backlog</Button>
           </div>
         )}
       </div>
+      {refining && session.session && session.role !== 'outside' && (
+        <div className="mb-4">
+          <HostedBar session={session.session} role={session.role} following={session.following} people={people} noun="refinement"
+            onFollow={session.setFollowing} onLeave={doneRefining} onEnd={doneRefining} onHandOver={session.handOver} />
+        </div>
+      )}
+      {refining && <FollowedTicket ticketId={followedTicket(session.session, session.role, session.following)} token={token} onDismiss={() => session.setFollowing(false)} />}
       {refining ? (
         <RefinementMode
           projectId={projectId} boards={boards} token={token} version={changes}
           priorities={priorityFilter} onPrioritiesChange={changePriorities}
-          onClose={() => { setRefining(false); void load(); }}
+          onClose={doneRefining}
           onOpen={(t, scale) => openEditor(t as unknown as BacklogTicket, scale)}
           ticketActions={(t) => (
             <>

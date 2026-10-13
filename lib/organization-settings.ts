@@ -37,3 +37,16 @@ export function targetName(teams: Team[], projects: Project[], invitation: Pick<
   if (invitation.scope === 'team') return teams.find((t) => t.id === invitation.target_id)?.name ?? 'team';
   return projects.find((p) => p.id === invitation.target_id)?.name ?? 'project';
 }
+
+// Each change's result shows in the section that started it, not at the top of a long page (TL-220).
+export type Section = 'received' | 'members' | 'teams' | 'invites';
+export type Outcome = { section: Section; ok: boolean; text: string };
+
+// sectionOf: where an action's result belongs, from its key (invite, revoke:…, admin:…, accept:…,
+// create-team, or a team's "<team id>:<action>").
+export function sectionOf(key: string): Section {
+  if (key === 'invite' || key.startsWith('revoke:')) return 'invites';
+  if (key.startsWith('accept:')) return 'received';
+  if (key.startsWith('admin:')) return 'members';
+  return 'teams';
+}

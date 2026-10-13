@@ -6,13 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { invitations, teams as teamApi, type Invitation, type OrganizationMember, type Project, type Team, type TeamMember } from '@/lib/api';
-import { memberName } from '@/lib/organization-settings';
+import { memberName, type Outcome, type Section } from '@/lib/organization-settings';
 
 const card = 'rounded-xl border p-5';
 const NO_TARGET = '__none';
 
 // ReceivedInvitations: invitations addressed to me, accepted in Clerk then completed here.
-export function ReceivedInvitations({ items, token, run }: { items: Invitation[]; token: string; run: (key: string, action: () => Promise<unknown>, success?: string) => Promise<void> }) {
+export function ReceivedInvitations({ items, token, run }: { items: Invitation[]; token: string; run: (key: string, action: () => Promise<unknown>, success?: string) => Promise<unknown> }) {
   if (items.length === 0) return null;
   return <section className={`${card} mb-6`}>
     <h2 className="text-lg font-semibold">Invitations for you</h2>
@@ -64,4 +64,12 @@ export function TeamEditor({ team, members, people, projects, projectTeams, isAd
       </div>
     </div>
   </>;
+}
+
+// OutcomeNote: a change's result, shown in the section where it was made.
+export function OutcomeNote({ outcome, section }: { outcome: Outcome | null; section: Section }) {
+  if (!outcome || outcome.section !== section) return null;
+  return outcome.ok
+    ? <p role="status" className="mb-3 rounded-lg border border-primary/40 bg-primary/5 p-3 text-sm">{outcome.text}</p>
+    : <p role="alert" className="mb-3 rounded-lg border border-destructive/40 bg-destructive/5 p-3 text-sm text-destructive">{outcome.text}</p>;
 }

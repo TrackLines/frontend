@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { PencilIcon } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { personLabel } from '@/lib/people';
+import { usePeople } from '@/lib/use-people';
 import { PriorityBadge } from './priority-badge';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
 import { TicketLabels } from '@/components/ticket/labels';
@@ -30,12 +31,15 @@ type Props = {
   scale?: EstimateScale; // the board's estimate scale
   readOnly?: boolean; // the board is being edited: tickets can be viewed, not changed
   onReviewed?: () => void; // approved or sent back: it changed column, so the board reloads
+  onViewChange?: (open: boolean) => void; // its read-only view opened or closed (a standup host shares it)
 };
 
-export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, done, scale, readOnly = false, onReviewed }: Props) {
-  const [viewOpen, setViewOpen] = useState(Boolean(openOnLoad));
+export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, done, scale, readOnly = false, onReviewed, onViewChange }: Props) {
+  const [viewOpen, setViewOpenState] = useState(Boolean(openOnLoad));
+  const setViewOpen = (open: boolean) => { setViewOpenState(open); onViewChange?.(open); };
   const [editOpen, setEditOpen] = useState(false);
   const [columnName, setColumnName] = useState(openOnLoad?.columnName ?? '');
+  const people = usePeople(token);
 
   function openView(event: MouseEvent<HTMLButtonElement>) {
     const label = event.currentTarget.closest<HTMLElement>('[data-column-id]')?.getAttribute('aria-label') ?? '';
@@ -72,8 +76,8 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
           <p className="line-clamp-2 break-words px-3 text-sm whitespace-pre-line text-muted-foreground">{plainText(ticket.description)}</p>
         )}
         <div className="mt-auto flex items-center justify-between gap-2 px-3 pt-2 text-xs text-muted-foreground">
-          <span className="truncate">{ticket.assigned_to ? personLabel(ticket.assigned_to) : <span className="italic">Unassigned</span>}</span>
-          <span className="truncate">by {personLabel(ticket.created_by)}{ticket.created_at && <>, <When iso={ticket.created_at} /></>}</span>
+          <span className="truncate">{ticket.assigned_to ? personLabel(ticket.assigned_to, people) : <span className="italic">Unassigned</span>}</span>
+          <span className="truncate">by {personLabel(ticket.created_by, people)}{ticket.created_at && <>, <When iso={ticket.created_at} /></>}</span>
         </div>
       </Card>
       <TicketView

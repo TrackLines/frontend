@@ -4,8 +4,9 @@ import { AgentReviewSetting } from '@/components/board/review';
 import { ArchivedBanner, BoardLifecycle } from '@/components/board/board-lifecycle';
 import Link from 'next/link';
 import { LoadError } from '@/components/load-error';
+import { LiveBadge } from '@/components/live-badge';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { AddColumn, Column } from '@/components/board/column';
 import { BoardDnd, DroppableColumn, SortableTicket } from '@/components/board/board-dnd';
 import { SprintBar } from '@/components/board/sprint-bar';
@@ -19,7 +20,11 @@ import { EditableTitle } from '@/components/editable-title';
 import { NameDialog } from '@/components/name-dialog';
 import { CopyLink } from '@/components/copy-link';
 import { Button } from '@/components/ui/button';
-import { ApiError, boardTemplates, boards, organization, projects, teams, tickets, type Board, type Ticket } from '@/lib/api';
+import { ApiError, boardTemplates, boards, hostedPaths, organization, projects, teams, tickets, type Board, type Ticket } from '@/lib/api';
+import { FollowedTicket, HostedBar } from '@/components/hosted-bar';
+import { followedFilters, followedTicket } from '@/lib/hosted';
+import { useHosted } from '@/lib/use-hosted';
+import { usePeople } from '@/lib/use-people';
 import { participants, speaker } from '@/lib/standup';
 import { useToken } from '@/lib/use-token';
 import { useBoardLive } from '@/lib/use-board-live';
@@ -52,8 +57,20 @@ export default function BoardPage() {
   const [labelFilter, setLabelFilter] = useState<string[]>(() => parseLabels(searchParams));
   const [priorityFilter, setPriorityFilter] = useState<string[]>(() => parsePriorities(searchParams));
   const [assigneeFilter, setAssigneeFilter] = useState<AssigneeFilter>('all');
-  const { standup, connected: liveConnected, start: startSharedStandup, act: actOnStandup } = useBoardLive(id, token);
+  const { standup, live, start: startSharedStandup, act: actOnStandup } = useBoardLive(id, token);
   const [joinedStandup, setJoinedStandup] = useState(false);
+  // hosted standup (TL-226): the host's filters and open ticket show on followers' screens
+  const standupPaths = useMemo(() => hostedPaths.standup(id), [id]);
+  const hostedStandup = useHosted(standupPaths, token);
+  const [hostTicket, setHostTicket] = useState<string | null>(null); // the ticket the host has open
+  useEffect(() => { if (joinedStandup) hostedStandup.joinStarted(); else hostedStandup.leave(); }, [joinedStandup]);
+  const people = usePeople(token);
+  // the host shares what they have open and how the board is filtered
+  useEffect(() => {
+    if (joinedStandup && hostedStandup.role === 'host') {
+      hostedStandup.focus({ ticketId: hostTicket, filters: { labels: labelFilter, priorities: priorityFilter, assignee: [assigneeFilter] } });
+    }
+  }, [joinedStandup, hostedStandup.role, hostTicket, labelFilter.join(','), priorityFilter.join(','), assigneeFilter]);
   const [startingStandup, setStartingStandup] = useState(false);
   const [standupError, setStandupError] = useState('');
 
@@ -137,7 +154,14 @@ export default function BoardPage() {
   const { manage: boardCanManage, admin: boardIsAdmin, editing: boardEditMode } = boardAccess({ checkedBoard: permissionBoardId, board: board.id, canManage, isAdmin, editMode });
   const kanban = board.style === 'kanban';
   const turn = joinedStandup && standup ? speaker(standup) : null;
-  const filters = { labels: labelFilter, priorities: priorityFilter, assignee: assigneeFilter, me: currentUserId, turn: turn?.id ?? null };
+  const followedId = followedTicket(hostedStandup.session, hostedStandup.role, hostedStandup.following);
+  const followedCol = followedId ? board.columns?.find((c) => c.tickets.some((x) => x.id === followedId)) : undefined;
+  const followedOnBoard = followedCol ? { ...followedCol.tickets.find((x) => x.id === followedId)!, column_name: followedCol.name } : undefined;
+  // a follower sees the board as the host has it; everyone else uses their own filters
+  const following = joinedStandup ? followedFilters(hostedStandup.session, hostedStandup.role, hostedStandup.following) : null;
+  const filters = following
+    ? { labels: following.labels ?? [], priorities: following.priorities ?? [], assignee: (following.assignee?.[0] ?? 'all') as AssigneeFilter, me: hostedStandup.session?.host ?? currentUserId, turn: turn?.id ?? null }
+    : { labels: labelFilter, priorities: priorityFilter, assignee: assigneeFilter, me: currentUserId, turn: turn?.id ?? null };
   const hasVisibleTickets = (board.columns ?? []).some((column) => shownTickets(column.tickets, { ...filters, editing: false }).length > 0);
 
   return (
@@ -173,8 +197,7 @@ export default function BoardPage() {
           {!joinedStandup && !boardEditMode && <Button type="button" variant="outline" size="sm" disabled={startingStandup} onClick={() => standup ? setJoinedStandup(true) : void beginStandup(board)}>
             {startingStandup ? 'Starting…' : standup ? 'Join standup' : 'Standup'}
           </Button>}
-          {liveConnected && <span role="status" className="text-xs text-muted-foreground">Live</span>}
-          {!liveConnected && standup && <span role="status" className="text-xs text-muted-foreground">Reconnecting…</span>}
+          {(live === 'live' || standup) && <LiveBadge state={live} />}
           {boardCanManage && !archived && !joinedStandup && <Button type="button" variant={editMode ? 'secondary' : 'outline'} size="sm" aria-pressed={editMode} onClick={() => setEditMode((editing) => !editing)}>
             {editMode ? 'Done editing' : 'Edit board'}
           </Button>}
@@ -202,7 +225,6 @@ export default function BoardPage() {
       <ArchivedBanner board={board} canManage={boardCanManage} token={token} onRestored={() => void load(true)} />
       {permissionError && <p role="status" className="border-b px-6 py-2 text-sm text-muted-foreground">Couldn’t verify board permissions. Board settings are hidden until permissions can be checked.</p>}
       {standupError && <p role="alert" className="border-b px-6 py-2 text-sm text-destructive">{standupError}</p>}
-      {permissionBoardId === board.id && !boardCanManage && <p role="note" className="border-b px-6 py-2 text-sm text-muted-foreground">Board settings are managed by organization admins and this board’s team leaders.</p>}
       {focus && !board.columns?.some((c) => c.tickets.some((t) => t.id === focus)) && (
         <p role="status" className="border-b px-6 py-3 text-sm text-muted-foreground">
           That ticket isn&apos;t on this board&apos;s current view (it may belong to a closed sprint or have moved).{' '}
@@ -215,6 +237,16 @@ export default function BoardPage() {
           <Link href={`/tickets/${toBacklog.id}`} className="font-medium text-foreground hover:underline">Open the ticket</Link>{' '}
           <Button type="button" variant="ghost" size="sm" onClick={() => setToBacklog(null)}>Dismiss</Button>
         </p>
+      )}
+      {joinedStandup && hostedStandup.session && (
+        <div className="border-b px-6 py-2">
+          <HostedBar session={hostedStandup.session} role={hostedStandup.role} following={hostedStandup.following} people={people} noun="standup"
+            onFollow={hostedStandup.setFollowing} onLeave={() => setJoinedStandup(false)} onHandOver={hostedStandup.handOver} />
+        </div>
+      )}
+      {joinedStandup && (
+        <FollowedTicket ticketId={followedTicket(hostedStandup.session, hostedStandup.role, hostedStandup.following)} token={token}
+          known={followedOnBoard} onDismiss={() => hostedStandup.setFollowing(false)} />
       )}
       {joinedStandup && standup && <StandupPanel standup={standup} onAction={(action, index) => {
         void actOnStandup(action, index).then(() => setStandupError(''), () => setStandupError('Couldn’t update the shared standup. Please try again.'));
@@ -264,6 +296,7 @@ export default function BoardPage() {
                         onUpdated={(nt) => updateTickets(col.id, (ts) => ts.map((x) => (x.id === nt.id ? nt : x)))}
                         onReviewed={() => void load(true)}
                         onDeleted={(tid) => updateTickets(col.id, (ts) => ts.filter((x) => x.id !== tid))}
+                        onViewChange={(open) => setHostTicket((current) => (open ? t.id : current === t.id ? null : current))}
                       />
                     </SortableTicket>
                   ))}

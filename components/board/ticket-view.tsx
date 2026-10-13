@@ -15,6 +15,7 @@ import type { Ticket } from '@/lib/api';
 import { EstimateBadge } from './estimate';
 import { TICKET_DIALOG_WIDTH } from './ticket-dialog';
 import { personLabel } from '@/lib/people';
+import { usePeople } from '@/lib/use-people';
 import { TicketKey, ticketPath } from '@/components/ticket/ticket-key';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
@@ -35,6 +36,7 @@ type Props = {
 };
 
 export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, token, done, onReviewed, sample, onDescription }: Props) {
+  const people = usePeople(token);
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -53,7 +55,7 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
         {ticket.duplicate_of_id && ticket.duplicate_of_title && <p className="text-sm text-muted-foreground">Original: <Link href={`/tickets/${ticket.duplicate_of_id}`} className="font-medium text-foreground hover:underline"><TicketKey value={ticket.duplicate_of_key} /> {ticket.duplicate_of_title}</Link></p>}
         <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
           <dt className="text-muted-foreground">Created by</dt>
-          <dd>{personLabel(ticket.created_by)}{ticket.created_at && <span className="text-muted-foreground">, <When iso={ticket.created_at} /></span>}</dd>
+          <dd>{personLabel(ticket.created_by, people)}{ticket.created_at && <span className="text-muted-foreground">, <When iso={ticket.created_at} /></span>}</dd>
           {ticket.updated_at && ticket.updated_at !== ticket.created_at && (
             <>
               <dt className="text-muted-foreground">Updated</dt>
@@ -67,7 +69,7 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
             </>
           )}
           <dt className="text-muted-foreground">Assigned to</dt>
-          <dd>{ticket.assigned_to ? personLabel(ticket.assigned_to) : <span className="text-muted-foreground italic">Unassigned</span>}</dd>
+          <dd>{ticket.assigned_to ? personLabel(ticket.assigned_to, people) : <span className="text-muted-foreground italic">Unassigned</span>}</dd>
         </dl>
         {token && onReviewed && <ReviewActions ticket={ticket} token={token} onReviewed={onReviewed} />}
         <TicketLabels labels={ticket.labels} />

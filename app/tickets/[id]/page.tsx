@@ -26,6 +26,7 @@ import { buttonVariants } from '@/components/ui/button';
 import { ApiError, tickets, type Ticket, type TicketDetail } from '@/lib/api';
 import { TicketDialog } from '@/components/board/ticket-dialog';
 import { personLabel } from '@/lib/people';
+import { usePeople } from '@/lib/use-people';
 import { useToken } from '@/lib/use-token';
 import { useCachedState } from '@/lib/page-cache';
 import { TicketSkeleton } from '@/components/page-skeletons';
@@ -39,6 +40,7 @@ export default function TicketPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const token = useToken();
+  const people = usePeople(token);
   const [t, setT] = useCachedState<TicketDetail>(`ticket:${id}`); // last-seen ticket shows instantly, then refreshes
   const [error, setError] = useState<number | null>(null);
   const [labels, setLabels] = useState<string[]>([]);
@@ -114,10 +116,10 @@ export default function TicketPage() {
       <DuplicateLinks ticket={t} />
       {token && <MarkDuplicate ticket={t} token={token} onChanged={() => { void tickets.get(t.id, token).then(setT); }} />}
         <p className="text-sm text-muted-foreground">
-          Created by {personLabel(t.created_by)}{t.created_at && <> <When iso={t.created_at} /></>}
+          Created by {personLabel(t.created_by, people)}{t.created_at && <> <When iso={t.created_at} /></>}
           {t.updated_at && t.updated_at !== t.created_at && <> · updated <When iso={t.updated_at} /></>}
           {t.done_at && <> · {closedAs(t)} <When iso={t.done_at} /></>}
-          {!token && (t.assigned_to ? ` · assigned to ${personLabel(t.assigned_to)}` : ' · unassigned')}
+          {!token && (t.assigned_to ? ` · assigned to ${personLabel(t.assigned_to, people)}` : ' · unassigned')}
         </p>
         {!token && <TicketLabels labels={t.labels} />}{/* signed in, the label editor below shows them */}
         {token && (

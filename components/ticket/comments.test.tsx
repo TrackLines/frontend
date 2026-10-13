@@ -20,3 +20,10 @@ test('the comment box: loading first, @mentions on, posting needs text', () => {
   for (const s of ['Conversation', 'Add a comment', 'aria-autocomplete="list"', '0/10000']) expect(html).toContain(s);
   expect(html).toMatch(/<button[^>]*type="submit"[^>]*disabled=""[^>]*>Post comment/);
 });
+
+test('comment authors are named from the people list, not all "You"', () => {
+  const people = [{ id: 'user_me', label: 'You', kind: 'person' as const }, { id: 'user_bo', label: 'Bo Jones', kind: 'person' as const }];
+  const html = renderToStaticMarkup(<CommentList people={people} comments={[{ ...c('a', 'mine'), author: 'user_me' }, { ...c('b', 'theirs'), author: 'user_bo' }]} />);
+  expect(html).toContain('>You<');
+  expect(html).toContain('>Bo Jones<');
+});
