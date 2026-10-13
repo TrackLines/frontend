@@ -249,7 +249,7 @@ export default function BoardPage() {
       )}
       {joinedStandup && standup && <StandupPanel standup={standup} onAction={(action, index) => {
         void actOnStandup(action, index).then(() => setStandupError(''), () => setStandupError('Couldn’t update the shared standup. Please try again.'));
-      }} goal={board.sprint?.goal} />}
+      }} goal={board.sprint?.goal} canRun={hostedStandup.role === 'host' || !hostedStandup.session} />}
       {/* sprint start/close changes which tickets the board shows, so reload */}
       {kanban
         ? <div className="flex flex-wrap items-center justify-between gap-2 border-b px-6 py-3">

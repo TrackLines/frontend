@@ -5,11 +5,12 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { clock, remaining, reviewing, waiting, type Standup } from '@/lib/standup';
 
-type Props = { standup: Standup; onAction: (action: 'next' | 'previous' | 'jump' | 'pause' | 'resume' | 'end', index?: number) => void; goal?: string };
+type Props = { standup: Standup; onAction: (action: 'next' | 'previous' | 'jump' | 'pause' | 'resume' | 'end', index?: number) => void; goal?: string; canRun?: boolean };
 
 // StandupPanel runs the standup over the board: who's speaking, their clock, and the running order.
 // The board under it shows the speaker's tickets (all tickets during the board review).
-export function StandupPanel({ standup, onAction, goal }: Props) {
+// canRun: the host (TL-235); everyone else sees the turn, clock and order, but can't change them.
+export function StandupPanel({ standup, onAction, goal, canRun = true }: Props) {
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
     const tick = setInterval(() => setNow(Date.now()), 1000);
@@ -34,7 +35,7 @@ export function StandupPanel({ standup, onAction, goal }: Props) {
         <span role="timer" aria-live="off" className={cn('font-mono tabular-nums', left < 0 && 'font-semibold text-destructive')}>
           {clock(left)}{notStarted ? ' (waiting to start)' : paused && ' (paused)'}
         </span>
-        <div className="ml-auto flex flex-wrap gap-2">
+        {canRun && <div className="ml-auto flex flex-wrap gap-2">
           <Button size="sm" variant="outline" disabled={standup.index === 0} onClick={() => onAction('previous')}>Previous</Button>
           {notStarted
             ? <Button size="sm" onClick={() => onAction('resume')} title="Start the clock once everyone has joined">Start</Button>
@@ -43,7 +44,7 @@ export function StandupPanel({ standup, onAction, goal }: Props) {
             ? <Button size="sm" onClick={() => onAction('end')}>Finish standup</Button>
             : <Button size="sm" onClick={() => onAction('next')}>{standup.index === standup.people.length - 1 ? 'Board Review' : 'Next'}</Button>}
           {!last && <Button size="sm" variant="ghost" onClick={() => onAction('end')}>End</Button>}
-        </div>
+        </div>}
       </div>
       <ol className="flex flex-wrap gap-2" aria-label="Running order">
         {standup.people.map((p, i) => (
@@ -52,15 +53,17 @@ export function StandupPanel({ standup, onAction, goal }: Props) {
               size="sm"
               variant={i === standup.index ? 'default' : 'ghost'}
               aria-current={i === standup.index ? 'step' : undefined}
-              className={cn(i < standup.index && 'text-muted-foreground line-through')}
-              onClick={() => jump(i)}
+              className={cn(i < standup.index && 'text-muted-foreground line-through', !canRun && 'pointer-events-none')}
+              tabIndex={canRun ? undefined : -1}
+              onClick={canRun ? () => jump(i) : undefined}
             >
               {p.label}
             </Button>
           </li>
         ))}
         <li>
-          <Button size="sm" variant={review ? 'default' : 'ghost'} aria-current={review ? 'step' : undefined} onClick={() => jump(standup.people.length)}>
+          <Button size="sm" variant={review ? 'default' : 'ghost'} aria-current={review ? 'step' : undefined} className={cn(!canRun && 'pointer-events-none')}
+            tabIndex={canRun ? undefined : -1} onClick={canRun ? () => jump(standup.people.length) : undefined}>
             Board Review
           </Button>
         </li>

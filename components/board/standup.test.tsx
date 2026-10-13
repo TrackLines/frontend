@@ -27,3 +27,14 @@ test('a new standup waits for the host: Start, not a running clock (TL-231)', ()
   expect(paused).toContain('>Resume<');
   expect(paused).toContain('(paused)');
 });
+
+test('only the host runs the standup: followers see the turn and clock, without the controls (TL-235)', () => {
+  const s = { people: [{ id: 'a', label: 'Ava' }, { id: 'b', label: 'Bo' }], index: 0, spentMs: 0, runningSince: null };
+  const follower = renderToStaticMarkup(<StandupPanel standup={s} onAction={() => {}} canRun={false} />);
+  expect(follower).toContain('Ava’s turn');
+  expect(follower).toContain('2:00');
+  for (const control of ['>Start<', '>Previous<', '>Next<', '>End<']) expect(follower).not.toContain(control);
+  expect(follower).toContain('tabindex="-1"'); // the running order is shown, not clickable
+  const host = renderToStaticMarkup(<StandupPanel standup={s} onAction={() => {}} />);
+  for (const control of ['>Start<', '>Previous<', '>Next<', '>End<']) expect(host).toContain(control);
+});
