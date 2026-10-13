@@ -16,6 +16,7 @@ import { EstimateBadge } from './estimate';
 import { personLabel } from '@/lib/people';
 import { TicketKey, ticketPath } from '@/components/ticket/ticket-key';
 import Link from 'next/link';
+import type { ReactNode } from 'react';
 
 type Props = {
   open: boolean;
@@ -26,9 +27,10 @@ type Props = {
   token?: string; // enables the Attachments section
   done?: boolean; // in the board's last column: attachments locked
   onReviewed?: () => void; // enables Approve / Send back on a ticket waiting for review
+  sample?: ReactNode; // landing page: static stand-ins for the live sections; no copy link
 };
 
-export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, token, done, onReviewed }: Props) {
+export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, token, done, onReviewed, sample }: Props) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -75,8 +77,9 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
         {open && token && <BugfixesPanel ticket={ticket} token={token} />}
         {open && token && <Attachments ticketId={ticket.id} token={token} locked={done} />}
         {open && token && <TicketComments ticketId={ticket.id} token={token} />}
+        {sample}
         <DialogFooter>
-          <CopyLink path={ticketPath(ticket)} className="sm:mr-auto" />
+          {!sample && <CopyLink path={ticketPath(ticket)} className="sm:mr-auto" />}
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Close</Button>
           {onEdit && <Button type="button" onClick={onEdit}>Edit</Button>}
         </DialogFooter>

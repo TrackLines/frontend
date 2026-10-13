@@ -51,8 +51,6 @@ export function TicketComments({ ticketId, token }: { ticketId: string; token: s
     }
   }
 
-  const roots = comments ? commentThread(comments) : [];
-
   return (
     <section aria-label="Ticket conversation" className="grid min-w-0 gap-4 border-t pt-4">
       <div>
@@ -70,9 +68,7 @@ export function TicketComments({ ticketId, token }: { ticketId: string; token: s
       ) : comments.length === 0 ? (
         <p className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">No comments yet. Add the first update.</p>
       ) : (
-        <div className="grid min-w-0 gap-3">
-          {roots.map((node) => <Comment key={node.comment.id} node={node} depth={0} onReply={setReplyTo} />)}
-        </div>
+        <CommentList comments={comments} onReply={setReplyTo} />
       )}
 
       {replyTo && (
@@ -102,7 +98,16 @@ export function TicketComments({ ticketId, token }: { ticketId: string; token: s
   );
 }
 
-function Comment({ node, depth, onReply }: { node: CommentNode; depth: number; onReply: (comment: TicketComment) => void }) {
+// CommentList: the threaded comments. Without onReply it's read-only (the landing page sample).
+export function CommentList({ comments, onReply }: { comments: TicketComment[]; onReply?: (comment: TicketComment) => void }) {
+  return (
+    <div className="grid min-w-0 gap-3">
+      {commentThread(comments).map((node) => <Comment key={node.comment.id} node={node} depth={0} onReply={onReply} />)}
+    </div>
+  );
+}
+
+function Comment({ node, depth, onReply }: { node: CommentNode; depth: number; onReply?: (comment: TicketComment) => void }) {
   const comment = node.comment;
   return (
     <article className={`min-w-0 rounded-lg border p-3 ${depth > 0 ? 'ml-3 border-l-2 bg-muted/20 sm:ml-6' : ''}`}>
@@ -111,7 +116,7 @@ function Comment({ node, depth, onReply }: { node: CommentNode; depth: number; o
         <When iso={comment.created_at} className="text-xs text-muted-foreground" />
       </div>
       <Markdown className="mt-2 text-sm">{comment.body}</Markdown>
-      <Button type="button" variant="ghost" size="sm" className="mt-1 -ml-2" onClick={() => onReply(comment)}>Reply</Button>
+      {onReply && <Button type="button" variant="ghost" size="sm" className="mt-1 -ml-2" onClick={() => onReply(comment)}>Reply</Button>}
       {node.replies.length > 0 && (
         <div className="mt-2 grid gap-2 border-l pl-3 sm:pl-4">
           {node.replies.map((reply) => <Comment key={reply.comment.id} node={reply} depth={depth + 1} onReply={onReply} />)}
