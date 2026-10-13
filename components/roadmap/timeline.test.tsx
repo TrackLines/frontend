@@ -40,13 +40,20 @@ test('the Gantt chart: dated items as bars or milestones with progress, undated 
   expect(renderToStaticMarkup(<Gantt items={[item('9', 'Undated')]} />)).toContain('Add target dates');
 });
 
-test('a done milestone is a filled diamond with a check; overdue is marked', () => {
-  const done = renderToStaticMarkup(<Milestone state="done" left={0} title="Launch" due="31 Oct" />);
-  expect(done).toContain('data-state="done"');
-  expect(done).toContain('<svg'); // the check
-  expect(done).toContain('Launch: milestone done');
-  const late = renderToStaticMarkup(<Milestone state="overdue" left={0} title="Launch" due="1 Oct" />);
-  expect(late).toContain('border-destructive');
-  expect(late).not.toContain('<svg');
-  expect(late).toContain('overdue, was due 1 Oct');
+test('a milestone diamond fills from the bottom as its tickets get done; checked only when all are', () => {
+  const at = (state: 'done' | 'overdue' | 'upcoming', done: number) => renderToStaticMarkup(<Milestone state={state} done={done} left={0} title="Launch" due="31 Oct" />);
+  const fillOf = (html: string) => Number(/data-fill="([\d.]+)"/.exec(html)?.[1] ?? 0);
+  expect(at('upcoming', 0)).not.toContain('data-fill'); // nothing done, empty
+  const quarter = at('upcoming', 1 / 4), most = at('upcoming', 16 / 17), full = at('done', 1);
+  expect(fillOf(quarter)).toBeGreaterThan(0);
+  expect(fillOf(most)).toBeGreaterThan(fillOf(quarter));
+  expect(fillOf(full)).toBe(24);
+  expect(fillOf(most)).toBeLessThan(24);
+  expect(most).not.toContain('<path'); // 16/17: nearly full, no check yet
+  expect(full).toContain('<path'); // the check
+  expect(quarter).toContain('Launch: milestone 25% done, due 31 Oct');
+  expect(full).toContain('Launch: milestone done');
+  const late = at('overdue', 0.5);
+  expect(late).toContain('stroke-destructive');
+  expect(late).toContain('50% done, overdue, was due 31 Oct');
 });

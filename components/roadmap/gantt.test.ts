@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 import type { RoadmapItem } from '@/lib/api';
-import { buildGanttItems, DAY_MS, dayStamp, getGanttRange, milestoneState, monthSegments, type GanttItem } from './gantt';
+import { buildGanttItems, DAY_MS, dayStamp, diamondFill, getGanttRange, milestoneDone, milestoneState, monthSegments, type GanttItem } from './gantt';
 
 const item = (id: string, target_date: string | null, start_date: string | null = null, position = 0): RoadmapItem => ({
   id, title: id, description: '', target_date, start_date, position,
@@ -50,4 +50,17 @@ test('milestones: done shows checked, past due and not done is overdue, else upc
   expect(milestoneState(m({ progress: { done: 3, total: 3 } }), today)).toBe('done');
   expect(milestoneState(m({ progress: { done: 2, total: 3 }, manual_status: 'done' }), today)).toBe('upcoming'); // tickets decide when linked
   expect(milestoneState(m({ end: today }), today)).toBe('upcoming'); // due today isn't late yet
+});
+
+test('a diamond fills by area: a quarter done looks a quarter full', () => {
+  const area = (h: number, size: number) => { // filled area of a diamond of height `size`, up to height h
+    const half = size / 2;
+    return h <= half ? h * h : size * size / 2 - (size - h) * (size - h);
+  };
+  for (const f of [0, 0.1, 0.25, 0.5, 0.75, 16 / 17, 1]) {
+    expect(area(diamondFill(f, 24), 24) / (24 * 24 / 2)).toBeCloseTo(f, 5);
+  }
+  expect(diamondFill(0.25, 24)).toBeGreaterThan(24 / 4); // by height it would be far emptier
+  expect(milestoneDone({ id: 'm', title: 't', description: '', target_date: null, position: 0, progress: { done: 1, total: 4 } })).toBe(0.25);
+  expect(milestoneDone({ id: 'm', title: 't', description: '', target_date: null, position: 0, manual_status: 'done' })).toBe(1);
 });

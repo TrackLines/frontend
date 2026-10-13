@@ -1,10 +1,9 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useId, useMemo, useState } from 'react';
 import type { RoadmapItem } from '@/lib/api';
 import { groupByMonth } from './group';
-import { CheckIcon } from 'lucide-react';
-import { buildGanttItems, DAY_MS, dayStamp, getGanttRange, milestoneState, monthSegments } from './gantt';
+import { buildGanttItems, DAY_MS, dayStamp, diamondFill, getGanttRange, milestoneDone, milestoneState, monthSegments } from './gantt';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -86,7 +85,7 @@ export function Gantt({ items }: { items: RoadmapItem[] }) {
                       </div>
                       <div className="relative h-10">
                         {item.milestone ? (
-                          <Milestone state={milestoneState(item, today)} left={offset + Math.max(0, (barWidth - 20) / 2)} title={item.title} due={endLabel} />
+                          <Milestone state={milestoneState(item, today)} done={milestoneDone(item)} left={offset + Math.max(0, (barWidth - 20) / 2)} title={item.title} due={endLabel} />
                         ) : (
                           <div
                             role="img"
@@ -109,7 +108,7 @@ export function Gantt({ items }: { items: RoadmapItem[] }) {
         <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
           <span className="flex items-center gap-2"><span className="h-4 border-l-2 border-primary/70" aria-hidden="true" /> Today</span>
           <span className="flex items-center gap-2"><span className="size-2.5 rotate-45 border-2 border-primary" aria-hidden="true" /> Milestone, on its due date</span>
-          <span className="flex items-center gap-2"><span className="size-2.5 rotate-45 bg-primary" aria-hidden="true" /> Milestone done</span>
+          <span className="flex items-center gap-2"><span className="size-2.5 rotate-45 border-2 border-primary bg-gradient-to-tl from-primary from-50% to-transparent to-50%" aria-hidden="true" /> Filled as its tickets get done</span>
           <span className="flex items-center gap-2"><span className="size-2.5 rotate-45 border-2 border-destructive" aria-hidden="true" /> Overdue</span>
         </p>
       </section>
@@ -221,21 +220,32 @@ export function Timeline({ id, items, progress }: { id: string; items: RoadmapIt
   );
 }
 
-// Milestone: a diamond on the due date: outlined while upcoming, red outline when overdue, filled with a
-// check once done.
-export function Milestone({ state, left, title, due }: { state: 'done' | 'overdue' | 'upcoming'; left: number; title: string; due: string }) {
-  const said = state === 'done' ? 'done' : state === 'overdue' ? `overdue, was due ${due}` : `due ${due}`;
+// Milestone: a diamond on the due date, filled from the bottom by how much is done (by area); checked
+// once done, red outline when overdue.
+export function Milestone({ state, done, left, title, due }: { state: 'done' | 'overdue' | 'upcoming'; done: number; left: number; title: string; due: string }) {
+  const pct = Math.round(Math.min(1, Math.max(0, done)) * 100);
+  const said = state === 'done' ? 'done' : `${pct > 0 ? `${pct}% done, ` : ''}${state === 'overdue' ? `overdue, was due ${due}` : `due ${due}`}`;
+  const S = 24; // the diamond's box, in px and SVG units
+  const fill = diamondFill(state === 'done' ? 1 : done, S);
+  const clip = `milestone-${useId().replace(/:/g, '')}`; // unique per diamond, even with the same title
   return (
-    <span
+    <svg
       role="img"
       data-state={state}
-      className={cn('absolute top-2.5 z-[1] grid size-5 rotate-45 place-items-center border-2 bg-background',
-        state === 'done' ? 'border-primary bg-primary text-primary-foreground' : state === 'overdue' ? 'border-destructive' : 'border-primary')}
-      style={{ left }}
+      viewBox={`0 0 ${S} ${S}`}
+      width={S}
+      height={S}
+      className="absolute top-2 z-[1]"
+      style={{ left: left - 2 }}
       aria-label={`${title}: milestone ${said}`}
-      title={`${title}: ${said}`}
     >
-      {state === 'done' && <CheckIcon className="size-3.5 -rotate-45" strokeWidth={3} aria-hidden />}
-    </span>
+      <title>{`${title}: ${said}`}</title>
+      <clipPath id={clip}><polygon points={`${S / 2},1 ${S - 1},${S / 2} ${S / 2},${S - 1} 1,${S / 2}`} /></clipPath>
+      <polygon points={`${S / 2},1 ${S - 1},${S / 2} ${S / 2},${S - 1} 1,${S / 2}`} className="fill-background" />
+      {fill > 0 && <rect data-fill={fill.toFixed(1)} x="0" y={S - fill} width={S} height={fill} clipPath={`url(#${clip})`} className="fill-primary" />}
+      <polygon points={`${S / 2},1 ${S - 1},${S / 2} ${S / 2},${S - 1} 1,${S / 2}`} fill="none" strokeWidth="2"
+        className={cn(state === 'overdue' ? 'stroke-destructive' : 'stroke-primary')} />
+      {state === 'done' && <path d="M7.5 12.5l3 3 6-6.5" fill="none" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="stroke-primary-foreground" />}
+    </svg>
   );
 }

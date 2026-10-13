@@ -55,3 +55,19 @@ export function milestoneState(item: GanttItem, today: number): 'done' | 'overdu
   if (itemDone(item)) return 'done';
   return item.end < today ? 'overdue' : 'upcoming';
 }
+
+// milestoneDone: how much of a milestone is done, 0–1: its linked tickets, else all or nothing.
+export function milestoneDone(item: RoadmapItem): number {
+  if (item.progress && item.progress.total > 0) return item.progress.done / item.progress.total;
+  return itemDone(item) ? 1 : 0;
+}
+
+// diamondFill: how high (from the bottom point) to fill a diamond of the given height so the filled
+// AREA is `done` of it: 1/4 done looks a quarter full, though the diamond is narrow at the bottom.
+// Below the middle the filled part is a triangle (area grows with height²); above it, the empty
+// part at the top is.
+export function diamondFill(done: number, size: number): number {
+  const f = Math.min(1, Math.max(0, done));
+  const half = size / 2;
+  return f <= 0.5 ? half * Math.sqrt(2 * f) : size - half * Math.sqrt(2 * (1 - f));
+}
