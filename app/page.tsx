@@ -1,13 +1,15 @@
 import { redirect } from 'next/navigation';
 import { auth } from '@clerk/nextjs/server';
 import Link from 'next/link';
-import { BotIcon, BugIcon, LockIcon, MapIcon, ShieldCheckIcon, UsersIcon, type LucideIcon } from 'lucide-react';
+import { BotIcon, BugIcon, LockIcon, MapIcon, PencilIcon, ShieldCheckIcon, UsersIcon, type LucideIcon } from 'lucide-react';
 import { buttonVariants } from '@/components/ui/button';
 import { McpConnect } from '@/components/mcp-connect';
+import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { PriorityBadge } from '@/components/board/priority-badge';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
 import { TicketLabels } from '@/components/ticket/labels';
+import { TicketKey } from '@/components/ticket/ticket-key';
 import { TypeBadge } from '@/components/ticket-type';
 import type { TicketType } from '@/lib/api';
 
@@ -135,19 +137,19 @@ function Plan({ name, price, blurb, cta, href }: { name: string; price: string; 
   );
 }
 
-// BoardPreview is a static picture of a board, built from the real ticket badges.
-type PreviewTicket = { title: string; type: TicketType; priority?: string; labels?: string[]; blocked?: boolean; who?: string };
+// BoardPreview is a static picture of a board, laid out like the real TicketCard (keep them in step).
+type PreviewTicket = { key: string; title: string; type: TicketType; priority?: string; labels?: string[]; blocked?: boolean; estimate?: string; details?: string; who?: string; by: string; when: string };
 const COLUMNS: { name: string; tickets: PreviewTicket[] }[] = [
   { name: 'To do', tickets: [
-    { title: 'Checkout fails on expired cards', type: 'bug', priority: 'urgent', labels: ['payments'] },
-    { title: 'Export roadmap as PDF', type: 'feature', blocked: true },
+    { key: 'SHOP-42', title: 'Checkout fails on expired cards', type: 'bug', priority: 'urgent', labels: ['payments'], estimate: '3', details: 'Card declined error shows a blank page.', by: 'Bugfixes', when: '2h ago' },
+    { key: 'SHOP-39', title: 'Export roadmap as PDF', type: 'feature', blocked: true, estimate: '5', by: 'Sam', when: '3d ago' },
   ] },
   { name: 'In progress', tickets: [
-    { title: 'Paginate the backlog', type: 'task', priority: 'high', labels: ['perf'], who: 'claude' },
-    { title: 'Label filter on boards', type: 'feature', labels: ['ui'], who: 'Sam' },
+    { key: 'SHOP-37', title: 'Paginate the backlog', type: 'task', priority: 'high', labels: ['perf'], estimate: '2', who: 'claude', by: 'Alex', when: 'yesterday' },
+    { key: 'SHOP-35', title: 'Label filter on boards', type: 'feature', labels: ['ui'], estimate: '3', who: 'Sam', by: 'Sam', when: '2d ago' },
   ] },
   { name: 'Done', tickets: [
-    { title: 'Org-owned projects', type: 'feature', who: 'Alex' },
+    { key: 'SHOP-31', title: 'Org-owned projects', type: 'feature', estimate: '8', who: 'Alex', by: 'Alex', when: 'last week' },
   ] },
 ];
 
@@ -158,14 +160,23 @@ function BoardPreview() {
         <div key={c.name} className="grid content-start gap-3">
           <p className="px-1 text-sm font-semibold">{c.name} <span className="font-normal text-muted-foreground">{c.tickets.length}</span></p>
           {c.tickets.map((t) => (
-            <Card key={t.title} className="gap-2 px-3 py-3 shadow-xs">
-              <p className="text-sm font-medium">{t.title}</p>
-              <div className="flex flex-wrap items-center gap-1">
-                <TypeBadge type={t.type} />
+            <Card key={t.key} className="w-full min-w-0 gap-2 py-3 shadow-xs">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 px-3">
+                <TicketKey value={t.key} />
+                {t.type !== 'task' && <TypeBadge type={t.type} />}
                 <PriorityBadge priority={t.priority} hideDefault />
                 {t.blocked && <BlockedBadge />}
-                <TicketLabels labels={t.labels} />
-                {t.who && <span className="ml-auto flex items-center gap-1 text-xs text-muted-foreground">{t.who === 'claude' && <BotIcon className="size-3" />}{t.who}</span>}
+                <span className="ml-auto flex shrink-0 items-center gap-1">
+                  {t.estimate && <Badge variant="outline" className="size-6 justify-center rounded-full p-0">{t.estimate}</Badge>}
+                  <span className="grid size-7 place-items-center text-muted-foreground"><PencilIcon className="size-3.5" /></span>
+                </span>
+              </div>
+              <p className="px-3 text-base leading-5 font-medium">{t.title}</p>
+              <TicketLabels labels={t.labels} className="px-3" max={2} />
+              {t.details && <p className="line-clamp-2 px-3 text-sm text-muted-foreground">{t.details}</p>}
+              <div className="mt-auto flex items-center justify-between gap-2 px-3 pt-2 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1 truncate">{t.who ? <>{t.who === 'claude' && <BotIcon className="size-3" />}{t.who}</> : <span className="italic">Unassigned</span>}</span>
+                <span className="truncate">by {t.by}, {t.when}</span>
               </div>
             </Card>
           ))}
