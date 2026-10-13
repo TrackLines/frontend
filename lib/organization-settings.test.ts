@@ -46,3 +46,9 @@ test('each change reports in the section that made it, so its result is on scree
   expect(sectionOf('create-team')).toBe('teams');
   expect(sectionOf('t1:member')).toBe('teams');
 });
+
+test('when Clerk refuses an invitation, the admin sees why (TL-239)', () => {
+  const why = 'Clerk refused to create organization invitation: invitations are only supported on instances that accept email addresses.';
+  expect(saveError('invite', new ApiError(422, why))).toBe(why);
+  expect(saveError('invite', new ApiError(502, 'could not create organization invitation'))).toBe('Couldn’t save that change. Please try again.');
+});
