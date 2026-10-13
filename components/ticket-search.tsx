@@ -62,7 +62,7 @@ export function TicketSearch() {
       setAssigneeOptions(people);
     }).catch(() => { /* filters remain usable if optional choices fail */ });
     return () => { cancelled = true; };
-  }, [open, token]);
+  }, [open, token !== null]); // token refreshes must not refetch
 
   useEffect(() => {
     if (!open || !token) return;

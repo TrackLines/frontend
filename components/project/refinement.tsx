@@ -10,6 +10,7 @@ import { EstimateSelect } from '@/components/board/estimate';
 import { LiveBadge } from '@/components/live-badge';
 import { combined, dropped, type LiveState } from '@/lib/live-status';
 import { keepStreaming } from '@/lib/use-board-live';
+import { unchanged } from '@/lib/unchanged';
 import { ApiError, backlog, organization, plannedSprints, streamBoardLive, type BacklogTicket, type Board, type OrganizationRole, type PlannedSprint, type Ticket } from '@/lib/api';
 import { canManageBoard } from '@/lib/board-access';
 import type { EstimateScale } from '@/lib/estimates';
@@ -44,16 +45,20 @@ export function RefinementMode({ projectId, boards, token, onClose, version = 0,
   const latestLoad = useRef(0);
   const boardIds = sprintBoards.map((b) => b.id).join(',');
 
+  const tokenRef = useRef(token);
+  tokenRef.current = token; // token refreshes (every ~45s) must not reload the view
   const load = useCallback(async () => {
     const request = ++latestLoad.current;
+    const t = tokenRef.current;
     const [lists, page] = await Promise.all([
-      Promise.all(sprintBoards.map((b) => plannedSprints.list(b.id, token))),
-      backlog.page(projectId, { page: 1, perPage: 100, priorities }, token),
+      Promise.all(sprintBoards.map((b) => plannedSprints.list(b.id, t))),
+      backlog.page(projectId, { page: 1, perPage: 100, priorities }, t),
     ]);
     if (request !== latestLoad.current) return;
-    setPlans(Object.fromEntries(sprintBoards.map((b, i) => [b.id, lists[i]])));
-    setTickets(page.tickets.filter((t) => !t.planned_sprint_id)); // planned ones show in their sprint
-  }, [boardIds, projectId, token, priorities.join(',')]);
+    // identical refreshes keep what's on screen, so nothing redraws
+    setPlans((current) => unchanged(current, Object.fromEntries(sprintBoards.map((b, i) => [b.id, lists[i]]))));
+    setTickets((current) => unchanged(current, page.tickets.filter((t) => !t.planned_sprint_id))); // planned ones show in their sprint
+  }, [boardIds, projectId, priorities.join(',')]);
   const loadRef = useRef(load);
   loadRef.current = load;
 
@@ -61,21 +66,21 @@ export function RefinementMode({ projectId, boards, token, onClose, version = 0,
     load().catch(() => setError('Couldn’t load the backlog and planned sprints. Please try again.'));
   }, [load, version]);
   useEffect(() => {
-    organization.me(token).then(setRole, () => setRole({ user_id: '', org_id: '', admin: false, leads: [] })); // fail closed
-  }, [load, token]);
+    organization.me(tokenRef.current).then(setRole, () => setRole({ user_id: '', org_id: '', admin: false, leads: [] })); // fail closed
+  }, [projectId]);
 
   useEffect(() => {
     if (!boardIds) return;
     const controller = new AbortController();
     const ids = boardIds.split(',');
     for (const boardId of ids) {
-      void keepStreaming(() => streamBoardLive(boardId, token, controller.signal, (event) => {
+      void keepStreaming(() => streamBoardLive(boardId, tokenRef.current, controller.signal, (event) => {
         if (event.type === 'refinement') loadRef.current().catch(() => setError('Couldn’t refresh the live refinement view.'));
       }, () => setLiveStates((current) => ({ ...current, [boardId]: 'live' }))), controller.signal,
       (err) => setLiveStates((current) => ({ ...current, [boardId]: dropped(current[boardId] ?? 'connecting', err) })));
     }
     return () => controller.abort();
-  }, [boardIds, token]);
+  }, [boardIds]); // token refreshes must not reconnect (it showed as Connecting… every ~45s)
 
   // act runs a change, then reloads (capacity is worked out by the server)
   async function act(change: () => Promise<unknown>, failed: string) {

@@ -23,6 +23,10 @@ export type Standup = { people: Participant[]; index: number; spentMs: number; r
 
 export const start = (people: Participant[], now: number): Standup => ({ people, index: 0, spentMs: 0, runningSince: now });
 
+// waiting: a standup that hasn't begun: paused at the first person with no time used. It opens like
+// this so people can join before the host starts the clock (TL-231).
+export const waiting = (s: Standup) => s.runningSince === null && s.index === 0 && s.spentMs === 0;
+
 // goTo jumps to a turn (or the review) with a fresh clock, running.
 export const goTo = (s: Standup, index: number, now: number): Standup =>
   ({ ...s, index: Math.max(0, Math.min(index, s.people.length)), spentMs: 0, runningSince: now });

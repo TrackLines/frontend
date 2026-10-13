@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { clock, remaining, reviewing, type Standup } from '@/lib/standup';
+import { clock, remaining, reviewing, waiting, type Standup } from '@/lib/standup';
 
 type Props = { standup: Standup; onAction: (action: 'next' | 'previous' | 'jump' | 'pause' | 'resume' | 'end', index?: number) => void; goal?: string };
 
@@ -18,6 +18,7 @@ export function StandupPanel({ standup, onAction, goal }: Props) {
 
   const left = remaining(standup, now);
   const paused = standup.runningSince === null;
+  const notStarted = waiting(standup); // opens stopped until the host starts it
   const review = reviewing(standup);
   const last = standup.index === standup.people.length; // the review is the last step
   const jump = (index: number) => onAction('jump', index);
@@ -31,13 +32,13 @@ export function StandupPanel({ standup, onAction, goal }: Props) {
           {review ? 'Board Review: everything, together' : `${standup.people[standup.index].label}’s turn`}
         </span>
         <span role="timer" aria-live="off" className={cn('font-mono tabular-nums', left < 0 && 'font-semibold text-destructive')}>
-          {clock(left)}{paused && ' (paused)'}
+          {clock(left)}{notStarted ? ' (waiting to start)' : paused && ' (paused)'}
         </span>
         <div className="ml-auto flex flex-wrap gap-2">
           <Button size="sm" variant="outline" disabled={standup.index === 0} onClick={() => onAction('previous')}>Previous</Button>
-          <Button size="sm" variant="outline" onClick={() => onAction(paused ? 'resume' : 'pause')}>
-            {paused ? 'Resume' : 'Pause'}
-          </Button>
+          {notStarted
+            ? <Button size="sm" onClick={() => onAction('resume')} title="Start the clock once everyone has joined">Start</Button>
+            : <Button size="sm" variant="outline" onClick={() => onAction(paused ? 'resume' : 'pause')}>{paused ? 'Resume' : 'Pause'}</Button>}
           {last
             ? <Button size="sm" onClick={() => onAction('end')}>Finish standup</Button>
             : <Button size="sm" onClick={() => onAction('next')}>{standup.index === standup.people.length - 1 ? 'Board Review' : 'Next'}</Button>}

@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 import type { Ticket } from './api';
-import { clock, goTo, participants, pause, remaining, resume, REVIEW_MS, reviewing, speaker, start, TURN_MS } from './standup';
+import { clock, goTo, participants, pause, remaining, resume, REVIEW_MS, reviewing, speaker, start, TURN_MS, waiting } from './standup';
 
 const ticket = (assigned_to: string | null) => ({ id: 't', column_id: 'c', title: '', description: '', position: 0, created_by: 'x', assigned_to }) as Ticket;
 
@@ -39,4 +39,12 @@ test('clock', () => {
   expect(clock(TURN_MS)).toBe('2:00');
   expect(clock(61_500)).toBe('1:02');
   expect(clock(-20_000)).toBe('over by 0:20');
+});
+
+test('a standup is waiting until its clock first starts', () => {
+  const fresh = { people: [], index: 0, spentMs: 0, runningSince: null };
+  expect(waiting(fresh)).toBe(true);
+  expect(waiting({ ...fresh, runningSince: 5 })).toBe(false);
+  expect(waiting({ ...fresh, spentMs: 1000 })).toBe(false); // paused after starting
+  expect(waiting({ ...fresh, index: 1 })).toBe(false);
 });

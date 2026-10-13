@@ -71,7 +71,7 @@ export function LabelEditor({ projectId, token, labels, onChange, disabled = fal
       if (active) setSuggestions([]);
     });
     return () => { active = false; };
-  }, [projectId, token]);
+  }, [projectId, token !== '']); // token refreshes must not refetch
 
   function add(raw: string) {
     if (!raw.trim()) return;

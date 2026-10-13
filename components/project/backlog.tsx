@@ -80,6 +80,7 @@ export function Backlog({ projectId, boards, token }: Props) {
 
   // server does the filtering, ordering and paging; only the latest request may land
   const latest = useRef(0);
+  const lastLoaded = useRef(''); // the last page loaded, to tell a real change from an identical refresh
   const load = async (quiet = false) => {
     const req = ++latest.current;
     try {
@@ -87,9 +88,13 @@ export function Backlog({ projectId, boards, token }: Props) {
       if (req !== latest.current) return;
       const last = Math.max(1, Math.ceil(d.counts[filter] / PER_PAGE));
       if (page > last) return setPage(last); // e.g. the last ticket on the last page moved away
-      setData(d);
+      const changed = JSON.stringify(d) !== lastLoaded.current; // identical refreshes redraw nothing (TL-232)
+      lastLoaded.current = JSON.stringify(d);
+      if (changed) {
+        setData(d);
+        setChanges((c) => c + 1);
+      }
       setFailed(false);
-      setChanges((c) => c + 1);
     } catch {
       // keep already-rendered data during transient failures
       if (req === latest.current && (!quiet || data === null)) setFailed(true);

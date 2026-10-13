@@ -25,6 +25,7 @@ import { FollowedTicket, HostedBar } from '@/components/hosted-bar';
 import { followedFilters, followedTicket } from '@/lib/hosted';
 import { useHosted } from '@/lib/use-hosted';
 import { usePeople } from '@/lib/use-people';
+import { unchanged } from '@/lib/unchanged';
 import { participants, speaker } from '@/lib/standup';
 import { useToken } from '@/lib/use-token';
 import { useBoardLive } from '@/lib/use-board-live';
@@ -76,7 +77,7 @@ export default function BoardPage() {
 
   const loaded = token !== null;
   const load = (background = false) => boards.get(id, token).then(async (next) => {
-    setBoard(next);
+    setBoard((current) => unchanged(current, next)); // identical refresh: nothing redraws
     setError(null);
     try {
       const role = await organization.me(token);

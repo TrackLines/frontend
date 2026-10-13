@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { liveViews, streamBoardLive, type BoardLiveEvent, type LiveParticipant, type LiveStandup } from './api';
 import { applyLiveEvent, type LiveViewState } from './live-view';
 import { dropped, type LiveState } from './live-status';
@@ -10,9 +10,13 @@ const empty: LiveViewState = { standup: null, refinementRevision: 0 };
 export function useBoardLive(boardId: string, token: string | null | undefined) {
   const [state, setState] = useState<LiveViewState>(empty);
   const [live, setLive] = useState<LiveState>('connecting');
+  // the token refreshes about every 45s; reconnecting on each refresh cleared the standup and kicked
+  // everyone out of it (TL-232), so the stream reads the latest token through a ref instead
+  const tokenRef = useRef(token);
+  tokenRef.current = token;
 
   useEffect(() => {
-    if (!token || !boardId) return;
+    if (!tokenRef.current || !boardId) return;
     const controller = new AbortController();
     const onEvent = (event: BoardLiveEvent) => setState((current) => applyLiveEvent(current, event));
     setState(empty);
@@ -20,15 +24,15 @@ export function useBoardLive(boardId: string, token: string | null | undefined) 
 
     void (async () => {
       try {
-        const session = await liveViews.standup(boardId, token);
+        const session = await liveViews.standup(boardId, tokenRef.current);
         setState((current) => ({ ...current, standup: session }));
       } catch {
         // 404 = no standup running; anything else: stream anyway, so a transient API outage recovers
       }
-      await keepStreaming(() => streamBoardLive(boardId, token, controller.signal, onEvent, () => setLive('live')), controller.signal, (err) => setLive((prev) => dropped(prev, err)));
+      await keepStreaming(() => streamBoardLive(boardId, tokenRef.current, controller.signal, onEvent, () => setLive('live')), controller.signal, (err) => setLive((prev) => dropped(prev, err)));
     })();
     return () => controller.abort();
-  }, [boardId, token]);
+  }, [boardId, token != null]); // signing in or out reconnects; token refreshes don't
 
   const start = useCallback(async (people: LiveParticipant[]) => {
     const session = await liveViews.startStandup(boardId, people, token);
