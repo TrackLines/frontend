@@ -141,7 +141,7 @@ export default function OrganizationSettingsPage() {
         {data.isAdmin && <form onSubmit={createTeam} className="mt-5 grid gap-2 border-t pt-5 sm:grid-cols-[1fr_2fr_auto]">
           <Input aria-label="New team name" value={newTeamName} onChange={(event) => setNewTeamName(event.target.value)} required maxLength={100} placeholder="Team name" />
           <Input aria-label="Team description" value={newTeamDescription} onChange={(event) => setNewTeamDescription(event.target.value)} maxLength={500} placeholder="Description (optional)" />
-          <Button disabled={busy === 'create-team'}>{busy === 'create-team' ? 'Creating…' : 'Create team'}</Button>
+          <Button type="submit" disabled={busy === 'create-team'}>{busy === 'create-team' ? 'Creating…' : 'Create team'}</Button>
         </form>}
       </section>
 
@@ -159,7 +159,7 @@ export default function OrganizationSettingsPage() {
               {(inviteScope === 'team' ? data.teams.map(({ team }) => team) : data.projects).map((item) => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}
             </SelectContent>
           </Select> : <span />}
-          <Button disabled={busy === 'invite' || !inviteReady(inviteScope, inviteTarget)}>{busy === 'invite' ? 'Sending…' : 'Send invite'}</Button>
+          <Button type="submit" disabled={busy === 'invite' || !inviteReady(inviteScope, inviteTarget)}>{busy === 'invite' ? 'Sending…' : 'Send invite'}</Button>
         </form>
         <div className="mt-3"><OutcomeNote outcome={outcome} section="invites" /></div>
         <div className="mt-5 border-t pt-4">
