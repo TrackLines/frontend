@@ -1,9 +1,9 @@
 import { expect, test } from 'bun:test';
 import { mockDialog } from '@/test/mock-dialog';
-import type { Ticket } from '@/lib/api';
+import type { Ticket, TicketSearchResult } from '@/lib/api';
 
 mockDialog();
-const { TicketDialog } = await import('./ticket-dialog');
+const { SimilarTickets, TicketDialog } = await import('./ticket-dialog');
 const { renderToStaticMarkup } = await import('react-dom/server');
 
 const ticket: Ticket = { id: 't1', key: 'TL-7', column_id: 'c', position: 0, title: 'Fix login', description: 'details', created_by: 'Sam', project_id: 'p', type: 'bug' };
@@ -37,4 +37,14 @@ test('an estimate is asked for only on boards with a scale', () => {
 
 test('details take @mentions', () => {
   expect(dialog({ ticket })).toContain('aria-autocomplete="list"');
+});
+
+test('similar tickets show while the title is typed, and go once the details are being written', () => {
+  const similar = [{ id: 't1', key: 'TL-12', title: 'Login fails on Safari', project_name: 'TrackLines' } as TicketSearchResult];
+  const shown = renderToStaticMarkup(<SimilarTickets suggestions={similar} description="" />);
+  expect(shown).toContain('Similar tickets in this project');
+  expect(shown).toContain('Login fails on Safari');
+  expect(renderToStaticMarkup(<SimilarTickets suggestions={similar} description="  " />)).toContain('Login fails on Safari'); // spaces aren't details
+  expect(renderToStaticMarkup(<SimilarTickets suggestions={similar} description="It happens after" />)).toBe('');
+  expect(renderToStaticMarkup(<SimilarTickets suggestions={[]} description="" />)).toBe('');
 });

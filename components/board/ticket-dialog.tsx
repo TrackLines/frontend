@@ -183,9 +183,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
             <Input ref={titleInput} autoFocus value={title} maxLength={200} aria-required="true" aria-invalid={missing.title || undefined} aria-describedby={missing.title ? 'ticket-title-error' : undefined} placeholder="What needs to be done?" onChange={(event) => { setTitle(event.target.value); if (event.target.value.trim()) setMissing((current) => ({ ...current, title: false })); }} />
             {missing.title && <span id="ticket-title-error" className="text-xs font-normal text-destructive">Enter a title.</span>}
           </label>
-          {duplicateSuggestions.length > 0 && <div className="-mt-3 grid gap-1 text-xs text-muted-foreground">Similar tickets in this project:
-            {duplicateSuggestions.map((suggestion) => <Link key={suggestion.id} href={ticketPath(suggestion)} className="hover:underline"><TicketKey value={suggestion.key} /> {suggestion.title}</Link>)}
-          </div>}
+          <SimilarTickets suggestions={duplicateSuggestions} description={description} />
           <label className="grid gap-1.5 text-sm font-medium">
             <span>Details <span className="font-normal text-muted-foreground">(optional, Markdown supported)</span></span>
             <MarkdownTextarea
@@ -259,5 +257,16 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
         </form>
       </DialogContent>
     </Dialog>
+  );
+}
+
+// SimilarTickets: possible duplicates of the title being typed, so nobody files the same thing twice.
+// Once the details are being written they've decided it's new, so the list gets out of the way.
+export function SimilarTickets({ suggestions, description }: { suggestions: TicketSearchResult[]; description: string }) {
+  if (suggestions.length === 0 || description.trim() !== '') return null;
+  return (
+    <div className="-mt-3 grid gap-1 text-xs text-muted-foreground">Similar tickets in this project:
+      {suggestions.map((s) => <Link key={s.id} href={ticketPath(s)} className="hover:underline"><TicketKey value={s.key} /> {s.title}</Link>)}
+    </div>
   );
 }
