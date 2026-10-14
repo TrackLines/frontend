@@ -372,6 +372,7 @@ export const tickets = {
   getByKey: (key: string, token: T) => api<TicketDetail>(`/ticket-keys/${encodeURIComponent(key)}`, { token }),
   // the Bugfixes panel for a ticket Bugfixes made (404 otherwise)
   bugfixes: (id: string, token: T) => api<TicketBugfixes>(`/tickets/${id}/bugfixes`, { token }),
+  prs: (id: string, token: T) => api<TicketPR[]>(`/tickets/${id}/prs`, { token }), // pull requests that mention it (TL-283)
   // also "My work": assignee 'me', status 'open', newest change first, paged
   search: (q: { text?: string; project?: string; board?: string; types?: TicketType[]; priorities?: string[]; assignee?: string;
     status?: 'open' | 'done'; limit?: number; page?: number; match?: 'any' }, token: T) => {
@@ -560,6 +561,11 @@ export type IntegrationProvider = 'bugfixes' | 'github' | 'bitbucket';
 // accounts: GitHub only, every GitHub account (org or user) the org connected (TL-281)
 export type GitHubAccount = { installation_id: string; account: string; updated_by?: string; updated_at?: string };
 export type IntegrationStatus = { provider: IntegrationProvider; connected: boolean; account?: string; accounts?: GitHubAccount[]; base_url?: string; updated_by?: string; updated_at?: string };
+// A pull request that mentions a ticket (its key, its link or one of our short links), newest first.
+export type TicketPR = {
+  provider: 'github' | 'bitbucket'; repo: string; number: number; url: string; title: string;
+  state: 'open' | 'draft' | 'merged' | 'closed'; author: string; branch: string; updated_at: string;
+};
 export type GitRepo = { full_name: string; default_branch: string; private: boolean };
 export type ProjectRepo = { provider: 'github' | 'bitbucket'; full_name: string; default_branch: string; created_at?: string };
 

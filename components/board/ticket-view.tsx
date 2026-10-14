@@ -6,6 +6,7 @@ import { When } from '@/components/when';
 import { CopyLink } from '@/components/copy-link';
 import { Attachments } from '@/components/ticket/attachments';
 import { BugfixesPanel } from '@/components/ticket/bugfixes-panel';
+import { PullRequestsPanel } from '@/components/ticket/pull-requests-panel';
 import { TicketComments } from '@/components/ticket/comments';
 import { TicketLabels } from '@/components/ticket/labels';
 import { Badge } from '@/components/ui/badge';
@@ -82,6 +83,7 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
           )}
         </section>
         {open && token && <BugfixesPanel ticket={ticket} token={token} />}
+        {open && token && <PullRequestsPanel ticketId={ticket.id} token={token} />}
         {open && token && <Attachments ticketId={ticket.id} token={token} locked={done} />}
         {open && token && <TicketComments ticketId={ticket.id} token={token} />}
         {sample}

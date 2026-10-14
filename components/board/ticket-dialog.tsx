@@ -10,6 +10,7 @@ import { AssigneeSelect } from '@/components/ticket/assignee-select';
 import { LabelDrawer } from '@/components/ticket/labels';
 import { Attachments } from '@/components/ticket/attachments';
 import { BugfixesPanel } from '@/components/ticket/bugfixes-panel';
+import { PullRequestsPanel } from '@/components/ticket/pull-requests-panel';
 import { attachAll, PendingAttachments, type PendingFile } from '@/components/ticket/pending-attachments';
 import { TypePicker } from '@/components/ticket-type';
 import { PrioritySelect } from './priority-select';
@@ -205,6 +206,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
             </label>
           )}
           {ticket && <BugfixesPanel ticket={ticket} token={token} />}
+          {ticket && <PullRequestsPanel ticketId={ticket.id} token={token} />}
           {ticket ? <Attachments ticketId={ticket.id} token={token} locked={done} /> : <PendingAttachments files={files} onChange={setFiles} projectId={projectId ?? ''} />}
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           {confirmDelete && (

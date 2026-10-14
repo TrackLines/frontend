@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 import { CopyLink } from '@/components/copy-link';
 import { Attachments } from '@/components/ticket/attachments';
 import { BugfixesPanel } from '@/components/ticket/bugfixes-panel';
+import { PullRequestsPanel } from '@/components/ticket/pull-requests-panel';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
 import { AssigneeSelect } from '@/components/ticket/assignee-select';
 import { Dependencies } from '@/components/ticket/dependencies';
@@ -155,6 +156,7 @@ export default function TicketPage() {
       {token && <Dependencies ticket={t} token={token} onChanged={() => tickets.get(id, token).then(setT)} />}
       {token && <MarkDuplicate ticket={t} token={token} onChanged={() => { void tickets.get(t.id, token).then(setT); }} />}
       {token && <BugfixesPanel ticket={t} token={token} />}
+      {token && <PullRequestsPanel ticketId={t.id} token={token} />}
       {token && <Attachments ticketId={t.id} token={token} locked={t.done} />}
       {token && <TicketComments ticketId={t.id} token={token} />}
       {token && (
