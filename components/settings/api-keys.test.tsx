@@ -50,8 +50,8 @@ test('agent keys are named by their client; only "Other" asks for a name; script
 test('a new agent key’s setup steps carry the key itself, opened on its client', () => {
   const html = renderToStaticMarkup(<McpInstructions apiKey="tl_realkey123" initial="codex" />);
   expect(html).toContain('tl_realkey123');
-  expect(html).not.toContain('tl_your_key');
-  expect(renderToStaticMarkup(<McpInstructions />)).toContain('tl_your_key');
+  expect(html).not.toContain('tl_ai_your_key');
+  expect(renderToStaticMarkup(<McpInstructions />)).toContain('tl_ai_your_key');
   // the one-time box offers the steps again for agent keys only
   expect(renderToStaticMarkup(<FreshKey fresh={{ name: 'Claude', kind: 'ai', key: 'k', client: 'claude-code' }} copied={false} onCopy={() => {}} onSetup={() => {}} />)).toContain('Setup steps');
   expect(renderToStaticMarkup(<FreshKey fresh={{ name: 'deploys', kind: 'service', key: 'k' }} copied={false} onCopy={() => {}} onSetup={() => {}} />)).not.toContain('Setup steps');

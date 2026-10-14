@@ -60,7 +60,7 @@ export default async function Home() {
 {`# connect Claude Code (or any MCP client)
 claude mcp add -s user --transport http tracklines \\
   https://api.tracklin.es/mcp \\
-  --header "Authorization: Bearer tl_…"
+  --header "Authorization: Bearer tl_ai_…"
 
 # then just ask
 > pick up the most urgent ticket on Backend

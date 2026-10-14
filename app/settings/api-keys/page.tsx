@@ -40,7 +40,7 @@ export default function ApiKeysPage() {
       </header>
       <p className="mb-6 text-muted-foreground">
         Give each agent or script its own key. A key acts as you: send it as{' '}
-        <code className="rounded bg-muted px-1">Authorization: Bearer tl_…</code> to <code className="rounded bg-muted px-1">/api</code>.
+        <code className="rounded bg-muted px-1">Authorization: Bearer tl_ai_…</code> (or <code className="rounded bg-muted px-1">tl_s_…</code> for a service key) to <code className="rounded bg-muted px-1">/api</code>.
       </p>
 
       {fresh && <FreshKey fresh={fresh} copied={copied} onCopy={() => navigator.clipboard.writeText(fresh.key).then(() => setCopied(true))} onSetup={() => setSetupOpen(true)} />}

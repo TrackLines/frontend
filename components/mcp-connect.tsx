@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CopyButton } from '@/components/copy-link';
 
 export const MCP_URL = 'https://api.tracklin.es/mcp';
-const KEY = 'tl_your_key'; // placeholder: people paste their own API key
+const KEY = 'tl_ai_your_key'; // placeholder: people paste their own API key
 
 // AGENTS: how to point each client at the MCP server (Streamable HTTP + a Bearer API key).
 // Each step is prose, optionally with a snippet to copy.
@@ -91,7 +91,7 @@ export function McpConnect({ keyHint, trigger }: { keyHint: ReactNode; trigger?:
 }
 
 // McpInstructions: setup steps per client. With apiKey (a key just created, TL-269) the snippets carry
-// it in place of tl_your_key, and initial opens that key's client.
+// it in place of tl_ai_your_key, and initial opens that key's client.
 export function McpInstructions({ apiKey, initial }: { apiKey?: string; initial?: string } = {}) {
   const fill = (code: string) => (apiKey ? code.replaceAll(KEY, apiKey) : code);
   return (
