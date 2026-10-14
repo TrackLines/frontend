@@ -76,14 +76,14 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
   }, [open, ticket?.id]);
 
   useEffect(() => {
-    const words = title.trim().split(/\s+/).filter((word) => word.length >= 3);
-    if (!open || ticket || !projectId || words.length < 2) {
+    const text = similarQuery(title);
+    if (!open || ticket || !projectId || !text) {
       setDuplicateSuggestions([]);
       return;
     }
     let cancelled = false;
     const timer = setTimeout(() => {
-      void tickets.search({ text: words.slice(0, 5).join(' '), project: projectId, limit: 5 }, token).then((found) => {
+      void tickets.search({ text, project: projectId, limit: 5 }, token).then((found) => {
         if (!cancelled) setDuplicateSuggestions(found.filter((candidate) => !candidate.duplicate_of_id));
       }, () => { if (!cancelled) setDuplicateSuggestions([]); });
     }, 250);
@@ -269,4 +269,12 @@ export function SimilarTickets({ suggestions, description }: { suggestions: Tick
       {suggestions.map((s) => <Link key={s.id} href={ticketPath(s)} className="hover:underline"><TicketKey value={s.key} /> {s.title}</Link>)}
     </div>
   );
+}
+
+// similarQuery: what a new ticket's title searches for possible duplicates with, or null while it's too
+// short to mean anything. One real word is enough ("Pagination" used to need a second word, so a short
+// title never searched at all); at most the first five are used.
+export function similarQuery(title: string): string | null {
+  const words = title.trim().split(/\s+/).filter((word) => word.length >= 3);
+  return words.length > 0 && title.trim().length >= 4 ? words.slice(0, 5).join(' ') : null;
 }

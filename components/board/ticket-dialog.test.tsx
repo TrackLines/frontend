@@ -48,3 +48,11 @@ test('similar tickets show while the title is typed, and go once the details are
   expect(renderToStaticMarkup(<SimilarTickets suggestions={similar} description="It happens after" />)).toBe('');
   expect(renderToStaticMarkup(<SimilarTickets suggestions={[]} description="" />)).toBe('');
 });
+
+test('a title searches for similar tickets from its first real word (TL-274)', () => {
+  const { similarQuery } = require('./ticket-dialog');
+  expect(similarQuery('Pagination')).toBe('Pagination'); // one word is enough
+  expect(similarQuery('UI tweak')).toBe('tweak');
+  expect(similarQuery('Login broken on Safari mobile and desktop')).toBe('Login broken Safari mobile and');
+  for (const tooShort of ['', '   ', 'UI', 'a b', 'fix']) expect(similarQuery(tooShort)).toBeNull();
+});
