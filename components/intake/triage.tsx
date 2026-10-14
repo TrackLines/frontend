@@ -62,7 +62,7 @@ export function Triage({ projectId, token }: { projectId: string; token: string 
       </Tabs>
       {added?.ticket_key && (
         <p role="status" className="text-sm">
-          Added to the backlog as <Link href={`/tickets/${added.ticket_key}`} className="font-medium underline">{added.ticket_key}</Link>.
+          Added to the backlog as <Link href={`/tickets/${added.ticket_id ?? added.ticket_key}`} className="font-medium underline">{added.ticket_key}</Link>.
         </p>
       )}
       <TriageView items={items} status={status} error={error} busy={busy} onPromote={(s) => void decide(s, true)} onDismiss={(s) => void decide(s, false)} />
@@ -98,7 +98,7 @@ export function TriageView({ items, status, error, busy, onPromote, onDismiss }:
                   <Button size="sm" variant="ghost" disabled={busy === s.id} onClick={() => onDismiss(s)}>Dismiss</Button>
                 </div>
               ) : status === 'promoted' && s.ticket_key ? (
-                <p className="text-xs text-muted-foreground">Added as <Link href={`/tickets/${s.ticket_key}`} className="font-medium text-foreground underline">{s.ticket_key}</Link>{s.decided_at && <> <When iso={s.decided_at} /></>}</p>
+                <p className="text-xs text-muted-foreground">Added as <Link href={`/tickets/${s.ticket_id ?? s.ticket_key}`} className="font-medium text-foreground underline">{s.ticket_key}</Link>{s.decided_at && <> <When iso={s.decided_at} /></>}</p>
               ) : s.decided_at && <p className="text-xs text-muted-foreground">Dismissed <When iso={s.decided_at} /></p>}
             </li>
           ))}

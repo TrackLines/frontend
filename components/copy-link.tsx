@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { shortLinks } from '@/lib/api';
 
 // CopyButton copies value to the clipboard and says "Copied" for 2s.
 export function CopyButton({ value, label, className, size, ariaLabel }: {
@@ -22,7 +23,40 @@ export function CopyButton({ value, label, className, size, ariaLabel }: {
   );
 }
 
-// CopyLink copies an absolute URL for an app path (e.g. /tickets/<id>) to the clipboard.
-export function CopyLink({ path, className }: { path: string; className?: string }) {
-  return <CopyButton value={typeof window === 'undefined' ? path : window.location.origin + path} label="Copy link" className={className} />;
+const made = new Map<string, string>(); // short links already made this session
+
+// shortOr: the short link for full, or full itself if one can't be made (signed out, shortener down).
+export async function shortOr(full: string, make: ((url: string) => Promise<{ url: string }>) | null): Promise<string> {
+  if (made.has(full)) return made.get(full)!;
+  if (!make) return full;
+  try {
+    const { url } = await make(full);
+    made.set(full, url);
+    return url;
+  } catch {
+    return full;
+  }
+}
+
+// CopyLink copies a short link for an app path (e.g. /tickets/<id>) to the clipboard (TL-277), or the
+// full link when it can't be shortened. The copy starts on the click and takes the link once it's
+// ready, which Safari needs (it only lets a click copy, not something after it).
+// token: the signed-in caller's (no token: the full link).
+export function CopyLink({ path, token, className }: { path: string; token?: string | null; className?: string }) {
+  const [copied, setCopied] = useState(false);
+  async function copy() {
+    const link = shortOr(window.location.origin + path, token ? (url) => shortLinks.create(url, token) : null);
+    try {
+      await navigator.clipboard.write([new ClipboardItem({ 'text/plain': link.then((t) => new Blob([t], { type: 'text/plain' })) })]);
+    } catch {
+      await navigator.clipboard.writeText(await link); // no ClipboardItem: copy it once it's here
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+  return (
+    <Button type="button" variant="ghost" className={className} onClick={() => void copy()}>
+      <span aria-live="polite">{copied ? 'Copied' : 'Copy link'}</span>
+    </Button>
+  );
 }

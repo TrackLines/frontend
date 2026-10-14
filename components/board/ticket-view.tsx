@@ -86,7 +86,7 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
         {open && token && <TicketComments ticketId={ticket.id} token={token} />}
         {sample}
         <DialogFooter>
-          {!sample && <CopyLink path={ticketPath(ticket)} className="sm:mr-auto" />}
+          {!sample && <CopyLink path={ticketPath(ticket)} token={token} className="sm:mr-auto" />}
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Close</Button>
           {onEdit && <Button type="button" onClick={onEdit}>Edit</Button>}
         </DialogFooter>

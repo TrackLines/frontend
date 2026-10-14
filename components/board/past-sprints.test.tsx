@@ -23,7 +23,7 @@ test('a past sprint lists what it finished, with the closed-scope note', () => {
   }} />);
   expect(html).toContain('Shipped it');
   expect(html).toContain('TL-1');
-  expect(html).toContain('href="/tickets/TL-1"');
+  expect(html).toContain('href="/tickets/t1"');
   expect(html).toContain('5 of 8 points done in sprint 2');
   expect(html).toContain('what the sprint held when it closed');
 });

@@ -8,9 +8,9 @@ const n = (over: Partial<AppNotification>): AppNotification => ({
 });
 const people = [{ id: 'user_ava', label: 'Ava Smith' }, { id: 'user_me', label: 'You' }];
 
-test('links go to the ticket (by key), else the board', () => {
-  expect(notificationHref(n({}))).toBe('/tickets/TL-1');
-  expect(notificationHref(n({ ticket_key: null }))).toBe('/tickets/t');
+test('links go to the ticket (by id: keys repeat across orgs, TL-276), else the board', () => {
+  expect(notificationHref(n({}))).toBe('/tickets/t');
+  expect(notificationHref(n({ ticket_id: null }))).toBe('/tickets/TL-1'); // only a key: better than nothing
   expect(notificationHref(n({ ticket_id: null, ticket_key: null, board_id: 'b' }))).toBe('/boards/b');
   expect(notificationHref(n({ ticket_id: null, ticket_key: null }))).toBeNull();
 });

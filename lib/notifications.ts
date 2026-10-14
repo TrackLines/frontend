@@ -3,8 +3,8 @@ import { generatedAgent } from './people';
 
 // Where a notification goes when clicked: its ticket, else its board.
 export function notificationHref(n: Pick<AppNotification, 'ticket_id' | 'ticket_key' | 'board_id'>): string | null {
+  if (n.ticket_id) return `/tickets/${n.ticket_id}`; // the id: keys repeat across orgs (TL-276)
   if (n.ticket_key) return `/tickets/${n.ticket_key}`;
-  if (n.ticket_id) return `/tickets/${n.ticket_id}`;
   if (n.board_id) return `/boards/${n.board_id}`;
   return null;
 }

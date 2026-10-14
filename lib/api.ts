@@ -392,6 +392,7 @@ export const tickets = {
   review: (id: string, approve: boolean, comment: string, token: T) =>
     api<void>(`/tickets/${id}/review`, { method: 'POST', body: { approve, ...(comment.trim() && { comment: comment.trim() }) }, token }),
   // resolve closes a backlog ticket in place: done, or wont_do (decided against; the reason becomes a comment)
+  org: (id: string, token: T) => api<{ org_id: string }>(`/tickets/${id}/org`, { token }), // which of my orgs it's in (TL-276)
   resolve: (id: string, token: T, resolution: 'done' | 'wont_do' = 'done', reason = '') =>
     api<void>(`/tickets/${id}/resolve`, { method: 'POST', body: { resolution, ...(reason.trim() && { reason: reason.trim() }) }, token }),
   duplicate: (id: string, duplicateOf: string, options: { copy_labels?: boolean; copy_comments?: boolean }, token: T) =>
@@ -642,4 +643,9 @@ export const push = {
   settings: (t: T) => api<PushSettings>('/push', { token: t }),
   subscribe: (subscription: PushSubscriptionJSON, t: T) => api<void>('/push/subscriptions', { method: 'POST', body: subscription, token: t }),
   unsubscribe: (endpoint: string, t: T) => api<void>('/push/subscriptions', { method: 'DELETE', body: { endpoint }, token: t }),
+};
+
+// Short links for "Copy link" (TL-277): our own site's links only, through 1tn.
+export const shortLinks = {
+  create: (url: string, token: T) => api<{ url: string }>('/short-links', { method: 'POST', body: { url }, token }),
 };

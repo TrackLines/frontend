@@ -12,7 +12,7 @@ const view = (items: TicketSearchResult[] | null, failed = false, filtered = fal
 
 test('grouped by project and board, with status, priority and a link', () => {
   const html = view([t({}), t({ id: 'b2', key: 'TL-2', title: 'Write docs', project_name: 'Docs', board_id: null, board_name: null, column_name: null, priority: 'medium' })]);
-  for (const s of ['>Shop<', '>Web<', '>Docs<', '>Backlog<', 'Fix login', 'href="/tickets/TL-1"', 'In progress', 'TL-2']) expect(html).toContain(s);
+  for (const s of ['>Shop<', '>Web<', '>Docs<', '>Backlog<', 'Fix login', 'href="/tickets/id"', 'In progress', 'TL-2']) expect(html).toContain(s);
   expect(html.indexOf('Shop')).toBeLessThan(html.indexOf('Docs')); // most recently changed group first
 });
 

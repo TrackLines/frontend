@@ -60,7 +60,7 @@ export function MentionsView({ data, people, hideDone }: { data: MentionsPage | 
       {data.mentions.map((m) => (
         <li key={m.ticket_id} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2.5 text-sm">
           <TicketKey value={m.key} />
-          <Link href={`/tickets/${m.key || m.ticket_id}`} className={`min-w-0 flex-1 font-medium hover:underline ${m.done ? 'text-muted-foreground line-through' : ''}`}>{m.title}</Link>
+          <Link href={`/tickets/${m.ticket_id}`} className={`min-w-0 flex-1 font-medium hover:underline ${m.done ? 'text-muted-foreground line-through' : ''}`}>{m.title}</Link>
           {m.done && <Badge variant="outline">Done</Badge>}
           <span className="text-xs text-muted-foreground">{m.project_name}</span>
           <span className="text-xs text-muted-foreground">{actorName(m.actor, people)} · <When iso={m.mentioned_at} /></span>

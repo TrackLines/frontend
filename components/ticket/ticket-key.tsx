@@ -11,8 +11,10 @@ export function TicketKey({ value, copy = false }: { value?: string | null; copy
   );
 }
 
-export function ticketPath(ticket: { id: string; key?: string | null }) {
-  return `/tickets/${ticket.key || ticket.id}`;
+// ticketPath links a ticket by its id, never its key: keys are per organization, so another org (or
+// another of yours) can have its own TL-12, and a shared key link would open that one (TL-276).
+export function ticketPath(ticket: { id: string }) {
+  return `/tickets/${ticket.id}`;
 }
 
 export function isTicketKey(value: string) {

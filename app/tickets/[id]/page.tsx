@@ -4,6 +4,7 @@ import { NeedsReviewBadge, ReviewActions } from '@/components/board/review';
 import { Markdown } from '@/components/markdown';
 import { When } from '@/components/when';
 import Link from 'next/link';
+import { Elsewhere } from '@/components/ticket/other-org';
 import { LoadError } from '@/components/load-error';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -43,6 +44,7 @@ export default function TicketPage() {
   const people = usePeople(token);
   const [t, setT] = useCachedState<TicketDetail>(`ticket:${id}`); // last-seen ticket shows instantly, then refreshes
   const [error, setError] = useState<number | null>(null);
+  const [elsewhere, setElsewhere] = useState<string | null>(null); // the org it's in, when not this one
   const [labels, setLabels] = useState<string[]>([]);
   const [savingLabels, setSavingLabels] = useState(false);
   const [labelError, setLabelError] = useState('');
@@ -55,7 +57,12 @@ export default function TicketPage() {
       (byKey ? tickets.getByKey(id, token) : tickets.get(id, token)).then((ticket) => {
         setT(ticket);
         if (byKey) router.replace(`/tickets/${ticket.id}`);
-      }, (e) => setError(e instanceof ApiError ? e.status : 500));
+      }, (e) => {
+        const status = e instanceof ApiError ? e.status : 500;
+        setError(status);
+        // not in this org: maybe in another of mine (an id link; keys are per org), TL-276
+        if ((status === 404 || status === 403) && !byKey) tickets.org(id, token).then((r) => setElsewhere(r.org_id), () => {});
+      });
     }
   }, [id, loaded]); // load once; token refreshes must not refetch
 
@@ -78,6 +85,7 @@ export default function TicketPage() {
     }
   }
 
+  if (error && elsewhere) return <Elsewhere orgId={elsewhere} />;
   if (error) return <LoadError status={error} thing="ticket" />;
   if (!t) return <TicketSkeleton />;
 
@@ -173,7 +181,7 @@ export default function TicketPage() {
           </>
         )}
         <Link href={`/projects/${t.project_id}`} className={buttonVariants({ variant: 'outline' })}>Open project</Link>
-        <CopyLink path={ticketPath(t)} />
+        <CopyLink path={ticketPath(t)} token={token} />
       </div>
     </main>
   );
