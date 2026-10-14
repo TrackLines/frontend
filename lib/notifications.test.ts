@@ -28,3 +28,10 @@ test('desktop popups: only unread ones newer than the last seen, oldest first', 
   expect(newest(list, null)).toBe('2026-10-11T10:03:00Z');
   expect(newest([], '2026-10-11T09:00:00Z')).toBe('2026-10-11T09:00:00Z');
 });
+
+test('a sprint that started over capacity reads as from Tracklines and opens its board (TL-149)', () => {
+  const over = n({ kind: 'over_capacity', actor: 'Tracklines', ticket_id: null, ticket_key: null, board_id: 'b1',
+    text: 'started sprint 2 on Backend over capacity: 8 points against a limit of 5.5 (velocity + 10%), from unfinished work carried over' });
+  expect(notificationLine(over, people)).toBe('Tracklines started sprint 2 on Backend over capacity: 8 points against a limit of 5.5 (velocity + 10%), from unfinished work carried over');
+  expect(notificationHref(over)).toBe('/boards/b1');
+});

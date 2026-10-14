@@ -583,7 +583,7 @@ export const projectRepos = {
 };
 
 // Notifications: the signed-in user's inbox (internal; external channels later).
-export type NotificationKind = 'assigned' | 'mention' | 'finished' | 'wont_do' | 'review' | 'sent_back' | 'approval';
+export type NotificationKind = 'assigned' | 'mention' | 'finished' | 'wont_do' | 'review' | 'sent_back' | 'approval' | 'retention' | 'over_capacity'; // retention: TL-259; over_capacity: a sprint started over capacity (TL-149)
 export type AppNotification = {
   id: string; kind: NotificationKind; text: string; actor: string;
   ticket_id: string | null; ticket_key: string | null; board_id: string | null;
