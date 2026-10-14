@@ -16,9 +16,13 @@ test('a duplicate links to its original (or says it was deleted); an original li
   expect(orig).toContain('TL-9');
 });
 
-test('marking as a duplicate starts with a search, and is gone once it is one', () => {
-  const html = renderToStaticMarkup(<MarkDuplicate ticket={base} token="tok" onChanged={() => {}} />);
+test('marking as a duplicate waits behind its button, then starts with a search, and is gone once it is one (TL-258)', () => {
+  const closed = renderToStaticMarkup(<MarkDuplicate ticket={base} token="tok" onChanged={() => {}} />);
+  expect(closed).toContain('>Mark as duplicate…<');
+  expect(closed).not.toContain('Find the original ticket'); // not open until asked for
+  const html = renderToStaticMarkup(<MarkDuplicate ticket={base} token="tok" onChanged={() => {}} open />);
   expect(html).toContain('Mark as duplicate');
+  expect(html).toContain('>Cancel<');
   expect(html).toContain('Find the original ticket');
   expect(html).not.toContain('Copy labels'); // only once an original is chosen
   expect(renderToStaticMarkup(<MarkDuplicate ticket={{ ...base, duplicate_of_id: 'o' }} token="tok" onChanged={() => {}} />)).toBe('');

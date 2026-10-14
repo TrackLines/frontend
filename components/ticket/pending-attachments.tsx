@@ -20,7 +20,7 @@ export function PendingAttachments({ files, onChange, projectId }: { files: Pend
       {/* the button sits by its label, like "Add labels" above it */}
       <div className="flex flex-wrap items-center gap-3">
         <span className="text-sm font-medium">Attachments <span className="font-normal text-muted-foreground">(optional)</span></span>
-        <AttachFilesButton target={projectId ? { projectId } : null} onUploaded={(up) => onChange([...files, ...up])} />
+        <AttachFilesButton target={projectId ? { projectId } : null} existing={files.length} onUploaded={(up) => onChange([...files, ...up])} />
       </div>
       {files.length > 0 && (
         <ul className="grid gap-1 text-sm">

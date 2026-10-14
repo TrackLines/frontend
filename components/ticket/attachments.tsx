@@ -4,7 +4,9 @@ import { ListSkeleton } from '@/components/page-skeletons';
 import { PaperclipIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { attachments, type Attachment } from '@/lib/api';
+import { ApiError, attachments, type Assignee, type Attachment } from '@/lib/api';
+import { personLabel } from '@/lib/people';
+import { usePeople } from '@/lib/use-people';
 import { AttachFilesButton } from './attach-files-button';
 
 export function formatSize(bytes: number): string {
@@ -18,10 +20,21 @@ export function formatSize(bytes: number): string {
 export function Attachments({ ticketId, token, locked = false }: { ticketId: string; token: string; locked?: boolean }) {
   const [list, setList] = useState<Attachment[] | null>(null);
   const [error, setError] = useState('');
+  const people = usePeople(token);
 
   useEffect(() => {
     attachments.list(ticketId, token).then(setList, () => setError('Couldn’t load attachments.'));
   }, [ticketId]); // token refreshes must not refetch
+
+  async function keep(a: Attachment) {
+    setError('');
+    try {
+      await attachments.keep(a.id, token);
+      setList((l) => l && l.map((x) => (x.id === a.id ? { ...x, delete_on: null } : x)));
+    } catch (err) {
+      setError(err instanceof ApiError && err.status === 403 ? 'Only an organization admin or whoever uploaded it can keep this file.' : `Couldn’t keep “${a.name}”. Please try again.`);
+    }
+  }
 
   async function remove(a: Attachment) {
     if (!confirm(`Remove “${a.name}”? The file is deleted too.`)) return;
@@ -42,6 +55,7 @@ export function Attachments({ ticketId, token, locked = false }: { ticketId: str
         {!locked && (
           <AttachFilesButton
             target={{ ticketId }}
+            existing={list?.length ?? 0}
             onUploaded={async (files) => {
               setError('');
               for (const f of files) {
@@ -65,15 +79,29 @@ export function Attachments({ ticketId, token, locked = false }: { ticketId: str
         <p className="text-sm text-muted-foreground">No files attached.</p>
       ) : (
         <ul className="divide-y rounded-lg border">
-          {list.map((a) => (
-            <li key={a.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-2 text-sm">
-              <a href={a.url} target="_blank" rel="noopener noreferrer" className="min-w-0 flex-1 truncate font-medium hover:underline">{a.name}</a>
-              <span className="text-muted-foreground">{formatSize(a.size)} · {a.created_by}</span>
-              {!locked && <Button size="sm" variant="ghost" className="text-destructive" onClick={() => remove(a)}>Remove</Button>}
-            </li>
-          ))}
+          {list.map((a) => <AttachmentRow key={a.id} a={a} people={people} locked={locked} onRemove={() => remove(a)} onKeep={() => keep(a)} />)}
         </ul>
       )}
     </section>
+  );
+}
+
+const dueDay = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+
+// AttachmentRow: one file; a year-old one says when it goes and can be kept another year (TL-259).
+// Keep shows even when the ticket is done: keeping changes nothing on the ticket (pure, for tests).
+export function AttachmentRow({ a, people = null, locked, onRemove, onKeep }: { a: Attachment; people?: Assignee[] | null; locked: boolean; onRemove: () => void; onKeep: () => void }) {
+  return (
+    <li className="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-2 text-sm">
+      <a href={a.url} target="_blank" rel="noopener noreferrer" className="min-w-0 flex-1 truncate font-medium hover:underline">{a.name}</a>
+      <span className="text-muted-foreground">{formatSize(a.size)} · {personLabel(a.created_by, people)}</span>
+      {a.delete_on && (
+        <span className="flex items-center gap-2 text-amber-700 dark:text-amber-400">
+          Deleted on {dueDay.format(new Date(`${a.delete_on}T00:00:00Z`))} unless kept
+          <Button size="sm" variant="outline" onClick={onKeep} title="Keep it for another year">Keep</Button>
+        </span>
+      )}
+      {!locked && <Button size="sm" variant="ghost" className="text-destructive" onClick={onRemove}>Remove</Button>}
+    </li>
   );
 }

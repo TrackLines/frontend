@@ -16,7 +16,7 @@ test('who runs Tracklines: the company, its trading name, number and (once regis
 test('the privacy policy makes the promises the product keeps', () => {
   for (const s of [
     'We don\'t sell your data', 'we don\'t run analytics or tracking scripts',
-    'Delete a ticket and its attachments go with it', '30 days', 'encrypted with a key that\'s kept outside the database', 'one-way hash',
+    'Delete a ticket and it goes, with its comments and attachments, 30 days later', 'otherwise it\'s deleted at 13 months', '30 days', 'encrypted with a key that\'s kept outside the database', 'one-way hash',
     'Keloran Limited', 'UK GDPR', 'ico.org.uk', 'Clerk', 'Stripe', 'UploadThing', 'Railway', 'ChewedFeed HQ', '[contact form](/contact)',
   ]) expect(PRIVACY).toContain(s);
 });

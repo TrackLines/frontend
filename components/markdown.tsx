@@ -27,6 +27,11 @@ export function Markdown({ children, className = '', onToggleTask }: { children:
           // links within the site stay in the tab; anything else opens a new one
           a: ({ node: _node, ...props }) => (props.href?.startsWith('/') && !props.href.startsWith('//')
             ? <a {...props} /> : <a {...props} target="_blank" rel="noreferrer noopener" />),
+          // images only from our file storage: anyone else's would tell its owner who read this, and when
+          // (anonymous request-form text included); other images show as a link instead (TL-252)
+          img: ({ node: _node, src, alt }) => (typeof src === 'string' && ownImage(src)
+            ? <img src={src} alt={alt ?? ''} className="max-w-full" />
+            : <a href={typeof src === 'string' ? src : undefined} target="_blank" rel="noreferrer noopener">{alt || 'image'}</a>),
           // checkboxes carry no source position, so their list item draws them (below)
           input: ({ node: _node, ...props }) => (props.type === 'checkbox' ? null : <input {...props} />),
           li: ({ node, children, ...props }) => {
@@ -92,4 +97,14 @@ export function MarkdownTextarea({ value, mentions, ...props }: ComponentProps<t
       <MarkdownPreview text={value} />
     </>
   );
+}
+
+// ownImage: an image stored with our uploads (UploadThing), the only images shown inline.
+export function ownImage(src: string): boolean {
+  try {
+    const { protocol, hostname } = new URL(src);
+    return protocol === 'https:' && (hostname === 'utfs.io' || hostname.endsWith('.ufs.sh'));
+  } catch {
+    return false;
+  }
 }

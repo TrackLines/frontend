@@ -114,7 +114,6 @@ export default function TicketPage() {
         </div>
         <PartOf ticket={t} />
       <DuplicateLinks ticket={t} />
-      {token && <MarkDuplicate ticket={t} token={token} onChanged={() => { void tickets.get(t.id, token).then(setT); }} />}
         <p className="text-sm text-muted-foreground">
           Created by {personLabel(t.created_by, people)}{t.created_at && <> <When iso={t.created_at} /></>}
           {t.updated_at && t.updated_at !== t.created_at && <> · updated <When iso={t.updated_at} /></>}
@@ -146,6 +145,7 @@ export default function TicketPage() {
       </section>
       {token && <SubTickets ticket={t} token={token} onChanged={() => tickets.get(id, token).then(setT)} />}
       {token && <Dependencies ticket={t} token={token} onChanged={() => tickets.get(id, token).then(setT)} />}
+      {token && <MarkDuplicate ticket={t} token={token} onChanged={() => { void tickets.get(t.id, token).then(setT); }} />}
       {token && <BugfixesPanel ticket={t} token={token} />}
       {token && <Attachments ticketId={t.id} token={token} locked={t.done} />}
       {token && <TicketComments ticketId={t.id} token={token} />}

@@ -26,7 +26,10 @@ export function DuplicateLinks({ ticket }: { ticket: TicketDetail }) {
   );
 }
 
-export function MarkDuplicate({ ticket, token, onChanged }: { ticket: TicketDetail; token: string; onChanged: () => void }) {
+// MarkDuplicate sits with the ticket's dependencies, closed behind its button like "Add a blocker…"
+// (TL-258): it's a rare, closing action, so it doesn't sit open under the title. open: tests only.
+export function MarkDuplicate({ ticket, token, onChanged, open: startOpen = false }: { ticket: TicketDetail; token: string; onChanged: () => void; open?: boolean }) {
+  const [open, setOpen] = useState(startOpen);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<TicketSearchResult[]>([]);
   const [selected, setSelected] = useState<TicketSearchResult | null>(null);
@@ -65,11 +68,22 @@ export function MarkDuplicate({ ticket, token, onChanged }: { ticket: TicketDeta
   }
 
   if (ticket.duplicate_of_id || ticket.resolution === 'duplicate') return null;
+  if (!open) {
+    return (
+      <section aria-labelledby={`duplicate-${ticket.id}`} className="grid gap-1.5">
+        <p id={`duplicate-${ticket.id}`} className="text-xs font-medium text-muted-foreground uppercase">Duplicate</p>
+        <Button type="button" size="sm" variant="outline" className="justify-self-start" onClick={() => setOpen(true)}>Mark as duplicate…</Button>
+      </section>
+    );
+  }
   return (
     <section aria-labelledby={`duplicate-${ticket.id}`} className="grid gap-3 rounded-lg border p-4">
-      <div>
-        <h2 id={`duplicate-${ticket.id}`} className="text-sm font-semibold">Mark as duplicate</h2>
-        <p className="text-sm text-muted-foreground">Choose the original ticket in this project. This ticket will be closed.</p>
+      <div className="flex items-start justify-between gap-2">
+        <div>
+          <h2 id={`duplicate-${ticket.id}`} className="text-sm font-semibold">Mark as duplicate</h2>
+          <p className="text-sm text-muted-foreground">Choose the original ticket in this project. This ticket will be closed.</p>
+        </div>
+        <Button type="button" size="sm" variant="ghost" disabled={saving} onClick={() => { setOpen(false); setSelected(null); setQuery(''); }}>Cancel</Button>
       </div>
       {selected ? (
         <div className="flex items-center gap-2 text-sm">

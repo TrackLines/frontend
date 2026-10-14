@@ -225,7 +225,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           {confirmDelete && (
             <div role="alert" className="grid gap-2 rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm">
-              <p>Delete this ticket? This cannot be undone.</p>
+              <p>Delete this ticket? It’s kept for 30 days in case it was a mistake (contact us to get it back), then permanently deleted with its comments and files.</p>
               <div className="flex gap-2">
                 <Button type="button" size="sm" variant="destructive" disabled={deleting} onClick={remove}>{deleting ? 'Deleting…' : 'Delete ticket'}</Button>
                 <Button type="button" size="sm" variant="outline" disabled={deleting} onClick={() => setConfirmDelete(false)}>Keep ticket</Button>

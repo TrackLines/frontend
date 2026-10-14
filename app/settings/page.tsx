@@ -7,8 +7,9 @@ import { Suspense, useEffect, useState } from 'react';
 import { PlanCard } from '@/components/billing/plan-card';
 import { McpConnect } from '@/components/mcp-connect';
 import { Button } from '@/components/ui/button';
+import { FileCleanupLink } from '@/components/settings/file-cleanup';
 import { OrganizationCard } from '@/components/settings/organization-card';
-import { organization } from '@/lib/api';
+import { attachments, organization, type FileCleanup } from '@/lib/api';
 import { useToken } from '@/lib/use-token';
 
 export default function SettingsPage() {
@@ -16,7 +17,9 @@ export default function SettingsPage() {
   const token = useToken();
   const [admin, setAdmin] = useState(false);
   const signedIn = token !== null;
+  const [cleanup, setCleanup] = useState<FileCleanup | null>(null);
   useEffect(() => { if (token) organization.me(token).then((r) => setAdmin(r.admin), () => setAdmin(false)); }, [signedIn]);
+  useEffect(() => { if (token && admin) attachments.cleanup(token).then(setCleanup, () => {}); }, [admin]); // admins only (TL-261)
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
       <Link href="/dashboard" className="text-sm text-muted-foreground hover:underline">← Projects</Link>
@@ -33,6 +36,7 @@ export default function SettingsPage() {
         <p className="mt-2 text-sm text-muted-foreground">Connect Bugfixes, GitHub and Bitbucket.</p>
         <Link href="/settings/integrations" className="mt-3 inline-block text-sm font-medium hover:underline">Manage integrations →</Link>
       </section>}
+      {admin && <FileCleanupLink report={cleanup} />}
       <section className="mt-6 rounded-xl border p-5">
         <h2 className="text-lg font-semibold">API keys and AI agents</h2>
         <p className="mt-2 text-sm text-muted-foreground">Keys let agents and scripts use the API as you. Connect an AI agent (Claude, Codex…) over MCP with its own key.</p>

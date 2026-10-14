@@ -519,6 +519,7 @@ export const backlog = {
 export type Attachment = {
   id: string; ticket_id: string; key: string; url: string; name: string; size: number;
   content_type: string; created_by: string; created_at: string;
+  delete_on?: string | null; // a year old (TL-259): the day it's deleted unless someone keeps it
 };
 
 export const attachments = {
@@ -526,6 +527,15 @@ export const attachments = {
   add: (ticketId: string, f: { key: string; url: string; name: string; size: number; content_type: string }, token: T) =>
     api<Attachment>(`/tickets/${ticketId}/attachments`, { method: 'POST', body: f, token }),
   remove: (id: string, token: T) => api<void>(`/attachments/${id}`, { method: 'DELETE', token }),
+  keep: (id: string, token: T) => api<void>(`/attachments/${id}/keep`, { method: 'POST', token }), // another year (admins, uploader)
+  cleanup: (token: T) => api<FileCleanup>('/attachments/retention', { token }), // org admins only (TL-260)
+};
+
+// FileCleanup is the org's year-old file clean-up: files due to go (soonest first) and files gone (newest first).
+type CleanupFile = { ticket_id: string; ticket_key: string; ticket_title: string; name: string; size: number; created_by: string };
+export type FileCleanup = {
+  due: (CleanupFile & { id: string; delete_on: string })[];
+  deleted: (CleanupFile & { deleted_at: string })[];
 };
 
 // TicketBugfixes is a Bugfixes-made ticket's panel. available false: linked, but no live details

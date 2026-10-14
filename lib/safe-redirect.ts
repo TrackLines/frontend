@@ -10,5 +10,7 @@ export function safeRedirect(value: string | string[] | undefined, fallback = '/
     return fallback;
   }
   if (url.origin !== base) return fallback;
-  return url.pathname + url.search + url.hash;
+  const out = url.pathname + url.search + url.hash;
+  // normalising can turn /.//evil.com into //evil.com, which browsers read as another site (TL-252)
+  return out.startsWith('//') ? fallback : out;
 }

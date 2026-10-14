@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { Markdown, MarkdownPreview, MarkdownTextarea, looksLikeMarkdown, plainText } from './markdown';
+import { Markdown, MarkdownPreview, MarkdownTextarea, looksLikeMarkdown, ownImage, plainText } from './markdown';
 
 test('renders GitHub-style markdown', () => {
   const html = renderToStaticMarkup(<Markdown>{'**Fix** the `login`\n\n- one\n- two\n\n| a | b |\n|---|---|\n| 1 | 2 |\n\n[docs](https://example.com)'}</Markdown>);
@@ -61,4 +61,15 @@ test('task lists render as checkboxes, clickable only when ticking can be saved'
   expect(clickable).toMatch(/data-line="4"[^>]*aria-label="Not done/);
   // loose lists (blank lines between items) put the box inside a paragraph: still one box each
   expect(renderToStaticMarkup(<Markdown>{'- [ ] a\n\n- [x] b'}</Markdown>).match(/type="checkbox"/g)?.length).toBe(2);
+});
+
+test('images show only from our own uploads; anyone else’s is a link, so it can’t track readers (TL-252)', () => {
+  const html = renderToStaticMarkup(<Markdown>{'![shot](https://abc.ufs.sh/f/key) ![pixel](https://attacker.example/p.png?id=1)'}</Markdown>);
+  expect(html).toContain('<img src="https://abc.ufs.sh/f/key" alt="shot"');
+  expect(html).not.toContain('<img src="https://attacker.example');
+  expect(html).toContain('href="https://attacker.example/p.png?id=1"');
+  expect(ownImage('https://utfs.io/f/x')).toBe(true);
+  expect(ownImage('http://utfs.io/f/x')).toBe(false);
+  expect(ownImage('https://ufs.sh.attacker.example/x')).toBe(false);
+  expect(ownImage('https://evilufs.sh/x')).toBe(false);
 });

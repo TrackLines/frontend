@@ -7,7 +7,7 @@ export const PRIVACY = `
 
 - **We don't sell your data**, and we never will. We don't show ads and we don't run analytics or tracking scripts.
 - **We store what you send us** (your projects, tickets, comments and files) and what we need to run the service, such as your name, email address and username.
-- **You stay in control.** Delete a ticket and its attachments go with it. Delete your organization and everything in it is permanently deleted ${LEGAL.retentionDays} days later.
+- **You stay in control.** Delete a ticket and it goes, with its comments and attachments, ${LEGAL.retentionDays} days later. Delete your organization and everything in it is permanently deleted ${LEGAL.retentionDays} days later.
 - **Credentials are encrypted.** Integration tokens are encrypted with a key that's kept outside the database, and API keys are stored only as a one-way hash, so nobody can read them by looking in the database.
 
 ## Who we are
@@ -60,7 +60,8 @@ Some of these providers are based in, or process data in, the United States and 
 ## How long we keep it
 
 - **Your account and content** for as long as your account and organization exist.
-- **Deleted tickets and attachments** go when you delete them; their files are removed from storage within minutes.
+- **Deleted tickets and attachments** disappear from Tracklines at once and are kept for ${LEGAL.retentionDays} days, so a mistake can be undone if you contact us. After that they're permanently deleted, files included.
+- **Attachments** are kept for a year. After that your organization's admins and the person who uploaded a file are told, and anyone of them can keep it for another year; otherwise it's deleted at 13 months.
 - **Deleted organizations** are kept for ${LEGAL.retentionDays} days, so an accidental deletion can be undone if you contact us. After that, everything in them, files included, is permanently deleted.
 - **Billing records** for as long as tax and accounting law requires.
 - **Logs** for a short period, for security and troubleshooting.

@@ -50,3 +50,12 @@ export async function disablePush(token: string): Promise<PushState> {
   }
   return 'off';
 }
+
+// forgetPush stops this browser getting the last person's pushes once they sign out: the subscription
+// belongs to the browser, so on a shared computer the next person would see their notifications
+// (TL-252). Local only: the server drops the row the next time a push to it fails.
+export async function forgetPush(): Promise<void> {
+  if (!pushSupported()) return;
+  const reg = await navigator.serviceWorker.getRegistration('/');
+  await (await reg?.pushManager.getSubscription())?.unsubscribe();
+}
