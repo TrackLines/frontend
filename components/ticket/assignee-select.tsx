@@ -13,7 +13,7 @@ export function assigneeItems(list: Assignee[], current: string | null | undefin
   const assignable = list.filter((a) => a.kind !== 'service');
   const items: Record<string, string> = {
     [NONE]: 'Unassigned',
-    ...Object.fromEntries(assignable.map((a) => [a.id, a.kind === 'ai' || !a.kind ? `${a.label} (AI)` : a.label])),
+    ...Object.fromEntries(assignable.map((a) => [a.id, a.kind === 'ai' || !a.kind ? `${a.label} · AI` : a.label])),
   };
   if (current && !(current in items)) {
     items[current] = current.startsWith('user_') ? 'Unavailable organization member' : personLabel(current);

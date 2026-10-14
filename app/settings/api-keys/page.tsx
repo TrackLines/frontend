@@ -3,11 +3,9 @@
 import { ListPageSkeleton } from '@/components/page-skeletons';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { NameDialog } from '@/components/name-dialog';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { apiKeys, type ApiKey, type ApiKeyKind } from '@/lib/api';
-import { ApiKeyList, FreshKey, splitSecret } from '@/components/settings/api-keys';
+import { ApiError, apiKeys, type ApiKey } from '@/lib/api';
+import { ApiKeyList, FreshKey, NewKeyDialog, SetupDialog, splitSecret, type FreshKeyInfo } from '@/components/settings/api-keys';
 import { useToken } from '@/lib/use-token';
 
 export default function ApiKeysPage() {
@@ -15,8 +13,8 @@ export default function ApiKeysPage() {
   const [list, setList] = useState<ApiKey[] | null>(null);
   const [failed, setFailed] = useState(false);
   const [creating, setCreating] = useState(false);
-  const [creatingKind, setCreatingKind] = useState<ApiKeyKind>('ai');
-  const [fresh, setFresh] = useState<{ name: string; kind: ApiKeyKind; key: string } | null>(null); // shown once
+  const [fresh, setFresh] = useState<FreshKeyInfo | null>(null); // shown once
+  const [setupOpen, setSetupOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const loaded = token !== null;
@@ -45,36 +43,24 @@ export default function ApiKeysPage() {
         <code className="rounded bg-muted px-1">Authorization: Bearer tl_…</code> to <code className="rounded bg-muted px-1">/api</code>.
       </p>
 
-      {fresh && <FreshKey fresh={fresh} copied={copied} onCopy={() => navigator.clipboard.writeText(fresh.key).then(() => setCopied(true))} />}
+      {fresh && <FreshKey fresh={fresh} copied={copied} onCopy={() => navigator.clipboard.writeText(fresh.key).then(() => setCopied(true))} onSetup={() => setSetupOpen(true)} />}
       <ApiKeyList list={list} onRevoke={(k) => void revoke(k)} />
 
-      <NameDialog
+      {fresh?.kind === 'ai' && <SetupDialog fresh={fresh} open={setupOpen} onOpenChange={setSetupOpen} />}
+      <NewKeyDialog
         open={creating}
-        title="New API key"
-        description="AI keys can be assigned tickets. Service keys are for servers and integrations."
-        placeholder="e.g. codex"
-        submitLabel="Create key"
-        onOpenChange={(open) => { setCreating(open); if (!open) setCreatingKind('ai'); }}
-        onSubmit={async (name) => {
-          const kind = creatingKind;
-          const k = await apiKeys.create(name, kind, token).catch(() => { throw new Error('Couldn’t create the key. Please try again.'); });
+        onOpenChange={setCreating}
+        onCreate={async (input) => {
+          const k = await apiKeys.create(input, token).catch((err) => {
+            throw new Error(err instanceof ApiError && err.status < 500 ? err.message : 'Couldn’t create the key. Please try again.');
+          });
           const { listed, secret } = splitSecret(k);
           setList((l) => [...(l ?? []), listed]);
-          setFresh({ name, kind, key: secret });
+          setFresh({ name: listed.display ?? listed.name, kind: listed.kind, key: secret, client: listed.client });
           setCopied(false);
+          setSetupOpen(listed.kind === 'ai'); // straight to that agent's setup steps (TL-269)
         }}
-      >
-        <label className="grid gap-1.5 text-sm font-medium">
-          Key type
-          <Select value={creatingKind} onValueChange={(value) => value && setCreatingKind(value as ApiKeyKind)}>
-            <SelectTrigger aria-label="Key type" className="w-full"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="ai">AI agent</SelectItem>
-              <SelectItem value="service">Server / API integration</SelectItem>
-            </SelectContent>
-          </Select>
-        </label>
-      </NameDialog>
+      />
     </main>
   );
 }

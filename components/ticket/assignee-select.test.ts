@@ -8,7 +8,7 @@ const list = [
 ];
 
 test('choices: unassigned, people and explicitly labelled AI keys, never service keys', () => {
-  expect(assigneeItems(list, null)).toEqual({ __unassigned: 'Unassigned', user_1: 'You', codex: 'codex (AI)' });
+  expect(assigneeItems(list, null)).toEqual({ __unassigned: 'Unassigned', user_1: 'You', codex: 'codex · AI' });
 });
 
 test('keeps a current assignee that is no longer a choice', () => {

@@ -90,9 +90,12 @@ export function McpConnect({ keyHint, trigger }: { keyHint: ReactNode; trigger?:
   );
 }
 
-export function McpInstructions() {
+// McpInstructions: setup steps per client. With apiKey (a key just created, TL-269) the snippets carry
+// it in place of tl_your_key, and initial opens that key's client.
+export function McpInstructions({ apiKey, initial }: { apiKey?: string; initial?: string } = {}) {
+  const fill = (code: string) => (apiKey ? code.replaceAll(KEY, apiKey) : code);
   return (
-    <Tabs defaultValue={AGENTS[0].id} className="min-w-0">
+    <Tabs defaultValue={AGENTS.some((a) => a.id === initial) ? initial : AGENTS[0].id} className="min-w-0">
       <TabsList className="h-auto flex-wrap">
         {AGENTS.map((a) => <TabsTrigger key={a.id} value={a.id}>{a.name}</TabsTrigger>)}
       </TabsList>
@@ -103,8 +106,8 @@ export function McpInstructions() {
               <p className="text-muted-foreground [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:text-foreground">{s.text}</p>
               {s.code && (
                 <div className="flex min-w-0 items-start gap-2">
-                  <pre className="min-w-0 flex-1 overflow-x-auto rounded-lg border bg-muted/50 p-3 font-mono text-xs leading-5">{s.code}</pre>
-                  <CopyButton value={s.code} label="Copy" size="sm" className="shrink-0" ariaLabel={`Copy ${a.name} snippet`} />
+                  <pre className="min-w-0 flex-1 overflow-x-auto rounded-lg border bg-muted/50 p-3 font-mono text-xs leading-5">{fill(s.code)}</pre>
+                  <CopyButton value={fill(s.code)} label="Copy" size="sm" className="shrink-0" ariaLabel={`Copy ${a.name} snippet`} />
                 </div>
               )}
             </div>

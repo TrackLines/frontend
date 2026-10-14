@@ -1,4 +1,5 @@
 import type { AppNotification, Assignee } from './api';
+import { generatedAgent } from './people';
 
 // Where a notification goes when clicked: its ticket, else its board.
 export function notificationHref(n: Pick<AppNotification, 'ticket_id' | 'ticket_key' | 'board_id'>): string | null {
@@ -13,7 +14,7 @@ export function actorName(actor: string, people: Assignee[]): string {
   if (!actor) return 'Someone';
   const p = people.find((x) => x.id === actor);
   if (p) return p.label === 'You' ? 'You' : p.label;
-  return actor.startsWith('user_') ? 'Someone' : actor;
+  return actor.startsWith('user_') ? 'Someone' : generatedAgent(actor) ?? actor;
 }
 
 // The line a notification reads as: "Ava assigned you TL-12: Fix login".

@@ -83,7 +83,14 @@ export type Project = {
 export type ProjectStats = { boards: number; roadmaps: number; open: number; done: number; backlog: number; urgent: number; active: string };
 export type ProjectLabel = { label: string; count: number };
 export type ApiKeyKind = 'ai' | 'service';
-export type ApiKey = { id: string; name: string; kind: ApiKeyKind; prefix: string; created_at: string; last_used_at: string | null };
+// the client an AI agent's key is for (TL-269); matches components/mcp-connect.tsx's setup steps
+export type ApiKeyClient = 'claude-code' | 'claude-desktop' | 'codex' | 'cursor' | 'vscode' | 'gemini' | 'other';
+export type ApiKey = {
+  id: string; name: string; kind: ApiKeyKind; prefix: string; created_at: string; last_used_at: string | null;
+  client?: ApiKeyClient | null; label?: string | null; // AI keys: their client, and an "other" agent's name
+  display?: string; // what it's called: "Claude", or a service key's name
+};
+export type NewApiKey = { kind: 'ai'; client: ApiKeyClient; label?: string } | { kind: 'service'; name: string };
 // the active organization's plan (TL-243). project_limit -1 = unlimited; billed = through Stripe, so there's
 // billing to manage; can_manage = you're an org admin, who buys and manages it
 export type Subscription = { paid: boolean; project_limit: number; billed?: boolean; can_manage?: boolean };
@@ -439,7 +446,7 @@ export const billing = {
 // API keys act as you; AI keys can be assigned tickets. Managing keys needs a signed-in session.
 export const apiKeys = {
   list: (token: T) => api<ApiKey[]>('/keys', { token }),
-  create: (name: string, kind: ApiKeyKind, token: T) => api<ApiKey & { key: string }>('/keys', { method: 'POST', body: { name, kind }, token }),
+  create: (input: NewApiKey, token: T) => api<ApiKey & { key: string }>('/keys', { method: 'POST', body: input, token }),
   revoke: (id: string, token: T) => api<void>(`/keys/${id}`, { method: 'DELETE', token }),
 };
 

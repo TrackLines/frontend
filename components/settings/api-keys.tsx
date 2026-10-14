@@ -1,9 +1,19 @@
+'use client';
+
+import { useState, type FormEvent } from 'react';
+import { AGENTS, McpInstructions } from '@/components/mcp-connect';
 import { Button } from '@/components/ui/button';
-import type { ApiKey, ApiKeyKind } from '@/lib/api';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import type { ApiKey, ApiKeyClient, ApiKeyKind, NewApiKey } from '@/lib/api';
 
 const when = new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeStyle: 'short' });
 
-export type FreshKeyInfo = { name: string; kind: ApiKeyKind; key: string };
+export type FreshKeyInfo = { name: string; kind: ApiKeyKind; key: string; client?: ApiKeyClient | null };
+
+// MAX_LABEL: what an "other" agent can be called (the backend's apikeys.MaxLabel).
+export const MAX_LABEL = 40;
 
 // splitSecret: a newly created key's secret is shown once and never kept with the list.
 export function splitSecret(created: ApiKey & { key: string }): { listed: ApiKey; secret: string } {
@@ -11,14 +21,136 @@ export function splitSecret(created: ApiKey & { key: string }): { listed: ApiKey
   return { listed, secret: key };
 }
 
-// FreshKey: the one time the secret is shown, with copy.
-export function FreshKey({ fresh, copied, onCopy }: { fresh: FreshKeyInfo; copied: boolean; onCopy: () => void }) {
+// keyInput: what the new-key form sends, or null until it's complete (TL-269). Agent keys are named
+// by their client (an "other" agent optionally by what it's called); script keys by hand.
+export function keyInput(kind: ApiKeyKind, client: ApiKeyClient, label: string, name: string): NewApiKey | null {
+  if (kind === 'service') return name.trim() ? { kind, name: name.trim() } : null;
+  return client === 'other' && label.trim() ? { kind, client, label: label.trim() } : { kind, client };
+}
+
+// NewKeyFields: the new-key form's fields (pure, for tests). Agents pick their client and get its
+// name; only "Other" asks what the agent is called. Scripts are named by hand.
+export function NewKeyFields({ kind, client, label, name, onKind, onClient, onLabel, onName }: {
+  kind: ApiKeyKind; client: ApiKeyClient; label: string; name: string;
+  onKind: (k: ApiKeyKind) => void; onClient: (c: ApiKeyClient) => void; onLabel: (l: string) => void; onName: (n: string) => void;
+}) {
+  return (
+    <>
+      <label className="grid gap-1.5 text-sm font-medium">
+        Key type
+        <Select items={{ ai: 'AI agent', service: 'Server / API integration' }} value={kind} onValueChange={(v) => v && onKind(v as ApiKeyKind)}>
+          <SelectTrigger aria-label="Key type" className="w-full"><SelectValue /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="ai">AI agent</SelectItem>
+            <SelectItem value="service">Server / API integration</SelectItem>
+          </SelectContent>
+        </Select>
+      </label>
+      {kind === 'ai' ? (
+        <>
+          <label className="grid gap-1.5 text-sm font-medium">
+            Which agent?
+            <Select items={Object.fromEntries(AGENTS.map((a) => [a.id, a.name]))} value={client} onValueChange={(v) => v && onClient(v as ApiKeyClient)}>
+              <SelectTrigger aria-label="Which agent" className="w-full"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {AGENTS.map((a) => <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </label>
+          {client === 'other' && (
+            <label className="grid gap-1.5 text-sm font-medium">
+              What&apos;s the agent called?
+              <Input value={label} maxLength={MAX_LABEL} placeholder="e.g. Aider (optional)" onChange={(e) => onLabel(e.target.value)} />
+            </label>
+          )}
+          <p className="text-xs text-muted-foreground">It&apos;s named after the agent: you&apos;ll see “{agentName(client, label)}”, and everyone else sees it with your username, e.g. “{agentName(client, label)} (keloran)”.</p>
+        </>
+      ) : (
+        <label className="grid gap-1.5 text-sm font-medium">
+          Name
+          <Input value={name} maxLength={120} placeholder="e.g. deploys" onChange={(e) => onName(e.target.value)} />
+        </label>
+      )}
+    </>
+  );
+}
+
+// agentName mirrors the backend's apikeys.DisplayName, for the form's preview.
+export function agentName(client: ApiKeyClient, label: string): string {
+  const known: Partial<Record<ApiKeyClient, string>> = { 'claude-code': 'Claude', 'claude-desktop': 'Claude', codex: 'Codex', cursor: 'Cursor', vscode: 'Copilot', gemini: 'Gemini' };
+  return known[client] ?? (label.trim() || 'AI agent');
+}
+
+// NewKeyDialog: create a key; onCreate throws to show an error.
+export function NewKeyDialog({ open, onOpenChange, onCreate }: { open: boolean; onOpenChange: (open: boolean) => void; onCreate: (input: NewApiKey) => Promise<void> }) {
+  const [kind, setKind] = useState<ApiKeyKind>('ai');
+  const [client, setClient] = useState<ApiKeyClient>('claude-code');
+  const [label, setLabel] = useState('');
+  const [name, setName] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const input = keyInput(kind, client, label, name);
+
+  function reset() { setKind('ai'); setClient('claude-code'); setLabel(''); setName(''); setError(''); }
+  async function submit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!input) return;
+    setSaving(true);
+    setError('');
+    try {
+      await onCreate(input);
+      reset();
+      onOpenChange(false);
+    } catch (err) {
+      setError(err instanceof Error && err.message ? err.message : 'Couldn’t create the key. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={(o) => { onOpenChange(o); if (!o) reset(); }}>
+      <DialogContent>
+        <form onSubmit={submit} className="grid gap-4">
+          <DialogHeader>
+            <DialogTitle>New API key</DialogTitle>
+            <DialogDescription>AI keys can be assigned tickets. Service keys are for servers and integrations.</DialogDescription>
+          </DialogHeader>
+          <NewKeyFields kind={kind} client={client} label={label} name={name} onKind={setKind} onClient={setClient} onLabel={setLabel} onName={setName} />
+          {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+          <DialogFooter>
+            <Button type="submit" disabled={saving || !input}>{saving ? 'Creating…' : 'Create key'}</Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// SetupDialog: opens as soon as an agent key is made, on that agent's setup steps with the key in them.
+export function SetupDialog({ fresh, open, onOpenChange }: { fresh: FreshKeyInfo; open: boolean; onOpenChange: (open: boolean) => void }) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>Set up {fresh.name}</DialogTitle>
+          <DialogDescription>Your new key is already in these steps. Copy it now: it won&apos;t be shown again.</DialogDescription>
+        </DialogHeader>
+        <McpInstructions apiKey={fresh.key} initial={fresh.client ?? undefined} />
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// FreshKey: the one time the secret is shown, with copy; an agent key can reopen its setup steps.
+export function FreshKey({ fresh, copied, onCopy, onSetup }: { fresh: FreshKeyInfo; copied: boolean; onCopy: () => void; onSetup?: () => void }) {
   return (
     <div role="status" className="mb-6 rounded-xl border border-primary/40 bg-primary/5 p-4">
       <p className="mb-2 font-medium">{fresh.kind === 'ai' ? 'AI key' : 'Service key'} for “{fresh.name}” — copy it now, it won&apos;t be shown again.</p>
-      <div className="flex items-center gap-2">
-        <code className="flex-1 overflow-x-auto rounded bg-background px-2 py-1.5 text-sm">{fresh.key}</code>
+      <div className="flex flex-wrap items-center gap-2">
+        <code className="min-w-0 flex-1 overflow-x-auto rounded bg-background px-2 py-1.5 text-sm">{fresh.key}</code>
         <Button size="sm" onClick={onCopy}>{copied ? 'Copied' : 'Copy'}</Button>
+        {fresh.kind === 'ai' && onSetup && <Button size="sm" variant="outline" onClick={onSetup}>Setup steps</Button>}
       </div>
     </div>
   );
@@ -31,7 +163,7 @@ export function ApiKeyList({ list, onRevoke }: { list: ApiKey[]; onRevoke: (k: A
     <ul className="divide-y rounded-xl border">
       {list.map((k) => (
         <li key={k.id} className="flex flex-wrap items-center gap-x-4 gap-y-1 p-4">
-          <span className="font-medium">{k.name}</span>
+          <span className="font-medium" title={k.client ? `Recorded as ${k.name}` : undefined}>{k.display ?? k.name}</span>
           <span className="rounded-full border px-2 py-0.5 text-xs text-muted-foreground">{k.kind === 'ai' ? 'AI agent' : 'Server / API'}</span>
           <code className="text-sm text-muted-foreground">{k.prefix}…</code>
           <span className="text-sm text-muted-foreground">{k.last_used_at ? `last used ${when.format(new Date(k.last_used_at))}` : 'never used'}</span>
