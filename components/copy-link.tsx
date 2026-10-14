@@ -41,11 +41,12 @@ export async function shortOr(full: string, make: ((url: string) => Promise<{ ur
 // CopyLink copies a short link for an app path (e.g. /tickets/<id>) to the clipboard (TL-277), or the
 // full link when it can't be shortened. The copy starts on the click and takes the link once it's
 // ready, which Safari needs (it only lets a click copy, not something after it).
-// token: the signed-in caller's (no token: the full link).
-export function CopyLink({ path, token, className }: { path: string; token?: string | null; className?: string }) {
+// token: the signed-in caller's (no token: the full link). title: what the short link is called, which
+// anyone can look up, so a key or "a board", never a ticket's own title.
+export function CopyLink({ path, token, title = 'Tracklines', className }: { path: string; token?: string | null; title?: string; className?: string }) {
   const [copied, setCopied] = useState(false);
   async function copy() {
-    const link = shortOr(window.location.origin + path, token ? (url) => shortLinks.create(url, token) : null);
+    const link = shortOr(window.location.origin + path, token ? (url) => shortLinks.create(url, title, token) : null);
     try {
       await navigator.clipboard.write([new ClipboardItem({ 'text/plain': link.then((t) => new Blob([t], { type: 'text/plain' })) })]);
     } catch {

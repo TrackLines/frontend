@@ -16,7 +16,7 @@ import { EstimateBadge } from './estimate';
 import { TICKET_DIALOG_WIDTH } from './ticket-dialog';
 import { personLabel } from '@/lib/people';
 import { usePeople } from '@/lib/use-people';
-import { TicketKey, ticketPath } from '@/components/ticket/ticket-key';
+import { TicketKey, ticketPath, linkTitle } from '@/components/ticket/ticket-key';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { ChecklistCount } from '@/components/ticket/checklist-count';
@@ -86,7 +86,7 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
         {open && token && <TicketComments ticketId={ticket.id} token={token} />}
         {sample}
         <DialogFooter>
-          {!sample && <CopyLink path={ticketPath(ticket)} token={token} className="sm:mr-auto" />}
+          {!sample && <CopyLink path={ticketPath(ticket)} token={token} title={linkTitle(ticket)} className="sm:mr-auto" />}
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Close</Button>
           {onEdit && <Button type="button" onClick={onEdit}>Edit</Button>}
         </DialogFooter>

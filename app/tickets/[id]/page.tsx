@@ -31,7 +31,7 @@ import { usePeople } from '@/lib/use-people';
 import { useToken } from '@/lib/use-token';
 import { useCachedState } from '@/lib/page-cache';
 import { TicketSkeleton } from '@/components/page-skeletons';
-import { isTicketKey, TicketKey, ticketPath } from '@/components/ticket/ticket-key';
+import { isTicketKey, TicketKey, ticketPath, linkTitle } from '@/components/ticket/ticket-key';
 import { afterDelete, closedAs, ticketActions } from '@/lib/ticket-page';
 import { ChecklistCount } from '@/components/ticket/checklist-count';
 import { toggleTask } from '@/lib/checklist';
@@ -181,7 +181,7 @@ export default function TicketPage() {
           </>
         )}
         <Link href={`/projects/${t.project_id}`} className={buttonVariants({ variant: 'outline' })}>Open project</Link>
-        <CopyLink path={ticketPath(t)} token={token} />
+        <CopyLink path={ticketPath(t)} token={token} title={linkTitle(t)} />
       </div>
     </main>
   );

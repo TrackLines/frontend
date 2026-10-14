@@ -17,6 +17,12 @@ export function ticketPath(ticket: { id: string }) {
   return `/tickets/${ticket.id}`;
 }
 
+// linkTitle names a ticket's short link (TL-277): its key, never its title, since anyone can look a
+// short link's title up.
+export function linkTitle(ticket: { key?: string | null }) {
+  return ticket.key ? `${ticket.key} on Tracklines` : 'A ticket on Tracklines';
+}
+
 export function isTicketKey(value: string) {
   return /^[A-Z][A-Z0-9]{1,5}-\d+$/i.test(value);
 }

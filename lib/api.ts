@@ -647,5 +647,6 @@ export const push = {
 
 // Short links for "Copy link" (TL-277): our own site's links only, through 1tn.
 export const shortLinks = {
-  create: (url: string, token: T) => api<{ url: string }>('/short-links', { method: 'POST', body: { url }, token }),
+  // title: shown for the link (1tn can't read our pages); public, so nothing private in it
+  create: (url: string, title: string, token: T) => api<{ url: string }>('/short-links', { method: 'POST', body: { url, title }, token }),
 };

@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { isTicketKey, TicketKey, ticketPath } from './ticket-key';
+import { isTicketKey, TicketKey, ticketPath, linkTitle } from './ticket-key';
 
 test('ticket key is readable and has an accessible copy action when requested', () => {
   const html = renderToStaticMarkup(<TicketKey value="TL-123" copy />);
@@ -17,4 +17,11 @@ test('ticket keys accept the project key format without matching UUIDs', () => {
   expect(isTicketKey('TL-123')).toBe(true);
   expect(isTicketKey('trk-42')).toBe(true);
   expect(isTicketKey('not-a-ticket')).toBe(false);
+});
+
+test('a short link is named by the ticket key, never its title: anyone can look a short link up (TL-277)', () => {
+  const ticket = { key: 'TL-204', title: 'Acquire Acme Ltd (confidential)' };
+  expect(linkTitle(ticket)).toBe('TL-204 on Tracklines');
+  expect(linkTitle(ticket)).not.toContain('Acme');
+  expect(linkTitle({ key: null })).toBe('A ticket on Tracklines');
 });
