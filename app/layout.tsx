@@ -56,7 +56,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           {children}
           <SiteFooter />
           {/* bottom left: the hosted drawer and its buttons are on the right */}
-          <Toaster position="bottom-left" />
+          <Toaster position="bottom-left" offset={8} mobileOffset={8} />
         </FeatureFlags>
         </ClerkProvider>
         </ThemeProvider>

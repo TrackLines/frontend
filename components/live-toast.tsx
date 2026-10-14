@@ -3,22 +3,35 @@
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 import { LIVE_LABEL, type LiveState } from '@/lib/live-status';
+import { cn } from '@/lib/utils';
 
 const ID = 'live-updates'; // one toast, updated in place as the connection changes
 
-// liveToast: how the live-updates toast looks for a state (pure, for tests).
-export function liveToast(state: LiveState) {
+const DOT: Record<LiveState, string> = {
+  live: 'bg-emerald-500',
+  connecting: 'animate-pulse bg-amber-500',
+  reconnecting: 'animate-pulse bg-amber-500',
+  unavailable: 'bg-destructive',
+};
+
+// LivePill: the live-updates status, as small as the browser's link preview: a dot and a few words,
+// with what it means on hover (pure, for tests).
+export function LivePill({ state }: { state: LiveState }) {
   const { text, hint } = LIVE_LABEL[state];
-  const kind = state === 'live' ? 'success' : state === 'unavailable' ? 'warning' : 'loading';
-  return { kind, text, hint } as const;
+  return (
+    <span role="status" title={hint} aria-description={hint}
+      className="inline-flex items-center gap-1.5 rounded-full border bg-popover px-2.5 py-1 text-xs text-popover-foreground shadow-sm">
+      <span aria-hidden className={cn('size-1.5 rounded-full', DOT[state])} />
+      {text}
+    </span>
+  );
 }
 
-// LiveToast: while mounted (you've joined a standup or are refining), a small toast at the bottom
-// of the screen says what the live-updates connection is doing; it goes when you leave.
+// LiveToast: while mounted (you've joined a standup or are refining), the pill sits in the bottom
+// left corner; it goes when you leave.
 export function LiveToast({ state }: { state: LiveState }) {
   useEffect(() => {
-    const t = liveToast(state);
-    toast[t.kind](t.text, { id: ID, description: t.hint, duration: Infinity, dismissible: false });
+    toast.custom(() => <LivePill state={state} />, { id: ID, duration: Infinity, dismissible: false, unstyled: true });
   }, [state]);
   useEffect(() => () => { toast.dismiss(ID); }, []);
   return null;

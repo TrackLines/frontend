@@ -1,7 +1,8 @@
 import { expect, test } from 'bun:test';
 import { ApiError } from './api';
 import { combined, dropped, LIVE_LABEL } from './live-status';
-import { liveToast } from '@/components/live-toast';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { LivePill } from '@/components/live-toast';
 
 test('a drop reads as reconnecting once it had been live, still connecting before, unavailable on 503', () => {
   expect(dropped('live')).toBe('reconnecting');
@@ -19,10 +20,12 @@ test('several boards read as one: live only when all are, unavailable if any is'
   expect(combined([])).toBe('connecting');
 });
 
-test('the live toast says what the connection is doing: loading while connecting, a tick when live, a warning when unavailable', () => {
-  expect(liveToast('connecting')).toEqual({ kind: 'loading', text: 'Connecting to live updates…', hint: LIVE_LABEL.connecting.hint });
-  expect(liveToast('reconnecting').kind).toBe('loading');
-  expect(liveToast('live')).toEqual({ kind: 'success', text: 'Live updates', hint: LIVE_LABEL.live.hint });
-  expect(liveToast('unavailable').kind).toBe('warning');
-  expect(liveToast('unavailable').hint).toContain('Refresh to see changes');
+test('the live pill is a dot and a few words, with what it means on hover', () => {
+  const live = renderToStaticMarkup(<LivePill state="live" />);
+  expect(live).toContain('>Live updates<');
+  expect(live).toContain(`title="${LIVE_LABEL.live.hint}"`);
+  expect(live).toContain('bg-emerald-500');
+  expect(renderToStaticMarkup(<LivePill state="connecting" />)).toContain('Connecting to live updates…');
+  expect(renderToStaticMarkup(<LivePill state="reconnecting" />)).toContain('animate-pulse');
+  expect(renderToStaticMarkup(<LivePill state="unavailable" />)).toContain('Refresh to see changes');
 });
