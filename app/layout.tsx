@@ -31,7 +31,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" className={cn("font-sans", geist.variable)} suppressHydrationWarning>
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange storageKey="tracklines-theme">
-        <ClerkProvider appearance={{ theme: shadcn }}>
+        <ClerkProvider dynamic appearance={{ theme: shadcn }}>
         <FeatureFlags>
           <CacheGuard />
           <Show when="signed-in"><CompleteInvitations /></Show>
