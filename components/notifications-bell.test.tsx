@@ -55,3 +55,12 @@ test('Notify me on this device: off, on, blocked; nothing when push is not avail
   expect(renderToStaticMarkup(<PushControl state="blocked" busy={false} onToggle={() => {}} />)).toContain('blocked for this site');
   expect(renderToStaticMarkup(<PushControl state="unavailable" busy={false} onToggle={() => {}} />)).toBe('');
 });
+
+test('each notification shows its type\'s icon (TL-280)', () => {
+  const html = view({ items: [
+    { id: '1', kind: 'assigned', text: 'assigned you TL-1', actor: 'user_ava', ticket_id: 't', ticket_key: 'TL-1', board_id: null, created_at: '2026-10-11T10:00:00Z', read_at: null },
+    { id: '2', kind: 'over_capacity', text: 'started sprint 2 over capacity', actor: 'Tracklines', ticket_id: null, ticket_key: null, board_id: 'b', created_at: '2026-10-11T09:00:00Z', read_at: null },
+  ], unread: 2 });
+  expect(html).toContain('data-kind="assigned"');
+  expect(html).toContain('data-kind="over_capacity"');
+});

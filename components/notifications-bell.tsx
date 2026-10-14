@@ -1,6 +1,7 @@
 'use client';
 
 import { BellIcon, XIcon } from 'lucide-react';
+import { NotificationIcon } from '@/components/notification-icon';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { When } from '@/components/when';
@@ -174,6 +175,7 @@ export function NotificationsList({ items, people, failed, unread, showRead = fa
               <li key={n.id} className="group flex items-start hover:bg-muted">
                 <button type="button" onClick={() => onOpen(n)} className={`flex min-w-0 flex-1 gap-2 py-2.5 pl-3 text-left text-sm ${n.read_at ? 'text-muted-foreground' : ''}`}>
                   <span aria-label={n.read_at ? undefined : 'Unread'} className={`mt-1.5 size-2 shrink-0 rounded-full ${n.read_at ? '' : 'bg-primary'}`} />
+                  <NotificationIcon kind={n.kind} />
                   <span className="grid min-w-0 gap-0.5">
                     <span className="break-words">{notificationLine(n, people)}</span>
                     <span className="text-xs text-muted-foreground"><When iso={n.created_at} /></span>
