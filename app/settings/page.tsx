@@ -6,7 +6,9 @@ import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 import { PlanCard } from '@/components/billing/plan-card';
 import { McpConnect } from '@/components/mcp-connect';
-import { Button } from '@/components/ui/button';
+import { KeyRoundIcon, PlugIcon } from 'lucide-react';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { SettingsCard } from '@/components/settings/settings-card';
 import { FileCleanupLink } from '@/components/settings/file-cleanup';
 import { OrganizationCard } from '@/components/settings/organization-card';
 import { attachments, organization, type FileCleanup } from '@/lib/api';
@@ -23,38 +25,33 @@ export default function SettingsPage() {
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
       <Link href="/dashboard" className="text-sm text-muted-foreground hover:underline">← Projects</Link>
-      <h1 className="mt-2 mb-6 text-3xl font-bold tracking-tight">Settings</h1>
+      <header className="mt-2 mb-8">
+        <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Your organization’s plan, people and connections.</p>
+      </header>
       {/* useSearchParams needs a Suspense boundary for static rendering */}
       <Suspense><ReturnBanner /></Suspense>
-      <Plan />
-      <section className="mt-6 rounded-xl border p-5">
-        <h2 className="text-lg font-semibold">Organization</h2>
+      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <Plan />
         <OrganizationCard admin={admin} />
-      </section>
-      {admin && <section className="mt-6 rounded-xl border p-5">
-        <h2 className="text-lg font-semibold">Integrations</h2>
-        <p className="mt-2 text-sm text-muted-foreground">Connect Bugfixes, GitHub and Bitbucket.</p>
-        <Link href="/settings/integrations" className="mt-3 inline-block text-sm font-medium hover:underline">Manage integrations →</Link>
-      </section>}
-      {admin && <FileCleanupLink report={cleanup} />}
-      <section className="mt-6 rounded-xl border p-5">
-        <h2 className="text-lg font-semibold">API keys and AI agents</h2>
-        <p className="mt-2 text-sm text-muted-foreground">Keys let agents and scripts use the API as you. Connect an AI agent (Claude, Codex…) over MCP with its own key.</p>
-        <div className="mt-3 flex flex-wrap items-center gap-4">
-          <Link href="/settings/api-keys" className="text-sm font-medium hover:underline">Manage API keys →</Link>
+        {admin && <SettingsCard icon={PlugIcon} title="Integrations" href="/settings/integrations" description="Connect Bugfixes, GitHub and Bitbucket." />}
+        <SettingsCard icon={KeyRoundIcon} title="API keys and AI agents"
+          description="Keys let agents and scripts use the API as you. Connect an AI agent (Claude, Codex…) over MCP with its own key.">
+          <Link href="/settings/api-keys" className={buttonVariants({ variant: 'outline', size: 'sm' })}>Manage API keys</Link>
           <McpConnect
             keyHint={<>Each agent needs its own API key: create one in <Link href="/settings/api-keys" className="font-medium text-foreground underline">API keys</Link> and use it in place of <code>tl_your_key</code>.</>}
-            trigger={(open) => <Button variant="outline" size="sm" onClick={open}>Connect AI</Button>}
+            trigger={(open) => <Button variant="ghost" size="sm" onClick={open}>Connect AI</Button>}
           />
-        </div>
-      </section>
+        </SettingsCard>
+        {admin && <FileCleanupLink report={cleanup} />}
+      </ul>
     </main>
   );
 }
 
 function Plan() {
   const token = useToken();
-  return token ? <PlanCard token={token} /> : <Skeleton role="status" aria-label="Loading plan…" className="h-36 w-full rounded-xl" />;
+  return token ? <PlanCard token={token} /> : <li><Skeleton role="status" aria-label="Loading plan…" className="h-44 rounded-xl" /></li>;
 }
 
 // Stripe sends people back here with ?billing=success|cancelled (backend PORTAL_URL).

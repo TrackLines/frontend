@@ -1,6 +1,9 @@
+import { TrashIcon } from 'lucide-react';
 import Link from 'next/link';
 import { formatSize } from '@/components/ticket/attachments';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { SettingsCard } from './settings-card';
 import type { Assignee, FileCleanup } from '@/lib/api';
 import { personLabel } from '@/lib/people';
 
@@ -9,18 +12,14 @@ const day = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', y
 // hasCleanup: is there anything to show? Settings only links the page when there is (TL-261).
 export const hasCleanup = (r: FileCleanup | null) => !!r && (r.due.length > 0 || r.deleted.length > 0);
 
-// FileCleanupLink: the Settings section, only when files are due to go or have gone.
+// FileCleanupLink: the Settings card, only when files are due to go or have gone.
 export function FileCleanupLink({ report }: { report: FileCleanup | null }) {
   if (!hasCleanup(report)) return null;
   const due = report!.due.length;
   return (
-    <section className="mt-6 rounded-xl border p-5">
-      <h2 className="text-lg font-semibold">File clean-up</h2>
-      <p className="mt-2 text-sm text-muted-foreground">
-        {due ? `${due} year-old ${due === 1 ? 'file is' : 'files are'} due to be deleted unless someone keeps ${due === 1 ? 'it' : 'them'}.` : 'Year-old files the clean-up has deleted.'}
-      </p>
-      <Link href="/settings/file-cleanup" className="mt-3 inline-block text-sm font-medium hover:underline">See files →</Link>
-    </section>
+    <SettingsCard icon={TrashIcon} title="File clean-up" href="/settings/file-cleanup"
+      badge={due > 0 && <Badge variant="outline" className="border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-400">{due} due</Badge>}
+      description={due ? `${due} year-old ${due === 1 ? 'file is' : 'files are'} due to be deleted unless someone keeps ${due === 1 ? 'it' : 'them'}.` : 'Year-old files the clean-up has deleted.'} />
   );
 }
 
