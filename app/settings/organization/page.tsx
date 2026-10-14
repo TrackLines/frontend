@@ -6,25 +6,21 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ApiError, invitations, organization, projects as projectApi, teams as teamApi, type Invitation, type OrganizationMember, type OrgAdmin, type Project, type Team, type TeamMember } from '@/lib/api';
+import { ApiError, invitations, organization, teams as teamApi, type Invitation } from '@/lib/api';
 import { useToken } from '@/lib/use-token';
 import { OutcomeNote, ReceivedInvitations, TeamEditor } from '@/components/settings/organization';
-import { adminSource, inviteInput, inviteReady, memberName, personIn, saveError, sectionOf, targetName, type Outcome } from '@/lib/organization-settings';
-
-type TeamState = { team: Team; members: TeamMember[] };
-type PageData = {
-  members: OrganizationMember[]; admins: OrgAdmin[]; teams: TeamState[]; projects: Project[];
-  projectTeams: Record<string, Team[]>; invites: Invitation[]; isAdmin: boolean; userId: string; leads: string[];
-};
+import { adminSource, fetchOrganization, type OrganizationData, inviteInput, inviteReady, memberName, personIn, saveError, sectionOf, targetName, type Outcome } from '@/lib/organization-settings';
 
 const card = 'rounded-xl border p-5';
 const NO_TARGET = '__none';
 
 export default function OrganizationSettingsPage() {
   const token = useToken();
-  const [data, setData] = useState<PageData | null>(null);
+  const [data, setData] = useState<OrganizationData | null>(null);
   const [receivedInvites, setReceivedInvites] = useState<Invitation[]>([]);
+  const [sentInvites, setSentInvites] = useState<Invitation[] | null>(null); // null while loading
   const [loadError, setLoadError] = useState('');
   const [outcome, setOutcome] = useState<Outcome | null>(null); // shown in the section where the change was made
   const [busy, setBusy] = useState('');
@@ -34,28 +30,20 @@ export default function OrganizationSettingsPage() {
   const [inviteScope, setInviteScope] = useState<Invitation['scope']>('organization');
   const [inviteTarget, setInviteTarget] = useState('');
 
-  async function load(currentToken: string) {
+  async function load(t: string) {
     setLoadError('');
-    try { setReceivedInvites(await invitations.mine(currentToken)); }
-    catch { setReceivedInvites([]); }
+    const { data: next, received, sent } = fetchOrganization(t);
+    received.then(setReceivedInvites, () => setReceivedInvites([]));
+    sent.then(setSentInvites, () => setSentInvites([]));
     try {
-      const [firstMembers, role, teamList, projectList] = await Promise.all([
-        organization.members(currentToken), organization.me(currentToken), teamApi.list(currentToken), projectApi.list(currentToken),
-      ]);
-      const remainingMembers = await Promise.all(Array.from({ length: Math.ceil(Math.max(0, firstMembers.total_count - firstMembers.members.length) / firstMembers.limit) }, (_, index) => organization.members(currentToken, firstMembers.offset + firstMembers.limit * (index + 1))));
-      const allMembers = [...firstMembers.members, ...remainingMembers.flatMap((page) => page.members)];
-      const teamStates = await Promise.all(teamList.map(async (team) => ({ team, members: await teamApi.members(team.id, currentToken) })));
-      const projectTeamLists = await Promise.all(projectList.map(async (project) => [project.id, await teamApi.projectTeams(project.id, currentToken)] as const));
-      const common = { members: allMembers, teams: teamStates, projects: projectList, projectTeams: Object.fromEntries(projectTeamLists), isAdmin: role.admin, userId: role.user_id, leads: role.leads };
-      const admins = await organization.admins(currentToken);
-      const invites = role.admin ? await invitations.list(currentToken) : [];
-      setData({ ...common, admins, invites });
+      setData(await next);
     } catch (err) {
       setLoadError(err instanceof ApiError && err.status === 403 ? 'Choose an organization to manage its members and teams.' : 'Couldn’t load organization settings. Please try again.');
     }
   }
 
-  useEffect(() => { if (token) void load(token); }, [token]);
+  const signedIn = token !== null;
+  useEffect(() => { if (token) void load(token); }, [signedIn]); // token refreshes must not reload the page
 
   // run makes a change, reloads, and reports where it was made; true when it worked.
   async function run(key: string, action: () => Promise<unknown>, success?: string): Promise<boolean> {
@@ -164,8 +152,8 @@ export default function OrganizationSettingsPage() {
         <div className="mt-3"><OutcomeNote outcome={outcome} section="invites" /></div>
         <div className="mt-5 border-t pt-4">
           <h3 className="mb-2 font-medium">Invitations</h3>
-          {data.invites.length === 0 ? <p className="text-sm text-muted-foreground">No invitations yet.</p> : <ul className="divide-y">
-            {data.invites.map((invite) => <li key={invite.id} className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm">
+          {sentInvites === null ? <Skeleton role="status" aria-label="Loading invitations…" className="h-12 w-full" /> : sentInvites.length === 0 ? <p className="text-sm text-muted-foreground">No invitations yet.</p> : <ul className="divide-y">
+            {sentInvites.map((invite) => <li key={invite.id} className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm">
               <div><p className="font-medium">{invite.email_address}</p><p className="text-muted-foreground">{invite.scope}{invite.target_id ? ` · ${targetName(data.teams.map(({ team }) => team), data.projects, invite)}` : ''} · expires {new Date(invite.expires_at).toLocaleDateString()}</p></div>
               <div className="flex items-center gap-2"><Badge variant={invite.status === 'pending' ? 'secondary' : 'outline'}>{invite.status}</Badge>
                 {invite.status === 'pending' && <Button size="sm" variant="outline" disabled={busy === `revoke:${invite.id}`} onClick={() => void run(`revoke:${invite.id}`, () => invitations.revoke(invite.id, token), 'Invitation revoked.')}>Revoke</Button>}

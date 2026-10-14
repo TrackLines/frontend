@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 import { ApiError, type OrganizationMember, type Project, type Team } from '@/lib/api';
-import { adminSource, inviteInput, inviteReady, memberName, personIn, saveError, sectionOf, targetName } from './organization-settings';
+import { adminSource, fetchOrganization, inviteInput, inviteReady, memberName, personIn, saveError, sectionOf, targetName } from './organization-settings';
 
 const members: OrganizationMember[] = [
   { user_id: 'u1', first_name: 'Ava', last_name: 'Smith', identifier: 'ava@x.io' },
@@ -51,4 +51,34 @@ test('when Clerk refuses an invitation, the admin sees why (TL-239)', () => {
   const why = 'Clerk refused to create organization invitation: invitations are only supported on instances that accept email addresses.';
   expect(saveError('invite', new ApiError(422, why))).toBe(why);
   expect(saveError('invite', new ApiError(502, 'could not create organization invitation'))).toBe('Couldn’t save that change. Please try again.');
+});
+
+test('the organization page loads without waiting for invitations, and fetches in parallel (TL-263)', async () => {
+  const never = new Promise<never>(() => {});
+  const calls: string[] = [];
+  let releaseMembers!: () => void;
+  const membersGate = new Promise<void>((r) => { releaseMembers = r; });
+  const api = {
+    organization: {
+      me: async () => ({ admin: true, user_id: 'u1', leads: [] }),
+      members: async () => { calls.push('members'); await membersGate; return { members: [{ user_id: 'u1' }], total_count: 1, limit: 100, offset: 0 }; },
+      admins: async () => [],
+    },
+    teams: {
+      list: async () => [{ id: 't1' }],
+      members: async () => { calls.push('team-members'); return []; },
+      projectTeams: async () => { calls.push('project-teams'); return []; },
+    },
+    projects: { list: async () => [{ id: 'p1' }] },
+    invitations: { mine: () => never, list: () => never },
+  } as unknown as Parameters<typeof fetchOrganization>[1];
+
+  const { data } = fetchOrganization('tok', api);
+  await new Promise((r) => setTimeout(r, 0));
+  // team and project details started while members were still loading
+  expect(calls).toEqual(expect.arrayContaining(['members', 'team-members', 'project-teams']));
+  releaseMembers();
+  const got = await Promise.race([data, new Promise((r) => setTimeout(() => r('waited on invitations'), 100))]);
+  expect(got).not.toBe('waited on invitations');
+  expect((got as { isAdmin: boolean }).isAdmin).toBe(true);
 });

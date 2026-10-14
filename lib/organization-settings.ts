@@ -1,4 +1,4 @@
-import { ApiError, type Invitation, type OrganizationMember, type Project, type Team } from '@/lib/api';
+import { ApiError, invitations, organization, projects, teams, type Invitation, type OrgAdmin, type OrganizationMember, type Project, type Team, type TeamMember } from '@/lib/api';
 
 // memberName: a member's real name, else their sign-in identifier (email).
 export const memberName = (m: Pick<OrganizationMember, 'first_name' | 'last_name' | 'identifier'>) =>
@@ -49,4 +49,36 @@ export function sectionOf(key: string): Section {
   if (key.startsWith('accept:')) return 'received';
   if (key.startsWith('admin:')) return 'members';
   return 'teams';
+}
+
+export type TeamState = { team: Team; members: TeamMember[] };
+export type OrganizationData = {
+  members: OrganizationMember[]; admins: OrgAdmin[]; teams: TeamState[]; projects: Project[];
+  projectTeams: Record<string, Team[]>; isAdmin: boolean; userId: string; leads: string[];
+};
+const defaultApi = { organization, teams, projects, invitations };
+
+// fetchOrganization starts every request for the organization page at once, each list as soon as
+// what it needs arrives (TL-263). Invitations are separate so the page draws without waiting for them;
+// sent invitations are fetched for admins only.
+export function fetchOrganization(t: string, api: typeof defaultApi = defaultApi) {
+  const role = api.organization.me(t);
+  const received = api.invitations.mine(t);
+  const sent = role.then((r) => (r.admin ? api.invitations.list(t) : []));
+  const data = Promise.all([
+    api.organization.members(t).then(async (first) => {
+      const pages = Math.ceil(Math.max(0, first.total_count - first.members.length) / first.limit);
+      const rest = await Promise.all(Array.from({ length: pages }, (_, i) => api.organization.members(t, first.offset + first.limit * (i + 1))));
+      return [...first.members, ...rest.flatMap((page) => page.members)];
+    }),
+    role,
+    api.teams.list(t).then((list) => Promise.all(list.map(async (team) => ({ team, members: await api.teams.members(team.id, t) })))),
+    api.projects.list(t).then(async (list) => ({
+      list, teams: Object.fromEntries(await Promise.all(list.map(async (p) => [p.id, await api.teams.projectTeams(p.id, t)] as const))),
+    })),
+    api.organization.admins(t),
+  ]).then(([members, me, teamStates, p, admins]): OrganizationData => ({
+    members, admins, teams: teamStates, projects: p.list, projectTeams: p.teams, isAdmin: me.admin, userId: me.user_id, leads: me.leads,
+  }));
+  return { data, received, sent };
 }
