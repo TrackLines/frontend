@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon, PauseIcon, PlayIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { Assignee } from '@/lib/api';
+import { DraggableFace } from '@/components/board/person-face';
 import { cn } from '@/lib/utils';
 import { clock, remaining, reviewing, speakerName, turnTitle, waiting, type Standup } from '@/lib/standup';
 
@@ -51,12 +52,14 @@ export function StandupPanel({ standup, onAction, goal, canRun = true, people = 
 
       <ol className="grid gap-0.5" aria-label="Running order">
         {steps.map((label, i) => (
-          <li key={i}>
+          <li key={i} className="flex items-center gap-1.5">
+            {/* the host drags faces onto tickets to assign them (TL-266); the order stays as it is */}
+            {i < standup.people.length ? <DraggableFace id={standup.people[i].id} people={people} disabled={!canRun} /> : <span className="size-6 shrink-0" />}
             <Button
               size="sm"
               variant="ghost"
               aria-current={i === standup.index ? 'step' : undefined}
-              className={cn('w-full justify-start', i === standup.index && 'bg-accent font-semibold', i < standup.index && 'text-muted-foreground line-through', !canRun && 'pointer-events-none')}
+              className={cn('min-w-0 flex-1 justify-start', i === standup.index && 'bg-accent font-semibold', i < standup.index && 'text-muted-foreground line-through', !canRun && 'pointer-events-none')}
               tabIndex={canRun ? undefined : -1}
               onClick={canRun ? () => onAction('jump', i) : undefined}
             >

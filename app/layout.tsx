@@ -13,6 +13,7 @@ import { CompleteInvitations } from '@/components/complete-invitations';
 import { CacheGuard } from '@/components/cache-guard';
 import { OrgSwitcher } from '@/components/org-switcher';
 import { FeatureFlags } from '@/components/feature-flags';
+import { Toaster } from '@/components/ui/sonner';
 import './globals.css';
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
@@ -54,6 +55,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           </header>
           {children}
           <SiteFooter />
+          <Toaster position="bottom-right" />
         </FeatureFlags>
         </ClerkProvider>
         </ThemeProvider>

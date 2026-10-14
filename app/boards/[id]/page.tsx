@@ -4,7 +4,7 @@ import { AgentReviewSetting } from '@/components/board/review';
 import { ArchivedBanner, BoardLifecycle } from '@/components/board/board-lifecycle';
 import Link from 'next/link';
 import { LoadError } from '@/components/load-error';
-import { LiveBadge } from '@/components/live-badge';
+import { LiveToast } from '@/components/live-toast';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { AddColumn, Column } from '@/components/board/column';
@@ -203,7 +203,7 @@ export default function BoardPage() {
               onFollow={hostedStandup.setFollowing} onLeave={() => setJoinedStandup(false)} onHandOver={hostedStandup.handOver}
               onEnd={() => void actOnStandup('end').catch(() => setStandupError('Couldn’t end the standup. Please try again.'))} />
           )}
-          {(live === 'live' || standup) && <LiveBadge state={live} />}
+          {/* only while you're in the standup */ joinedStandup && <LiveToast state={live} />}
           {boardCanManage && !archived && !joinedStandup && <Button type="button" variant={editMode ? 'secondary' : 'outline'} size="sm" aria-pressed={editMode} onClick={() => setEditMode((editing) => !editing)}>
             {editMode ? 'Done editing' : 'Edit board'}
           </Button>}
@@ -265,7 +265,12 @@ export default function BoardPage() {
         boardId={board.id}
         columns={board.columns ?? []}
         onChange={(cols) => setBoard((b) => b && { ...b, columns: cols })}
-        onMove={(ticketId, columnId, position) => tickets.move(ticketId, columnId, position, token)}
+        // reload quietly after: moving an unassigned ticket assigns it to the mover (TL-266)
+        onMove={async (ticketId, columnId, position) => { await tickets.move(ticketId, columnId, position, token); void load(true); }}
+        // standup: the host drops a face on a ticket to assign them (TL-266)
+        onAssign={joinedStandup && (hostedStandup.role === 'host' || !hostedStandup.session)
+          ? async (ticketId, userId) => { await tickets.assign(ticketId, userId, token); await load(true); } : undefined}
+        people={people}
       >
       {/* standup: its panel sits left of the columns, like Jira's (TL-237) */}
       <div className="flex flex-1 items-start gap-4 p-6">

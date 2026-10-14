@@ -62,3 +62,15 @@ test('the running order is a list down the side, the speaker highlighted, the re
   expect(html.indexOf('>Bo<')).toBeLessThan(html.indexOf('>Board Review<'));
   expect(html).toContain('aria-label="Pause"'); // running
 });
+
+test('the host can drag each person’s face onto a ticket; faces keep the running order; followers can’t drag (TL-266)', () => {
+  const s = start([{ id: 'user_ava', label: 'Ava' }, { id: 'user_bo', label: 'Bo' }, { id: 'user_cy', label: 'Cy' }], 0);
+  const people = [{ id: 'user_ava', label: 'Ava Smith' }, { id: 'user_bo', label: 'Bo Jones' }, { id: 'user_cy', label: 'Cy Ng' }];
+  const host = renderToStaticMarkup(<StandupPanel standup={s} onAction={() => {}} canRun people={people} />);
+  const drags = [...host.matchAll(/aria-label="Drag ([^"]+) onto a ticket to assign them"/g)].map((m) => m[1]);
+  expect(drags).toEqual(['Ava Smith', 'Bo Jones', 'Cy Ng']); // one per person, in the running order
+  expect(host).toContain('>AS<'); // initials when there's no picture
+  const follower = renderToStaticMarkup(<StandupPanel standup={s} onAction={() => {}} canRun={false} people={people} />);
+  expect(follower).not.toContain('onto a ticket to assign');
+  expect(follower).toContain('>BJ<'); // faces still shown
+});

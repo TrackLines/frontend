@@ -5,7 +5,7 @@ export type LiveState = 'connecting' | 'live' | 'reconnecting' | 'unavailable';
 
 export const LIVE_LABEL: Record<LiveState, { text: string; hint: string }> = {
   connecting: { text: 'Connecting to live updates…', hint: 'Getting ready to show changes others make as they happen.' },
-  live: { text: 'Live', hint: 'Changes others make appear here as they happen.' },
+  live: { text: 'Live updates', hint: 'Changes others make appear here as they happen.' },
   reconnecting: { text: 'Reconnecting…', hint: 'Live updates dropped; changes from others will appear when they’re back.' },
   unavailable: { text: 'Live updates unavailable', hint: 'Refresh to see changes others have made.' },
 };

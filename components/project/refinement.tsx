@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { TypeBadge } from '@/components/ticket-type';
 import { EstimateSelect } from '@/components/board/estimate';
-import { LiveBadge } from '@/components/live-badge';
+import { LiveToast } from '@/components/live-toast';
 import { combined, dropped, type LiveState } from '@/lib/live-status';
 import { keepStreaming } from '@/lib/use-board-live';
 import { unchanged } from '@/lib/unchanged';
@@ -103,7 +103,7 @@ export function RefinementMode({ projectId, boards, token, onClose, version = 0,
     <section aria-label="Refinement" className="grid gap-4">
       <div className="flex flex-wrap items-center gap-3">
         <p className="text-sm text-muted-foreground">Plan backlog tickets into each team’s next sprints and size them. A sprint holds the team’s velocity + 10%.</p>
-        {sprintBoards.length > 0 && <LiveBadge state={combined(sprintBoards.map((board) => liveStates[board.id] ?? 'connecting'))} />}
+        {sprintBoards.length > 0 && <LiveToast state={combined(sprintBoards.map((board) => liveStates[board.id] ?? 'connecting'))} />}
         <Button size="sm" variant="outline" className="ml-auto" onClick={onClose}>Done refining</Button>
       </div>
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
