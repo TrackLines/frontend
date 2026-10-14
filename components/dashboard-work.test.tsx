@@ -11,7 +11,7 @@ test('my assigned tickets and the tickets that mention me', () => {
   const html = renderToStaticMarkup(<DashboardWorkView assigned={[mine]} mentioned={[mention, { ...mention, ticket_id: 't3', key: 'TL-41', actor: 'Codex', done: false }]}
     people={[{ id: 'user_bo', label: 'Bo Jones', kind: 'person' }]} />);
   for (const s of ['Assigned to me', 'href="/my-work"', 'TL-12', 'href="/tickets/TL-12"', 'Fix login', 'Urgent', 'Blocked', 'In progress',
-    'Mentions', 'TL-40', 'href="/tickets/TL-40"', 'Bo Jones', 'Codex', 'line-through']) expect(html).toContain(s);
+    'Mentions', 'href="/mentions"', 'TL-40', 'href="/tickets/TL-40"', 'Bo Jones', 'Codex', 'line-through']) expect(html).toContain(s);
 });
 
 test('loading, empty and failed', () => {

@@ -585,8 +585,12 @@ export type Mention = {
   ticket_id: string; key: string; title: string; done: boolean; project_name: string;
   actor: string; comment_id: string; mentioned_at: string;
 };
+export type MentionsPage = { mentions: Mention[]; total: number; page: number; per_page: number };
 export const mentions = {
   list: (token: T, limit = 10) => api<Mention[]>(`/mentions?limit=${limit}`, { token }),
+  // a page at a time with the total; hideDone leaves out done and closed tickets
+  page: (token: T, page: number, perPage: number, hideDone: boolean) =>
+    api<MentionsPage>(`/mentions/page?page=${page}&per_page=${perPage}${hideDone ? '&hide_done=true' : ''}`, { token }),
 };
 
 export const notifications = {

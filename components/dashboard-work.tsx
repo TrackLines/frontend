@@ -43,7 +43,7 @@ export function DashboardWorkView({ assigned, mentioned, people }: {
           </Row>
         )}
       </Panel>
-      <Panel title="Mentions" items={mentioned} empty="Nobody has mentioned you yet.">
+      <Panel title="Mentions" more={{ href: '/mentions', label: 'All mentions' }} items={mentioned} empty="Nobody has mentioned you yet.">
         {(m: Mention) => (
           <Row key={m.ticket_id} href={`/tickets/${m.key || m.ticket_id}`} ticketKey={m.key} title={m.title} done={m.done}>
             <span className="truncate">{actorName(m.actor, people)} · <When iso={m.mentioned_at} /></span>
