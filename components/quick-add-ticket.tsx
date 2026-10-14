@@ -3,6 +3,7 @@
 import { MarkdownTextarea } from '@/components/markdown';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState, type FormEvent } from 'react';
+import { SimilarTickets, useSimilarTickets } from '@/components/ticket/similar-tickets';
 import { attachAll, PendingAttachments, type PendingFile } from '@/components/ticket/pending-attachments';
 import { TypePicker } from '@/components/ticket-type';
 import { LabelDrawer } from '@/components/ticket/labels';
@@ -51,6 +52,7 @@ function QuickAddDialog({ scope, onClose }: { scope: NonNullable<ReturnType<type
   const [error, setError] = useState('');
   const [added, setAdded] = useState('');
   const [files, setFiles] = useState<PendingFile[]>([]);
+  const similar = useSimilarTickets(title, projectId || undefined, token);
 
   const loaded = token !== null;
   useEffect(() => {
@@ -106,6 +108,7 @@ function QuickAddDialog({ scope, onClose }: { scope: NonNullable<ReturnType<type
           <TypePicker value={type} onChange={setType} />
           <LabelDrawer projectId={projectId} token={token ?? ''} labels={labels} onChange={setLabels} disabled={!token || saving} />
           <Input autoFocus required maxLength={200} placeholder="What's wrong / what's needed?" value={title} onChange={(e) => setTitle(e.target.value)} />
+          <SimilarTickets suggestions={similar} description={description} />
           <MarkdownTextarea
             placeholder="Details (optional)"
             value={description}

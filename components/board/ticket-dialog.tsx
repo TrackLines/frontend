@@ -1,8 +1,8 @@
 'use client';
 
 import { MarkdownTextarea } from '@/components/markdown';
+import { SimilarTickets, useSimilarTickets } from '@/components/ticket/similar-tickets';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -15,9 +15,9 @@ import { TypePicker } from '@/components/ticket-type';
 import { PrioritySelect } from './priority-select';
 import { EstimateSelect } from './estimate';
 import { missingTicketFields } from './ticket-validation';
-import { TicketKey, ticketPath } from '@/components/ticket/ticket-key';
+import { TicketKey } from '@/components/ticket/ticket-key';
 import type { EstimateScale } from '@/lib/estimates';
-import type { Ticket, TicketSearchResult, TicketType } from '@/lib/api';
+import type { Ticket, TicketType } from '@/lib/api';
 import { backlog, tickets } from '@/lib/api';
 
 type Props = {
@@ -52,7 +52,6 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
   const [wontDo, setWontDo] = useState<string | null>(null); // the reason, while confirming won't do
   const [error, setError] = useState('');
   const [missing, setMissing] = useState<{ title: boolean; estimate: boolean }>({ title: false, estimate: false });
-  const [duplicateSuggestions, setDuplicateSuggestions] = useState<TicketSearchResult[]>([]);
   const titleInput = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<PendingFile[]>([]); // create mode only
   const editing = Boolean(ticket);
@@ -75,20 +74,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
     // ticket every 30s, and resetting then wiped whatever was being typed (TL-141)
   }, [open, ticket?.id]);
 
-  useEffect(() => {
-    const text = similarQuery(title);
-    if (!open || ticket || !projectId || !text) {
-      setDuplicateSuggestions([]);
-      return;
-    }
-    let cancelled = false;
-    const timer = setTimeout(() => {
-      void tickets.search({ text, project: projectId, limit: 5 }, token).then((found) => {
-        if (!cancelled) setDuplicateSuggestions(found.filter((candidate) => !candidate.duplicate_of_id));
-      }, () => { if (!cancelled) setDuplicateSuggestions([]); });
-    }, 250);
-    return () => { cancelled = true; clearTimeout(timer); };
-  }, [open, ticket, projectId, title, token]);
+  const duplicateSuggestions = useSimilarTickets(title, projectId, token, open && !ticket);
 
   async function closeWontDo() {
     if (!ticket || !onWontDo || wontDo === null) return;
@@ -258,23 +244,4 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
       </DialogContent>
     </Dialog>
   );
-}
-
-// SimilarTickets: possible duplicates of the title being typed, so nobody files the same thing twice.
-// Once the details are being written they've decided it's new, so the list gets out of the way.
-export function SimilarTickets({ suggestions, description }: { suggestions: TicketSearchResult[]; description: string }) {
-  if (suggestions.length === 0 || description.trim() !== '') return null;
-  return (
-    <div className="-mt-3 grid gap-1 text-xs text-muted-foreground">Similar tickets in this project:
-      {suggestions.map((s) => <Link key={s.id} href={ticketPath(s)} className="hover:underline"><TicketKey value={s.key} /> {s.title}</Link>)}
-    </div>
-  );
-}
-
-// similarQuery: what a new ticket's title searches for possible duplicates with, or null while it's too
-// short to mean anything. One real word is enough ("Pagination" used to need a second word, so a short
-// title never searched at all); at most the first five are used.
-export function similarQuery(title: string): string | null {
-  const words = title.trim().split(/\s+/).filter((word) => word.length >= 3);
-  return words.length > 0 && title.trim().length >= 4 ? words.slice(0, 5).join(' ') : null;
 }

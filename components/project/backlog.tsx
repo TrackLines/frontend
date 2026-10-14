@@ -1,5 +1,6 @@
 'use client';
 
+import { SimilarTickets, useSimilarTickets } from '@/components/ticket/similar-tickets';
 import { MarkdownTextarea, plainText } from '@/components/markdown';
 import { When } from '@/components/when';
 import Link from 'next/link';
@@ -319,6 +320,7 @@ function AddDialog({ open, onOpenChange, projectId, token, onAdd }: {
   const [files, setFiles] = useState<PendingFile[]>([]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const similar = useSimilarTickets(title, projectId, token, open);
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -349,6 +351,7 @@ function AddDialog({ open, onOpenChange, projectId, token, onAdd }: {
           <TypePicker value={type} onChange={setType} />
           <LabelDrawer projectId={projectId} token={token} labels={labels} onChange={setLabels} disabled={saving} />
           <Input autoFocus required maxLength={200} placeholder="What's wrong / what's needed?" value={title} onChange={(e) => setTitle(e.target.value)} />
+          <SimilarTickets suggestions={similar} description={description} />
           <MarkdownTextarea
             placeholder="Details, steps to reproduce… (optional)"
             value={description}

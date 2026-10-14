@@ -109,3 +109,12 @@ test('ticket search sends text and repeatable type filters', async () => {
   expect(query.getAll('type')).toEqual(['bug', 'task']);
   expect(query.get('assignee')).toBe('me');
 });
+
+test('similar-ticket search asks for any word to match; normal search doesn\'t (TL-275)', async () => {
+  let requested = '';
+  g.fetch = (async (url: string) => { requested = url; return Response.json([]); }) as unknown as typeof fetch;
+  await tickets.search({ text: 'build seperate', project: 'p1', match: 'any' }, 'token');
+  expect(new URL(requested, 'http://localhost').searchParams.get('match')).toBe('any');
+  await tickets.search({ text: 'build seperate' }, 'token');
+  expect(new URL(requested, 'http://localhost').searchParams.has('match')).toBe(false);
+});

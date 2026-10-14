@@ -374,11 +374,12 @@ export const tickets = {
   bugfixes: (id: string, token: T) => api<TicketBugfixes>(`/tickets/${id}/bugfixes`, { token }),
   // also "My work": assignee 'me', status 'open', newest change first, paged
   search: (q: { text?: string; project?: string; board?: string; types?: TicketType[]; priorities?: string[]; assignee?: string;
-    status?: 'open' | 'done'; limit?: number; page?: number }, token: T) => {
+    status?: 'open' | 'done'; limit?: number; page?: number; match?: 'any' }, token: T) => {
     const params = new URLSearchParams();
     if (q.text?.trim()) params.set('q', q.text.trim());
     if (q.project) params.set('project', q.project);
     if (q.board) params.set('board', q.board);
+    if (q.match) params.set('match', q.match); // any: one word will do, best matches first (TL-275)
     for (const type of q.types ?? []) params.append('type', type);
     for (const p of q.priorities ?? []) params.append('priority', p);
     if (q.assignee) params.set('assignee', q.assignee);
