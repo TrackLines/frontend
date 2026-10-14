@@ -557,7 +557,9 @@ export type TicketBugfixes = {
 
 // Integrations: an org connects Bugfixes (an access token), GitHub (the app) and Bitbucket (OAuth).
 export type IntegrationProvider = 'bugfixes' | 'github' | 'bitbucket';
-export type IntegrationStatus = { provider: IntegrationProvider; connected: boolean; account?: string; base_url?: string; updated_by?: string; updated_at?: string };
+// accounts: GitHub only, every GitHub account (org or user) the org connected (TL-281)
+export type GitHubAccount = { installation_id: string; account: string; updated_by?: string; updated_at?: string };
+export type IntegrationStatus = { provider: IntegrationProvider; connected: boolean; account?: string; accounts?: GitHubAccount[]; base_url?: string; updated_by?: string; updated_at?: string };
 export type GitRepo = { full_name: string; default_branch: string; private: boolean };
 export type ProjectRepo = { provider: 'github' | 'bitbucket'; full_name: string; default_branch: string; created_at?: string };
 
@@ -566,7 +568,9 @@ export const integrations = {
   // Bugfixes: paste an access token
   connect: (provider: 'bugfixes', input: { token: string; base_url?: string }, token: T) =>
     api<void>(`/integrations/${provider}`, { method: 'PUT', body: input, token }),
-  disconnect: (provider: IntegrationProvider, token: T) => api<void>(`/integrations/${provider}`, { method: 'DELETE', token }),
+  // installation: GitHub, just that account (the org's others stay connected)
+  disconnect: (provider: IntegrationProvider, token: T, installation?: string) =>
+    api<void>(`/integrations/${provider}${installation ? `?installation=${encodeURIComponent(installation)}` : ''}`, { method: 'DELETE', token }),
   // GitHub / Bitbucket: go to url, then the provider sends the admin back to /settings/integrations/<provider>
   connectURL: (provider: 'github' | 'bitbucket', token: T) => api<{ url: string }>(`/integrations/${provider}/connect`, { token }),
   complete: (provider: 'github' | 'bitbucket', input: { state: string; installation_id?: string; code?: string }, token: T) =>

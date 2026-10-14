@@ -43,3 +43,18 @@ test('with the Bitbucket flag off, settings offer only Bugfixes and GitHub', () 
   expect(off).not.toContain('Bitbucket');
   expect(renderToStaticMarkup(<IntegrationsSettings token="tok" bitbucket />)).toContain('Bitbucket');
 });
+
+test('GitHub: every connected account, each disconnected on its own, and another can be added (TL-281)', () => {
+  const accounts = [{ installation_id: '123', account: 'acme' }, { installation_id: '456', account: '1tn-pw' }];
+  const seen: (string | undefined)[] = [];
+  const html = view({ status: { provider: 'github', connected: true, account: 'acme', accounts }, onDisconnect: (id) => seen.push(id) });
+  expect(html).toContain('>acme<');
+  expect(html).toContain('>1tn-pw<');
+  expect(html.match(/>Disconnect</g)?.length).toBe(2); // one per account, none for all of GitHub
+  expect(html).toContain('Add another GitHub account');
+  expect(html).not.toContain('Connected as'); // the list says who
+  const member = view({ canManage: false, status: { provider: 'github', connected: true, accounts } });
+  expect(member).toContain('>1tn-pw<');
+  expect(member).not.toContain('Disconnect');
+  expect(member).not.toContain('Add another');
+});

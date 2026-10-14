@@ -9,7 +9,7 @@ import { integrationError, integrationProviders, PROVIDER_NAMES } from '@/lib/in
 
 const ABOUT: Record<IntegrationProvider, string> = {
   bugfixes: 'Bug tickets Bugfixes creates show the crash report’s live details: occurrences, last seen, where, and whether it came back.',
-  github: 'Link repositories to projects. Pull requests that mention a ticket’s key (e.g. TL-123) show on the ticket, and merging one closes it.',
+  github: 'Link repositories to projects. Pull requests that mention a ticket’s key (e.g. TL-123) show on the ticket, and merging one closes it. Connect each GitHub organization your projects’ repositories live in.',
   bitbucket: 'Link repositories to projects. Pull requests that mention a ticket’s key (e.g. TL-123) show on the ticket, and merging one closes it.',
 };
 
@@ -55,8 +55,11 @@ function ProviderCard({ provider, token, canManage }: { provider: IntegrationPro
     const { url } = await integrations.connectURL(provider, token);
     window.location.assign(url); // the provider sends the admin back to /settings/integrations/<provider>
   }, `Couldn’t start connecting ${PROVIDER_NAMES[provider]}.`);
-  const disconnect = () => confirm(`Disconnect ${PROVIDER_NAMES[provider]}? Its details stop showing until it's connected again.`) &&
-    run(() => integrations.disconnect(provider, token), `Couldn’t disconnect ${PROVIDER_NAMES[provider]}.`);
+  // GitHub: one account at a time (installation); its repos' PRs stop linking until it's connected again
+  const disconnect = (installation?: string, account?: string) => confirm(account
+    ? `Disconnect the GitHub account ${account}? Pull requests from its repositories stop linking to tickets until it's connected again.`
+    : `Disconnect ${PROVIDER_NAMES[provider]}? Its details stop showing until it's connected again.`) &&
+    run(() => integrations.disconnect(provider, token, installation), `Couldn’t disconnect ${account ?? PROVIDER_NAMES[provider]}.`);
 
   return (
     <ProviderCardView provider={provider} status={status} canManage={canManage} busy={busy} error={error} onConnect={connect} onDisconnect={disconnect}>
@@ -71,24 +74,39 @@ function ProviderCard({ provider, token, canManage }: { provider: IntegrationPro
 // ProviderCardView: one provider's status and actions (pure, for tests).
 export function ProviderCardView({ provider, status, canManage, busy, error, onConnect, onDisconnect, children }: {
   provider: IntegrationProvider; status: IntegrationStatus | null; canManage: boolean; busy: boolean; error: string;
-  onConnect?: () => void; onDisconnect: () => void; children?: ReactNode;
+  onConnect?: () => void; onDisconnect: (installation?: string, account?: string) => void; children?: ReactNode;
 }) {
   const name = PROVIDER_NAMES[provider];
+  // GitHub connects several accounts (TL-281): each project links repos from whichever owns them
+  const accounts = provider === 'github' ? status?.accounts ?? [] : [];
   return (
     <section aria-label={name} className="grid gap-3 rounded-xl border p-5">
       <div className="flex flex-wrap items-center gap-2">
         <h2 className="text-lg font-semibold">{name}</h2>
         {status === null ? <Badge variant="secondary">Checking…</Badge>
-          : status.connected ? <Badge>Connected{status.account ? ` as ${status.account}` : ''}</Badge>
+          : status.connected ? <Badge>Connected{accounts.length === 0 && status.account ? ` as ${status.account}` : ''}</Badge>
           : <Badge variant="outline">Not connected</Badge>}
-        {canManage && status?.connected && (
-          <Button size="sm" variant="ghost" className="ml-auto text-destructive" disabled={busy} onClick={onDisconnect}>Disconnect</Button>
+        {canManage && status?.connected && accounts.length === 0 && (
+          <Button size="sm" variant="ghost" className="ml-auto text-destructive" disabled={busy} onClick={() => onDisconnect()}>Disconnect</Button>
+        )}
+        {canManage && accounts.length > 0 && onConnect && (
+          <Button size="sm" variant="outline" className="ml-auto" disabled={busy} onClick={onConnect}>{busy ? 'Opening…' : 'Add another GitHub account'}</Button>
         )}
         {canManage && status && !status.connected && onConnect && (
           <Button size="sm" className="ml-auto" disabled={busy} onClick={onConnect}>{busy ? 'Opening…' : `Connect ${name}`}</Button>
         )}
       </div>
       <p className="text-sm text-muted-foreground">{ABOUT[provider]}</p>
+      {accounts.length > 0 && (
+        <ul aria-label="Connected GitHub accounts" className="divide-y rounded-lg border">
+          {accounts.map((a) => (
+            <li key={a.installation_id} className="flex items-center gap-2 px-3 py-2 text-sm">
+              <span className="font-medium">{a.account}</span>
+              {canManage && <Button size="sm" variant="ghost" className="ml-auto text-destructive" disabled={busy} onClick={() => onDisconnect(a.installation_id, a.account)}>Disconnect</Button>}
+            </li>
+          ))}
+        </ul>
+      )}
       {children}
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
     </section>
