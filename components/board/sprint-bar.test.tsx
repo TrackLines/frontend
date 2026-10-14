@@ -26,7 +26,7 @@ test('members can see sprint information without workflow controls', () => {
 });
 
 test('open sprint: number, dates, time left, close', () => {
-  const ends = new Date(Date.now() + 3 * 24 * 3600 * 1000 + 3600 * 1000).toISOString();
+  const t = new Date(); const ends = new Date(t.getFullYear(), t.getMonth(), t.getDate() + 3, 12).toISOString(); // three calendar days on
   const html = renderToStaticMarkup(
     <SprintBar
       board={{ ...board, sprint: { id: 's', board_id: 'b', number: 4, length_days: 14, starts_at: '2026-10-01T09:00:00Z', ends_at: ends, closed_at: null } }}
@@ -37,7 +37,7 @@ test('open sprint: number, dates, time left, close', () => {
   );
   expect(html).toContain('>Sprint 4<');
   expect(html).toContain('· 14 days');
-  expect(html).toContain('ends in 4 days');
+  expect(html).toContain('ends in 3 days'); // calendar days, not rounded-up 24-hour blocks (TL-268)
   expect(html).toContain('Close sprint');
   expect(html).not.toContain('Change length'); // a board setting: only in Edit board mode
   expect(html).not.toContain('Start sprint');

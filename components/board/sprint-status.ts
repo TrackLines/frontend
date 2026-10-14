@@ -1,15 +1,19 @@
-const DAY = 24 * 60 * 60 * 1000;
+// localDay: midnight of d's date in the user's zone, as a day count (DST-safe).
+const localDay = (d: Date) => Math.round(new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime() / 864e5);
 
-// sprintStatus describes how long is left on a sprint, by whole calendar days remaining.
+// sprintStatus describes how long is left on a sprint by local calendar days, the same days the scope
+// lock uses: ends today on its last day, tomorrow the day before. The board page and the project's
+// board cards both say this, so they can't disagree.
 export function sprintStatus(endsAt: string, now: Date = new Date()): { label: string; overdue: boolean } {
-  const ms = new Date(endsAt).getTime() - now.getTime();
-  if (ms < 0) {
-    const days = Math.floor(-ms / DAY);
-    return { overdue: true, label: days === 0 ? 'overdue — closes automatically' : `overdue by ${days} day${days === 1 ? '' : 's'}` };
+  const ends = new Date(endsAt);
+  const days = localDay(ends) - localDay(now);
+  if (ends.getTime() < now.getTime()) {
+    const late = -days;
+    return { overdue: true, label: late <= 0 ? 'overdue — closes automatically' : `overdue by ${late} day${late === 1 ? '' : 's'}` };
   }
-  const days = Math.ceil(ms / DAY);
-  if (ms < DAY && new Date(endsAt).toDateString() === now.toDateString()) return { overdue: false, label: 'ends today' };
-  return { overdue: false, label: `ends in ${days} day${days === 1 ? '' : 's'}` };
+  if (days === 0) return { overdue: false, label: 'ends today' };
+  if (days === 1) return { overdue: false, label: 'ends tomorrow' };
+  return { overdue: false, label: `ends in ${days} days` };
 }
 
 // sprintLocked: on its last day (local calendar date, or once it's past its end) a sprint's scope is

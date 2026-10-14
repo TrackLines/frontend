@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { sprintStatus } from '@/components/board/sprint-status';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ago } from '@/lib/ago';
 import type { Board } from '@/lib/api';
@@ -21,7 +22,7 @@ export function BoardCard({ board: b }: { board: Board }) {
           {st && (
             <CardContent className="mt-auto grid gap-3 text-sm">
               {st.sprint_number !== null && (
-                <p className="font-medium">Sprint {st.sprint_number}{st.sprint_ends_at && <span className="font-normal text-muted-foreground"> · ends {ago(st.sprint_ends_at)}</span>}</p>
+                <p className="font-medium">Sprint {st.sprint_number}{st.sprint_ends_at && <span className="font-normal text-muted-foreground"> · {sprintStatus(st.sprint_ends_at).label}</span>}</p>
               )}
               {st.open + st.done === 0 ? (
                 <p className="text-muted-foreground">No tickets yet.</p>

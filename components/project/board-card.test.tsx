@@ -6,7 +6,7 @@ const board = { id: 'b1', project_id: 'p1', owner_clerk_id: 'o', name: 'Backend'
 const now = new Date().toISOString();
 
 test('board card splits open work and shows the sprint', () => {
-  const ends = new Date(Date.now() + 3 * 86400e3 + 60e3).toISOString();
+  const t = new Date(); const ends = new Date(t.getFullYear(), t.getMonth(), t.getDate() + 3, 12).toISOString(); // three calendar days on
   const html = renderToStaticMarkup(<BoardCard board={{ ...board, stats: { open: 5, in_progress: 2, done: 5, urgent: 1, active: now, sprint_number: 4, sprint_ends_at: ends } }} />);
   expect(html).toContain('3 to do');
   expect(html).toContain('2 in progress');
