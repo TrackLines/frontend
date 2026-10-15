@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { GitPullRequestIcon, HashIcon, InboxIcon, KanbanIcon, TypeIcon } from 'lucide-react';
+import { GitPullRequestIcon, HashIcon, InboxIcon, KanbanIcon, MessageSquareIcon, TypeIcon } from 'lucide-react';
+import { GoogleChatSettings } from '@/components/settings/google-chat';
 import { EditableTitle } from '@/components/editable-title';
 import { SettingsCard } from '@/components/settings/settings-card';
 import { ListPageSkeleton } from '@/components/page-skeletons';
@@ -66,6 +67,9 @@ export default function EditProjectPage() {
         </SettingsCard>
         <SettingsCard wide icon={InboxIcon} title="Request form" description="A public form for customers to suggest features and report bugs; you choose what reaches the backlog.">
           <IntakeSettingsSection projectId={project.id} token={token} />
+        </SettingsCard>
+        <SettingsCard wide icon={MessageSquareIcon} title="Google Chat" description="Post this project’s notifications into its team’s Google Chat space: new tickets, reviews, sprints over capacity and more.">
+          <GoogleChatSettings token={token} projectId={project.id} canManage={admin} />
         </SettingsCard>
         <SettingsCard wide icon={GitPullRequestIcon} title="Repositories" description="Pull requests in these repositories link to the tickets they mention, and merging one closes it.">
           <ProjectRepositories projectId={project.id} token={token} admin={admin} />

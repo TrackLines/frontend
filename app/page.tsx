@@ -8,10 +8,14 @@ import { BoardPreview } from '@/components/landing/board-preview';
 import { Card } from '@/components/ui/card';
 
 import { OUR_REQUEST_FORM, OUR_ROADMAP } from '@/lib/our-links';
+import { billing, type PlanInfo } from '@/lib/api';
+import { formatPrice } from '@/lib/plans';
 
 export default async function Home() {
   const { userId } = await auth();
   if (userId) redirect('/dashboard');
+  // prices come from Stripe via the backend (TL-290); without them the plans still show their limits
+  const prices = Object.fromEntries((await billing.plans().catch(() => [] as PlanInfo[])).map((p) => [p.id, formatPrice(p.price)]));
 
   return (
     <main>
@@ -90,9 +94,10 @@ claude mcp add -s user --transport http tracklines \\
       <section className="border-t bg-muted/30">
         <div className="mx-auto max-w-6xl px-6 py-16">
           <h2 className="text-3xl font-bold tracking-tight">Simple pricing</h2>
-          <div className="mt-8 grid gap-6 md:grid-cols-2">
-            <Plan name="Free" price="$0" blurb="One project with unlimited boards, tickets and roadmaps." cta="Start free" href="/sign-up" />
-            <Plan name="Pro" price="$10 / month" blurb="Unlimited projects, for teams running more than one thing at once." cta="Start free, upgrade any time" href="/sign-up" />
+          <div className="mt-8 grid gap-6 md:grid-cols-3">
+            <Plan name="Free" price={prices.free || 'Free'} blurb="One project with unlimited boards, tickets and roadmaps." cta="Start free" href="/sign-up" />
+            <Plan name="Pro" price={prices.pro} blurb="Five projects, for teams running a few things at once." cta="Start free, upgrade any time" href="/sign-up" />
+            <Plan name="Enterprise" price={prices.enterprise} blurb="Unlimited projects, for the whole company." cta="Start free, upgrade any time" href="/sign-up" />
           </div>
         </div>
       </section>
@@ -114,11 +119,11 @@ function Feature({ icon: Icon, title, body, links }: (typeof FEATURES)[number]) 
   );
 }
 
-function Plan({ name, price, blurb, cta, href }: { name: string; price: string; blurb: string; cta: string; href: string }) {
+function Plan({ name, price, blurb, cta, href }: { name: string; price?: string; blurb: string; cta: string; href: string }) {
   return (
     <Card className="p-6">
       <h3 className="text-xl font-semibold">{name}</h3>
-      <p className="text-3xl font-bold tracking-tight">{price}</p>
+      {price && <p className="text-3xl font-bold tracking-tight">{price}</p>}
       <p className="text-muted-foreground">{blurb}</p>
       <Link href={href} className={buttonVariants({ variant: name === 'Pro' ? 'default' : 'outline', className: 'w-fit' })}>{cta}</Link>
     </Card>

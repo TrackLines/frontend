@@ -25,11 +25,11 @@ test('a roadmap row: visibility, edit, view and the share link', () => {
   for (const s of ['Q4', 'href="/roadmaps/r1/edit"', 'href="/r/r1"', 'Copy link']) expect(html).toContain(s);
 });
 
-test('the free plan’s project limit (402) opens the upgrade offer; other errors don’t', () => {
+test('the plan’s project limit (402) opens the upgrade offer; other errors don’t', () => {
   expect(atProjectLimit(new ApiError(402, 'limit'))).toBe(true);
   expect(atProjectLimit(new ApiError(500, 'oops'))).toBe(false);
   expect(atProjectLimit(new Error('network'))).toBe(false);
-  const html = renderToStaticMarkup(<UpgradeDialog open onOpenChange={() => {}} token="tok" />);
-  for (const s of ['Your organization’s free plan includes one project', '>Upgrade<', 'Not now']) expect(html).toContain(s);
+  const html = renderToStaticMarkup(<UpgradeDialog open onOpenChange={() => {}} token="tok" plan={{ plan: 'free', paid: false, project_limit: 1 }} />);
+  for (const s of ['Your organization’s Free plan includes 1 project', '>Upgrade to Pro<', 'Not now']) expect(html).toContain(s);
 });
 

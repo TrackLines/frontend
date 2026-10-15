@@ -93,7 +93,10 @@ export type ApiKey = {
 export type NewApiKey = { kind: 'ai'; client: ApiKeyClient; label?: string } | { kind: 'service'; name: string };
 // the active organization's plan (TL-243). project_limit -1 = unlimited; billed = through Stripe, so there's
 // billing to manage; can_manage = you're an org admin, who buys and manages it
-export type Subscription = { paid: boolean; project_limit: number; billed?: boolean; can_manage?: boolean };
+// plan (TL-290): free 1 project, pro 5, enterprise unlimited; project_limit -1 is unlimited
+export type PlanId = 'free' | 'pro' | 'enterprise';
+export type Subscription = { plan?: PlanId; paid: boolean; project_limit: number; billed?: boolean; can_manage?: boolean };
+export type PlanInfo = { id: PlanId; projects: number | null; price: { amount: number; currency: string; interval: string } | null };
 
 export type OrganizationMember = { user_id: string; first_name?: string; last_name?: string; image_url?: string; identifier: string };
 export type OrganizationMemberPage = { members: OrganizationMember[]; total_count: number; limit: number; offset: number };
@@ -442,7 +445,10 @@ export const roadmaps = {
 
 export const billing = {
   status: (token: T) => api<Subscription>('/subscription', { token }),
-  checkout: (token: T) => api<{ url: string }>('/subscription/checkout', { method: 'POST', token }),
+  checkout: (token: T, plan: 'pro' | 'enterprise' = 'pro') => api<{ url: string }>('/subscription/checkout', { method: 'POST', body: { plan }, token }),
+  // an org already paying moves its subscription to the other plan, prorated (TL-290)
+  changePlan: (plan: 'pro' | 'enterprise', token: T) => api<void>('/subscription/plan', { method: 'POST', body: { plan }, token }),
+  plans: () => api<PlanInfo[]>('/plans'), // public: limits and Stripe prices
   portal: (token: T) => api<{ url: string }>('/subscription/portal', { method: 'POST', token }),
 };
 
@@ -660,4 +666,16 @@ export const push = {
 export const shortLinks = {
   // title: shown for the link (1tn can't read our pages); public, so nothing private in it
   create: (url: string, title: string, token: T) => api<{ url: string }>('/short-links', { method: 'POST', body: { url, title }, token }),
+};
+
+// Google Chat (TL-288): notifications posted into a space, a project's or the whole org's (no projectId).
+export type ChatKind = 'created' | 'review' | 'approval' | 'over_capacity' | 'finished' | 'wont_do' | 'assigned' | 'sent_back' | 'retention';
+export type ChatSpace = { connected: boolean; kinds: ChatKind[]; updated_by?: string; updated_at?: string };
+const chatScope = (projectId?: string) => (projectId ? `?project_id=${encodeURIComponent(projectId)}` : '');
+export const googleChat = {
+  get: (token: T, projectId?: string) => api<ChatSpace>(`/google-chat${chatScope(projectId)}`, { token }),
+  // url: the space's incoming webhook; leave it out to change only the kinds
+  set: (input: { project_id?: string; url?: string; kinds: ChatKind[] }, token: T) => api<void>('/google-chat', { method: 'PUT', body: input, token }),
+  remove: (token: T, projectId?: string) => api<void>(`/google-chat${chatScope(projectId)}`, { method: 'DELETE', token }),
+  test: (token: T, projectId?: string) => api<void>('/google-chat/test', { method: 'POST', body: { project_id: projectId }, token }),
 };

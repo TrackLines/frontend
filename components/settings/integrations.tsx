@@ -4,6 +4,7 @@ import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { GoogleChatSettings } from '@/components/settings/google-chat';
 import { integrations, organization, type IntegrationProvider, type IntegrationStatus } from '@/lib/api';
 import { INTEGRATION_PROVIDERS, integrationError, PROVIDER_NAMES } from '@/lib/integrations';
 
@@ -24,6 +25,11 @@ export function IntegrationsSettings({ token }: { token: string }) {
     <div className="grid gap-6">
       {admin === false && <p role="note" className="text-sm text-muted-foreground">Organization admins connect integrations. You can see what&apos;s connected.</p>}
       {INTEGRATION_PROVIDERS.map((p) => <ProviderCard key={p} provider={p} token={token} canManage={admin === true} />)}
+      <section aria-label="Google Chat" className="grid gap-3 rounded-xl border p-5">
+        <h2 className="text-lg font-semibold">Google Chat</h2>
+        <p className="text-sm text-muted-foreground">Post notifications for every project into one Google Chat space. A project can have its own space too, under Edit project.</p>
+        <GoogleChatSettings token={token} canManage={admin === true} />
+      </section>
     </div>
   );
 }
