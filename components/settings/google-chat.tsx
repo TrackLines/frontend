@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
+import { CopyButton } from '@/components/copy-link';
 import { ApiError, googleChat, type ChatKind, type ChatSpace } from '@/lib/api';
 
 // The notifications a space can get, in the order they're offered. @mentions aren't here: they're personal.
@@ -22,6 +23,9 @@ export const CHAT_KINDS: { kind: ChatKind; label: string }[] = [
 
 const chatError = (err: unknown, fallback: string) =>
   err instanceof ApiError && (err.status === 400 || err.status === 502) ? err.message : err instanceof ApiError && err.status === 403 ? 'Only organization admins can change this.' : fallback;
+
+// CHAT_AVATAR_URL: our logo, for the webhook's optional Avatar URL so posts show it (and the Chat app's, TL-289).
+export const CHAT_AVATAR_URL = 'https://tracklin.es/tracklines-github.png';
 
 // GoogleChatSettings: post notifications into a Google Chat space (TL-288), the project's (projectId)
 // or the whole organization's. Admins set it up; everyone sees whether it is.
@@ -84,6 +88,13 @@ export function GoogleChatView({ space, canManage, busy, note, scope, onSave, on
               placeholder="https://chat.googleapis.com/v1/spaces/…" required={!connected} />
             <span className="text-xs font-normal text-muted-foreground">In the Google Chat space: Apps &amp; integrations → Webhooks → Add webhook, then copy its URL. It’s stored encrypted and never shown again.</span>
           </label>
+          <div className="grid gap-1.5 text-sm font-medium">
+            <span>Avatar URL <span className="font-normal text-muted-foreground">(paste it when adding the webhook, so posts show our logo)</span></span>
+            <div className="flex gap-2">
+              <Input readOnly value={CHAT_AVATAR_URL} aria-label="Avatar URL" onFocus={(e) => e.currentTarget.select()} />
+              <CopyButton value={CHAT_AVATAR_URL} label="Copy" ariaLabel="Copy avatar URL" />
+            </div>
+          </div>
           <fieldset className="grid gap-2 text-sm">
             <legend className="mb-1 font-medium">Post these</legend>
             {CHAT_KINDS.map(({ kind, label }) => (
