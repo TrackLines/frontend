@@ -12,7 +12,7 @@ export const projectsText = (limit: number | null) => (limit === null || limit <
 // formatPrice: "£10 / month", "$0", or "" when there's no price to show.
 export function formatPrice(price: PlanInfo['price']): string {
   if (!price) return '';
-  if (price.amount === 0) return price.currency ? new Intl.NumberFormat('en-GB', { style: 'currency', currency: price.currency, maximumFractionDigits: 0 }).format(0) : 'Free';
-  const amount = new Intl.NumberFormat('en-GB', { style: 'currency', currency: price.currency, minimumFractionDigits: price.amount % 100 ? 2 : 0 }).format(price.amount / 100);
+  if (price.amount === 0) return price.currency ? new Intl.NumberFormat('en-US', { style: 'currency', currency: price.currency, maximumFractionDigits: 0 }).format(0) : 'Free';
+  const amount = new Intl.NumberFormat('en-US', { style: 'currency', currency: price.currency, minimumFractionDigits: price.amount % 100 ? 2 : 0 }).format(price.amount / 100);
   return price.interval ? `${amount} / ${price.interval}` : amount;
 }

@@ -38,6 +38,7 @@ test('the plan is the organization’s: members see it but can’t change it (TL
 test('plan limits and prices read plainly', () => {
   expect([projectsText(1), projectsText(5), projectsText(-1), projectsText(null)]).toEqual(['1 project', '5 projects', 'Unlimited projects', 'Unlimited projects']);
   expect(formatPrice({ amount: 1000, currency: 'gbp', interval: 'month' })).toBe('£10 / month');
-  expect(formatPrice({ amount: 2499, currency: 'usd', interval: 'month' })).toBe('US$24.99 / month');
+  expect(formatPrice({ amount: 2499, currency: 'usd', interval: 'month' })).toBe('$24.99 / month');
+  expect(formatPrice({ amount: 1500, currency: 'cad', interval: 'month' })).toBe('CA$15 / month');
   expect(formatPrice(null)).toBe('');
 });
