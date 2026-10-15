@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { SiteFooter } from '@/components/site-footer';
 import Link from 'next/link';
+import { headers } from 'next/headers';
 import { ClerkProvider, Show } from '@clerk/nextjs';
 import { shadcn } from '@clerk/themes';
 import { ThemeProvider } from 'next-themes';
@@ -25,12 +26,15 @@ export const metadata: Metadata = {
   description: 'Simple project boards and shareable roadmaps.',
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  // the strict CSP (Clerk middleware, TL-255) allows only inline scripts carrying this request's nonce:
+  // next-themes' script (theme before first paint) needs it, or the browser blocks it on every page
+  const nonce = (await headers()).get('x-nonce') ?? undefined;
   return (
     // suppressHydrationWarning: next-themes sets the theme class on <html> before React hydrates
     <html lang="en" className={cn("font-sans", geist.variable)} suppressHydrationWarning>
       <body>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange storageKey="tracklines-theme">
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange storageKey="tracklines-theme" nonce={nonce}>
         <ClerkProvider dynamic appearance={{ theme: shadcn }}>
         <FeatureFlags>
           <CacheGuard />
