@@ -2,13 +2,12 @@ import { ApiError } from './api';
 
 export const PROVIDER_NAMES = { bugfixes: 'Bugfixes', github: 'GitHub', bitbucket: 'Bitbucket' } as const;
 
-// Bitbucket ships behind the flags.gg "bitbucket" flag until we can test it (TL-205); pages read the
-// flag and pass it down, and the backend refuses Bitbucket routes while it's off.
-export const gitProviders = (bitbucket: boolean) => (bitbucket ? (['github', 'bitbucket'] as const) : (['github'] as const));
-export const integrationProviders = (bitbucket: boolean) => ['bugfixes', ...gitProviders(bitbucket)] as const;
+// The git providers an org can connect: GitHub and Bitbucket, both on (TL-285: Bitbucket's flag removed).
+export const GIT_PROVIDERS = ['github', 'bitbucket'] as const;
+export const INTEGRATION_PROVIDERS = ['bugfixes', ...GIT_PROVIDERS] as const;
 
-// connectHint names the git providers that can be connected: "GitHub" or "GitHub or Bitbucket".
-export const connectHint = (bitbucket: boolean) => gitProviders(bitbucket).map((p) => PROVIDER_NAMES[p]).join(' or ');
+// CONNECT_HINT names the git providers that can be connected: "GitHub or Bitbucket".
+export const CONNECT_HINT = GIT_PROVIDERS.map((p) => PROVIDER_NAMES[p]).join(' or ');
 
 // integrationError says what went wrong connecting or linking, in words an admin can act on.
 export function integrationError(err: unknown, fallback: string): string {

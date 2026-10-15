@@ -33,7 +33,6 @@ test('picking a provider offers repos not already linked', () => {
   expect(view({ provider: 'github', choices: [{ full_name: 'acme/docs', default_branch: 'main', private: false }] })).toContain('Choose a repository');
 });
 
-test('the connect hint names only the git providers that are switched on', () => {
-  expect(view({ connected: [] })).toContain('Connect GitHub in');
-  expect(view({ connected: [], bitbucket: true })).toContain('Connect GitHub or Bitbucket in');
+test('the connect hint names both git providers (TL-285: no Bitbucket flag)', () => {
+  expect(view({ connected: [] })).toContain('Connect GitHub or Bitbucket in');
 });

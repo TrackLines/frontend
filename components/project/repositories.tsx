@@ -6,13 +6,13 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { integrations, projectRepos, type GitRepo, type ProjectRepo } from '@/lib/api';
-import { PROVIDER_NAMES, connectHint, gitProviders, integrationError } from '@/lib/integrations';
+import { PROVIDER_NAMES, CONNECT_HINT, GIT_PROVIDERS, integrationError } from '@/lib/integrations';
 
 type GitProvider = ProjectRepo['provider'];
 
 // ProjectRepositories: repos linked to the project. Pull requests in them that mention a ticket's
 // key show on the ticket (and merging closes it). Admins link from the org's connected providers.
-export function ProjectRepositories({ projectId, token, admin, bitbucket = false }: { projectId: string; token: string; admin: boolean; bitbucket?: boolean }) {
+export function ProjectRepositories({ projectId, token, admin }: { projectId: string; token: string; admin: boolean }) {
   const [linked, setLinked] = useState<ProjectRepo[] | null>(null);
   const [connected, setConnected] = useState<GitProvider[]>([]);
   const [provider, setProvider] = useState<GitProvider | null>(null);
@@ -23,7 +23,7 @@ export function ProjectRepositories({ projectId, token, admin, bitbucket = false
   const load = () => projectRepos.list(projectId, token).then(setLinked, () => setError('Couldn’t load the linked repositories.'));
   useEffect(() => {
     void load();
-    for (const p of gitProviders(bitbucket)) {
+    for (const p of GIT_PROVIDERS) {
       integrations.status(p, token).then((s) => s.connected && setConnected((c) => (c.includes(p) ? c : [...c, p])), () => {});
     }
   }, [projectId]); // token refreshes must not refetch
@@ -54,7 +54,7 @@ export function ProjectRepositories({ projectId, token, admin, bitbucket = false
 
   return (
     <RepositoriesView
-      linked={linked} admin={admin} connected={connected} provider={provider} choices={choices} busy={busy} error={error} bitbucket={bitbucket}
+      linked={linked} admin={admin} connected={connected} provider={provider} choices={choices} busy={busy} error={error}
       onProvider={pickProvider}
       onLink={(fullName) => provider && run(() => projectRepos.link(projectId, provider, fullName, token), 'Couldn’t link the repository.')}
       onUnlink={(r) => confirm(`Unlink ${r.full_name}? Its pull requests stop linking to this project's tickets.`) &&
@@ -64,8 +64,8 @@ export function ProjectRepositories({ projectId, token, admin, bitbucket = false
 }
 
 // RepositoriesView: the linked repos and, for admins, the link controls (pure, for tests).
-export function RepositoriesView({ linked, admin, connected, provider, choices, busy, error, onProvider, onLink, onUnlink, bitbucket = false }: {
-  bitbucket?: boolean; linked: ProjectRepo[] | null; admin: boolean; connected: GitProvider[]; provider: GitProvider | null; choices: GitRepo[] | null;
+export function RepositoriesView({ linked, admin, connected, provider, choices, busy, error, onProvider, onLink, onUnlink }: {
+  linked: ProjectRepo[] | null; admin: boolean; connected: GitProvider[]; provider: GitProvider | null; choices: GitRepo[] | null;
   busy: boolean; error: string; onProvider: (p: GitProvider) => void; onLink: (fullName: string) => void; onUnlink: (r: ProjectRepo) => void;
 }) {
   const linkedNames = new Set((linked ?? []).map((r) => `${r.provider}:${r.full_name.toLowerCase()}`));
@@ -90,7 +90,7 @@ export function RepositoriesView({ linked, admin, connected, provider, choices, 
       {admin && (
         connected.length === 0 ? (
           <p className="mt-3 text-sm text-muted-foreground">
-            Connect {connectHint(bitbucket)} in <Link href="/settings/integrations" className="font-medium text-foreground underline">Settings → Integrations</Link> to link repositories.
+            Connect {CONNECT_HINT} in <Link href="/settings/integrations" className="font-medium text-foreground underline">Settings → Integrations</Link> to link repositories.
           </p>
         ) : (
           <div className="mt-3 flex flex-wrap items-center gap-2">

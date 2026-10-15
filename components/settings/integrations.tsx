@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { integrations, organization, type IntegrationProvider, type IntegrationStatus } from '@/lib/api';
-import { integrationError, integrationProviders, PROVIDER_NAMES } from '@/lib/integrations';
+import { INTEGRATION_PROVIDERS, integrationError, PROVIDER_NAMES } from '@/lib/integrations';
 
 const ABOUT: Record<IntegrationProvider, string> = {
   bugfixes: 'Bug tickets Bugfixes creates show the crash report’s live details: occurrences, last seen, where, and whether it came back.',
@@ -15,7 +15,7 @@ const ABOUT: Record<IntegrationProvider, string> = {
 
 // IntegrationsSettings: the org's connections to other tools. Org admins connect and disconnect;
 // everyone else sees what's connected.
-export function IntegrationsSettings({ token, bitbucket = false }: { token: string; bitbucket?: boolean }) {
+export function IntegrationsSettings({ token }: { token: string }) {
   const [admin, setAdmin] = useState<boolean | null>(null);
   useEffect(() => {
     organization.me(token).then((r) => setAdmin(r.admin), () => setAdmin(false));
@@ -23,7 +23,7 @@ export function IntegrationsSettings({ token, bitbucket = false }: { token: stri
   return (
     <div className="grid gap-6">
       {admin === false && <p role="note" className="text-sm text-muted-foreground">Organization admins connect integrations. You can see what&apos;s connected.</p>}
-      {integrationProviders(bitbucket).map((p) => <ProviderCard key={p} provider={p} token={token} canManage={admin === true} />)}
+      {INTEGRATION_PROVIDERS.map((p) => <ProviderCard key={p} provider={p} token={token} canManage={admin === true} />)}
     </div>
   );
 }

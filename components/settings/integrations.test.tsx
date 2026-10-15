@@ -37,11 +37,9 @@ test('Bugfixes connects with a token, never shown', () => {
   expect(renderToStaticMarkup(<BugfixesTokenForm busy={false} connected onSave={() => {}} />)).toContain('Replace access token');
 });
 
-test('with the Bitbucket flag off, settings offer only Bugfixes and GitHub', () => {
-  const off = renderToStaticMarkup(<IntegrationsSettings token="tok" />);
-  expect(off).toContain('GitHub');
-  expect(off).not.toContain('Bitbucket');
-  expect(renderToStaticMarkup(<IntegrationsSettings token="tok" bitbucket />)).toContain('Bitbucket');
+test('settings offer Bugfixes, GitHub and Bitbucket, with no flag (TL-285)', () => {
+  const html = renderToStaticMarkup(<IntegrationsSettings token="tok" />);
+  for (const name of ['Bugfixes', 'GitHub', 'Bitbucket']) expect(html).toContain(name);
 });
 
 test('GitHub: every connected account, each disconnected on its own, and another can be added (TL-281)', () => {
