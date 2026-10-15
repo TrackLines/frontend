@@ -83,8 +83,8 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
           )}
         </section>
         {open && token && <BugfixesPanel ticket={ticket} token={token} />}
-        {open && token && <PullRequestsPanel ticketId={ticket.id} token={token} />}
         {open && token && <Attachments ticketId={ticket.id} token={token} locked={done} />}
+        {open && token && <PullRequestsPanel ticketId={ticket.id} token={token} />}
         {open && token && <TicketComments ticketId={ticket.id} token={token} />}
         {sample}
         <DialogFooter>

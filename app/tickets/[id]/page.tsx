@@ -156,8 +156,8 @@ export default function TicketPage() {
       {token && <Dependencies ticket={t} token={token} onChanged={() => tickets.get(id, token).then(setT)} />}
       {token && <MarkDuplicate ticket={t} token={token} onChanged={() => { void tickets.get(t.id, token).then(setT); }} />}
       {token && <BugfixesPanel ticket={t} token={token} />}
-      {token && <PullRequestsPanel ticketId={t.id} token={token} />}
       {token && <Attachments ticketId={t.id} token={token} locked={t.done} />}
+      {token && <PullRequestsPanel ticketId={t.id} token={token} />}
       {token && <TicketComments ticketId={t.id} token={token} />}
       {token && (
         <TicketDialog
