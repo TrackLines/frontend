@@ -107,6 +107,17 @@ export function ProviderCardView({ provider, status, canManage, busy, error, onC
           ))}
         </ul>
       )}
+      {provider === 'bitbucket' && status?.connected && status.workspaces && (
+        // one person's connection reaches every workspace they're in (TL-286); disconnect is for all of it
+        <div className="grid gap-2">
+          <p className="text-xs text-muted-foreground">Access comes from {status.account ? `${status.account}’s` : 'one person’s'} Bitbucket account: repositories in any of these workspaces can be linked.</p>
+          {status.workspaces.length === 0 ? <p className="text-sm text-muted-foreground">That account isn’t in any Bitbucket workspaces.</p> : (
+            <ul aria-label="Bitbucket workspaces" className="divide-y rounded-lg border">
+              {status.workspaces.map((w) => <li key={w.slug} className="px-3 py-2 text-sm font-medium">{w.name}</li>)}
+            </ul>
+          )}
+        </div>
+      )}
       {children}
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
     </section>

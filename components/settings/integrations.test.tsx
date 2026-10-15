@@ -56,3 +56,13 @@ test('GitHub: every connected account, each disconnected on its own, and another
   expect(member).not.toContain('Disconnect');
   expect(member).not.toContain('Add another');
 });
+
+test('Bitbucket: the workspaces the connected person reaches, whose account it is, one Disconnect (TL-286)', () => {
+  const html = view({ provider: 'bitbucket', status: { provider: 'bitbucket', connected: true, account: 'keloran1',
+    workspaces: [{ slug: 'chewedfeed', name: 'ChewedFeed' }, { slug: '1tn', name: '1tn' }] } });
+  expect(html).toContain('>ChewedFeed<');
+  expect(html).toContain('>1tn<');
+  expect(html).toContain('keloran1’s Bitbucket account');
+  expect(html.match(/>Disconnect</g)?.length).toBe(1);
+  expect(view({ provider: 'bitbucket', status: { provider: 'bitbucket', connected: true, account: 'keloran1', workspaces: [] } })).toContain('isn’t in any Bitbucket workspaces');
+});

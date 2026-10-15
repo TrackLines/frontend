@@ -558,9 +558,10 @@ export type TicketBugfixes = {
 
 // Integrations: an org connects Bugfixes (an access token), GitHub (the app) and Bitbucket (OAuth).
 export type IntegrationProvider = 'bugfixes' | 'github' | 'bitbucket';
-// accounts: GitHub only, every GitHub account (org or user) the org connected (TL-281)
+// accounts: GitHub only, every GitHub account (org or user) the org connected (TL-281). workspaces:
+// Bitbucket only, the workspaces the connected person belongs to (TL-286)
 export type GitHubAccount = { installation_id: string; account: string; updated_by?: string; updated_at?: string };
-export type IntegrationStatus = { provider: IntegrationProvider; connected: boolean; account?: string; accounts?: GitHubAccount[]; base_url?: string; updated_by?: string; updated_at?: string };
+export type IntegrationStatus = { provider: IntegrationProvider; connected: boolean; account?: string; accounts?: GitHubAccount[]; workspaces?: { slug: string; name: string }[]; base_url?: string; updated_by?: string; updated_at?: string };
 // A pull request that mentions a ticket (its key, its link or one of our short links), newest first.
 export type TicketPR = {
   provider: 'github' | 'bitbucket'; repo: string; number: number; url: string; title: string;
