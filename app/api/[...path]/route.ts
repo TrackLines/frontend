@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { backendURL, requestHeaders, responseHeaders } from '@/lib/proxy';
+import { reportServer } from '@/lib/report';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -23,7 +24,14 @@ async function forward(request: NextRequest, context: RouteContext): Promise<Res
     init.body = await request.arrayBuffer();
   }
 
-  const upstream = await fetch(destination, init);
+  let upstream: Response;
+  try {
+    upstream = await fetch(destination, init);
+  } catch (err) {
+    // the backend is down or unreachable: Bugfixes hears it from here, since the backend can't say (TL-292)
+    await reportServer('backend unreachable from the /api proxy', `${request.method} /api/${path.join('/')}: ${err instanceof Error ? err.message : String(err)}`);
+    return new Response('backend unavailable', { status: 502 });
+  }
   return new Response(upstream.body, {
     status: upstream.status,
     statusText: upstream.statusText,

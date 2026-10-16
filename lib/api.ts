@@ -2,6 +2,7 @@
 // Browser calls go through the same-origin /api proxy (app/api/[...path]); server components
 // call the backend directly via BACKEND_URL. Pass a Clerk session token as `token`
 // (client: useAuth().getToken(), server: (await auth()).getToken()).
+import { reportClient, reportServer } from './report';
 import type { EstimateScale } from './estimates';
 
 export type Visibility = 'public' | 'login_only' | 'team';
@@ -162,17 +163,11 @@ function base(): string {
 
 type Options = { method?: string; body?: unknown; token?: string | null };
 
+// Failed backend calls go to Bugfixes (TL-292): from the server directly, from the browser through
+// /api/client-errors (the credentials never reach the browser). The UI still gets an ApiError.
 async function reportBackendFailure(message: string, detail: string): Promise<void> {
-  // Never expose BugFixes credentials to the browser. Browser-side failures
-  // continue to surface as ApiError for the UI to handle.
-  if (typeof window !== 'undefined') return;
-
-  try {
-    const { error: logError } = await import('bugfixes');
-    logError(message, detail);
-  } catch {
-    // Reporting must not replace the original API failure.
-  }
+  if (typeof window !== 'undefined') return reportClient('api', `${message}: ${detail}`);
+  await reportServer(message, detail);
 }
 
 // In the browser, ask Clerk for the token at request time: the `token` callers hold can be minutes
@@ -209,7 +204,8 @@ export async function api<T>(path: string, { method = 'GET', body, token }: Opti
   }
   if (!res.ok) {
     const message = (await res.text()).trim() || res.statusText;
-    if (res.status >= 500) {
+    // the backend reports its own 5xx with the cause; from the browser that would only be a duplicate
+    if (res.status >= 500 && typeof window === 'undefined') {
       await reportBackendFailure('backend returned a server error', `${method} ${path} (${res.status})`);
     }
     throw new ApiError(res.status, message);

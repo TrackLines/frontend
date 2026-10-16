@@ -15,6 +15,7 @@ import { CacheGuard } from '@/components/cache-guard';
 import { OrgSwitcher } from '@/components/org-switcher';
 import { FeatureFlags } from '@/components/feature-flags';
 import { Toaster } from '@/components/ui/sonner';
+import { ErrorReporter } from '@/components/error-reporter';
 import './globals.css';
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
@@ -61,6 +62,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <SiteFooter />
           {/* bottom left: the hosted drawer and its buttons are on the right */}
           <Toaster position="bottom-left" offset={8} mobileOffset={8} />
+          <ErrorReporter />
         </FeatureFlags>
         </ClerkProvider>
         </ThemeProvider>
