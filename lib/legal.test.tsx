@@ -37,7 +37,7 @@ test('legal pages render their markdown; the footer links them from every page',
   const page = renderToStaticMarkup(<LegalPage title="Terms of service" body={TERMS} />);
   expect(page).toContain('<h1');
   expect(page).toContain('<h2>1. Your account</h2>');
-  expect(page).toContain('Last updated 13 October 2026');
+  expect(page).toContain('Last updated 16 October 2026');
   const footer = renderToStaticMarkup(<SiteFooter />);
   for (const s of ['href="/privacy"', 'href="/terms"', 'href="/contact"', 'Keloran Limited', '16481416']) expect(footer).toContain(s);
 });

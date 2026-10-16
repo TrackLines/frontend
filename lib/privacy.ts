@@ -25,6 +25,7 @@ You can ask us anything about this policy through our [contact form](${LEGAL.con
 - **Connections you set up.** Tokens for integrations such as Bugfixes, GitHub or Bitbucket, stored encrypted. API keys you create for AI agents or scripts, stored only as a hash and shown to you once.
 - **Payments.** Card payments are handled by Stripe; we never see or store card numbers. We keep your plan and a reference to your Stripe customer record.
 - **Notifications.** If you turn on notifications for a device, we store that device's push subscription so we can deliver them.
+- **Google Chat.** If you link your account to the TrackLin.es app in Google Chat, we store your Google Chat user ID, the ID of your private chat with the app, and when you linked it. The one-time link the app sends you is stored only as a one-way hash and stops working after 30 minutes. We don't store your Google name, email address or anything you write in Google Chat: when you message the app, we read the message only to reply to it. If your organization's admins connect a team space, we store that space's webhook address, encrypted like other integration tokens.
 - **Request forms.** If you send a request through a team's public form, we store what you type, the optional contact details you give, and a one-way hash of your network address. We use the hash only to limit abuse; it can't be turned back into your address.
 - **Technical data.** Network addresses and request logs, used to keep the service secure, limit abuse and fix problems. Errors are reported to Bugfixes, our error-tracking service.
 
@@ -32,7 +33,7 @@ You can ask us anything about this policy through our [contact form](${LEGAL.con
 
 We use your data to provide TrackLin.es and support you, to keep the service secure and prevent abuse, to bill you if you're on a paid plan, to tell you about important changes to the service, and to meet our legal obligations.
 
-Our legal bases are: providing the service you signed up for (contract); keeping it secure, preventing abuse and improving it (our legitimate interests); keeping records the law requires (legal obligation); and your consent for device notifications, which you can turn off at any time.
+Our legal bases are: providing the service you signed up for (contract); keeping it secure, preventing abuse and improving it (our legitimate interests); keeping records the law requires (legal obligation); and your consent for device notifications and personal Google Chat messages, which you can turn off at any time.
 
 We don't look at your content, except when you ask us to for support, when we need to keep the service secure, or when the law requires it.
 
@@ -44,6 +45,7 @@ We share data only with the companies that help us run TrackLin.es, and only wha
 - **Clerk** handles sign-in and organizations.
 - **Stripe** handles payments.
 - **UploadThing** stores the files you attach.
+- **Google** delivers Google Chat messages. If you've linked your account, your notifications go to your private chat with the TrackLin.es app; if your organization connected a team space, its notifications go there. Each message says who did what, with the ticket's key and title and a link to it.
 - **Push services** run by browser makers (Google, Mozilla, Apple and Microsoft) deliver device notifications. The contents are encrypted, so they can't read them.
 - **flags.gg** turns features on and off. It receives none of your content.
 - **Bugfixes** receives reports of errors in TrackLin.es.
@@ -63,6 +65,7 @@ Some of these providers are based in, or process data in, the United States and 
 - **Deleted tickets and attachments** disappear from TrackLin.es at once and are kept for ${LEGAL.retentionDays} days, so a mistake can be undone if you contact us. After that they're permanently deleted, files included.
 - **Attachments** are kept for a year. After that your organization's admins and the person who uploaded a file are told, and anyone of them can keep it for another year; otherwise it's deleted at 13 months.
 - **Deleted organizations** are kept for ${LEGAL.retentionDays} days, so an accidental deletion can be undone if you contact us. After that, everything in them, files included, is permanently deleted.
+- **Your Google Chat link** until you unlink it (in Your settings), remove the app in Google Chat, or delete your account. Unused one-time links are deleted once they've expired.
 - **Billing records** for as long as tax and accounting law requires.
 - **Logs** for a short period, for security and troubleshooting.
 
