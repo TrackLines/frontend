@@ -2,7 +2,7 @@ import { clerkMiddleware } from '@clerk/nextjs/server';
 import { CSP_DIRECTIVES } from './lib/security-headers';
 
 function isProtectedPath(pathname: string): boolean {
-  return ['/dashboard', '/projects', '/boards', '/tickets', '/roadmaps', '/settings', '/my-work', '/mentions'].some(
+  return ['/dashboard', '/projects', '/boards', '/tickets', '/roadmaps', '/settings', '/my-work', '/mentions', '/chat'].some(
     (base) => pathname === base || pathname.startsWith(`${base}/`),
   );
 }

@@ -672,6 +672,14 @@ export const shortLinks = {
 export type ChatKind = 'created' | 'review' | 'approval' | 'over_capacity' | 'finished' | 'wont_do' | 'assigned' | 'sent_back' | 'retention';
 export type ChatSpace = { connected: boolean; kinds: ChatKind[]; updated_by?: string; updated_at?: string };
 const chatScope = (projectId?: string) => (projectId ? `?project_id=${encodeURIComponent(projectId)}` : '');
+// Google Chat app (TL-289): your own notifications in your chat with the Tracklines app, once linked
+export type ChatLink = { available: boolean; linked: boolean; linked_at?: string };
+export const chatApp = {
+  status: (token: T) => api<ChatLink>('/me/google-chat', { token }),
+  link: (code: string, token: T) => api<{ linked: boolean }>('/me/google-chat/link', { method: 'POST', body: { code }, token }),
+  unlink: (token: T) => api<void>('/me/google-chat', { method: 'DELETE', token }),
+};
+
 export const googleChat = {
   get: (token: T, projectId?: string) => api<ChatSpace>(`/google-chat${chatScope(projectId)}`, { token }),
   // url: the space's incoming webhook; leave it out to change only the kinds

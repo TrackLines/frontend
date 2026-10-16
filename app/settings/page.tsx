@@ -10,6 +10,7 @@ import { KeyRoundIcon, PlugIcon } from 'lucide-react';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { SettingsCard } from '@/components/settings/settings-card';
 import { FileCleanupLink } from '@/components/settings/file-cleanup';
+import { ChatDmCard } from '@/components/settings/chat-dm';
 import { OrganizationCard } from '@/components/settings/organization-card';
 import { attachments, organization, type FileCleanup } from '@/lib/api';
 import { useToken } from '@/lib/use-token';
@@ -43,6 +44,7 @@ export default function SettingsPage() {
             trigger={(open) => <Button variant="ghost" size="sm" onClick={open}>Connect AI</Button>}
           />
         </SettingsCard>
+        {token && <ChatDmCard token={token} />}
         {admin && <FileCleanupLink report={cleanup} />}
       </ul>
     </main>
@@ -57,7 +59,7 @@ function Plan() {
 // Stripe sends people back here with ?billing=success|cancelled (backend PORTAL_URL).
 function ReturnBanner() {
   const result = useSearchParams().get('billing');
-  if (result === 'success') return <p role="status" className="mb-6 rounded-xl border border-primary/40 bg-primary/5 p-4">Thanks — you’re on Pro. It can take a moment for the plan to show up here.</p>;
+  if (result === 'success') return <p role="status" className="mb-6 rounded-xl border border-primary/40 bg-primary/5 p-4">Thanks — your plan is upgraded. It can take a moment to show up here.</p>;
   if (result === 'cancelled') return <p role="status" className="mb-6 rounded-xl border p-4 text-muted-foreground">Checkout cancelled — nothing was charged.</p>;
   return null;
 }
