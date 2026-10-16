@@ -6,18 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { ApiError, sprints, type Board, type Sprint } from '@/lib/api';
-import { LENGTH_PRESETS, sprintLocked, sprintStatus } from './sprint-status';
+import { LENGTH_PRESETS, dateInput, daysUntil, sprintLocked, sprintStatus } from './sprint-status';
 import { Charts } from './velocity';
 import { PastSprints } from './past-sprints';
 
 const day = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short' });
-
-function localDateInputValue(date = new Date()) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
 
 type Props = { board: Board; token: string; canManage: boolean; editMode?: boolean; onChanged: () => void };
 
@@ -59,9 +52,9 @@ export function SprintBar({ board, token, canManage, editMode = false, onChanged
           {canManage && !editMode && <Button size="sm" onClick={() => setStarting(true)}>Start sprint</Button>}
         </>
       )}
-      {/* closing a sprint opens the next, so number > 1 means there's history; no sprint, nothing to chart */}
+      {/* number > 1 means there's history; between sprints (closed by hand) there may be too */}
       {/* reporting is for running the board: hidden while editing */}
-      {!editMode && sprint && sprintStarted && sprint.number > 1 && <PastSprints boardId={board.id} token={token} />}
+      {!editMode && (sprint ? sprintStarted && sprint.number > 1 : true) && <PastSprints boardId={board.id} token={token} />}
       {!editMode && sprint && sprintStarted && <Charts boardId={board.id} token={token} />}
       {canManage && <StartDialog open={starting} onOpenChange={setStarting} boardId={board.id} token={token} onStarted={onChanged} />}
       {canManage && sprint && <ChangeLengthDialog key={sprint.id} open={editingLength} onOpenChange={setEditingLength} sprint={sprint} token={token} onChanged={onChanged} />}
@@ -80,11 +73,12 @@ function StartDialog({ open, onOpenChange, boardId, token, onStarted }: {
   open: boolean; onOpenChange: (o: boolean) => void; boardId: string; token: string; onStarted: () => void;
 }) {
   const [choice, setChoice] = useState<number | 'custom'>(14);
-  const [custom, setCustom] = useState('10');
+  // custom: the sprint ends on a chosen date; its length is the days from today to then
+  const [endDate, setEndDate] = useState(() => dateInput(new Date(Date.now() + 10 * 864e5)));
   const [goal, setGoal] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
-  const days = choice === 'custom' ? Number(custom) : choice;
+  const days = choice === 'custom' ? daysUntil(endDate) : choice;
   const valid = Number.isInteger(days) && days >= 1 && days <= 365;
 
   async function submit(e: FormEvent<HTMLFormElement>) {
@@ -108,7 +102,7 @@ function StartDialog({ open, onOpenChange, boardId, token, onStarted }: {
         <form onSubmit={submit} className="grid gap-4">
           <DialogHeader>
             <DialogTitle>Start a sprint</DialogTitle>
-            <DialogDescription>Tickets already on this board join it. When it ends, unfinished tickets move to the next sprint, whose start date and length you choose when closing.</DialogDescription>
+            <DialogDescription>Tickets waiting on this board join it, and so does a planned next sprint. If it runs out it closes itself and the next one starts with the same length; close it yourself to choose the next one’s length.</DialogDescription>
           </DialogHeader>
           <fieldset className="grid gap-2">
             <legend className="mb-1 text-sm font-medium">Length</legend>
@@ -118,14 +112,15 @@ function StartDialog({ open, onOpenChange, boardId, token, onStarted }: {
                 {p.label}
               </label>
             ))}
-            <label className="flex items-center gap-2">
+            <label className="flex flex-wrap items-center gap-2">
               <input type="radio" name="length" checked={choice === 'custom'} onChange={() => setChoice('custom')} className="accent-primary" />
-              Custom
+              Ends on
               <Input
-                type="number" min={1} max={365} value={custom} aria-label="Custom length in days"
-                className="h-8 w-20" disabled={choice !== 'custom'} onChange={(e) => setCustom(e.target.value)}
+                type="date" value={endDate} aria-label="Sprint end date"
+                min={dateInput(new Date(Date.now() + 864e5))} max={dateInput(new Date(Date.now() + 365 * 864e5))}
+                className="h-8 w-auto" onFocus={() => setChoice('custom')} onChange={(e) => { setChoice('custom'); setEndDate(e.target.value); }}
               />
-              days
+              {choice === 'custom' && valid && <span className="text-muted-foreground">{days} day{days === 1 ? '' : 's'}</span>}
             </label>
           </fieldset>
           <GoalField value={goal} onChange={setGoal} />
@@ -190,26 +185,18 @@ function CloseDialog({ open, onOpenChange, board, sprint, token, onClosed }: {
 }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
-  const [nextLength, setNextLength] = useState(String(sprint.length_days));
-  const [nextStartDate, setNextStartDate] = useState(localDateInputValue());
-  // the board's last column counts as "done"; everything else carries over
+  // the board's last column counts as "done"; everything else waits for the next sprint
   const cols = board.columns ?? [];
   const doneCol = cols.at(-1);
   const total = cols.reduce((n, c) => n + c.tickets.length, 0);
   const done = doneCol?.tickets.length ?? 0;
   const carry = total - done;
-  const validNextLength = Number.isInteger(Number(nextLength)) && Number(nextLength) >= 1 && Number(nextLength) <= 365;
-  const validNextStartDate = nextStartDate >= localDateInputValue();
 
   async function close() {
     setSaving(true);
     setError('');
     try {
-      const today = localDateInputValue();
-      const nextStartsAt = nextStartDate > today
-        ? new Date(`${nextStartDate}T00:00:00`).toISOString()
-        : undefined;
-      await sprints.close(sprint.id, token, { next_length_days: Number(nextLength), ...(nextStartsAt ? { next_starts_at: nextStartsAt } : {}) });
+      await sprints.close(sprint.id, token); // just closes: Start sprint picks the next one's length
       onOpenChange(false);
       onClosed();
     } catch (err) {
@@ -224,30 +211,25 @@ function CloseDialog({ open, onOpenChange, board, sprint, token, onClosed }: {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Close sprint {sprint.number}?</DialogTitle>
-          <DialogDescription>
-            Choose when the next sprint starts and how long it runs. {carry} unfinished ticket{carry === 1 ? '' : 's'} move
-            {carry === 1 ? 's' : ''} into it, keeping their column; {done} in “{doneCol?.name ?? 'Done'}” stay with sprint {sprint.number}.
-          </DialogDescription>
+          <DialogDescription>{closeSummary(sprint.number, carry, done, doneCol?.name ?? 'Done')}</DialogDescription>
         </DialogHeader>
-        <label className="grid gap-2 text-sm font-medium">
-          Next sprint length in days
-          <Input type="number" min={1} max={365} value={nextLength} onChange={(e) => setNextLength(e.target.value)} />
-        </label>
-        <label className="grid gap-2 text-sm font-medium">
-          Start next sprint on
-          <Input type="date" min={localDateInputValue()} value={nextStartDate} onChange={(e) => setNextStartDate(e.target.value)} />
-        </label>
-        <p className="text-sm text-muted-foreground">Choose today to start immediately, or a future date to schedule it.</p>
         {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button onClick={close} disabled={saving || !validNextLength || !validNextStartDate}>{saving ? 'Closing…' : 'Close sprint'}</Button>
+          <Button onClick={close} disabled={saving}>{saving ? 'Closing…' : 'Close sprint'}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 }
 
+// closeSummary: what closing a sprint by hand does. The next sprint doesn't start until someone
+// starts it, so its length (or end date) can be chosen then.
+export function closeSummary(number: number, carry: number, done: number, doneName: string): string {
+  const s = (n: number) => (n === 1 ? '' : 's');
+  return `${carry} unfinished ticket${s(carry)} stay${carry === 1 ? 's' : ''} on the board, and ${done} in “${doneName}” stay${done === 1 ? 's' : ''} with sprint ${number}. `
+    + 'The next sprint doesn’t start until you start it, so you can choose how long it runs. A planned next sprint joins then.';
+}
 
 export const GOAL_MAX = 200; // backend: sprints.goal
 

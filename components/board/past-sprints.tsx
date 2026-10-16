@@ -55,7 +55,8 @@ export function PastSprints({ boardId, token }: { boardId: string; token: string
               </DialogHeader>
               {failed && <p role="alert" className="text-sm text-destructive">Couldn&apos;t load past sprints. Please try again.</p>}
               {!list && !failed && <Skeleton role="status" aria-label="Loading sprints…" className="h-24 w-full" />}
-              {list && (
+              {list && list.length === 0 && <p className="text-sm text-muted-foreground">No past sprints yet.</p>}
+              {list && list.length > 0 && (
                 <PastSprintList list={list} velocity={velocity} onOpen={setChosen} />
               )}
             </>

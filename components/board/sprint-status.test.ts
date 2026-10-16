@@ -1,5 +1,6 @@
 import { expect, test } from 'bun:test';
 import { sprintLocked, sprintStatus } from './sprint-status';
+import { dateInput, daysUntil } from './sprint-status';
 
 // dates built in local time: days left are the user's calendar days, whatever their zone (TL-268)
 const now = new Date(2026, 9, 6, 18, 0); // Tue 6 Oct, 6pm
@@ -24,4 +25,14 @@ test('scope locks on the last local day and after', () => {
   expect(sprintLocked(ends, new Date(2026, 9, 11, 23, 59))).toBe(false);
   expect(sprintLocked(ends, new Date(2026, 9, 12, 0, 1))).toBe(true);
   expect(sprintLocked(ends, new Date(2026, 9, 13, 9, 0))).toBe(true); // overdue, not auto-closed yet
+});
+
+test('a custom sprint ends on a chosen date: its length is the local days until then', () => {
+  const now = new Date(2026, 9, 17, 15, 30); // 17 Oct, mid-afternoon
+  expect(daysUntil('2026-10-31', now)).toBe(14);
+  expect(daysUntil('2026-10-18', now)).toBe(1);
+  expect(daysUntil('2026-10-17', now)).toBe(0); // today: not a valid length
+  expect(daysUntil('2026-11-02', now)).toBe(16); // across the clocks going back (25 Oct)
+  expect(daysUntil('', now)).toBeNaN();
+  expect(dateInput(now)).toBe('2026-10-17');
 });

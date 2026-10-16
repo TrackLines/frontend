@@ -1,15 +1,15 @@
 import { expect, test } from 'bun:test';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { PastSprintList, SprintDetailBody, sprintResult } from './past-sprints';
-import { SprintBar } from './sprint-bar';
+import { SprintBar, closeSummary } from './sprint-bar';
 
 const sprint = (number: number) => ({ id: 's', board_id: 'b', number, length_days: 14, starts_at: '2026-10-01T00:00:00Z', ends_at: '2026-10-15T00:00:00Z', closed_at: null });
 const board = { id: 'b', project_id: 'p', owner_clerk_id: 'o', name: 'B', description: '', created_at: '', updated_at: '' };
 const bar = (s: ReturnType<typeof sprint> | undefined) => renderToStaticMarkup(<SprintBar board={{ ...board, sprint: s }} token="x" canManage={false} onChanged={() => {}} />);
 
-test('charts need a running sprint; past sprints need history', () => {
+test('charts need a running sprint; past sprints need history, which there may be between sprints', () => {
   expect(bar(undefined)).not.toContain('Charts');
-  expect(bar(undefined)).not.toContain('Past sprints');
+  expect(bar(undefined)).toContain('Past sprints'); // closed by hand: the next sprint hasn't started yet
   expect(bar(sprint(1))).toContain('Charts');
   expect(bar(sprint(1))).not.toContain('Past sprints');
   expect(bar(sprint(3))).toContain('Past sprints');
@@ -45,4 +45,12 @@ test('sprint results read naturally in points or tickets', () => {
   expect(sprintResult('tickets', 1, 1)).toBe('1 of 1 ticket done');
   expect(sprintResult('points', 1, null)).toBe('1 point done');
   expect(sprintResult('points', 2.5, 7.25)).toBe('2.5 of 7.3 points done');
+});
+
+test('closing by hand says the next sprint waits, so its length can be chosen', () => {
+  const text = closeSummary(3, 2, 1, 'Done');
+  expect(text).toContain('2 unfinished tickets stay on the board');
+  expect(text).toContain('1 in “Done” stays with sprint 3');
+  expect(text).toContain('doesn’t start until you start it');
+  expect(closeSummary(3, 1, 0, 'Shipped')).toContain('1 unfinished ticket stays');
 });

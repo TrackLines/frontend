@@ -486,8 +486,10 @@ export const sprints = {
   setGoal: (id: string, goal: string, token: T) => api<Sprint>(`/sprints/${id}`, { method: 'PATCH', body: { goal }, token }), // "" clears
   updateLength: (id: string, lengthDays: number, token: T) =>
     api<Sprint>(`/sprints/${id}`, { method: 'PATCH', body: { length_days: lengthDays }, token }),
-  close: (id: string, token: T, next: { next_length_days: number; next_starts_at?: string }) =>
-    api<Sprint>(`/sprints/${id}/close`, { method: 'POST', body: next, token }),
+  // closing by hand only closes: the next sprint waits for start (its length chosen then); pass next to
+  // open it at once instead (what auto-close does). No next: resolves with nothing (204).
+  close: (id: string, token: T, next?: { next_length_days?: number; next_starts_at?: string }) =>
+    api<Sprint | undefined>(`/sprints/${id}/close`, { method: 'POST', body: next, token }),
   velocity: (boardId: string, token: T) => api<Velocity>(`/boards/${boardId}/velocity`, { token }),
   get: (id: string, token: T) => api<SprintDetail>(`/sprints/${id}`, { token }),
 };

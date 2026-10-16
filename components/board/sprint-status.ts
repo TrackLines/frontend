@@ -28,3 +28,15 @@ export const LENGTH_PRESETS = [
   { days: 7, label: '1 week' },
   { days: 14, label: '2 weeks' },
 ] as const;
+
+// dateInput: a date as <input type="date"> wants it (YYYY-MM-DD), in the user's zone.
+export const dateInput = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+// daysUntil: whole local calendar days from today to an end date (YYYY-MM-DD): the sprint length that
+// ends on that date. NaN for anything that isn't a date.
+export function daysUntil(end: string, now: Date = new Date()): number {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(end);
+  if (!m) return NaN;
+  return localDay(new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]))) - localDay(now);
+}
