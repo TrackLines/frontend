@@ -9,17 +9,27 @@ import { TypeBadge } from '@/components/ticket-type';
 import { EstimateBadge } from './estimate';
 import { PriorityBadge } from './priority-badge';
 import { BurnChart } from './velocity';
-import { sprints, type Sprint, type SprintDetail } from '@/lib/api';
+import { sprints, type Sprint, type SprintDetail, type Velocity } from '@/lib/api';
 import Link from 'next/link';
 import { TicketKey, ticketPath } from '@/components/ticket/ticket-key';
 
 const day = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short' });
 const range = (s: Sprint) => `${day.format(new Date(s.starts_at))} – ${day.format(new Date(s.closed_at ?? s.ends_at))}`;
 
-// PastSprints lists a board's closed sprints; each opens read-only: what it finished and its burn chart.
+// sprintResult: "5 of 8 points done" (done of what the sprint held at close, as its details say), or
+// "5 points done" for a sprint closed before that was recorded.
+export function sprintResult(unit: Velocity['unit'], completed: number, planned?: number | null): string {
+  const n = (v: number) => String(Math.round(v * 10) / 10);
+  const word = (v: number) => (unit === 'tickets' ? (v === 1 ? 'ticket' : 'tickets') : (v === 1 ? 'point' : 'points'));
+  return planned == null ? `${n(completed)} ${word(completed)} done` : `${n(completed)} of ${n(planned)} ${word(planned)} done`;
+}
+
+// PastSprints lists a board's closed sprints, each with what it finished of what it held; each opens
+// read-only: what it finished and its burn chart.
 export function PastSprints({ boardId, token }: { boardId: string; token: string }) {
   const [open, setOpen] = useState(false);
   const [list, setList] = useState<Sprint[] | null>(null);
+  const [velocity, setVelocity] = useState<Velocity | null>(null); // the done / planned numbers per sprint
   const [chosen, setChosen] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
 
@@ -27,6 +37,7 @@ export function PastSprints({ boardId, token }: { boardId: string; token: string
     if (!open) return;
     setFailed(false);
     sprints.list(boardId, token).then((all) => setList(all.filter((s) => s.closed_at)), () => setFailed(true));
+    sprints.velocity(boardId, token).then(setVelocity, () => setVelocity(null)); // without it, rows just lack the numbers
   }, [open, boardId]); // reload each time it opens; token refreshes must not refetch
 
   return (
@@ -45,22 +56,33 @@ export function PastSprints({ boardId, token }: { boardId: string; token: string
               {failed && <p role="alert" className="text-sm text-destructive">Couldn&apos;t load past sprints. Please try again.</p>}
               {!list && !failed && <Skeleton role="status" aria-label="Loading sprints…" className="h-24 w-full" />}
               {list && (
-                <ul className="divide-y rounded-lg border">
-                  {list.map((s) => (
-                    <li key={s.id}>
-                      <Button type="button" variant="ghost" onClick={() => setChosen(s.id)} className="h-auto w-full justify-between rounded-none px-4 py-3">
-                        <span>Sprint {s.number}</span>
-                        <span className="font-normal text-muted-foreground">{range(s)}</span>
-                      </Button>
-                    </li>
-                  ))}
-                </ul>
+                <PastSprintList list={list} velocity={velocity} onOpen={setChosen} />
               )}
             </>
           )}
         </DialogContent>
       </Dialog>
     </>
+  );
+}
+
+// PastSprintList: one row per closed sprint, with its dates and what it finished of what it held (pure, for tests).
+export function PastSprintList({ list, velocity, onOpen }: { list: Sprint[]; velocity: Velocity | null; onOpen: (id: string) => void }) {
+  const result = new Map(velocity?.sprints.map((v) => [v.number, sprintResult(velocity.unit, v.completed, v.planned)]));
+  return (
+    <ul className="divide-y rounded-lg border">
+      {list.map((s) => (
+        <li key={s.id}>
+          <Button type="button" variant="ghost" onClick={() => onOpen(s.id)} className="h-auto w-full justify-between gap-4 rounded-none px-4 py-3">
+            <span>Sprint {s.number}</span>
+            <span className="flex flex-col items-end font-normal text-muted-foreground sm:flex-row sm:gap-3">
+              {result.has(s.number) && <span className="text-foreground">{result.get(s.number)}</span>}
+              <span>{range(s)}</span>
+            </span>
+          </Button>
+        </li>
+      ))}
+    </ul>
   );
 }
 

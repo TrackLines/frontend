@@ -5,7 +5,7 @@ const reported: unknown[][] = [];
 mock.module('bugfixes', () => ({ error: (...a: unknown[]) => { reported.push(a); return new Error(String(a[0])); }, loadConfigFromEnv: () => ({}), setDefaultConfig: () => {} }));
 const { allowReport, cleanReport, reportClient, resetReportLimits } = await import('./report');
 const { POST } = await import('@/app/api/client-errors/route');
-const { onRequestError } = await import('@/instrumentation');
+const { closedStream, onRequestError } = await import('@/instrumentation');
 const proxy = await import('@/app/api/[...path]/route');
 
 beforeEach(() => { reported.length = 0; resetReportLimits(); });
@@ -79,5 +79,26 @@ test('the browser sends each error once, and never a browser extension\'s', () =
   } finally {
     delete g.window;
     delete g.navigator;
+  }
+});
+
+test('a live stream the browser closed isn\'t an error; other pipe failures still are (TL-293)', async () => {
+  expect(closedStream(new Error('failed to pipe response'), '/api/boards/b1/live')).toBe(true);
+  expect(closedStream(new Error('failed to pipe response'), '/api/projects/p1/live')).toBe(true);
+  expect(closedStream(new Error('failed to pipe response'), '/api/boards/b1')).toBe(false);
+  expect(closedStream(new Error('render failed'), '/api/boards/b1/live')).toBe(false);
+  await onRequestError(new Error('failed to pipe response'), { path: '/api/boards/b1/live', method: 'GET' }, { routePath: '/api/[...path]', routeType: 'route' });
+  expect(reported.length).toBe(0);
+  await onRequestError(new Error('failed to pipe response'), { path: '/api/tickets/t1/attachments', method: 'GET' }, { routePath: '/api/[...path]', routeType: 'route' });
+  expect(reported.length).toBe(1);
+});
+
+test('missing files get the global 404, which skips the root layout and its Clerk calls (TL-298)', async () => {
+  expect(await Bun.file(new URL('../next.config.ts', import.meta.url)).text()).toContain('globalNotFound: true');
+  const page = await Bun.file(new URL('../app/global-not-found.tsx', import.meta.url)).text();
+  expect(page).toContain('<html');
+  expect(page).not.toMatch(/from '@clerk\//); // nothing that needs Clerk's middleware
+  for (const icon of ['apple-touch-icon.png', 'apple-touch-icon-precomposed.png']) {
+    expect(await Bun.file(new URL(`../public/${icon}`, import.meta.url)).exists()).toBe(true);
   }
 });

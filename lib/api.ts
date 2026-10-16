@@ -495,7 +495,8 @@ export const sprints = {
 // Velocity: what each closed sprint finished, and the open sprint's burn data (see lib/burn.ts).
 export type Velocity = {
   unit: 'points' | 'tickets';
-  sprints: { number: number; starts_at: string; closed_at: string; completed: number }[]; // oldest first
+  // oldest first; planned: what the sprint held when it closed (null: closed before that was recorded)
+  sprints: { number: number; starts_at: string; closed_at: string; completed: number; planned?: number | null }[];
   current: Burn | null;
 };
 // SprintDetail is one sprint, read-only. A closed sprint's tickets are what it finished; carried_over

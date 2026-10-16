@@ -19,6 +19,7 @@ async function forward(request: NextRequest, context: RouteContext): Promise<Res
     headers: requestHeaders(request.headers),
     cache: 'no-store',
     redirect: 'manual',
+    signal: request.signal, // the browser left (e.g. a board's live stream): stop asking the backend too
   };
   if (request.method !== 'GET' && request.method !== 'HEAD') {
     init.body = await request.arrayBuffer();
