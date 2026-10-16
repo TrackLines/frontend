@@ -12,7 +12,7 @@ export const PRIVACY = `
 
 ## Who we are
 
-Tracklines is run by ${companyLine()} ("we", "us"). For the personal data in this policy we're the data controller under UK data protection law (the UK GDPR and the Data Protection Act 2018).
+TrackLin.es is run by ${companyLine()} ("we", "us"). For the personal data in this policy we're the data controller under UK data protection law (the UK GDPR and the Data Protection Act 2018).
 
 Your organization decides what goes into its projects. For that content we act on your organization's behalf, and its admins control it.
 
@@ -30,7 +30,7 @@ You can ask us anything about this policy through our [contact form](${LEGAL.con
 
 ## How we use it
 
-We use your data to provide Tracklines and support you, to keep the service secure and prevent abuse, to bill you if you're on a paid plan, to tell you about important changes to the service, and to meet our legal obligations.
+We use your data to provide TrackLin.es and support you, to keep the service secure and prevent abuse, to bill you if you're on a paid plan, to tell you about important changes to the service, and to meet our legal obligations.
 
 Our legal bases are: providing the service you signed up for (contract); keeping it secure, preventing abuse and improving it (our legitimate interests); keeping records the law requires (legal obligation); and your consent for device notifications, which you can turn off at any time.
 
@@ -38,7 +38,7 @@ We don't look at your content, except when you ask us to for support, when we ne
 
 ## Who we share it with
 
-We share data only with the companies that help us run Tracklines, and only what each one needs:
+We share data only with the companies that help us run TrackLin.es, and only what each one needs:
 
 - **Railway** hosts our servers and database.
 - **Clerk** handles sign-in and organizations.
@@ -46,7 +46,7 @@ We share data only with the companies that help us run Tracklines, and only what
 - **UploadThing** stores the files you attach.
 - **Push services** run by browser makers (Google, Mozilla, Apple and Microsoft) deliver device notifications. The contents are encrypted, so they can't read them.
 - **flags.gg** turns features on and off. It receives none of your content.
-- **Bugfixes** receives reports of errors in Tracklines.
+- **Bugfixes** receives reports of errors in TrackLin.es.
 - **ChewedFeed HQ**, our own customer records, receives the name, email address and plan of paying customers.
 
 When your organization connects an integration (such as GitHub, Bitbucket or Bugfixes) or gives an AI agent an API key, data flows to that service as you've set it up. That service's own terms and policies then apply.
@@ -60,7 +60,7 @@ Some of these providers are based in, or process data in, the United States and 
 ## How long we keep it
 
 - **Your account and content** for as long as your account and organization exist.
-- **Deleted tickets and attachments** disappear from Tracklines at once and are kept for ${LEGAL.retentionDays} days, so a mistake can be undone if you contact us. After that they're permanently deleted, files included.
+- **Deleted tickets and attachments** disappear from TrackLin.es at once and are kept for ${LEGAL.retentionDays} days, so a mistake can be undone if you contact us. After that they're permanently deleted, files included.
 - **Attachments** are kept for a year. After that your organization's admins and the person who uploaded a file are told, and anyone of them can keep it for another year; otherwise it's deleted at 13 months.
 - **Deleted organizations** are kept for ${LEGAL.retentionDays} days, so an accidental deletion can be undone if you contact us. After that, everything in them, files included, is permanently deleted.
 - **Billing records** for as long as tax and accounting law requires.
@@ -68,7 +68,7 @@ Some of these providers are based in, or process data in, the United States and 
 
 ## Security
 
-All traffic to and from Tracklines is encrypted. Credentials are encrypted or hashed as described above. Access is limited to people in your organization and by the permissions your admins set. No system is perfectly secure; if a breach ever affects your data, we'll tell you and the regulator as the law requires.
+All traffic to and from TrackLin.es is encrypted. Credentials are encrypted or hashed as described above. Access is limited to people in your organization and by the permissions your admins set. No system is perfectly secure; if a breach ever affects your data, we'll tell you and the regulator as the law requires.
 
 ## Cookies
 
@@ -82,9 +82,9 @@ If you're unhappy with how we've handled your data, you can complain to the Info
 
 ## Children
 
-Tracklines is a work tool and isn't meant for children under 13. We don't knowingly collect their data, and if we learn we have, we'll delete it.
+TrackLin.es is a work tool and isn't meant for children under 13. We don't knowingly collect their data, and if we learn we have, we'll delete it.
 
 ## Changes to this policy
 
-If we make a meaningful change, we'll update the date at the top and tell you in Tracklines or by email before it takes effect.
+If we make a meaningful change, we'll update the date at the top and tell you in TrackLin.es or by email before it takes effect.
 `;

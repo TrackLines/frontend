@@ -49,7 +49,7 @@ test('Notify me on this device: off, on, blocked; nothing when push is not avail
   expect(off).toContain('Notify me on this device');
   expect(off).toContain('>Turn on<');
   const on = renderToStaticMarkup(<PushControl state="on" busy={false} onToggle={() => {}} />);
-  expect(on).toContain('even when Tracklines is closed');
+  expect(on).toContain('even when TrackLin.es is closed');
   expect(on).toContain('>Turn off<');
   expect(on).toContain('aria-pressed="true"');
   expect(renderToStaticMarkup(<PushControl state="blocked" busy={false} onToggle={() => {}} />)).toContain('blocked for this site');

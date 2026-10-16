@@ -39,8 +39,8 @@ export function ChatDmView({ link, busy, error, onUnlink }: { link: ChatLink | n
     <SettingsCard icon={MessageSquareIcon} title="Google Chat"
       badge={link.linked ? <Badge>Linked</Badge> : <Badge variant="outline">Not linked</Badge>}
       description={link.linked
-        ? 'The Tracklines app messages you in Google Chat when you’re assigned a ticket, mentioned, or something needs your review.'
-        : 'Get your notifications in Google Chat: find “Tracklines” in Google Chat, send it a message, and open the link it sends you.'}>
+        ? 'The TrackLin.es app messages you in Google Chat when you’re assigned a ticket, mentioned, or something needs your review.'
+        : 'Get your notifications in Google Chat: find “TrackLin.es” in Google Chat, send it a message, and open the link it sends you.'}>
       {link.linked && <Button variant="outline" size="sm" disabled={busy} onClick={onUnlink}>{busy ? 'Unlinking…' : 'Unlink'}</Button>}
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
     </SettingsCard>
@@ -52,7 +52,7 @@ export type LinkResult = 'linking' | 'linked' | { error: string };
 
 // linkError: what went wrong, in words someone can act on.
 export function linkError(err: unknown): string {
-  if (err instanceof ApiError && err.status === 400) return 'This link has expired or was already used. Send the Tracklines app a message in Google Chat for a new one.';
+  if (err instanceof ApiError && err.status === 400) return 'This link has expired or was already used. Send the TrackLin.es app a message in Google Chat for a new one.';
   if (err instanceof ApiError && err.status === 503) return 'Google Chat isn’t set up on this server.';
   return 'Couldn’t link Google Chat. Please try again.';
 }
@@ -65,7 +65,7 @@ export function ChatLinkView({ result }: { result: LinkResult }) {
       {result === 'linking' && <p role="status" className="mt-4 text-muted-foreground">Linking your Google Chat…</p>}
       {result === 'linked' && (
         <>
-          <p role="status" className="mt-4">You’re linked. The Tracklines app will message you in Google Chat when you’re assigned a ticket, mentioned, or something needs your review.</p>
+          <p role="status" className="mt-4">You’re linked. The TrackLin.es app will message you in Google Chat when you’re assigned a ticket, mentioned, or something needs your review.</p>
           <p className="mt-2 text-sm text-muted-foreground">You can unlink it any time in Your settings.</p>
         </>
       )}

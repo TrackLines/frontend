@@ -24,7 +24,7 @@ import { cn } from "@/lib/utils";
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
-  title: 'Tracklines',
+  title: 'TrackLin.es',
   description: 'Simple project boards and shareable roadmaps.',
 };
 

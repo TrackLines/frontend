@@ -193,7 +193,7 @@ export default function BoardPage() {
         </div>}
         {/* the same actions in and out of edit mode, so the header doesn't jump around */}
         <div className="ml-auto flex flex-wrap items-center gap-2">
-          <CopyLink path={`/boards/${board.id}`} token={token} title="A board on Tracklines" />
+          <CopyLink path={`/boards/${board.id}`} token={token} title="A board on TrackLin.es" />
           {/* standup is for running the board, not configuring it */}
           {!joinedStandup && !boardEditMode && <Button type="button" variant="outline" size="sm" disabled={startingStandup} onClick={() => standup ? setJoinedStandup(true) : void beginStandup(board)}>
             {startingStandup ? 'Starting…' : standup ? 'Join standup' : 'Standup'}

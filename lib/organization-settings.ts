@@ -21,7 +21,7 @@ export const adminSource = (grantedBy: string, person: (id: string) => string) =
 // how-to; 403 = admins only; 409 carries the server's reason.
 export function saveError(key: string, err: unknown): string {
   const status = err instanceof ApiError ? err.status : 0;
-  if (key.startsWith('accept:') && (status === 403 || status === 409)) return 'Accept the Clerk email invitation first, then complete the TrackLines membership here.';
+  if (key.startsWith('accept:') && (status === 403 || status === 409)) return 'Accept the Clerk email invitation first, then complete the TrackLin.es membership here.';
   if (status === 403) return 'Only organization admins can make this change.';
   if (status === 409 || status === 422) return (err as ApiError).message; // 422: Clerk refused, with its reason (TL-239)
   return 'Couldn’t save that change. Please try again.';

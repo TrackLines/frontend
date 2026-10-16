@@ -3,7 +3,7 @@ import type { Visibility } from '@/lib/api';
 
 export const VISIBILITY: Record<Visibility, { label: string; hint: string; available: boolean }> = {
   public: { label: 'Public', hint: 'Anyone with the link, no sign-in', available: true },
-  login_only: { label: 'Signed-in users', hint: 'Any Tracklines account can read it', available: true },
+  login_only: { label: 'Signed-in users', hint: 'Any TrackLin.es account can read it', available: true },
   team: { label: 'Team only', hint: 'Coming soon', available: false }, // stretch goal, not v1
 };
 

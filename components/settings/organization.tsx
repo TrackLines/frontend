@@ -16,7 +16,7 @@ export function ReceivedInvitations({ items, token, run }: { items: Invitation[]
   if (items.length === 0) return null;
   return <section className={`${card} mb-6`}>
     <h2 className="text-lg font-semibold">Invitations for you</h2>
-    <p className="mb-3 text-sm text-muted-foreground">Accept the Clerk email invitation first, then complete the TrackLines membership here.</p>
+    <p className="mb-3 text-sm text-muted-foreground">Accept the Clerk email invitation first, then complete the TrackLin.es membership here.</p>
     <ul className="divide-y">{items.map((invite) => <li key={invite.id} className="flex flex-wrap items-center justify-between gap-3 py-3 text-sm">
       <div><p className="font-medium">{invite.scope} invitation</p><p className="text-muted-foreground">Expires {new Date(invite.expires_at).toLocaleDateString()}</p></div>
       <div className="flex gap-2"><a className="inline-flex h-8 items-center rounded-lg border px-2.5 text-sm hover:bg-muted" href={invite.accept_url} target="_blank" rel="noreferrer">Accept in Clerk</a><Button size="sm" variant="outline" onClick={() => void run(`accept:${invite.id}`, () => invitations.accept(invite.id, token), 'Invitation accepted.')}>Complete acceptance</Button></div>

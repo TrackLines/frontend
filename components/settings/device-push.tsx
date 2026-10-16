@@ -28,11 +28,11 @@ export function DevicePushCard({ token }: { token: string }) {
 // DevicePushView: pure, for tests.
 export function DevicePushView({ state, busy, onToggle }: { state: PushState; busy: boolean; onToggle: () => void }) {
   const description = {
-    on: 'You get notifications on this device, even when Tracklines is closed.',
-    off: 'Get notifications on this device, even when Tracklines is closed.',
+    on: 'You get notifications on this device, even when TrackLin.es is closed.',
+    off: 'Get notifications on this device, even when TrackLin.es is closed.',
     blocked: 'Notifications are blocked for this site in your browser settings.',
     unavailable: 'This server doesn’t send device notifications yet.',
-    unsupported: 'This browser can’t get notifications when Tracklines is closed.',
+    unsupported: 'This browser can’t get notifications when TrackLin.es is closed.',
   }[state];
   return (
     <SettingsCard icon={BellRingIcon} title="This device" description={description}

@@ -1,7 +1,7 @@
 import { safeRedirect } from '@/lib/safe-redirect';
 import { SignUp } from '@clerk/nextjs';
 
-export const metadata = { title: 'Create account | Tracklines' };
+export const metadata = { title: 'Create account | TrackLin.es' };
 
 type PageProps = { searchParams: Promise<{ redirect_url?: string | string[] }> };
 

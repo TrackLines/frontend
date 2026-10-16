@@ -48,7 +48,7 @@ export function NotificationsBell() {
       if (fresh.length) {
         const names = people.length ? people : await tickets.assignees(token).catch(() => []);
         for (const x of fresh) {
-          const popup = new Notification('Tracklines', { body: notificationLine(x, names), tag: x.id });
+          const popup = new Notification('TrackLin.es', { body: notificationLine(x, names), tag: x.id });
           popup.onclick = () => { window.focus(); void open(x); };
         }
       }
@@ -143,7 +143,7 @@ export function NotificationsBell() {
         ) : permission === 'default' && (
           <div className="border-t px-3 py-2 text-xs">
             <button type="button" className="font-medium hover:underline" onClick={() => void enableDesktop()}>Turn on desktop notifications</button>
-            <span className="text-muted-foreground"> while Tracklines is open</span>
+            <span className="text-muted-foreground"> while TrackLin.es is open</span>
           </div>
         )}
         {pushOn !== 'blocked' && permission === 'denied' && <p className="border-t px-3 py-2 text-xs text-muted-foreground">Desktop notifications are blocked for this site in your browser settings.</p>}
@@ -215,7 +215,7 @@ export function PushControl({ state, busy, onToggle }: { state: PushState; busy:
     <div className="flex items-center justify-between gap-3 border-t px-3 py-2 text-xs">
       <span>
         <span className="font-medium">Notify me on this device</span>
-        <span className="block text-muted-foreground">{state === 'on' ? 'On, even when Tracklines is closed' : 'Get notifications even when Tracklines is closed'}</span>
+        <span className="block text-muted-foreground">{state === 'on' ? 'On, even when TrackLin.es is closed' : 'Get notifications even when TrackLin.es is closed'}</span>
       </span>
       <Button type="button" size="sm" variant={state === 'on' ? 'outline' : 'default'} disabled={busy} aria-pressed={state === 'on'} onClick={onToggle}>
         {busy ? '…' : state === 'on' ? 'Turn off' : 'Turn on'}

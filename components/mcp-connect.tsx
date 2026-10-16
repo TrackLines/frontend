@@ -23,7 +23,7 @@ export const AGENTS: { id: string; name: string; steps: { text: ReactNode; code?
     id: 'claude-desktop', name: 'Claude Desktop', steps: [
       { text: <>Settings → Developer → Edit Config, then add this to <code>claude_desktop_config.json</code> (it bridges to the remote server with <code>mcp-remote</code>, which needs Node.js):</>,
         code: JSON.stringify({ mcpServers: { tracklines: { command: 'npx', args: ['-y', 'mcp-remote', MCP_URL, '--header', `Authorization: Bearer ${KEY}`] } } }, null, 2) },
-      { text: 'Restart Claude Desktop; TrackLines appears in the tools menu.' },
+      { text: 'Restart Claude Desktop; TrackLin.es appears in the tools menu.' },
     ],
   },
   {
@@ -44,7 +44,7 @@ export const AGENTS: { id: string; name: string; steps: { text: ReactNode; code?
     id: 'vscode', name: 'VS Code', steps: [
       { text: <>For GitHub Copilot agent mode, add to <code>.vscode/mcp.json</code>; VS Code asks for the key once and stores it securely:</>,
         code: JSON.stringify({
-          inputs: [{ type: 'promptString', id: 'tracklines-key', description: 'TrackLines API key', password: true }],
+          inputs: [{ type: 'promptString', id: 'tracklines-key', description: 'TrackLin.es API key', password: true }],
           servers: { tracklines: { type: 'http', url: MCP_URL, headers: { Authorization: 'Bearer ${input:tracklines-key}' } } },
         }, null, 2) },
     ],
@@ -80,7 +80,7 @@ export function McpConnect({ keyHint, trigger }: { keyHint: ReactNode; trigger?:
           <DialogHeader>
             <DialogTitle>Connect an AI agent</DialogTitle>
             <DialogDescription>
-              TrackLines has a built-in MCP server, so agents can read boards, claim tickets, move them and comment. {keyHint}
+              TrackLin.es has a built-in MCP server, so agents can read boards, claim tickets, move them and comment. {keyHint}
             </DialogDescription>
           </DialogHeader>
           <McpInstructions />

@@ -1,7 +1,7 @@
 // Tracklines service worker: shows Web Push notifications (sent by the backend's notifications.Push)
 // even when no Tracklines tab is open, and opens the ticket or board when one is clicked.
 self.addEventListener('push', (event) => {
-  let msg = { title: 'Tracklines', body: 'You have a new notification', url: '/', tag: 'tracklines' };
+  let msg = { title: 'TrackLin.es', body: 'You have a new notification', url: '/', tag: 'tracklines' };
   try {
     msg = { ...msg, ...event.data.json() };
   } catch {

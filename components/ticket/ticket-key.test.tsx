@@ -21,7 +21,7 @@ test('ticket keys accept the project key format without matching UUIDs', () => {
 
 test('a short link is named by the ticket key, never its title: anyone can look a short link up (TL-277)', () => {
   const ticket = { key: 'TL-204', title: 'Acquire Acme Ltd (confidential)' };
-  expect(linkTitle(ticket)).toBe('TL-204 on Tracklines');
+  expect(linkTitle(ticket)).toBe('TL-204 on TrackLin.es');
   expect(linkTitle(ticket)).not.toContain('Acme');
-  expect(linkTitle({ key: null })).toBe('A ticket on Tracklines');
+  expect(linkTitle({ key: null })).toBe('A ticket on TrackLin.es');
 });

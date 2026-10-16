@@ -3,7 +3,7 @@ import { LEGAL, companyLine } from '@/lib/legal';
 // The terms of service (TL-203). Plans, prices and deletion here must match the product: keep them in
 // step with billing (Free: 1 project; Pro: $10 a month) and the ${LEGAL.retentionDays}-day organization purge.
 export const TERMS = `
-These terms are an agreement between you and ${companyLine()} ("we", "us") about your use of Tracklines. By creating an account or using Tracklines, you agree to them. If you use Tracklines for an organization, you confirm you're allowed to agree on its behalf, and "you" includes that organization.
+These terms are an agreement between you and ${companyLine()} ("we", "us") about your use of TrackLin.es. By creating an account or using TrackLin.es, you agree to them. If you use TrackLin.es for an organization, you confirm you're allowed to agree on its behalf, and "you" includes that organization.
 
 ## 1. Your account
 
@@ -13,7 +13,7 @@ These terms are an agreement between you and ${companyLine()} ("we", "us") about
 
 ## 2. Your content
 
-Everything you put into Tracklines (projects, tickets, comments, files, roadmaps and so on) stays yours. You give us permission to store, copy and display it only as needed to run Tracklines for you, for example to show it to your team, deliver notifications, or send it to integrations you've connected. We don't sell it and we don't use it to advertise.
+Everything you put into TrackLin.es (projects, tickets, comments, files, roadmaps and so on) stays yours. You give us permission to store, copy and display it only as needed to run TrackLin.es for you, for example to show it to your team, deliver notifications, or send it to integrations you've connected. We don't sell it and we don't use it to advertise.
 
 You're responsible for having the right to everything you put in, and for it being lawful.
 
@@ -23,18 +23,18 @@ You can choose to share some things publicly: a roadmap set to public, or a requ
 
 ## 4. Acceptable use
 
-Don't use Tracklines to:
+Don't use TrackLin.es to:
 
 - break the law, or infringe anyone's rights;
 - send spam or malware, or harass anyone;
 - try to get into accounts, organizations or data that aren't yours, probe or overload our systems, or get around limits or security;
-- copy or resell Tracklines, or use it to build a competing product.
+- copy or resell TrackLin.es, or use it to build a competing product.
 
 We may suspend accounts or remove content that breaks these rules. Where it's reasonable, we'll tell you first and give you a chance to fix it.
 
 ## 5. Integrations and AI agents
 
-Tracklines can connect to other services, such as GitHub, Bitbucket, Bugfixes, and AI agents through our MCP server and API. When you connect one, data moves between Tracklines and that service as you've set it up, and that service's own terms apply. We aren't responsible for third-party services or for the work AI agents do; check their changes as you would anyone else's.
+TrackLin.es can connect to other services, such as GitHub, Bitbucket, Bugfixes, and AI agents through our MCP server and API. When you connect one, data moves between TrackLin.es and that service as you've set it up, and that service's own terms apply. We aren't responsible for third-party services or for the work AI agents do; check their changes as you would anyone else's.
 
 ## 6. Plans and payment
 
@@ -46,19 +46,19 @@ Tracklines can connect to other services, such as GitHub, Bitbucket, Bugfixes, a
 
 Nothing in these terms affects your rights under consumer law, if they apply to you.
 
-## 7. Changes to Tracklines
+## 7. Changes to TrackLin.es
 
-We're constantly improving Tracklines, so features will change. Some features may be marked as in preview or turned on gradually; those may change or go away. If we ever plan to remove something central to how you use Tracklines, we'll tell you in advance.
+We're constantly improving TrackLin.es, so features will change. Some features may be marked as in preview or turned on gradually; those may change or go away. If we ever plan to remove something central to how you use TrackLin.es, we'll tell you in advance.
 
 ## 8. Ending your use
 
-You can stop using Tracklines and delete your organization at any time. A deleted organization's data is kept for ${LEGAL.retentionDays} days, in case it was a mistake, and then permanently deleted. Our [privacy policy](/privacy) explains what we keep and for how long.
+You can stop using TrackLin.es and delete your organization at any time. A deleted organization's data is kept for ${LEGAL.retentionDays} days, in case it was a mistake, and then permanently deleted. Our [privacy policy](/privacy) explains what we keep and for how long.
 
-We may suspend or end your access if you seriously or repeatedly break these terms, if we have to by law, or if we stop offering Tracklines. If we stop offering it, we'll give you reasonable notice so you can take your data with you.
+We may suspend or end your access if you seriously or repeatedly break these terms, if we have to by law, or if we stop offering TrackLin.es. If we stop offering it, we'll give you reasonable notice so you can take your data with you.
 
 ## 9. Disclaimers
 
-We work hard to keep Tracklines running and your data safe. However, Tracklines is provided "as is" and "as available". To the extent the law allows, we don't promise it will always be available, error-free or suitable for any particular purpose. Keep your own copies of anything you can't afford to lose.
+We work hard to keep TrackLin.es running and your data safe. However, TrackLin.es is provided "as is" and "as available". To the extent the law allows, we don't promise it will always be available, error-free or suitable for any particular purpose. Keep your own copies of anything you can't afford to lose.
 
 ## 10. Our liability
 
@@ -67,15 +67,15 @@ Nothing in these terms limits liability for death or personal injury caused by n
 Otherwise, to the extent the law allows:
 
 - we aren't liable for indirect or consequential losses, or for lost profits, revenue, data or goodwill;
-- our total liability to you for anything to do with Tracklines is limited to the greater of what you've paid us in the 12 months before the claim and £100.
+- our total liability to you for anything to do with TrackLin.es is limited to the greater of what you've paid us in the 12 months before the claim and £100.
 
 ## 11. Your responsibility to us
 
-If someone makes a claim against us because of content you put into Tracklines, or because you broke these terms, you'll cover our reasonable costs of dealing with it.
+If someone makes a claim against us because of content you put into TrackLin.es, or because you broke these terms, you'll cover our reasonable costs of dealing with it.
 
 ## 12. Changes to these terms
 
-We may update these terms. If a change matters, we'll tell you in Tracklines or by email at least 30 days before it takes effect. If you keep using Tracklines after that, the new terms apply; if you don't agree, you can stop using it and delete your organization.
+We may update these terms. If a change matters, we'll tell you in TrackLin.es or by email at least 30 days before it takes effect. If you keep using TrackLin.es after that, the new terms apply; if you don't agree, you can stop using it and delete your organization.
 
 ## 13. General
 
