@@ -66,11 +66,11 @@ export function ChatLinkView({ result }: { result: LinkResult }) {
       {result === 'linked' && (
         <>
           <p role="status" className="mt-4">You’re linked. The Tracklines app will message you in Google Chat when you’re assigned a ticket, mentioned, or something needs your review.</p>
-          <p className="mt-2 text-sm text-muted-foreground">You can unlink it any time in Settings.</p>
+          <p className="mt-2 text-sm text-muted-foreground">You can unlink it any time in Your settings.</p>
         </>
       )}
       {typeof result === 'object' && <p role="alert" className="mt-4 text-destructive">{result.error}</p>}
-      <Link href="/settings" className={buttonVariants({ variant: 'outline', className: 'mt-6' })}>Go to Settings</Link>
+      <Link href="/account" className={buttonVariants({ variant: 'outline', className: 'mt-6' })}>Go to Your settings</Link>
     </main>
   );
 }

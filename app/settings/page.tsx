@@ -10,7 +10,6 @@ import { KeyRoundIcon, PlugIcon } from 'lucide-react';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { SettingsCard } from '@/components/settings/settings-card';
 import { FileCleanupLink } from '@/components/settings/file-cleanup';
-import { ChatDmCard } from '@/components/settings/chat-dm';
 import { OrganizationCard } from '@/components/settings/organization-card';
 import { attachments, organization, type FileCleanup } from '@/lib/api';
 import { useToken } from '@/lib/use-token';
@@ -44,7 +43,6 @@ export default function SettingsPage() {
             trigger={(open) => <Button variant="ghost" size="sm" onClick={open}>Connect AI</Button>}
           />
         </SettingsCard>
-        {token && <ChatDmCard token={token} />}
         {admin && <FileCleanupLink report={cleanup} />}
       </ul>
     </main>

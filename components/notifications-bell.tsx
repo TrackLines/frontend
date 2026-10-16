@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { BellIcon, XIcon } from 'lucide-react';
 import { NotificationIcon } from '@/components/notification-icon';
 import { useRouter } from 'next/navigation';
@@ -146,6 +147,7 @@ export function NotificationsBell() {
           </div>
         )}
         {pushOn !== 'blocked' && permission === 'denied' && <p className="border-t px-3 py-2 text-xs text-muted-foreground">Desktop notifications are blocked for this site in your browser settings.</p>}
+        <Link href="/account" className="block border-t px-3 py-2 text-xs font-medium hover:underline">Notification settings: this device, Google Chat</Link>
       </DropdownMenuContent>
     </DropdownMenu>
   );
