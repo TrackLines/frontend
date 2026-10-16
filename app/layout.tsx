@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { SiteFooter } from '@/components/site-footer';
+import Image from 'next/image';
 import Link from 'next/link';
 import { headers } from 'next/headers';
 import { ClerkProvider, Show } from '@clerk/nextjs';
@@ -42,7 +43,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           <Show when="signed-in"><CompleteInvitations /></Show>
           <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
             <div className="flex items-center gap-4">
-              <Link href="/" className="font-semibold tracking-tight">Tracklines</Link>
+              <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight">
+                {/* the logo on its dark tile: its white ring would vanish on a light background */}
+                <Image src="/logo-tile.png" alt="" width={28} height={28} className="size-7 rounded-md" priority />
+                TrackLin.es
+              </Link>
               <Show when="signed-in"><OrgSwitcher /></Show>
             </div>
             <nav className="flex items-center gap-4" aria-label="Account">
