@@ -53,3 +53,11 @@ test('epics stay out of refinement: they aren’t planned, their sub-tickets are
   expect(tabs).toContain('<Backlog ');
   expect(await Bun.file(new URL('../../app/projects/[id]/page.tsx', import.meta.url)).text()).toContain('<WorkTabs ');
 });
+
+test('a long epic title truncates inside its card instead of running past the edge (TL-403)', () => {
+  const title = 'Exportable sprint reports at board, project and org level';
+  const html = renderToStaticMarkup(<EpicsView epics={[{ id: 'e1', key: 'TL-396', title, priority: 'medium', done: false, resolution: null, progress: { done: 0, total: 6, points: 0, unestimated: 6 } }]} />);
+  const card = html.match(/<a [^>]*href="\/tickets\/e1"[^>]*>/)?.[0] ?? '';
+  expect(card).toContain('grid-cols-1'); // minmax(0,1fr): the column can't grow wider than the card
+  expect(html).toMatch(new RegExp(`class="[^"]*min-w-0[^"]*truncate[^"]*">${title}<`));
+});

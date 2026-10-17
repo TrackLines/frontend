@@ -40,7 +40,8 @@ export function EpicsView({ epics }: { epics: EpicSummary[] | null }) {
         <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {epics.map((e) => (
             <li key={e.id}>
-              <Link href={`/tickets/${e.id}`} className="grid h-full gap-2 rounded-xl border p-4 transition-colors hover:bg-muted/40">
+              {/* grid-cols-1 (minmax(0,1fr)): a long title truncates instead of widening the card past its edge (TL-403) */}
+              <Link href={`/tickets/${e.id}`} className="grid h-full grid-cols-1 gap-2 rounded-xl border p-4 transition-colors hover:bg-muted/40">
                 <span className="flex items-center gap-2">
                   <TicketKey value={e.key} />
                   <span className="min-w-0 flex-1 truncate font-medium">{e.title}</span>
