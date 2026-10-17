@@ -2,7 +2,8 @@ import type { AppNotification, Assignee } from './api';
 import { generatedAgent } from './people';
 
 // Where a notification goes when clicked: its ticket, else its board.
-export function notificationHref(n: Pick<AppNotification, 'ticket_id' | 'ticket_key' | 'board_id'>): string | null {
+export function notificationHref(n: Pick<AppNotification, 'ticket_id' | 'ticket_key' | 'board_id'> & { link?: string | null }): string | null {
+  if (n.link?.startsWith('/') && !n.link.startsWith('//')) return n.link; // a page on this site, e.g. a new Terms version (TL-424)
   if (n.ticket_id) return `/tickets/${n.ticket_id}`; // the id: keys repeat across orgs (TL-276)
   if (n.ticket_key) return `/tickets/${n.ticket_key}`;
   if (n.board_id) return `/boards/${n.board_id}`;
@@ -18,7 +19,8 @@ export function actorName(actor: string, people: Assignee[]): string {
 }
 
 // The line a notification reads as: "Ava assigned you TL-12: Fix login".
-export function notificationLine(n: Pick<AppNotification, 'actor' | 'text'>, people: Assignee[]): string {
+export function notificationLine(n: Pick<AppNotification, 'actor' | 'text'> & { kind?: string }, people: Assignee[]): string {
+  if (n.kind === 'legal') return n.text; // from TrackLin.es itself: "We've updated our Terms of service…" (TL-424)
   return `${actorName(n.actor, people)} ${n.text}`;
 }
 

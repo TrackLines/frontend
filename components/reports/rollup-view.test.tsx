@@ -2,7 +2,6 @@ import { expect, test } from 'bun:test';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { delivered, RollupView } from './rollup-view';
 import { OrgReportCard, ProjectReportLink } from './report-links';
-import { FeatureFlags } from '@/components/feature-flags';
 import type { BoardReport, ReportTotals, RollupReport } from '@/lib/api';
 
 const totals = (o: Partial<ReportTotals>): ReportTotals => ({ sprints: 1, planned: 8, done: 8, predictability: 1, added: 0, carried: 0, velocity: 8, mix: [], ...o });
@@ -45,7 +44,7 @@ test('nothing finished: says so', () => {
   expect(renderToStaticMarkup(<RollupView report={empty} range={range} />)).toContain('No sprints finished in this period. Try a longer one.');
 });
 
-test('the project button and the org settings card wait for the sprint-reports flag', () => {
-  expect(renderToStaticMarkup(<FeatureFlags><ProjectReportLink projectId="p1" /></FeatureFlags>)).toBe('');
-  expect(renderToStaticMarkup(<FeatureFlags><OrgReportCard /></FeatureFlags>)).toBe('');
+test('the project button and the org settings card link to their reports (no flag)', () => {
+  expect(renderToStaticMarkup(<ProjectReportLink projectId="p1" />)).toContain('href="/reports?project=p1"');
+  expect(renderToStaticMarkup(<OrgReportCard />)).toContain('href="/reports?org=1"');
 });

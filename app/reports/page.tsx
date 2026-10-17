@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useFlags } from '@flags-gg/react-library';
 import { LoadError } from '@/components/load-error';
 import { ReportView } from '@/components/reports/report-view';
 import { RollupView } from '@/components/reports/rollup-view';
@@ -24,7 +23,6 @@ function Reports() {
   const token = useToken();
   const router = useRouter();
   const q = useSearchParams();
-  const { is } = useFlags();
   const { scope, range } = readQuery(new URLSearchParams(q.toString()));
   const [report, setReport] = useState<BoardReport | null>(null);
   const [rollup, setRollup] = useState<RollupReport | null>(null);
@@ -42,7 +40,6 @@ function Reports() {
     else reports.org(range, token).then(setRollup, failed);
   }, [key, loaded]); // token refreshes must not refetch
 
-  if (is('sprint-reports').disabled()) return <Message>Sprint reports aren’t available yet.</Message>;
   if (!scope) return <Message>Open a report from a board’s past sprints, a project, or organization settings.</Message>;
   if (error === 403) return <Message>Only organization admins can see the organization’s report.</Message>;
   if (error) return <LoadError status={error} thing={scope.kind === 'project' ? 'project' : 'board'} />;

@@ -8,10 +8,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ApiError, invitations, organization, teams as teamApi, type Invitation } from '@/lib/api';
+import { ApiError, billing, invitations, organization, teams as teamApi, type Invitation } from '@/lib/api';
 import { useToken } from '@/lib/use-token';
 import { OutcomeNote, ReceivedInvitations, TeamEditor } from '@/components/settings/organization';
-import { adminSource, fetchOrganization, type OrganizationData, inviteInput, inviteReady, memberName, personIn, saveError, sectionOf, targetName, type Outcome } from '@/lib/organization-settings';
+import { adminSource, fetchOrganization, type OrganizationData, inviteInput, memberCount, inviteReady, memberName, personIn, saveError, sectionOf, targetName, type Outcome } from '@/lib/organization-settings';
 
 const card = 'rounded-xl border p-5';
 const NO_TARGET = '__none';
@@ -27,6 +27,7 @@ export default function OrganizationSettingsPage() {
   const [newTeamName, setNewTeamName] = useState('');
   const [newTeamDescription, setNewTeamDescription] = useState('');
   const [inviteEmail, setInviteEmail] = useState('');
+  const [memberLimit, setMemberLimit] = useState<number | null>(null); // the plan's (TL-418); -1 unlimited
   const [inviteScope, setInviteScope] = useState<Invitation['scope']>('organization');
   const [inviteTarget, setInviteTarget] = useState('');
 
@@ -44,6 +45,7 @@ export default function OrganizationSettingsPage() {
 
   const signedIn = token !== null;
   useEffect(() => { if (token) void load(token); }, [signedIn]); // token refreshes must not reload the page
+  useEffect(() => { if (token) billing.status(token).then((s) => setMemberLimit(s.member_limit ?? null), () => setMemberLimit(null)); }, [signedIn]);
 
   // run makes a change, reloads, and reports where it was made; true when it worked.
   async function run(key: string, action: () => Promise<unknown>, success?: string): Promise<boolean> {
@@ -93,7 +95,7 @@ export default function OrganizationSettingsPage() {
 
       <section className={card}>
         <div className="mb-4 flex items-center justify-between gap-3">
-          <div><h2 className="text-lg font-semibold">Members</h2><p className="text-sm text-muted-foreground">{data.members.length} of the organization’s members</p></div>
+          <div><h2 className="text-lg font-semibold">Members</h2><p className="text-sm text-muted-foreground">{memberCount(data.members.length, (sentInvites ?? []).filter((i) => i.status === 'pending' && new Date(i.expires_at) > new Date()).length, memberLimit)}</p></div>
           {data.isAdmin && <Badge>Organization admin</Badge>}
         </div>
         <OutcomeNote outcome={outcome} section="members" />

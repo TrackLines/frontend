@@ -1,4 +1,4 @@
-import { AtSignIcon, BanIcon, BellIcon, CircleCheckIcon, ClockIcon, EyeIcon, GaugeIcon, ShieldAlertIcon, Undo2Icon, UserPlusIcon, type LucideIcon } from 'lucide-react';
+import { AtSignIcon, BanIcon, BellIcon, CircleCheckIcon, ClockIcon, EyeIcon, GaugeIcon, ScaleIcon, ShieldAlertIcon, Undo2Icon, UserPlusIcon, type LucideIcon } from 'lucide-react';
 import type { NotificationKind } from '@/lib/api';
 import { cn } from '@/lib/utils';
 
@@ -14,6 +14,7 @@ export const NOTIFICATION_ICONS: Record<NotificationKind, { icon: LucideIcon; la
   approval: { icon: ShieldAlertIcon, label: 'Needs your approval', urgent: true },
   retention: { icon: ClockIcon, label: 'Files due for deletion' },
   over_capacity: { icon: GaugeIcon, label: 'Sprint over capacity', urgent: true },
+  legal: { icon: ScaleIcon, label: 'Terms or Privacy policy updated' }, // TL-424
 };
 
 export function NotificationIcon({ kind, className }: { kind: string; className?: string }) {

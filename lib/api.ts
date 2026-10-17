@@ -100,8 +100,8 @@ export type NewApiKey = { kind: 'ai'; client: ApiKeyClient; label?: string } | {
 // billing to manage; can_manage = you're an org admin, who buys and manages it
 // plan (TL-290): free 1 project, pro 5, enterprise unlimited; project_limit -1 is unlimited
 export type PlanId = 'free' | 'pro' | 'enterprise';
-export type Subscription = { plan?: PlanId; paid: boolean; project_limit: number; billed?: boolean; can_manage?: boolean };
-export type PlanInfo = { id: PlanId; projects: number | null; price: { amount: number; currency: string; interval: string } | null };
+export type Subscription = { plan?: PlanId; paid: boolean; project_limit: number; member_limit?: number; billed?: boolean; can_manage?: boolean }; // member_limit: -1 unlimited (TL-418)
+export type PlanInfo = { id: PlanId; projects: number | null; members?: number | null; price: { amount: number; currency: string; interval: string } | null };
 
 export type OrganizationMember = { user_id: string; first_name?: string; last_name?: string; image_url?: string; identifier: string };
 export type OrganizationMemberPage = { members: OrganizationMember[]; total_count: number; limit: number; offset: number };
@@ -634,10 +634,10 @@ export const projectRepos = {
 };
 
 // Notifications: the signed-in user's inbox (internal; external channels later).
-export type NotificationKind = 'assigned' | 'mention' | 'finished' | 'wont_do' | 'review' | 'sent_back' | 'approval' | 'retention' | 'over_capacity'; // retention: TL-259; over_capacity: a sprint started over capacity (TL-149)
+export type NotificationKind = 'assigned' | 'mention' | 'finished' | 'wont_do' | 'review' | 'sent_back' | 'approval' | 'retention' | 'over_capacity' | 'legal'; // retention: TL-259; over_capacity: a sprint started over capacity (TL-149)
 export type AppNotification = {
   id: string; kind: NotificationKind; text: string; actor: string;
-  ticket_id: string | null; ticket_key: string | null; board_id: string | null;
+  ticket_id: string | null; ticket_key: string | null; board_id: string | null; link?: string | null; // link: a page, e.g. a new Terms version (TL-424)
   created_at: string; read_at: string | null;
 };
 // A ticket that @mentions the caller, as of its latest mention (GET /api/mentions).

@@ -2,7 +2,6 @@ import { expect, test } from 'bun:test';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { ReportView } from './report-view';
 import { ReportLink } from '@/components/board/past-sprints';
-import { FeatureFlags } from '@/components/feature-flags';
 import type { BoardReport } from '@/lib/api';
 import { presetOf, presetRange, readQuery, scopeChange, trend, writeQuery } from '@/lib/sprint-report';
 
@@ -67,6 +66,6 @@ test('trends and scope change', () => {
   expect(scopeChange(report.previous)).toBeNull(); // not recorded then
 });
 
-test('the Sprint report link waits for the sprint-reports flag', () => {
-  expect(renderToStaticMarkup(<FeatureFlags><ReportLink boardId="b1" /></FeatureFlags>)).toBe(''); // no flags.gg: off
+test('the Sprint report link is on every board’s Past sprints (no flag)', () => {
+  expect(renderToStaticMarkup(<ReportLink boardId="b1" />)).toContain('href="/reports?board=b1"');
 });

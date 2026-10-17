@@ -29,12 +29,12 @@ test('nothing points people at an email address: questions go through the contac
 });
 
 test('the terms match the plans and the deletion policy', () => {
-  for (const s of ['$10 a month', 'one project', 'We don\'t give refunds for part-used months', 'cancel any time', '30 days',
+  for (const s of ['one project', 'We don\'t give refunds for part-used months', 'cancel any time', '30 days',
     'England and Wales', 'death or personal injury', '£100', 'An API key acts as you']) expect(TERMS).toContain(s);
 });
 
 test('legal pages render their markdown; the footer links them from every page', () => {
-  const page = renderToStaticMarkup(<LegalPage title="Terms of service" body={TERMS} />);
+  const page = renderToStaticMarkup(<LegalPage title="Terms of service" body={TERMS} doc="terms" />);
   expect(page).toContain('<h1');
   expect(page).toContain('<h2>1. Your account</h2>');
   expect(page).toContain('Last updated 17 October 2026');
@@ -47,5 +47,23 @@ test('the privacy policy covers Google Calendar: what’s read, only when, never
   for (const s of ['**Google Calendar.**', 'Out of office', 'only **when** someone is away', "never store an event's title", "Google gives us the dates of Out of office events",
     '**Time away from Google Calendar**', 'leave that ended over a week ago is deleted', 'disconnects Google Calendar', "your organization's and our legitimate interests"]) {
     expect(PRIVACY).toContain(s);
+  }
+});
+
+test('the Terms state the plans and the price promise (owner, 2026-10-17)', async () => {
+  const { TERMS } = await import('./terms');
+  for (const s of ['one project and up to 20 members', 'five projects and up to 20 members', 'unlimited projects and unlimited members', 'AI agents connected with API keys aren\'t members',
+    'at least 30 days before the new price takes effect', 'you keep paying your current price for 3 months after it does', 'remind you again 30 days before your own price goes up', 'added to, or taken off, your next bill']) {
+    expect(TERMS).toContain(s);
+  }
+  expect(TERMS).not.toContain('$10 a month'); // prices come from Stripe, not the Terms
+  expect(TERMS).not.toContain('unlimited projects. It');
+});
+
+test('the Terms promise downtime credit: over an hour, every UTC day it touched free, no maintenance exception (owner, 2026-10-17)', async () => {
+  const { TERMS } = await import('./terms');
+  for (const s of ['down for more than an hour in one go', 'https://uptime.chewedfeed.com/status/tracklines', 'every paying organization gets each day the outage touched free',
+    'off your next bill for each of those days', 'starts before midnight and carries on after it gives you both days', 'Several shorter outages close together are looked at case by case, and we\'ll usually treat them the same way', 'there\'s no maintenance exception']) {
+    expect(TERMS).toContain(s);
   }
 });

@@ -1,4 +1,4 @@
-import { BotIcon, BugIcon, LockIcon, MapIcon, ScreenShareOffIcon, ShieldCheckIcon, type LucideIcon } from 'lucide-react';
+import { BotIcon, BugIcon, ChartColumnIcon, LayersIcon, LockIcon, MapIcon, ScreenShareOffIcon, ShieldCheckIcon, TreePalmIcon, type LucideIcon } from 'lucide-react';
 import { OUR_REQUEST_FORM, OUR_ROADMAP } from '@/lib/our-links';
 
 // FEATURES: the homepage's "What makes it different" cards.
@@ -8,5 +8,8 @@ export const FEATURES: { icon: LucideIcon; title: string; body: string; links?: 
   { icon: LockIcon, title: 'Blocked tickets wait their turn', body: 'When a ticket depends on another that isn’t finished, nobody can pick it up, person or agent, until that work is done. The work it’s waiting on carries on as normal.' },
   { icon: ScreenShareOffIcon, title: 'Standup and refinement, no screen sharing', body: 'One person hosts and everyone follows along live on their own screen: the same board, filters and turn, and the ticket the host opens. Plan the next sprints against your team’s real pace, with sign-off before taking on more.' },
   { icon: BugIcon, title: 'Errors become tickets', body: 'Bugfixes files the errors it catches as bug tickets, with live details: how often, when it was last seen, and a warning if it comes back after it’s fixed.' },
+  { icon: ChartColumnIcon, title: 'Reports for project managers', body: 'See how each board, project or your whole organization delivered: predictability, velocity, scope change and goals met, with charts. Export a presentation-ready PDF, or Markdown for your wiki. Team numbers only, never a leaderboard.' },
+  { icon: TreePalmIcon, title: 'Knows who’s on holiday', body: 'Connect Google Workspace and Out of office shows up where it matters: the assignee picker warns you, standup skips people who are away, and agents won’t hand them work. We only keep the dates.' },
+  { icon: LayersIcon, title: 'Epics that track themselves', body: 'Group work across teams and boards into an epic. Its progress adds itself up, and linking it to a roadmap milestone keeps the roadmap current with nothing to update by hand.' },
   { icon: MapIcon, title: 'Customers stay in the loop', body: 'Share a request form and a public roadmap; no account needed. They send bugs and ideas, see what’s coming, and hear back when something won’t be done.', links: [{ href: OUR_REQUEST_FORM, label: 'Try our request form →' }, { href: OUR_ROADMAP, label: 'See our roadmap →' }] },
 ];

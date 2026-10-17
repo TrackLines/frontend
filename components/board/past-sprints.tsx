@@ -1,6 +1,5 @@
 'use client';
 
-import { useFlags } from '@flags-gg/react-library';
 import { useEffect, useState } from 'react';
 import { ArrowLeftIcon, ChartColumnIcon } from 'lucide-react';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -27,10 +26,8 @@ export function sprintResult(unit: Velocity['unit'], completed: number, planned?
 
 // PastSprints lists a board's closed sprints, each with what it finished of what it held; each opens
 // read-only: what it finished and its burn chart.
-// ReportLink: the board's sprint report, to show leadership (TL-400), while the sprint-reports flag is on.
+// ReportLink: the board's sprint report, to show leadership (TL-400).
 export function ReportLink({ boardId }: { boardId: string }) {
-  const { is } = useFlags();
-  if (is('sprint-reports').disabled()) return null;
   return <Link href={`/reports?board=${boardId}`} className={buttonVariants({ variant: 'outline', size: 'sm', className: 'justify-self-start' })}><ChartColumnIcon />Sprint report</Link>;
 }
 

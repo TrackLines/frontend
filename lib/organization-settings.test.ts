@@ -82,3 +82,14 @@ test('the organization page loads without waiting for invitations, and fetches i
   expect(got).not.toBe('waited on invitations');
   expect((got as { isAdmin: boolean }).isAdmin).toBe(true);
 });
+
+test('the Members heading shows the plan’s limit, counting pending invitations; a 402 says why (TL-419)', async () => {
+  const { memberCount, saveError } = await import('./organization-settings');
+  const { ApiError } = await import('./api');
+  expect(memberCount(12, 1, 20)).toBe('12 members and 1 invitation pending, of up to 20 on your plan');
+  expect(memberCount(1, 0, 20)).toBe('1 member, of up to 20 on your plan');
+  expect(memberCount(40, 2, -1)).toBe('40 members'); // Enterprise
+  expect(memberCount(3, 0, null)).toBe('3 members'); // limit not known yet
+  expect(saveError('invite', new ApiError(402, 'limit'))).toContain('up to 20 members');
+  expect(saveError('invite', new ApiError(402, 'limit'))).toContain('Upgrade to Enterprise');
+});

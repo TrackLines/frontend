@@ -7,7 +7,6 @@ export const LEGAL = {
   registeredOffice: '', // TODO before launch: the virtual office, once it's the registered office
   contact: '/contact', // the contact form (enquiries go to ChewedFeed HQ), not an email address
   law: 'England and Wales',
-  updated: '17 October 2026',
   retentionDays: 30, // a deleted organization's data is purged after this (backend clerkhooks.Retention)
 };
 

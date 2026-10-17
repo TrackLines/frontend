@@ -20,7 +20,7 @@ test('each plan offers the way up (TL-290): Free checks out Pro or Enterprise, P
   expect(labels({ plan: 'enterprise', paid: true, project_limit: -1, billed: true })).toEqual(['Manage billing']);
   expect(labels({ paid: true, project_limit: -1 })).toEqual(['Manage billing']); // older API: no plan, unlimited
   expect(planText({ plan: 'pro', paid: true, project_limit: 5, billed: true })).toContain('5 projects');
-  expect(planText({ plan: 'free', paid: false, project_limit: 1 })).toContain('Pro has 5 projects, Enterprise unlimited');
+  expect(planText({ plan: 'free', paid: false, project_limit: 1 })).toContain('Pro has 5 projects; Enterprise has unlimited projects and members');
 });
 
 test('a plan granted by hand offers nothing to manage', () => {
@@ -41,4 +41,13 @@ test('plan limits and prices read plainly', () => {
   expect(formatPrice({ amount: 2499, currency: 'usd', interval: 'month' })).toBe('$24.99 / month');
   expect(formatPrice({ amount: 1500, currency: 'cad', interval: 'month' })).toBe('CA$15 / month');
   expect(formatPrice(null)).toBe('');
+});
+
+test('plans say their member limit: Free and Pro up to 20, Enterprise unlimited (TL-419)', async () => {
+  const { planText } = await import('./plan-card');
+  expect(planText({ plan: 'free', paid: false, project_limit: 1, member_limit: 20 })).toContain('1 project and up to 20 members');
+  expect(planText({ plan: 'pro', paid: true, project_limit: 5, member_limit: 20, billed: true })).toContain('5 projects and up to 20 members');
+  expect(planText({ plan: 'pro', paid: true, project_limit: 5, member_limit: 20, billed: true })).toContain('Enterprise has unlimited projects and members');
+  expect(planText({ plan: 'enterprise', paid: true, project_limit: -1, member_limit: -1, billed: true })).toContain('Unlimited projects and unlimited members');
+  expect(planText({ plan: 'pro', paid: true, project_limit: 5, billed: true })).toContain('up to 20 members'); // an older API without member_limit
 });

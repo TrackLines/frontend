@@ -41,7 +41,7 @@ export function UpgradeDialog({ open, onOpenChange, token, plan: known }: { open
         <DialogHeader>
           <DialogTitle>{plan ? `Your organization’s ${PLAN_NAMES[planOf(plan)]} plan includes ${projectsText(plan.project_limit).toLowerCase()}` : 'You’ve reached your plan’s projects'}</DialogTitle>
           <DialogDescription>
-            Add as many team boards and roadmaps as you like inside them. Pro has 5 projects; Enterprise is unlimited.
+            Add as many team boards and roadmaps as you like inside them. Pro has 5 projects and Free and Pro up to 20 members; Enterprise has unlimited projects and members.
             {plan?.can_manage === false && ' Ask an organization admin to upgrade.'}
           </DialogDescription>
         </DialogHeader>

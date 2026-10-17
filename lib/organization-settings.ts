@@ -24,7 +24,17 @@ export function saveError(key: string, err: unknown): string {
   if (key.startsWith('accept:') && (status === 403 || status === 409)) return 'Accept the Clerk email invitation first, then complete the TrackLin.es membership here.';
   if (status === 403) return 'Only organization admins can make this change.';
   if (status === 409 || status === 422) return (err as ApiError).message; // 422: Clerk refused, with its reason (TL-239)
+  if (status === 402) return 'Your plan includes up to 20 members, counting invitations not yet accepted. Upgrade to Enterprise in Settings for unlimited members.'; // TL-418
   return 'Couldn’t save that change. Please try again.';
+}
+
+// memberCount: the Members heading: "12 members", with the plan's limit when it has one, counting
+// invitations not yet accepted (TL-418): "12 members and 1 invitation pending, of up to 20 on your plan".
+export function memberCount(members: number, pending: number, limit: number | null | undefined): string {
+  const people = `${members} member${members === 1 ? '' : 's'}`;
+  if (limit == null || limit < 0) return people;
+  const waiting = pending > 0 ? ` and ${pending} invitation${pending === 1 ? '' : 's'} pending` : '';
+  return `${people}${waiting}, of up to ${limit} on your plan`;
 }
 
 // inviteInput: the invitation to send; team and project invitations need their target, the org one has none.

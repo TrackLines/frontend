@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ApiError, billing, type Subscription } from '@/lib/api';
-import { PLAN_NAMES, planOf, projectsText } from '@/lib/plans';
+import { MEMBER_LIMIT, membersText, PLAN_NAMES, planOf, projectsText } from '@/lib/plans';
 
 // billingError turns checkout/portal failures into something a person can act on.
 export function billingError(err: unknown, action: 'checkout' | 'portal'): string {
@@ -40,9 +40,10 @@ export function planActions(s: Subscription): PlanAction[] {
 export function planText(s: Subscription): string {
   const plan = planOf(s);
   const ask = s.can_manage === false ? ' Ask an organization admin to upgrade.' : '';
-  if (plan === 'free') return `${projectsText(s.project_limit)} with unlimited boards and roadmaps. Pro has ${projectsText(5).toLowerCase()}, Enterprise unlimited.${ask}`;
-  if (s.billed === false) return `${projectsText(s.project_limit)}, boards and roadmaps. This plan was granted to your organization, so there’s no billing to manage.`;
-  return `${projectsText(s.project_limit)} with unlimited boards and roadmaps.${plan === 'pro' ? ' Enterprise is unlimited.' + ask : ''}`;
+  const members = membersText(s.member_limit ?? (plan === 'enterprise' ? -1 : MEMBER_LIMIT));
+  if (plan === 'free') return `${projectsText(s.project_limit)} and ${members}, with unlimited boards and roadmaps. Pro has ${projectsText(5).toLowerCase()}; Enterprise has unlimited projects and members.${ask}`;
+  if (s.billed === false) return `${projectsText(s.project_limit)} and ${members}, with boards and roadmaps. This plan was granted to your organization, so there’s no billing to manage.`;
+  return `${projectsText(s.project_limit)} and ${members}, with unlimited boards and roadmaps.${plan === 'pro' ? ' Enterprise has unlimited projects and members.' + ask : ''}`;
 }
 
 // PlanCard (a Settings card, so a list item) shows the organization's plan and, for its admins, the way to change it (Stripe checkout /
