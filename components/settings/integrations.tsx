@@ -5,7 +5,6 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useFlags } from '@flags-gg/react-library';
 import { GoogleCalendarSettings } from '@/components/settings/google-calendar';
 import { GoogleChatSettings } from '@/components/settings/google-chat';
 import { integrations, organization, type IntegrationProvider, type IntegrationStatus } from '@/lib/api';
@@ -19,11 +18,11 @@ const ABOUT: Record<IntegrationProvider, string> = {
 
 // INTEGRATION_TABS: the integrations, grouped by what they do (TL-389). A new one goes in its group,
 // or a new group, so the page stays tidy as more are added.
-export const INTEGRATION_TABS: { id: string; name: string; items: (IntegrationProvider | 'google-chat' | 'google-calendar')[]; flag?: string }[] = [
+export const INTEGRATION_TABS: { id: string; name: string; items: (IntegrationProvider | 'google-chat' | 'google-calendar')[] }[] = [
   { id: 'repositories', name: 'Repositories', items: ['github', 'bitbucket'] },
   { id: 'communication', name: 'Communication', items: ['google-chat'] },
   { id: 'reporting', name: 'Reporting', items: ['bugfixes'] },
-  { id: 'calendars', name: 'Calendars', items: ['google-calendar'], flag: 'google-calendar' }, // who's on holiday (TL-409)
+  { id: 'calendars', name: 'Calendars', items: ['google-calendar'] }, // who's on holiday (TL-409)
 ];
 
 // IntegrationsSettings: the org's connections to other tools, in tabs (Repositories first). Org admins connect and disconnect;
@@ -33,16 +32,14 @@ export function IntegrationsSettings({ token }: { token: string }) {
   useEffect(() => {
     organization.me(token).then((r) => setAdmin(r.admin), () => setAdmin(false));
   }, []); // token refreshes must not refetch
-  const { is } = useFlags();
-  const tabs = INTEGRATION_TABS.filter((t) => !t.flag || is(t.flag).enabled()); // flags.gg: Calendars while google-calendar is on
   return (
     <div className="grid gap-6">
       {admin === false && <p role="note" className="text-sm text-muted-foreground">Organization admins connect integrations. You can see what&apos;s connected.</p>}
       <Tabs defaultValue={INTEGRATION_TABS[0].id} className="gap-4">
         <TabsList>
-          {tabs.map((t) => <TabsTrigger key={t.id} value={t.id}>{t.name}</TabsTrigger>)}
+          {INTEGRATION_TABS.map((t) => <TabsTrigger key={t.id} value={t.id}>{t.name}</TabsTrigger>)}
         </TabsList>
-        {tabs.map((t) => (
+        {INTEGRATION_TABS.map((t) => (
           <TabsContent key={t.id} value={t.id} className="grid gap-6">
             {t.items.map((item) => item === 'google-calendar' ? <GoogleCalendarSettings key={item} token={token} canManage={admin === true} />
               : item === 'google-chat' ? (

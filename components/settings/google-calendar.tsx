@@ -25,7 +25,7 @@ export function GoogleCalendarSettings({ token, canManage }: { token: string; ca
   const [busy, setBusy] = useState<Busy>(null);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  // 404: the google-calendar flag is off on the server; any failure hides the card rather than half-showing it
+  // any failure hides the card rather than half-showing it
   const load = () => googleCalendar.get(token).then(setStatus, () => setStatus('off'));
   useEffect(() => { void load(); }, []); // token refreshes must not refetch
 

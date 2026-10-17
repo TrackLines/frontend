@@ -50,7 +50,6 @@ test('Google’s reasons come through in words; other failures fall back', () =>
   expect(calendarError(new Error('boom'), 'Couldn’t connect.')).toBe('Couldn’t connect.');
 });
 
-test('the Calendars tab is hidden while the flag is off', () => {
-  // no flags.gg project configured (as in tests): every flag is off
-  expect(renderToStaticMarkup(<FeatureFlags><IntegrationsSettings token="tok" /></FeatureFlags>)).not.toContain('Calendars');
+test('the Calendars tab is always there (no flag)', () => {
+  expect(renderToStaticMarkup(<FeatureFlags><IntegrationsSettings token="tok" /></FeatureFlags>)).toContain('Calendars');
 });

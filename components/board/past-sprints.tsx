@@ -1,8 +1,9 @@
 'use client';
 
+import { useFlags } from '@flags-gg/react-library';
 import { useEffect, useState } from 'react';
-import { ArrowLeftIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { ArrowLeftIcon, ChartColumnIcon } from 'lucide-react';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TypeBadge } from '@/components/ticket-type';
@@ -26,6 +27,13 @@ export function sprintResult(unit: Velocity['unit'], completed: number, planned?
 
 // PastSprints lists a board's closed sprints, each with what it finished of what it held; each opens
 // read-only: what it finished and its burn chart.
+// ReportLink: the board's sprint report, to show leadership (TL-400), while the sprint-reports flag is on.
+export function ReportLink({ boardId }: { boardId: string }) {
+  const { is } = useFlags();
+  if (is('sprint-reports').disabled()) return null;
+  return <Link href={`/reports?board=${boardId}`} className={buttonVariants({ variant: 'outline', size: 'sm', className: 'justify-self-start' })}><ChartColumnIcon />Sprint report</Link>;
+}
+
 export function PastSprints({ boardId, token }: { boardId: string; token: string }) {
   const [open, setOpen] = useState(false);
   const [list, setList] = useState<Sprint[] | null>(null);
@@ -52,6 +60,7 @@ export function PastSprints({ boardId, token }: { boardId: string; token: string
               <DialogHeader>
                 <DialogTitle>Past sprints</DialogTitle>
                 <DialogDescription>Read-only: what each sprint finished and how it burned down.</DialogDescription>
+                <ReportLink boardId={boardId} />
               </DialogHeader>
               {failed && <p role="alert" className="text-sm text-destructive">Couldn&apos;t load past sprints. Please try again.</p>}
               {!list && !failed && <Skeleton role="status" aria-label="Loading sprints…" className="h-24 w-full" />}

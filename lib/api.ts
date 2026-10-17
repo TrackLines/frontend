@@ -214,7 +214,10 @@ export async function api<T>(path: string, { method = 'GET', body, token }: Opti
     }
     throw new ApiError(res.status, message);
   }
-  return (res.status === 204 ? undefined : await res.json()) as T;
+  if (res.status === 204) return undefined as T;
+  // text answers (a report as Markdown, TL-401) come back as the text itself
+  if ((res.headers.get('content-type') ?? '').startsWith('text/')) return (await res.text()) as T;
+  return (await res.json()) as T;
 }
 
 // Fetch based SSE keeps the same Bearer auth and token refresh behavior as JSON API calls.
@@ -718,6 +721,41 @@ export type CalendarConnection = {
   last_sync_at: string | null; last_sync_error: string;
 };
 export type CalendarStatus = { available: boolean; connected: boolean; client_id?: string; scope: string; connection?: CalendarConnection };
+// Sprint reports (TL-396/397): how a board's sprints went over a period. Never per person.
+export type ReportMix = { type: TicketType; count: number; value: number };
+export type SprintReport = {
+  number: number; starts_at: string; ends_at: string; closed_at: string | null; goal: string; goal_met: boolean | null;
+  planned: number; estimated?: boolean; done: number; predictability: number | null; added: number | null; removed: number | null;
+  carried: number | null; velocity: number | null; approved_over: number | null; mix: ReportMix[];
+};
+export type ReportTotals = {
+  sprints: number; planned: number; done: number; predictability: number | null; added: number | null;
+  carried: number | null; velocity: number | null; mix: ReportMix[];
+};
+export type BoardReport = {
+  board_id: string; board_name: string; unit: 'points' | 'tickets'; from: string; to: string;
+  sprints: SprintReport[]; totals: ReportTotals; previous: ReportTotals; summary: string;
+};
+// A project's boards, or every project, together (TL-398): points and tickets apart, predictability across both.
+export type ReportOverall = { sprints: number; predictability: number | null; goals_set: number; goals_met: number };
+export type ReportMonth = { month: string; sprints: number; predictability: number | null; points_done: number; tickets_done: number };
+export type RollupReport = {
+  id?: string; name: string; from: string; to: string;
+  boards?: BoardReport[]; projects?: RollupReport[];
+  points: ReportTotals | null; tickets: ReportTotals | null;
+  overall: ReportOverall; previous: ReportOverall; months?: ReportMonth[]; summary: string;
+};
+const rangeQuery = (range: { from?: string; to?: string }) => new URLSearchParams(Object.entries(range).filter(([, v]) => v) as [string, string][]);
+// from, to: YYYY-MM-DD, whole days in the caller's time zone (to inclusive); omitted: the last 90 days
+export const reports = {
+  board: (boardId: string, range: { from?: string; to?: string }, token: T) => api<BoardReport>(`/boards/${boardId}/reports/sprints?${rangeQuery(range)}`, { token }),
+  project: (projectId: string, range: { from?: string; to?: string }, token: T) => api<RollupReport>(`/projects/${projectId}/reports/sprints?${rangeQuery(range)}`, { token }),
+  org: (range: { from?: string; to?: string }, token: T) => api<RollupReport>(`/org/reports/sprints?${rangeQuery(range)}`, { token }), // org admins only
+  // the same report as a Markdown document (TL-399), for downloading or copying
+  markdown: (scope: { kind: 'board' | 'project'; id: string } | { kind: 'org' }, range: { from: string; to: string }, token: T) =>
+    api<string>(`${scope.kind === 'org' ? '/org' : `/${scope.kind === 'board' ? 'boards' : 'projects'}/${scope.id}`}/reports/sprints?${rangeQuery(range)}&format=md`, { token }),
+};
+
 export const googleCalendar = {
   get: (token: T) => api<CalendarStatus>('/integrations/google-calendar', { token }),
   connect: (input: { domain: string; admin_email: string; holidays_calendar?: string }, token: T) =>

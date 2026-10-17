@@ -9,6 +9,7 @@ import { WorkTabs } from '@/components/project/work-tabs';
 import { BoardCard } from '@/components/project/board-card';
 import { NewBoardButton } from '@/components/project/new-board';
 import { RequestsLink } from '@/components/intake/requests-link';
+import { ProjectReportLink } from '@/components/reports/report-links';
 import { RoadmapEditorForm } from '@/components/roadmap-editor-form';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { ApiError, boards, organization, projects, roadmaps, type Project } from '@/lib/api';
@@ -52,6 +53,7 @@ export default function ProjectPage() {
         <h1 className="text-3xl font-bold tracking-tight">{project.name}</h1>
         {/* setup (name, key prefix, more boards, repositories) lives on its own page */}
         <span className="flex gap-2">
+          <ProjectReportLink projectId={project.id} />
           <RequestsLink projectId={project.id} token={token} />
           <Link href={`/projects/${project.id}/edit`} className={buttonVariants({ variant: 'outline', size: 'sm' })}>Edit project</Link>
         </span>

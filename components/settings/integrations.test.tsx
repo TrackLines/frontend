@@ -73,7 +73,7 @@ test('integrations are in tabs by what they do, Repositories first, and every pr
   const { INTEGRATION_TABS } = await import('./integrations');
   const { INTEGRATION_PROVIDERS } = await import('@/lib/integrations');
   expect(INTEGRATION_TABS.map((t) => t.name)).toEqual(['Repositories', 'Communication', 'Reporting', 'Calendars']);
-  expect(INTEGRATION_TABS.find((t) => t.id === 'calendars')).toMatchObject({ items: ['google-calendar'], flag: 'google-calendar' }); // TL-409: only while the flag is on
+  expect(INTEGRATION_TABS.find((t) => t.id === 'calendars')).toMatchObject({ items: ['google-calendar'] }); // TL-409: always there now (no flag)
   expect(INTEGRATION_TABS.find((t) => t.id === 'repositories')?.items).toEqual(['github', 'bitbucket']);
   expect(INTEGRATION_TABS.find((t) => t.id === 'communication')?.items).toEqual(['google-chat']);
   expect(INTEGRATION_TABS.find((t) => t.id === 'reporting')?.items).toEqual(['bugfixes']);

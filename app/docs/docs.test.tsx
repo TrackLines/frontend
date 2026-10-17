@@ -78,3 +78,14 @@ test('the Google Calendar guide: delegation with the scope, connecting, what cha
   expect(CALENDAR_SCOPE).toBe('https://www.googleapis.com/auth/calendar.readonly'); // backend integrations.calendarScope
   expect(renderToStaticMarkup(<DocsPage />)).toContain('href="/docs/google-calendar"');
 });
+
+test('the sprint reports guide: where to open each, what every number means, units, no per-person figures, exporting (TL-402)', async () => {
+  const { default: Reports, MEASURES } = await import('./sprint-reports/page');
+  const html = renderToStaticMarkup(<Reports />);
+  for (const m of MEASURES) expect(html).toContain(m.name);
+  expect(MEASURES.map((m) => m.name)).toContain('Predictability');
+  for (const s of ['Past sprints', 'Organization admins only', 'by calendar month', 'never add points and tickets together', 'no per-person figures', 'Save as PDF (presentation)', 'Mermaid', 'get_board_sprint_report', 'get_project_sprint_report']) {
+    expect(html).toContain(s);
+  }
+  expect(renderToStaticMarkup(<DocsPage />)).toContain('href="/docs/sprint-reports"');
+});

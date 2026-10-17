@@ -9,6 +9,7 @@ import { McpConnect } from '@/components/mcp-connect';
 import { KeyRoundIcon, PlugIcon } from 'lucide-react';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { SettingsCard } from '@/components/settings/settings-card';
+import { OrgReportCard } from '@/components/reports/report-links';
 import { FileCleanupLink } from '@/components/settings/file-cleanup';
 import { OrganizationCard } from '@/components/settings/organization-card';
 import { attachments, organization, type FileCleanup } from '@/lib/api';
@@ -34,6 +35,7 @@ export default function SettingsPage() {
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Plan />
         <OrganizationCard admin={admin} />
+        {admin && <OrgReportCard />}
         {admin && <SettingsCard icon={PlugIcon} title="Integrations" href="/settings/integrations" description="Connect GitHub, Bitbucket, Google Chat and Bugfixes." />}
         <SettingsCard icon={KeyRoundIcon} title="API keys and AI agents"
           description="Keys let agents and scripts use the API as you. Connect an AI agent (Claude, Codex…) over MCP with its own key.">
