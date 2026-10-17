@@ -11,5 +11,8 @@ test('the project’s Backlog and Epics are tabs, the Backlog open unless a link
   expect(src.indexOf('value="backlog"')).toBeLessThan(src.indexOf('value="epics"')); // Backlog first
   expect(src.indexOf('value="epics"')).toBeLessThan(src.indexOf('value="roadmaps"')); // then Epics, Roadmaps
   expect(await Bun.file(new URL('../../app/projects/[id]/page.tsx', import.meta.url)).text()).toContain('<WorkTabs projectId={project.id} boards={boardList} token={token} roadmaps={');
-  expect(src).toContain('<TabsContent value="backlog" keepMounted>'); // switching back doesn't reload it
+  // every panel stays mounted: opening a tab never refetches it or shows it blank first (TL-395)
+  const panels = src.match(/<TabsContent [^>]*>/g) ?? [];
+  expect(panels).toHaveLength(3);
+  for (const p of panels) expect(p).toContain('keepMounted');
 });

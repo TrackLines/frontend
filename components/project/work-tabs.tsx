@@ -11,8 +11,8 @@ export type WorkTab = 'backlog' | 'epics' | 'roadmaps';
 // tabFor: the tab a link opens: /projects/<id>#epics opens Epics, #roadmaps Roadmaps; anything else, the Backlog.
 export const tabFor = (hash: string): WorkTab => (hash === '#epics' ? 'epics' : hash === '#roadmaps' ? 'roadmaps' : 'backlog');
 
-// WorkTabs: the project's Backlog, Epics and Roadmaps as tabs, the Backlog open by default (TL-385). The backlog
-// stays mounted while Epics is open, so switching back doesn't reload it or lose its filters.
+// WorkTabs: the project's Backlog, Epics and Roadmaps as tabs, the Backlog open by default (TL-385). Every
+// panel stays mounted, so switching tabs never refetches or blanks one (TL-395), and the backlog keeps its filters.
 // roadmaps: the page's roadmap list, which it keeps (new roadmaps are added there).
 export function WorkTabs({ projectId, boards, token, roadmaps }: { projectId: string; boards: Board[]; token: string; roadmaps: ReactNode }) {
   const [tab, setTab] = useState<WorkTab>('backlog');
@@ -27,10 +27,10 @@ export function WorkTabs({ projectId, boards, token, roadmaps }: { projectId: st
       <TabsContent value="backlog" keepMounted>
         <Backlog projectId={projectId} boards={boards} token={token} />
       </TabsContent>
-      <TabsContent value="epics">
+      <TabsContent value="epics" keepMounted>
         <Epics projectId={projectId} token={token} />
       </TabsContent>
-      <TabsContent value="roadmaps" id="roadmaps">{roadmaps}</TabsContent>
+      <TabsContent value="roadmaps" id="roadmaps" keepMounted>{roadmaps}</TabsContent>
     </Tabs>
   );
 }
