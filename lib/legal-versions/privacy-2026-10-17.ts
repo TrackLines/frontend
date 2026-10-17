@@ -48,7 +48,7 @@ We share data only with the companies that help us run TrackLin.es, and only wha
 - **Push services** run by browser makers (Google, Mozilla, Apple and Microsoft) deliver device notifications. The contents are encrypted, so they can't read them.
 - **[Flags.gg](https://flags.gg)** turns features on and off. It receives none of your content.
 - **[BugFix.es](https://bugfix.es)** receives reports of errors in TrackLin.es.
-- **ChewedFeed HQ**, our own customer records, receives the name, email address and plan of paying customers.
+- **[ChewedFeed HQ](https://chewedfeed.com)**, our own customer records, receives the name, email address and plan of paying customers.
 
 When your organization connects an integration (such as GitHub, Bitbucket or BugFix.es) or gives an AI agent an API key, data flows to that service as you've set it up. That service's own terms and policies then apply.
 

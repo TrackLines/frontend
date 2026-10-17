@@ -13,8 +13,8 @@ import { notificationHref, notificationLine } from './notifications';
 const PUBLISHED: Record<LegalDoc, Record<string, string>> = {
   // terms 2026-10-17: pre-launch correction (owner, 2026-10-17): "BugFix.es"
   terms: { '2026-10-17': '6caee2edf71a32e2134fb5dbdae8711c2539377823f7c227e2b3c5b4007b69a2' },
-  // privacy 2026-10-17: pre-launch correction (owner, 2026-10-17): links to each provider, "Flags.gg", "BugFix.es"
-  privacy: { '2026-10-17': '9e82753ee14508d04823b62e3d9564939a2215efc72f2bf6f763e3b68c664b32' },
+  // privacy 2026-10-17: pre-launch correction (owner, 2026-10-17): links to each provider (and ChewedFeed HQ), "Flags.gg", "BugFix.es"
+  privacy: { '2026-10-17': '953aec79535ae87943f85f5ab66e7f63d7f4fb1b6104f7dd1f2c5c46d01e6aad' },
 };
 const sha = (s: string) => new Bun.CryptoHasher('sha256').update(s).digest('hex');
 
