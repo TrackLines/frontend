@@ -10,6 +10,8 @@ export const metadata: Metadata = {
 // guides: one card each on /docs. Add a guide by adding its page under app/docs and a line here.
 export const guides = [
   { slug: 'mcp', name: 'Connect an AI agent', body: 'Connect Claude Code, Codex, Cursor and other agents over MCP, so they can pick up and work tickets.' },
+  { slug: 'standup', name: 'Standup', body: 'Run the daily catch-up on the board: a turn each with your tickets, then a review of the whole board.' },
+  { slug: 'refinement', name: 'Refinement', body: 'Plan the next sprints from the backlog, size the work, and keep each sprint to what the team can do.' },
   { slug: 'epics', name: 'Epics', body: 'Large pieces of work across boards: how they differ from tickets, and using them on roadmaps.' },
 ];
 

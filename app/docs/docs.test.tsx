@@ -44,3 +44,15 @@ test('the MCP guide: keys, every client’s setup (the same steps as Connect AI)
   expect(html).toContain('href="/docs"');
   expect(renderToStaticMarkup(<DocsPage />)).toContain('href="/docs/mcp"');
 });
+
+test('the standup and refinement guides explain them from a user’s side, with the real timings and limits', async () => {
+  const { default: StandupDocs } = await import('./standup/page');
+  const { default: RefinementDocs } = await import('./refinement/page');
+  const standup = renderToStaticMarkup(<StandupDocs />);
+  for (const s of ['Join standup', '2 minutes', '5 minutes', 'board review', 'over by 0:30', 'Hand over', 'drag someone’s face', 'Live updates']) expect(standup).toContain(s);
+  const refinement = renderToStaticMarkup(<RefinementDocs />);
+  for (const s of ['Refine', 'Join refinement', 'To plan', 'up to 2 sprints ahead', 'plus 10%', 'Needs approval', 'Done refining', 'Move out']) expect(refinement).toContain(s);
+  const index = renderToStaticMarkup(<DocsPage />);
+  expect(index).toContain('href="/docs/standup"');
+  expect(index).toContain('href="/docs/refinement"');
+});
