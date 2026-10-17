@@ -2,7 +2,7 @@
 
 import { CheckIcon, XIcon } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { projectTickets, type TicketOption } from '@/components/ticket/dependencies';
 import { TypeBadge } from '@/components/ticket-type';
 import { Button } from '@/components/ui/button';
@@ -27,11 +27,13 @@ export const localProgress = (linked: Linked[]): Progress => {
 // ItemTickets: the tickets (and epics) that deliver one roadmap milestone. Its progress is the
 // server's: linked tickets done, with a linked epic counting its sub-tickets, so work added to the
 // epic later counts too.
-export function ItemTickets({ roadmapId, itemId, projectId, initial, progress: start, token }: {
-  roadmapId: string; itemId: string; projectId: string; initial: Linked[]; progress?: Progress; token: string;
+// onProgress: told each time the linked tickets' progress changes, so the editor shows the status they give (TL-412).
+export function ItemTickets({ roadmapId, itemId, projectId, initial, progress: start, token, onProgress }: {
+  roadmapId: string; itemId: string; projectId: string; initial: Linked[]; progress?: Progress; token: string; onProgress?: (p: Progress) => void;
 }) {
   const [linked, setLinked] = useState<Linked[]>(initial);
   const [progress, setProgress] = useState<Progress>(start ?? localProgress(initial));
+  useEffect(() => { onProgress?.(progress); }, [progress.done, progress.total]); // eslint-disable-line react-hooks/exhaustive-deps
   const [options, setOptions] = useState<TicketOption[] | null>(null);
   const [epics, setEpics] = useState<EpicSummary[] | null>(null);
   const [saving, setSaving] = useState(false);

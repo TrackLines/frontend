@@ -1,7 +1,7 @@
 'use client';
 
 import { Textarea } from '@/components/ui/textarea';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -36,12 +36,35 @@ export const toPayload = (drafts: DraftItem[]) => drafts.map(({ key, title, desc
   start_date: start_date || null, manual_status, id: key, title: title.trim(), description: description.trim(), target_date: target_date || null,
 }));
 
+const STATUS_LABEL = { not_started: 'Not started', in_progress: 'In progress', done: 'Done' } as const;
+
+// itemStatus: what a milestone shows, the same rule as the server (roadmaps.DeriveItemStatus): from its
+// linked tickets once it has any, else the manual status.
+export function itemStatus(manual: DraftItem['manual_status'], progress: { done: number; total: number } | undefined): keyof typeof STATUS_LABEL {
+  if (!progress || progress.total === 0) return manual ?? 'not_started';
+  if (progress.done <= 0) return 'not_started';
+  return progress.done >= progress.total ? 'done' : 'in_progress';
+}
+
 export function ItemEditor({ roadmapId, projectId, items, token }: Props) {
   const [saved, setSaved] = useState<RoadmapItem[]>(items); // server copy: real ids + linked tickets
   const [drafts, setDrafts] = useState<DraftItem[]>(() => toDrafts(items));
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  // linked tickets' progress per saved milestone, kept current as tickets are linked (TL-412)
+  const [progress, setProgress] = useState<Record<string, { done: number; total: number }>>(
+    () => Object.fromEntries(items.flatMap((i) => (i.progress ? [[i.id, i.progress]] : []))));
+  const [added, setAdded] = useState<string | null>(null); // a milestone just added: scroll to it
+
+  // Add item puts the new milestone at the bottom: take you there and into its title (TL-412)
+  useEffect(() => {
+    if (!added) return;
+    const el = document.getElementById(`milestone-${added}`);
+    el?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+    el?.querySelector('input')?.focus({ preventScroll: true });
+    setAdded(null);
+  }, [added]);
 
   function update(index: number, patch: Partial<Omit<DraftItem, 'key'>>) {
     setDrafts((current) => current.map((item, i) => (i === index ? { ...item, ...patch } : item)));
@@ -65,6 +88,7 @@ export function ItemEditor({ roadmapId, projectId, items, token }: Props) {
       await roadmaps.setItems(roadmapId, toPayload(drafts), token);
       const fresh = (await roadmaps.get(roadmapId, token)).items ?? [];
       setSaved(fresh);
+      setProgress(Object.fromEntries(fresh.flatMap((i) => (i.progress ? [[i.id, i.progress]] : []))));
       setDrafts(toDrafts(fresh));
       setMessage('Roadmap items saved.');
     } catch {
@@ -81,10 +105,11 @@ export function ItemEditor({ roadmapId, projectId, items, token }: Props) {
           <h2 id="roadmap-items-heading" className="text-lg font-semibold">Roadmap items</h2>
           <p className="text-sm text-muted-foreground">Add milestones and arrange them in the order you want people to read.</p>
         </div>
-        <Button type="button" variant="outline" onClick={() => setDrafts((current) => [
-          ...current,
-          { key: crypto.randomUUID(), title: '', description: '', target_date: null, manual_status: 'not_started' },
-        ])}>
+        <Button type="button" variant="outline" onClick={() => {
+          const key = crypto.randomUUID();
+          setDrafts((current) => [...current, { key, title: '', description: '', target_date: null, manual_status: 'not_started' }]);
+          setAdded(key);
+        }}>
           Add item
         </Button>
       </div>
@@ -96,7 +121,7 @@ export function ItemEditor({ roadmapId, projectId, items, token }: Props) {
       ) : (
         <ol className="grid gap-3">
           {drafts.map((item, index) => (
-            <li key={item.key} className="grid gap-3 rounded-lg border p-4">
+            <li key={item.key} id={`milestone-${item.key}`} className="grid scroll-mt-4 gap-3 rounded-lg border p-4">
               <div className="flex items-center justify-between gap-3">
                 <h3 className="text-sm font-medium">Milestone {index + 1}</h3>
                 <div className="flex gap-2">
@@ -129,8 +154,15 @@ export function ItemEditor({ roadmapId, projectId, items, token }: Props) {
                   <Input type="date" value={item.target_date ?? ''} min={item.start_date ?? undefined} onChange={(event) => update(index, { target_date: event.target.value || null })} />
                 </label>
               </div>
+              {(progress[item.key]?.total ?? 0) > 0 ? (
+                // linked tickets decide it: show what they give, not a manual choice that's ignored (TL-412)
+                <p className="text-sm">
+                  <span className="font-medium">Status:</span> {STATUS_LABEL[itemStatus(item.manual_status, progress[item.key])]}{' '}
+                  <span className="text-muted-foreground">(from its linked tickets)</span>
+                </p>
+              ) : (
               <label className="grid max-w-xs gap-1.5 text-sm font-medium">
-                Manual status <span className="font-normal text-muted-foreground">(used when no tickets are linked)</span>
+                Status <span className="font-normal text-muted-foreground">(set by hand until tickets are linked)</span>
                 <Select
                   items={{ not_started: 'Not started', in_progress: 'In progress', done: 'Done' }}
                   value={item.manual_status ?? 'not_started'}
@@ -146,10 +178,12 @@ export function ItemEditor({ roadmapId, projectId, items, token }: Props) {
                   </SelectContent>
                 </Select>
               </label>
+              )}
               {(() => {
                 const s = saved.find((x) => x.id === item.key);
                 return s ? (
-                  <ItemTickets key={s.id} roadmapId={roadmapId} itemId={s.id} projectId={projectId} initial={s.tickets ?? []} progress={s.progress} token={token} />
+                  <ItemTickets key={s.id} roadmapId={roadmapId} itemId={s.id} projectId={projectId} initial={s.tickets ?? []} progress={s.progress} token={token}
+                    onProgress={(p) => setProgress((cur) => (cur[s.id]?.done === p.done && cur[s.id]?.total === p.total ? cur : { ...cur, [s.id]: p }))} />
                 ) : (
                   <p className="text-sm text-muted-foreground">Save items to link tickets to this milestone.</p>
                 );
