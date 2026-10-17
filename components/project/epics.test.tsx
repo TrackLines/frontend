@@ -47,6 +47,9 @@ test('Epic is offered everywhere but creating on a board; converting a board tic
 test('epics stay out of refinement: they aren’t planned, their sub-tickets are', async () => {
   const src = await Bun.file(new URL('./refinement.tsx', import.meta.url)).text();
   expect(src).toContain("t.type !== 'epic'");
-  const page = await Bun.file(new URL('../../app/projects/[id]/page.tsx', import.meta.url)).text();
-  expect(page.indexOf('<Epics ')).toBeLessThan(page.indexOf('<Backlog '));
+  // the project page shows Backlog and Epics as tabs, Backlog open (TL-385)
+  const tabs = await Bun.file(new URL('./work-tabs.tsx', import.meta.url)).text();
+  expect(tabs).toContain('<Epics ');
+  expect(tabs).toContain('<Backlog ');
+  expect(await Bun.file(new URL('../../app/projects/[id]/page.tsx', import.meta.url)).text()).toContain('<WorkTabs ');
 });

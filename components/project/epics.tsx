@@ -29,9 +29,9 @@ export function Epics({ projectId, token }: { projectId: string; token: string }
 export function EpicsView({ epics }: { epics: EpicSummary[] | null }) {
   if (epics === null) return null;
   return (
-    <section id="epics" className="mt-10">
+    <section id="epics">
       <div className="mb-4">
-        <h2 className="text-xl font-semibold tracking-tight">Epics</h2>
+        {/* the Epics tab names it (TL-385) */}
         <p className="text-sm text-muted-foreground">Large pieces of work across boards. Their sub-tickets go on the boards; the epic shows how far they&apos;ve got.</p>
       </div>
       {epics.length === 0 ? (

@@ -5,8 +5,7 @@ import { LoadError } from '@/components/load-error';
 import { RoadmapRow } from '@/components/project/roadmap-row';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Backlog } from '@/components/project/backlog';
-import { Epics } from '@/components/project/epics';
+import { WorkTabs } from '@/components/project/work-tabs';
 import { BoardCard } from '@/components/project/board-card';
 import { NewBoardButton } from '@/components/project/new-board';
 import { RequestsLink } from '@/components/intake/requests-link';
@@ -70,9 +69,8 @@ export default function ProjectPage() {
         )}
       </Section>
 
-      <Epics projectId={project.id} token={token} />
-
-      <Backlog projectId={project.id} boards={boardList} token={token} />
+      {/* Backlog and Epics as tabs, the Backlog open (TL-385) */}
+      <WorkTabs projectId={project.id} boards={boardList} token={token} />
 
       <Section title="Roadmaps" hint="Public roadmaps are readable by anyone you send the link to." action={<Button variant="outline" onClick={() => setDialog('roadmap')}>New roadmap</Button>}>
         {roadmapList.length === 0 ? (

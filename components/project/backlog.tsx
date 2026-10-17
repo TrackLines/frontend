@@ -191,11 +191,11 @@ export function Backlog({ projectId, boards, token }: Props) {
   }
 
   return (
-    <section id="backlog" className="mt-10">
+    <section id="backlog">
       <div className="mb-4 flex flex-wrap items-end justify-between gap-4">
         {/* the text takes what's left, so a long "Join refinement · … is hosting" doesn't push the buttons onto their own line */}
         <div className="min-w-0 flex-1 basis-80">
-          <h2 className="text-xl font-semibold tracking-tight">Backlog</h2>
+          {/* the Backlog tab names it (TL-385) */}
           <p className="text-sm text-muted-foreground">Tickets not on a board yet. Move one to a board to put it in that team&apos;s sprint, or refine to plan the next sprints.</p>
         </div>
         {refining && session.session && session.role !== 'outside' && (

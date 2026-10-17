@@ -73,7 +73,7 @@ export default function EpicsDocs() {
 
         <H2>Where epics show up</H2>
         <Items>
-          <li><strong className="text-foreground">Project page:</strong> an Epics section between Boards and Backlog, each epic with a progress bar and its size.</li>
+          <li><strong className="text-foreground">Project page:</strong> an Epics tab beside the Backlog, each epic with a progress bar and its size.</li>
           <li><strong className="text-foreground">An epic’s page:</strong> its sub-tickets grouped by board (the backlog last), with its progress and size.</li>
           <li><strong className="text-foreground">Boards and the backlog:</strong> an Epic filter beside Priority shows only the work under one epic, at any depth. It’s kept in the page address, so a filtered view can be shared.</li>
           <li><strong className="text-foreground">Backlog:</strong> an Epics button in the type filter.</li>
