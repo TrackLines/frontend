@@ -159,9 +159,9 @@ export default function TicketPage() {
       {token && <BugfixesPanel ticket={t} token={token} />}
       {token && <Attachments ticketId={t.id} token={token} locked={t.done} />}
       {token && <PullRequestsPanel ticketId={t.id} token={token} />}
-      {/* full page only: the board's dialog and side view leave history out */}
-      {token && <HistoryPanel ticketId={t.id} token={token} people={people} />}
       {token && <TicketComments ticketId={t.id} token={token} />}
+      {/* last, below the conversation; full page only: the board's dialog and side view leave history out */}
+      {token && <HistoryPanel ticketId={t.id} token={token} people={people} />}
       {token && (
         <TicketDialog
           open={editing}

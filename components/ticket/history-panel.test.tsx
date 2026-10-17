@@ -46,7 +46,7 @@ test('history is on the full ticket page only, not the board’s dialog or side 
   const read = (p: string) => Bun.file(new URL(p, import.meta.url)).text();
   const page = await read('../../app/tickets/[id]/page.tsx');
   expect(page).toContain('<HistoryPanel ');
-  expect(page.indexOf('<HistoryPanel ')).toBeGreaterThan(page.indexOf('<PullRequestsPanel '));
+  expect(page.indexOf('<HistoryPanel ')).toBeGreaterThan(page.indexOf('<TicketComments ')); // below the conversation
   for (const f of ['../board/ticket-view.tsx', '../board/ticket-dialog.tsx']) expect(await read(f)).not.toContain('HistoryPanel');
 });
 
