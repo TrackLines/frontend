@@ -37,7 +37,15 @@ test('legal pages render their markdown; the footer links them from every page',
   const page = renderToStaticMarkup(<LegalPage title="Terms of service" body={TERMS} />);
   expect(page).toContain('<h1');
   expect(page).toContain('<h2>1. Your account</h2>');
-  expect(page).toContain('Last updated 16 October 2026');
+  expect(page).toContain('Last updated 17 October 2026');
   const footer = renderToStaticMarkup(<SiteFooter />);
   for (const s of ['href="/privacy"', 'href="/terms"', 'href="/contact"', 'Keloran Limited', '16481416']) expect(footer).toContain(s);
+});
+
+test('the privacy policy covers Google Calendar: what’s read, only when, never titles, how long (TL-411)', async () => {
+  const { PRIVACY } = await import('./privacy');
+  for (const s of ['**Google Calendar.**', 'Out of office', 'only **when** someone is away', "never store an event's title", "Google gives us the dates of Out of office events",
+    '**Time away from Google Calendar**', 'leave that ended over a week ago is deleted', 'disconnects Google Calendar', "your organization's and our legitimate interests"]) {
+    expect(PRIVACY).toContain(s);
+  }
 });

@@ -376,7 +376,11 @@ export type TicketSearchResult = Ticket & {
   done: boolean; snippet: string;
 };
 
-export type Assignee = { id: string; label: string; kind?: 'person' | 'ai' | 'service'; name?: string; username?: string; image_url?: string }; // name, username, image_url: people only
+export type Assignee = {
+  id: string; label: string; kind?: 'person' | 'ai' | 'service'; name?: string; username?: string; image_url?: string; // name, username, image_url: people only
+  // people only, with Google Calendar connected (TL-407): on holiday now (until: back, UTC), or leave this week
+  away?: { until: string; company?: boolean }; away_next?: { from: string; until: string };
+};
 
 // HistoryEntry: one step in a ticket's lifecycle (TL-74/76): a stage it entered, or skipped on the way.
 export type HistoryEntry = {
@@ -705,6 +709,22 @@ export const chatApp = {
   status: (token: T) => api<ChatLink>('/me/google-chat', { token }),
   link: (code: string, token: T) => api<{ linked: boolean }>('/me/google-chat/link', { method: 'POST', body: { code }, token }),
   unlink: (token: T) => api<void>('/me/google-chat', { method: 'DELETE', token }),
+};
+
+// Google Calendar (TL-404): who's on holiday. Members see whether it's connected; admins connect it
+// (after letting our service account read calendars in Google: client_id and scope), test, sync it.
+export type CalendarConnection = {
+  domain: string; admin_email?: string; holidays_calendar: string; connected_at: string;
+  last_sync_at: string | null; last_sync_error: string;
+};
+export type CalendarStatus = { available: boolean; connected: boolean; client_id?: string; scope: string; connection?: CalendarConnection };
+export const googleCalendar = {
+  get: (token: T) => api<CalendarStatus>('/integrations/google-calendar', { token }),
+  connect: (input: { domain: string; admin_email: string; holidays_calendar?: string }, token: T) =>
+    api<void>('/integrations/google-calendar', { method: 'PUT', body: input, token }),
+  test: (token: T) => api<void>('/integrations/google-calendar/test', { method: 'POST', token }),
+  sync: (token: T) => api<CalendarConnection>('/integrations/google-calendar/sync', { method: 'POST', token }),
+  remove: (token: T) => api<void>('/integrations/google-calendar', { method: 'DELETE', token }),
 };
 
 export const googleChat = {

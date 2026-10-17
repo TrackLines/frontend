@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon, PauseIcon, PlayIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { awayText, isAway, nextPresent } from '@/lib/away';
 import type { Assignee } from '@/lib/api';
 import { DraggableFace } from '@/components/board/person-face';
 import { cn } from '@/lib/utils';
@@ -64,6 +65,9 @@ export function StandupPanel({ standup, onAction, goal, canRun = true, people = 
               onClick={canRun ? () => onAction('jump', i) : undefined}
             >
               {label}
+              {i < standup.people.length && isAway(standup.people[i].id, people) && (
+                <span className="ml-auto shrink-0 text-xs font-normal text-muted-foreground" title={awayText(people?.find((p) => p.id === standup.people[i].id)) ?? undefined}>On holiday</span>
+              )}
             </Button>
           </li>
         ))}
@@ -72,7 +76,12 @@ export function StandupPanel({ standup, onAction, goal, canRun = true, people = 
       {canRun && (
         <div className="flex justify-between gap-2">
           <Button size="sm" variant="outline" disabled={standup.index === 0} onClick={() => onAction('previous')}><ChevronLeftIcon /> Previous</Button>
-          {!last && <Button size="sm" onClick={() => onAction('next')}>Next <ChevronRightIcon /></Button>}
+          {/* Next skips anyone on holiday (TL-410); the host can still click their name */}
+          {!last && <Button size="sm" onClick={() => {
+            const to = nextPresent(standup.people.map((p) => p.id), standup.index, people);
+            if (to === standup.index + 1) onAction('next');
+            else onAction('jump', to);
+          }}>Next <ChevronRightIcon /></Button>}
         </div>
       )}
     </aside>

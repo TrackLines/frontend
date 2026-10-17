@@ -4,16 +4,19 @@ import { useDraggable } from '@dnd-kit/core';
 import { initials } from '@/components/hosted-bar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import type { Assignee } from '@/lib/api';
+import { awayText } from '@/lib/away';
+import { cn } from '@/lib/utils';
 import { personLabel } from '@/lib/people';
 import { personDragId } from '@/lib/person-drag';
 
-// PersonFace: someone's avatar, or their initials.
+// PersonFace: someone's avatar, or their initials; faded, with when they're back, while on holiday (TL-410).
 export function PersonFace({ id, people, className }: { id: string; people: Assignee[] | null; className?: string }) {
   const person = people?.find((p) => p.id === id);
   const label = personLabel(id, people);
   const name = label === 'You' ? person?.name || 'You' : label;
+  const away = person?.away ? awayText(person) : null;
   return (
-    <Avatar className={className}>
+    <Avatar className={cn(className, away && 'opacity-50 grayscale')} title={away ? `${name}: ${away}` : undefined} data-away={away ? '' : undefined}>
       {person?.image_url && <AvatarImage src={person.image_url} alt="" />}
       <AvatarFallback>{initials(name)}</AvatarFallback>
     </Avatar>

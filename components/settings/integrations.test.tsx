@@ -1,5 +1,6 @@
 import { expect, test } from 'bun:test';
 import { renderToStaticMarkup } from 'react-dom/server';
+import { FeatureFlags } from '@/components/feature-flags';
 import { BugfixesTokenForm, IntegrationsSettings, ProviderCardView } from './integrations';
 
 const view = (props: Partial<Parameters<typeof ProviderCardView>[0]>) => renderToStaticMarkup(
@@ -38,7 +39,7 @@ test('Bugfixes connects with a token, never shown', () => {
 });
 
 test('settings offer GitHub and Bitbucket with no flag (TL-285), under Repositories, open first; Bugfixes and Google Chat have tabs (TL-389)', () => {
-  const html = renderToStaticMarkup(<IntegrationsSettings token="tok" />);
+  const html = renderToStaticMarkup(<FeatureFlags><IntegrationsSettings token="tok" /></FeatureFlags>);
   for (const name of ['Repositories', 'Communication', 'Reporting', 'GitHub', 'Bitbucket']) expect(html).toContain(name);
   expect(html).not.toContain('aria-label="Bugfixes"'); // its card waits in the Reporting tab
 });
@@ -71,7 +72,8 @@ test('Bitbucket: the workspaces the connected person reaches, whose account it i
 test('integrations are in tabs by what they do, Repositories first, and every provider is in exactly one (TL-389)', async () => {
   const { INTEGRATION_TABS } = await import('./integrations');
   const { INTEGRATION_PROVIDERS } = await import('@/lib/integrations');
-  expect(INTEGRATION_TABS.map((t) => t.name)).toEqual(['Repositories', 'Communication', 'Reporting']);
+  expect(INTEGRATION_TABS.map((t) => t.name)).toEqual(['Repositories', 'Communication', 'Reporting', 'Calendars']);
+  expect(INTEGRATION_TABS.find((t) => t.id === 'calendars')).toMatchObject({ items: ['google-calendar'], flag: 'google-calendar' }); // TL-409: only while the flag is on
   expect(INTEGRATION_TABS.find((t) => t.id === 'repositories')?.items).toEqual(['github', 'bitbucket']);
   expect(INTEGRATION_TABS.find((t) => t.id === 'communication')?.items).toEqual(['google-chat']);
   expect(INTEGRATION_TABS.find((t) => t.id === 'reporting')?.items).toEqual(['bugfixes']);

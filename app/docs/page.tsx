@@ -14,6 +14,7 @@ export const guides = [
   { slug: 'refinement', name: 'Refinement', body: 'Plan the next sprints from the backlog, size the work, and keep each sprint to what the team can do.' },
   { slug: 'google-chat', name: 'Google Chat for you', body: 'Get your own notifications as direct messages from the TrackLin.es app in Google Chat.' },
   { slug: 'google-chat-org', name: 'Google Chat for your organization', body: 'Post your team’s activity into Google Chat spaces, and let people use the TrackLin.es Chat app.' },
+  { slug: 'google-calendar', name: 'Google Calendar', body: 'Connect your Google Workspace so TrackLin.es knows who’s on holiday, in assigning and in standup.' },
   { slug: 'epics', name: 'Epics', body: 'Large pieces of work across boards: how they differ from tickets, and using them on roadmaps.' },
 ];
 
