@@ -4,8 +4,8 @@ import { ListPageSkeleton } from '@/components/page-skeletons';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { ApiError, apiKeys, type ApiKey } from '@/lib/api';
-import { ApiKeyList, FreshKey, NewKeyDialog, SetupDialog, splitSecret, type FreshKeyInfo } from '@/components/settings/api-keys';
+import { ApiError, apiKeys, type ApiKey, type ApiKeyKind } from '@/lib/api';
+import { ApiKeyTabs, FreshKey, NewKeyDialog, SetupDialog, splitSecret, type FreshKeyInfo } from '@/components/settings/api-keys';
 import { useToken } from '@/lib/use-token';
 
 export default function ApiKeysPage() {
@@ -16,6 +16,7 @@ export default function ApiKeysPage() {
   const [fresh, setFresh] = useState<FreshKeyInfo | null>(null); // shown once
   const [setupOpen, setSetupOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [tab, setTab] = useState<ApiKeyKind>('ai'); // AI agents first (TL-391)
 
   const loaded = token !== null;
   useEffect(() => {
@@ -44,10 +45,11 @@ export default function ApiKeysPage() {
       </p>
 
       {fresh && <FreshKey fresh={fresh} copied={copied} onCopy={() => navigator.clipboard.writeText(fresh.key).then(() => setCopied(true))} onSetup={() => setSetupOpen(true)} />}
-      <ApiKeyList list={list} onRevoke={(k) => void revoke(k)} />
+      <ApiKeyTabs list={list} tab={tab} onTab={setTab} onRevoke={(k) => void revoke(k)} />
 
       {fresh?.kind === 'ai' && <SetupDialog fresh={fresh} open={setupOpen} onOpenChange={setSetupOpen} />}
       <NewKeyDialog
+        initialKind={tab}
         open={creating}
         onOpenChange={setCreating}
         onCreate={async (input) => {
@@ -58,6 +60,7 @@ export default function ApiKeysPage() {
           setList((l) => [...(l ?? []), listed]);
           setFresh({ name: listed.display ?? listed.name, kind: listed.kind, key: secret, client: listed.client });
           setCopied(false);
+          setTab(listed.kind); // show it in its own tab
           setSetupOpen(listed.kind === 'ai'); // straight to that agent's setup steps (TL-269)
         }}
       />

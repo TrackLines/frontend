@@ -20,11 +20,12 @@ test('Your settings is reachable from the account menu and the bell, and needs s
   expect(await read('../../proxy.ts')).toContain("'/account'");
 });
 
-test('this device: on, off, or why not', () => {
+test('this device: on, off, or blocked; hidden when there’s nothing you can do (TL-392)', () => {
   const view = (state: Parameters<typeof DevicePushView>[0]['state']) => renderToStaticMarkup(<DevicePushView state={state} busy={false} onToggle={() => {}} />);
   expect(view('on')).toContain('>Turn off<');
   expect(view('off')).toContain('>Turn on<');
   expect(view('blocked')).toContain('blocked for this site');
   expect(view('blocked')).not.toContain('Turn on');
-  expect(view('unsupported')).toContain('This browser can’t');
+  expect(view('unavailable')).toBe(''); // the server doesn't send them: not yours to fix
+  expect(view('unsupported')).toBe(''); // this browser can't (also the state while it checks)
 });

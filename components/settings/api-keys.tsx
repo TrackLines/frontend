@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { AGENTS, McpInstructions } from '@/components/mcp-connect';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { ApiKey, ApiKeyClient, ApiKeyKind, NewApiKey } from '@/lib/api';
 
 const when = new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeStyle: 'short' });
@@ -82,16 +83,18 @@ export function agentName(client: ApiKeyClient, label: string): string {
 }
 
 // NewKeyDialog: create a key; onCreate throws to show an error.
-export function NewKeyDialog({ open, onOpenChange, onCreate }: { open: boolean; onOpenChange: (open: boolean) => void; onCreate: (input: NewApiKey) => Promise<void> }) {
-  const [kind, setKind] = useState<ApiKeyKind>('ai');
+// initialKind: the kind it starts on, the open tab's (TL-391).
+export function NewKeyDialog({ open, onOpenChange, onCreate, initialKind = 'ai' }: { open: boolean; onOpenChange: (open: boolean) => void; onCreate: (input: NewApiKey) => Promise<void>; initialKind?: ApiKeyKind }) {
+  const [kind, setKind] = useState<ApiKeyKind>(initialKind);
   const [client, setClient] = useState<ApiKeyClient>('claude-code');
   const [label, setLabel] = useState('');
   const [name, setName] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const input = keyInput(kind, client, label, name);
+  useEffect(() => { if (open) setKind(initialKind); }, [open]); // each time it opens, on the open tab's kind
 
-  function reset() { setKind('ai'); setClient('claude-code'); setLabel(''); setName(''); setError(''); }
+  function reset() { setKind(initialKind); setClient('claude-code'); setLabel(''); setName(''); setError(''); }
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!input) return;
@@ -156,9 +159,32 @@ export function FreshKey({ fresh, copied, onCopy, onSetup }: { fresh: FreshKeyIn
   );
 }
 
+// KEY_TABS: AI keys and service keys, each in its own tab so it's clear which is which (TL-391).
+export const KEY_TABS: { kind: ApiKeyKind; name: string; hint: string; empty: string }[] = [
+  { kind: 'ai', name: 'AI agents', hint: 'One key per AI agent (tl_ai_…). Agents can be assigned tickets, and their work shows as theirs.', empty: 'No AI agent keys yet.' },
+  { kind: 'service', name: 'Service keys', hint: 'For servers, scripts and integrations such as Bugfixes (tl_s_…). They can create and update tickets, but can’t be assigned work.', empty: 'No service keys yet.' },
+];
+
+// ApiKeyTabs: my keys, AI agents and service keys apart.
+export function ApiKeyTabs({ list, tab, onTab, onRevoke }: { list: ApiKey[]; tab: ApiKeyKind; onTab: (kind: ApiKeyKind) => void; onRevoke: (k: ApiKey) => void }) {
+  return (
+    <Tabs value={tab} onValueChange={(v) => onTab(v as ApiKeyKind)} className="gap-4">
+      <TabsList>
+        {KEY_TABS.map((t) => <TabsTrigger key={t.kind} value={t.kind}>{t.name} ({list.filter((k) => k.kind === t.kind).length})</TabsTrigger>)}
+      </TabsList>
+      {KEY_TABS.map((t) => (
+        <TabsContent key={t.kind} value={t.kind} className="grid gap-3">
+          <p className="text-sm text-muted-foreground">{t.hint}</p>
+          <ApiKeyList list={list.filter((k) => k.kind === t.kind)} onRevoke={onRevoke} empty={t.empty} />
+        </TabsContent>
+      ))}
+    </Tabs>
+  );
+}
+
 // ApiKeyList: my keys by name, kind, prefix and last use; never the secret.
-export function ApiKeyList({ list, onRevoke }: { list: ApiKey[]; onRevoke: (k: ApiKey) => void }) {
-  if (list.length === 0) return <p className="rounded-xl border border-dashed p-6 text-sm text-muted-foreground">No keys yet.</p>;
+export function ApiKeyList({ list, onRevoke, empty = 'No keys yet.' }: { list: ApiKey[]; onRevoke: (k: ApiKey) => void; empty?: string }) {
+  if (list.length === 0) return <p className="rounded-xl border border-dashed p-6 text-sm text-muted-foreground">{empty}</p>;
   return (
     <ul className="divide-y rounded-xl border">
       {list.map((k) => (

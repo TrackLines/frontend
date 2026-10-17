@@ -62,3 +62,25 @@ test('the list calls agent keys by their name, not their generated id', () => {
   expect(html).toContain('>Claude<');
   expect(html).toContain('Recorded as claude-482193');
 });
+
+test('AI agent keys and service keys are in their own tabs, with counts, AI agents first (TL-391)', async () => {
+  const { ApiKeyTabs, KEY_TABS } = await import('./api-keys');
+  const keys = [
+    { id: 'a1', name: 'Claude', kind: 'ai' as const, prefix: 'tl_ai_ab', created_at: '2026-10-01T00:00:00Z', last_used_at: null },
+    { id: 'a2', name: 'Codex', kind: 'ai' as const, prefix: 'tl_ai_cd', created_at: '2026-10-02T00:00:00Z', last_used_at: null },
+    { id: 's1', name: 'Deploys', kind: 'service' as const, prefix: 'tl_s_ef', created_at: '2026-10-03T00:00:00Z', last_used_at: null },
+  ];
+  expect(KEY_TABS.map((t) => t.kind)).toEqual(['ai', 'service']);
+  const ai = renderToStaticMarkup(<ApiKeyTabs list={keys} tab="ai" onTab={() => {}} onRevoke={() => {}} />);
+  expect(ai).toContain('AI agents (2)');
+  expect(ai).toContain('Service keys (1)');
+  expect(ai).toContain('Claude');
+  expect(ai).not.toContain('Deploys'); // the service key waits in its own tab
+  const service = renderToStaticMarkup(<ApiKeyTabs list={keys} tab="service" onTab={() => {}} onRevoke={() => {}} />);
+  expect(service).toContain('Deploys');
+  expect(service).not.toContain('Codex');
+  expect(renderToStaticMarkup(<ApiKeyTabs list={keys.slice(0, 2)} tab="service" onTab={() => {}} onRevoke={() => {}} />)).toContain('No service keys yet.');
+  const page = await Bun.file(new URL('../../app/settings/api-keys/page.tsx', import.meta.url)).text();
+  expect(page).toContain('initialKind={tab}'); // New key starts on the open tab's kind
+  expect(page).toContain('setTab(listed.kind)'); // a new key shows in its tab
+});

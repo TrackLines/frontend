@@ -7,19 +7,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { CopyButton } from '@/components/copy-link';
 import { ApiError, googleChat, type ChatKind, type ChatSpace } from '@/lib/api';
+import { CHAT_KINDS } from '@/lib/google-chat';
 
-// The notifications a space can get, in the order they're offered. @mentions aren't here: they're personal.
-export const CHAT_KINDS: { kind: ChatKind; label: string }[] = [
-  { kind: 'created', label: 'New tickets' },
-  { kind: 'review', label: 'Needs review' },
-  { kind: 'approval', label: 'Planned sprint needs approval' },
-  { kind: 'over_capacity', label: 'Sprint started over capacity' },
-  { kind: 'finished', label: 'Ticket finished' },
-  { kind: 'wont_do', label: 'Closed as won’t do' },
-  { kind: 'assigned', label: 'Ticket assigned (“assigned TL-12 to Sam”)' },
-  { kind: 'sent_back', label: 'Sent back from review' },
-  { kind: 'retention', label: 'Files due for deletion' },
-];
+export { CHAT_KINDS }; // the form's own list, kept in lib/google-chat for the docs
 
 const chatError = (err: unknown, fallback: string) =>
   err instanceof ApiError && (err.status === 400 || err.status === 502) ? err.message : err instanceof ApiError && err.status === 403 ? 'Only organization admins can change this.' : fallback;

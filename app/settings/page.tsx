@@ -34,7 +34,7 @@ export default function SettingsPage() {
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Plan />
         <OrganizationCard admin={admin} />
-        {admin && <SettingsCard icon={PlugIcon} title="Integrations" href="/settings/integrations" description="Connect Bugfixes, GitHub and Bitbucket." />}
+        {admin && <SettingsCard icon={PlugIcon} title="Integrations" href="/settings/integrations" description="Connect GitHub, Bitbucket, Google Chat and Bugfixes." />}
         <SettingsCard icon={KeyRoundIcon} title="API keys and AI agents"
           description="Keys let agents and scripts use the API as you. Connect an AI agent (Claude, Codex…) over MCP with its own key.">
           <Link href="/settings/api-keys" className={buttonVariants({ variant: 'outline', size: 'sm' })}>Manage API keys</Link>

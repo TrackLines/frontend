@@ -4,9 +4,10 @@ import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { GoogleChatSettings } from '@/components/settings/google-chat';
 import { integrations, organization, type IntegrationProvider, type IntegrationStatus } from '@/lib/api';
-import { INTEGRATION_PROVIDERS, integrationError, PROVIDER_NAMES } from '@/lib/integrations';
+import { integrationError, PROVIDER_NAMES } from '@/lib/integrations';
 
 const ABOUT: Record<IntegrationProvider, string> = {
   bugfixes: 'Bug tickets Bugfixes creates show the crash report’s live details: occurrences, last seen, where, and whether it came back.',
@@ -14,7 +15,15 @@ const ABOUT: Record<IntegrationProvider, string> = {
   bitbucket: 'Link repositories to projects. Pull requests that mention a ticket’s key (e.g. TL-123) show on the ticket, and merging one closes it.',
 };
 
-// IntegrationsSettings: the org's connections to other tools. Org admins connect and disconnect;
+// INTEGRATION_TABS: the integrations, grouped by what they do (TL-389). A new one goes in its group,
+// or a new group, so the page stays tidy as more are added.
+export const INTEGRATION_TABS: { id: string; name: string; items: (IntegrationProvider | 'google-chat')[] }[] = [
+  { id: 'repositories', name: 'Repositories', items: ['github', 'bitbucket'] },
+  { id: 'communication', name: 'Communication', items: ['google-chat'] },
+  { id: 'reporting', name: 'Reporting', items: ['bugfixes'] },
+];
+
+// IntegrationsSettings: the org's connections to other tools, in tabs (Repositories first). Org admins connect and disconnect;
 // everyone else sees what's connected.
 export function IntegrationsSettings({ token }: { token: string }) {
   const [admin, setAdmin] = useState<boolean | null>(null);
@@ -24,12 +33,22 @@ export function IntegrationsSettings({ token }: { token: string }) {
   return (
     <div className="grid gap-6">
       {admin === false && <p role="note" className="text-sm text-muted-foreground">Organization admins connect integrations. You can see what&apos;s connected.</p>}
-      {INTEGRATION_PROVIDERS.map((p) => <ProviderCard key={p} provider={p} token={token} canManage={admin === true} />)}
-      <section aria-label="Google Chat" className="grid gap-3 rounded-xl border p-5">
-        <h2 className="text-lg font-semibold">Google Chat</h2>
-        <p className="text-sm text-muted-foreground">Post notifications for every project into one Google Chat space. A project can have its own space too, under Edit project.</p>
-        <GoogleChatSettings token={token} canManage={admin === true} />
-      </section>
+      <Tabs defaultValue={INTEGRATION_TABS[0].id} className="gap-4">
+        <TabsList>
+          {INTEGRATION_TABS.map((t) => <TabsTrigger key={t.id} value={t.id}>{t.name}</TabsTrigger>)}
+        </TabsList>
+        {INTEGRATION_TABS.map((t) => (
+          <TabsContent key={t.id} value={t.id} className="grid gap-6">
+            {t.items.map((item) => item === 'google-chat' ? (
+              <section key={item} aria-label="Google Chat" className="grid gap-3 rounded-xl border p-5">
+                <h2 className="text-lg font-semibold">Google Chat</h2>
+                <p className="text-sm text-muted-foreground">Post notifications for every project into one Google Chat space. A project can have its own space too, under Edit project.</p>
+                <GoogleChatSettings token={token} canManage={admin === true} />
+              </section>
+            ) : <ProviderCard key={item} provider={item} token={token} canManage={admin === true} />)}
+          </TabsContent>
+        ))}
+      </Tabs>
     </div>
   );
 }

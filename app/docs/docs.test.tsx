@@ -56,3 +56,17 @@ test('the standup and refinement guides explain them from a user’s side, with 
   expect(index).toContain('href="/docs/standup"');
   expect(index).toContain('href="/docs/refinement"');
 });
+
+test('the Google Chat guides: linking your own account, and setting up spaces as an organization', async () => {
+  const { default: You } = await import('./google-chat/page');
+  const { default: Org } = await import('./google-chat-org/page');
+  const { CHAT_KINDS } = await import('@/lib/google-chat');
+  const you = renderToStaticMarkup(<You />);
+  for (const s of ['Link your TrackLin.es account', 'You’re linked', '30 minutes', 'Your settings', 'Unlink', 'href="/docs/google-chat-org"']) expect(you).toContain(s);
+  const org = renderToStaticMarkup(<Org />);
+  for (const s of ['Allow users to add and use incoming webhooks', 'Add webhook', 'Avatar URL', 'Send test message', 'Edit project', 'https://chat.googleapis.com/', 'href="/docs/google-chat"']) expect(org).toContain(s);
+  for (const k of CHAT_KINDS) expect(org).toContain(k.label); // every event the settings form offers
+  const index = renderToStaticMarkup(<DocsPage />);
+  expect(index).toContain('href="/docs/google-chat"');
+  expect(index).toContain('href="/docs/google-chat-org"');
+});

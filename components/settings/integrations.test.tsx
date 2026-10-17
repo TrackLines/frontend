@@ -37,9 +37,10 @@ test('Bugfixes connects with a token, never shown', () => {
   expect(renderToStaticMarkup(<BugfixesTokenForm busy={false} connected onSave={() => {}} />)).toContain('Replace access token');
 });
 
-test('settings offer Bugfixes, GitHub and Bitbucket, with no flag (TL-285)', () => {
+test('settings offer GitHub and Bitbucket with no flag (TL-285), under Repositories, open first; Bugfixes and Google Chat have tabs (TL-389)', () => {
   const html = renderToStaticMarkup(<IntegrationsSettings token="tok" />);
-  for (const name of ['Bugfixes', 'GitHub', 'Bitbucket']) expect(html).toContain(name);
+  for (const name of ['Repositories', 'Communication', 'Reporting', 'GitHub', 'Bitbucket']) expect(html).toContain(name);
+  expect(html).not.toContain('aria-label="Bugfixes"'); // its card waits in the Reporting tab
 });
 
 test('GitHub: every connected account, each disconnected on its own, and another can be added (TL-281)', () => {
@@ -65,4 +66,15 @@ test('Bitbucket: the workspaces the connected person reaches, whose account it i
   expect(html).toContain('keloran1’s Bitbucket account');
   expect(html.match(/>Disconnect</g)?.length).toBe(1);
   expect(view({ provider: 'bitbucket', status: { provider: 'bitbucket', connected: true, account: 'keloran1', workspaces: [] } })).toContain('isn’t in any Bitbucket workspaces');
+});
+
+test('integrations are in tabs by what they do, Repositories first, and every provider is in exactly one (TL-389)', async () => {
+  const { INTEGRATION_TABS } = await import('./integrations');
+  const { INTEGRATION_PROVIDERS } = await import('@/lib/integrations');
+  expect(INTEGRATION_TABS.map((t) => t.name)).toEqual(['Repositories', 'Communication', 'Reporting']);
+  expect(INTEGRATION_TABS.find((t) => t.id === 'repositories')?.items).toEqual(['github', 'bitbucket']);
+  expect(INTEGRATION_TABS.find((t) => t.id === 'communication')?.items).toEqual(['google-chat']);
+  expect(INTEGRATION_TABS.find((t) => t.id === 'reporting')?.items).toEqual(['bugfixes']);
+  const all = INTEGRATION_TABS.flatMap((t) => t.items);
+  for (const p of INTEGRATION_PROVIDERS) expect(all.filter((i) => i === p)).toHaveLength(1);
 });

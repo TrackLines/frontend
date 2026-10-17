@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { B } from '@/components/docs/prose';
 import { MCP_URL, McpInstructions } from '@/components/mcp-connect';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
@@ -79,7 +80,7 @@ export default function McpDocs() {
         <H2>1. Get a key</H2>
         <P>
           Sign in, then open Settings → <strong className="text-foreground">API keys and AI agents</strong> → Manage API keys,
-          and create an AI key for the agent you’re connecting. Each agent gets its own key, named after it, so its work shows
+          and on the <B>AI agents</B> tab create a key for the agent you’re connecting. Each agent gets its own key, named after it, so its work shows
           as that agent’s. The key is shown once: copy it into the setup below.
         </P>
         <Rows head={['Key', 'What it’s for']} rows={keys.map((k) => ({ a: k.kind, b: k.body }))} />

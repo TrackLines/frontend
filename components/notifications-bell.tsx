@@ -12,7 +12,7 @@ import { notifications, tickets, type AppNotification, type Assignee } from '@/l
 import { newSince, newest, notificationHref, notificationLine } from '@/lib/notifications';
 import { useAutoRefresh } from '@/lib/use-auto-refresh';
 import { useToken } from '@/lib/use-token';
-import { disablePush, enablePush, pushState, type PushState } from '@/lib/push';
+import { disablePush, enablePush, pushFailure, pushState, type PushState } from '@/lib/push';
 
 const canNotify = () => typeof window !== 'undefined' && 'Notification' in window;
 
@@ -29,6 +29,7 @@ export function NotificationsBell() {
   const [permission, setPermission] = useState<NotificationPermission | 'unsupported'>('unsupported');
   const [pushOn, setPushOn] = useState<PushState>('unsupported'); // Web Push on this device (works with the tab closed)
   const [pushBusy, setPushBusy] = useState(false);
+  const [pushError, setPushError] = useState('');
   const since = useRef<string | null>(null); // desktop popups have shown everything up to here
   const lastCount = useRef(0);
 
@@ -62,9 +63,11 @@ export function NotificationsBell() {
   async function togglePush() {
     if (!token) return;
     setPushBusy(true);
+    setPushError('');
     try {
       setPushOn(await (pushOn === 'on' ? disablePush(token) : enablePush(token)));
-    } catch {
+    } catch (err) {
+      setPushError(pushFailure(err));
       setPushOn(await pushState(token).catch(() => 'off' as PushState));
     } finally {
       setPushBusy(false);
@@ -139,7 +142,7 @@ export function NotificationsBell() {
           onOpen={(n) => void open(n)} onDismiss={(n) => void dismiss(n)} onReadAll={() => void readAll()}
           onShowRead={setShowRead} onClearRead={() => void clearRead()} />
         {(pushOn === 'on' || pushOn === 'off' || pushOn === 'blocked') ? (
-          <PushControl state={pushOn} busy={pushBusy} onToggle={() => void togglePush()} />
+          <PushControl state={pushOn} busy={pushBusy} error={pushError} onToggle={() => void togglePush()} />
         ) : permission === 'default' && (
           <div className="border-t px-3 py-2 text-xs">
             <button type="button" className="font-medium hover:underline" onClick={() => void enableDesktop()}>Turn on desktop notifications</button>
@@ -206,13 +209,13 @@ export function NotificationsList({ items, people, failed, unread, showRead = fa
 }
 
 // PushControl: "Notify me on this device" (Web Push: arrives even with Tracklines closed). Pure, for tests.
-export function PushControl({ state, busy, onToggle }: { state: PushState; busy: boolean; onToggle: () => void }) {
+export function PushControl({ state, busy, error = '', onToggle }: { state: PushState; busy: boolean; error?: string; onToggle: () => void }) {
   if (state === 'blocked') {
     return <p className="border-t px-3 py-2 text-xs text-muted-foreground">Notifications are blocked for this site in your browser settings.</p>;
   }
   if (state !== 'on' && state !== 'off') return null;
   return (
-    <div className="flex items-center justify-between gap-3 border-t px-3 py-2 text-xs">
+    <div className="flex flex-wrap items-center justify-between gap-3 border-t px-3 py-2 text-xs">
       <span>
         <span className="font-medium">Notify me on this device</span>
         <span className="block text-muted-foreground">{state === 'on' ? 'On, even when TrackLin.es is closed' : 'Get notifications even when TrackLin.es is closed'}</span>
@@ -220,6 +223,7 @@ export function PushControl({ state, busy, onToggle }: { state: PushState; busy:
       <Button type="button" size="sm" variant={state === 'on' ? 'outline' : 'default'} disabled={busy} aria-pressed={state === 'on'} onClick={onToggle}>
         {busy ? '…' : state === 'on' ? 'Turn off' : 'Turn on'}
       </Button>
+      {error && <p role="alert" className="basis-full text-destructive">{error}</p>}
     </div>
   );
 }

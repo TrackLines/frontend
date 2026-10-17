@@ -1,4 +1,5 @@
 import { push } from './api';
+import { reportClient } from './report';
 
 export type PushState = 'unsupported' | 'unavailable' | 'blocked' | 'off' | 'on';
 
@@ -38,6 +39,19 @@ export async function enablePush(token: string): Promise<PushState> {
     ?? await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyBytes(settings.public_key) as BufferSource });
   await push.subscribe(sub.toJSON(), token);
   return 'on';
+}
+
+// pushFailure: why turning notifications on or off failed, in words someone can act on, reported to
+// Bugfixes so it isn't silent (TL-393). Chromium builds without Google's push service (e.g. plain
+// Chromium on Linux) refuse to subscribe with an AbortError: "Registration failed - push service error".
+export function pushFailure(err: unknown): string {
+  const e = err instanceof Error ? err : new Error(String(err));
+  reportClient('error', Object.assign(new Error(`web push: ${e.name}: ${e.message}`), { stack: e.stack }));
+  if (e.name === 'AbortError' || /push service/i.test(e.message)) {
+    return 'This browser couldn’t reach its push service, so it can’t get notifications when TrackLin.es is closed. Chrome, Edge, Firefox and Safari can.';
+  }
+  if (e.name === 'NotAllowedError') return 'Notifications are blocked for this site in your browser settings.';
+  return 'Couldn’t change notifications on this device. Please try again.';
 }
 
 // disablePush stops pushes to this browser (server first, so nothing is left pointing at it).
