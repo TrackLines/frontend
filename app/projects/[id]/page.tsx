@@ -6,6 +6,7 @@ import { RoadmapRow } from '@/components/project/roadmap-row';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Backlog } from '@/components/project/backlog';
+import { Epics } from '@/components/project/epics';
 import { BoardCard } from '@/components/project/board-card';
 import { NewBoardButton } from '@/components/project/new-board';
 import { RequestsLink } from '@/components/intake/requests-link';
@@ -68,6 +69,8 @@ export default function ProjectPage() {
           </ul>
         )}
       </Section>
+
+      <Epics projectId={project.id} token={token} />
 
       <Backlog projectId={project.id} boards={boardList} token={token} />
 

@@ -6,11 +6,24 @@ import { DepRow, projectTickets, type TicketOption } from '@/components/ticket/d
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { TicketDialog } from '@/components/board/ticket-dialog';
-import { ApiError, boards, tickets, type TicketDetail } from '@/lib/api';
+import { ApiError, boards, tickets, type Child, type TicketDetail } from '@/lib/api';
+import { epicSize } from '@/components/project/epics';
 
 // subTicketSummary: "2 of 3 done" for a parent's progress line.
 export function subTicketSummary(children: { done: boolean }[]): string {
   return `${children.filter((c) => c.done).length} of ${children.length} done`;
+}
+
+// byBoard groups an epic's sub-tickets by where they are (TL-214): boards by name, then the backlog.
+export function byBoard<C extends Child>(children: C[]): { board: string; children: C[] }[] {
+  const groups = new Map<string, C[]>();
+  for (const c of children) {
+    const board = c.board_name ?? '';
+    groups.set(board, [...(groups.get(board) ?? []), c]);
+  }
+  return [...groups.entries()]
+    .sort(([a], [b]) => (a === '' ? 1 : b === '' ? -1 : a.localeCompare(b)))
+    .map(([board, children]) => ({ board: board || 'Backlog', children }));
 }
 
 // PartOf: "Part of <parent>" under a sub-ticket's title.
@@ -61,10 +74,22 @@ export function SubTickets({ ticket, token, onChanged }: { ticket: TicketDetail;
     <section aria-labelledby={`subs-${ticket.id}`} className="grid gap-3">
       <div className="flex items-baseline justify-between gap-3">
         <h2 id={`subs-${ticket.id}`} className="text-sm font-semibold">Sub-tickets</h2>
-        {children.length > 0 && <span className="text-sm text-muted-foreground">{subTicketSummary(children)}</span>}
+        {children.length > 0 && <span className="text-sm text-muted-foreground">{ticket.epic ? epicSize(ticket.epic) : subTicketSummary(children)}</span>}
       </div>
       {children.length === 0 ? (
-        <p className="text-sm text-muted-foreground">None — split bigger work into sub-tickets here.</p>
+        <p className="text-sm text-muted-foreground">{ticket.type === 'epic' ? 'None yet. Add the work this epic is made of; it can sit on any board.' : 'None — split bigger work into sub-tickets here.'}</p>
+      ) : ticket.type === 'epic' ? (
+        // an epic's work spans boards: grouped by where each piece is
+        <div className="grid gap-3">
+          {byBoard(children).map((g) => (
+            <div key={g.board} className="grid gap-1">
+              <h3 className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{g.board}</h3>
+              <ul className="grid gap-1">
+                {g.children.map((c) => <DepRow key={c.id} d={c} removeLabel={`Detach ${c.title}`} onRemove={saving ? undefined : () => setParent(c.id, null)} />)}
+              </ul>
+            </div>
+          ))}
+        </div>
       ) : (
         <ul className="grid gap-1">
           {children.map((c) => <DepRow key={c.id} d={c} removeLabel={`Detach ${c.title}`} onRemove={saving ? undefined : () => setParent(c.id, null)} />)}
@@ -93,6 +118,7 @@ export function SubTickets({ ticket, token, onChanged }: { ticket: TicketDetail;
           projectId={ticket.project_id}
           columnId={newIn}
           scale={newIn ? ticket.estimate_scale : 'none'} // on the parent's board: its scale (estimate required)
+          epic={false} // an epic can't be inside another, and a new sub-ticket is work, not an epic
           onSaved={(created) => void setParent(created.id, ticket.id)}
         />
       )}

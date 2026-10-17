@@ -7,11 +7,11 @@ import type { EstimateScale } from './estimates';
 
 export type Visibility = 'public' | 'login_only' | 'team';
 
-export type TicketType = 'bug' | 'feature' | 'task';
+export type TicketType = 'bug' | 'feature' | 'task' | 'epic'; // epic: backlog only, sized by its sub-tickets (TL-213)
 export type Ticket = {
   id: string; key?: string; column_id: string; title: string; description: string; position: number;
   project_id?: string; labels?: string[];
-  type?: TicketType; sprint_id?: string | null;
+  type?: TicketType; sprint_id?: string | null; epic_id?: string | null; // epic_id: the epic it's part of (TL-215)
   created_by: string; assigned_to?: string | null; priority?: string;
   blocked?: boolean; // waits on tickets that aren't done yet
   estimate?: string | null; // on the board's estimate scale
@@ -64,7 +64,7 @@ export type RoadmapItem = {
   manual_status?: 'not_started' | 'in_progress' | 'done';
   status?: 'not_started' | 'in_progress' | 'done'; // derived when tickets are linked
   progress?: { done: number; total: number }; // linked tickets done / total (everyone)
-  tickets?: { id: string; title: string; done: boolean }[]; // linked tickets (owner only)
+  tickets?: { id: string; title: string; done: boolean; type?: TicketType }[]; // linked tickets (owner only); an epic counts its sub-tickets (TL-216)
 };
 export type TicketComment = {
   id: string; ticket_id: string; parent_comment_id: string | null;
@@ -347,6 +347,13 @@ export const columns = {
 
 // A linked ticket under "blocked by" / "blocks".
 export type Dep = { id: string; title: string; done: boolean };
+// Child: a sub-ticket, with where it lives (board_id null: the backlog) so an epic can group them by board
+export type Child = Dep & { key?: string | null; type?: TicketType; assigned_to?: string | null; estimate?: string | null; board_id?: string | null; board_name?: string | null };
+// EpicProgress: an epic's direct sub-tickets, done of total, and their size in points (TL-213)
+export type EpicProgress = { done: number; total: number; points: number; unestimated: number };
+// MovedTicket: a sub-ticket that moves with its parent leaving the board (TL-218)
+export type MovedTicket = { id: string; key: string | null; title: string };
+export type EpicSummary = { id: string; key: string | null; title: string; priority: string; done: boolean; resolution: string | null; progress: EpicProgress };
 
 // One ticket plus where it lives (board/column/sprint are null for backlog tickets) — /tickets/[id].
 export type TicketDetail = Omit<Ticket, 'column_id'> & {
@@ -356,7 +363,8 @@ export type TicketDetail = Omit<Ticket, 'column_id'> & {
   done: boolean; // in the board's last column: attachments locked
   blocked_by: Dep[]; blocks: Dep[];
   parent?: Dep | null; // this is a sub-ticket of parent
-  children?: Dep[]; // its sub-tickets
+  children?: Child[]; // its sub-tickets
+  epic?: EpicProgress; // an epic's progress and size
   duplicates?: { id: string; key: string; title: string }[];
 };
 export type TicketSearchResult = Ticket & {
@@ -380,6 +388,8 @@ export const tickets = {
   bugfixes: (id: string, token: T) => api<TicketBugfixes>(`/tickets/${id}/bugfixes`, { token }),
   prs: (id: string, token: T) => api<TicketPR[]>(`/tickets/${id}/prs`, { token }), // pull requests that mention it (TL-283)
   history: (id: string, token: T) => api<HistoryEntry[]>(`/tickets/${id}/history`, { token }), // lifecycle, oldest first (TL-76)
+  epics: (projectId: string, token: T) => api<EpicSummary[]>(`/projects/${projectId}/epics`, { token }), // with progress and size (TL-213)
+  group: (id: string, token: T) => api<MovedTicket[]>(`/tickets/${id}/group`, { token }), // open sub-tickets that would leave the board with it (TL-218)
   // also "My work": assignee 'me', status 'open', newest change first, paged
   search: (q: { text?: string; project?: string; board?: string; types?: TicketType[]; priorities?: string[]; assignee?: string;
     status?: 'open' | 'done'; limit?: number; page?: number; match?: 'any' }, token: T) => {
@@ -525,17 +535,19 @@ export const backlog = {
   list: (projectId: string, token: T, type?: TicketType) =>
     api<BacklogTicket[]>(`/projects/${projectId}/backlog${type ? `?type=${type}` : ''}`, { token }),
   // one page, filtered and ordered by the server; counts drive the type tabs
-  page: (projectId: string, q: { type?: TicketType; labels?: string[]; priorities?: string[]; sort?: BacklogSort; page: number; perPage: number }, token: T) => {
+  page: (projectId: string, q: { type?: TicketType; labels?: string[]; priorities?: string[]; sort?: BacklogSort; page: number; perPage: number; epic?: string }, token: T) => {
     const params = new URLSearchParams({ page: String(q.page), per_page: String(q.perPage) });
     if (q.type) params.set('type', q.type);
     if (q.sort && q.sort !== 'manual') params.set('sort', q.sort);
     for (const l of q.labels ?? []) params.append('label', l);
     for (const priority of q.priorities ?? []) params.append('priority', priority);
+    if (q.epic) params.set('epic', q.epic); // an epic's sub-tickets only (TL-215)
     return api<BacklogPage>(`/projects/${projectId}/backlog/page?${params}`, { token });
   },
   create: (projectId: string, t: { title: string; description?: string; type: TicketType; priority?: string; labels?: string[] }, token: T) =>
     api<BacklogTicket>(`/projects/${projectId}/backlog`, { method: 'POST', body: t, token }),
-  send: (ticketId: string, token: T) => api<void>(`/tickets/${ticketId}/backlog`, { method: 'POST', token }),
+  // its open sub-tickets on the board go too (TL-218): also_moved lists them
+  send: (ticketId: string, token: T) => api<{ also_moved?: MovedTicket[] } | undefined>(`/tickets/${ticketId}/backlog`, { method: 'POST', token }),
 };
 
 // Files attached to a ticket (stored on UploadThing; the backend keeps the records).

@@ -57,7 +57,8 @@ export function RefinementMode({ projectId, boards, token, onClose, version = 0,
     if (request !== latestLoad.current) return;
     // identical refreshes keep what's on screen, so nothing redraws
     setPlans((current) => unchanged(current, Object.fromEntries(sprintBoards.map((b, i) => [b.id, lists[i]]))));
-    setTickets((current) => unchanged(current, page.tickets.filter((t) => !t.planned_sprint_id))); // planned ones show in their sprint
+    // planned ones show in their sprint; epics aren't planned (their sub-tickets are, TL-213)
+    setTickets((current) => unchanged(current, page.tickets.filter((t) => !t.planned_sprint_id && t.type !== 'epic')));
   }, [boardIds, projectId, priorities.join(',')]);
   const loadRef = useRef(load);
   loadRef.current = load;

@@ -23,13 +23,14 @@ import { BlockedBadge } from '@/components/ticket/blocked-badge';
 import { LabelDrawer, MoreLabels, splitLabels, TicketLabels } from '@/components/ticket/labels';
 import { attachAll, PendingAttachments, type PendingFile } from '@/components/ticket/pending-attachments';
 import { BACKLOG_CHANGED } from '@/components/quick-add-ticket';
-import { ApiError, backlog, BacklogTicket, type BacklogPage, type BacklogSort, boards as boardsApi, organization, tickets, type Board, type OrganizationRole, type Ticket, type TicketType, hostedPaths } from '@/lib/api';
+import { ApiError, backlog, BacklogTicket, type BacklogPage, type BacklogSort, type EpicSummary, boards as boardsApi, organization, tickets, type Board, type OrganizationRole, type Ticket, type TicketType, hostedPaths } from '@/lib/api';
 import { canRefine } from '@/lib/board-access';
 import { useAutoRefresh } from '@/lib/use-auto-refresh';
 import { useCachedState } from '@/lib/page-cache';
 import { ListSkeleton } from '@/components/page-skeletons';
 import { LabelFilter } from '@/components/board/label-filter';
 import { parseLabels, parsePriorities, PriorityFilter, ticketFilterQuery } from '@/components/board/priority-filter';
+import { EpicFilter, epicQuery, parseEpic } from '@/components/board/epic-filter';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { TicketKey, ticketPath } from '@/components/ticket/ticket-key';
 
@@ -46,6 +47,9 @@ export function Backlog({ projectId, boards, token }: Props) {
   const [filter, setFilter] = useState<TicketType | 'all'>('all');
   const [labelFilter, setLabelFilter] = useState<string[]>(() => parseLabels(searchParams));
   const [priorityFilter, setPriorityFilter] = useState<string[]>(() => parsePriorities(searchParams));
+  const [epicFilter, setEpicFilter] = useState(() => parseEpic(searchParams)); // ?epic=<id> (TL-215)
+  const [epics, setEpics] = useState<EpicSummary[]>([]);
+  useEffect(() => { tickets.epics(projectId, token).then(setEpics, () => setEpics([])); }, [projectId]); // token refreshes must not refetch
   const [sort, setSort] = useState<BacklogSort>('manual');
   const [page, setPage] = useState(1);
   const [adding, setAdding] = useState(false);
@@ -89,7 +93,7 @@ export function Backlog({ projectId, boards, token }: Props) {
   const load = async (quiet = false) => {
     const req = ++latest.current;
     try {
-      const d = await backlog.page(projectId, { type: filter === 'all' ? undefined : filter, labels: labelFilter, priorities: priorityFilter, sort, page, perPage: PER_PAGE }, token);
+      const d = await backlog.page(projectId, { type: filter === 'all' ? undefined : filter, labels: labelFilter, priorities: priorityFilter, sort, page, perPage: PER_PAGE, epic: epicFilter }, token);
       if (req !== latest.current) return;
       const last = Math.max(1, Math.ceil(d.counts[filter] / PER_PAGE));
       if (page > last) return setPage(last); // e.g. the last ticket on the last page moved away
@@ -111,8 +115,9 @@ export function Backlog({ projectId, boards, token }: Props) {
   useEffect(() => {
     setLabelFilter(parseLabels(searchParams));
     setPriorityFilter(parsePriorities(searchParams));
+    setEpicFilter(parseEpic(searchParams));
   }, [searchParams]);
-  useEffect(() => { void loadRef.current(); }, [projectId, filter, labelFilter, priorityFilter, sort, page]); // token refreshes must not refetch
+  useEffect(() => { void loadRef.current(); }, [projectId, filter, labelFilter, priorityFilter, epicFilter, sort, page]); // token refreshes must not refetch
   useEffect(() => {
     const onChange = (e: Event) => { if ((e as CustomEvent).detail?.projectId === projectId) void loadRef.current(); };
     window.addEventListener(BACKLOG_CHANGED, onChange);
@@ -133,9 +138,17 @@ export function Backlog({ projectId, boards, token }: Props) {
   };
   const changeLabels = (labels: string[]) => changeFilters(labels, priorityFilter);
   const changePriorities = (priorities: string[]) => changeFilters(labelFilter, priorities);
+  const changeEpic = (epic: string, labels = labelFilter, priorities = priorityFilter) => {
+    setEpicFilter(epic);
+    setPage(1);
+    const query = epicQuery(ticketFilterQuery(searchParams.toString(), labels, priorities), epic);
+    router.replace(`${window.location.pathname}${query ? `?${query}` : ''}#backlog`, { scroll: false });
+  };
   const clearFilters = () => {
     setFilter('all');
-    changeFilters([], []);
+    setLabelFilter([]);
+    setPriorityFilter([]);
+    changeEpic('', [], []);
   };
   const drop = (id: string) => setData((d) => d && { ...d, tickets: d.tickets.filter((x) => x.id !== id) });
 
@@ -232,6 +245,7 @@ export function Backlog({ projectId, boards, token }: Props) {
       <div className="mb-3 flex flex-wrap items-center gap-2">
         <LabelFilter options={data?.labels ?? null} labels={labelFilter} onLabelsChange={changeLabels} syncUrl={false} />
         <span className="ml-2 inline-flex"><PriorityFilter priorities={priorityFilter} onPrioritiesChange={changePriorities} /></span>
+        <span className="inline-flex"><EpicFilter epics={epics} epic={epicFilter} onEpicChange={changeEpic} /></span>
         <span className="ml-auto inline-flex items-center gap-2 pl-2 text-sm text-muted-foreground">
           <label htmlFor="backlog-sort">Sort</label>
           <Select value={sort} onValueChange={(value) => { if (value) { setSort(value as BacklogSort); setPage(1); } }}>
@@ -254,7 +268,7 @@ export function Backlog({ projectId, boards, token }: Props) {
         <ListSkeleton />
       ) : shown.length === 0 ? (
         <p className="rounded-xl border border-dashed p-6 text-sm text-muted-foreground">
-          {labelFilter.length > 0 || priorityFilter.length > 0 ? (
+          {labelFilter.length > 0 || priorityFilter.length > 0 || epicFilter ? (
             <span className="flex flex-wrap items-center gap-2">No tickets match these filters.<Button type="button" size="sm" variant="link" className="h-auto p-0" onClick={clearFilters}>Clear filters</Button></span>
           ) : data.counts.all === 0 ? 'The backlog is empty.' : filter !== 'all' ? (
             <span className="flex flex-wrap items-center gap-2">Nothing of this type in the backlog.<Button type="button" size="sm" variant="link" className="h-auto p-0" onClick={clearFilters}>Clear filters</Button></span>

@@ -149,7 +149,7 @@ export function ItemEditor({ roadmapId, projectId, items, token }: Props) {
               {(() => {
                 const s = saved.find((x) => x.id === item.key);
                 return s ? (
-                  <ItemTickets key={s.id} roadmapId={roadmapId} itemId={s.id} projectId={projectId} initial={s.tickets ?? []} token={token} />
+                  <ItemTickets key={s.id} roadmapId={roadmapId} itemId={s.id} projectId={projectId} initial={s.tickets ?? []} progress={s.progress} token={token} />
                 ) : (
                   <p className="text-sm text-muted-foreground">Save items to link tickets to this milestone.</p>
                 );

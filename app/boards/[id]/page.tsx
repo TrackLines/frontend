@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { LoadError } from '@/components/load-error';
 import { LiveToast } from '@/components/live-toast';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { EpicFilter, epicQuery, parseEpic } from '@/components/board/epic-filter';
 import { useEffect, useMemo, useState } from 'react';
 import { AddColumn, Column } from '@/components/board/column';
 import { BoardDnd, DroppableColumn, SortableTicket } from '@/components/board/board-dnd';
@@ -20,7 +21,7 @@ import { EditableTitle } from '@/components/editable-title';
 import { NameDialog } from '@/components/name-dialog';
 import { CopyLink } from '@/components/copy-link';
 import { Button } from '@/components/ui/button';
-import { ApiError, boardTemplates, boards, hostedPaths, organization, projects, teams, tickets, type Board, type Ticket } from '@/lib/api';
+import { ApiError, boardTemplates, boards, hostedPaths, organization, projects, teams, tickets, type Board, type EpicSummary, type Ticket } from '@/lib/api';
 import { FollowedTicket, HostedBar } from '@/components/hosted-bar';
 import { followedFilters, followedTicket } from '@/lib/hosted';
 import { useHosted } from '@/lib/use-hosted';
@@ -56,6 +57,8 @@ export default function BoardPage() {
   const [permissionBoardId, setPermissionBoardId] = useState('');
   const [permissionError, setPermissionError] = useState(false);
   const [labelFilter, setLabelFilter] = useState<string[]>(() => parseLabels(searchParams));
+  const [epicFilter, setEpicFilter] = useState(() => parseEpic(searchParams)); // ?epic=<id> (TL-215)
+  const [epics, setEpics] = useState<EpicSummary[]>([]);
   const [priorityFilter, setPriorityFilter] = useState<string[]>(() => parsePriorities(searchParams));
   const [assigneeFilter, setAssigneeFilter] = useState<AssigneeFilter>('all');
   const { standup, live, start: startSharedStandup, act: actOnStandup } = useBoardLive(id, token);
@@ -112,7 +115,15 @@ export default function BoardPage() {
   useEffect(() => {
     setLabelFilter(parseLabels(searchParams));
     setPriorityFilter(parsePriorities(searchParams));
+    setEpicFilter(parseEpic(searchParams));
   }, [searchParams]);
+  // the project's epics, for the epic filter; none is fine (no filter)
+  useEffect(() => { if (board?.project_id && token) tickets.epics(board.project_id, token).then(setEpics, () => setEpics([])); }, [board?.project_id, token !== null]);
+  const changeEpic = (epic: string) => {
+    setEpicFilter(epic);
+    const query = epicQuery(searchParams.toString(), epic);
+    router.replace(`${window.location.pathname}${query ? `?${query}` : ''}`, { scroll: false });
+  };
 
   const changeFilters = (labels: string[], priorities: string[]) => {
     setLabelFilter(labels);
@@ -162,7 +173,7 @@ export default function BoardPage() {
   const following = joinedStandup ? followedFilters(hostedStandup.session, hostedStandup.role, hostedStandup.following) : null;
   const filters = following
     ? { labels: following.labels ?? [], priorities: following.priorities ?? [], assignee: (following.assignee?.[0] ?? 'all') as AssigneeFilter, me: hostedStandup.session?.host ?? currentUserId, turn: turn?.id ?? null }
-    : { labels: labelFilter, priorities: priorityFilter, assignee: assigneeFilter, me: currentUserId, turn: turn?.id ?? null };
+    : { labels: labelFilter, priorities: priorityFilter, assignee: assigneeFilter, me: currentUserId, turn: turn?.id ?? null, epic: epicFilter };
   const hasVisibleTickets = (board.columns ?? []).some((column) => shownTickets(column.tickets, { ...filters, editing: false }).length > 0);
 
   return (
@@ -187,6 +198,7 @@ export default function BoardPage() {
           syncUrl={false}
         />}
         {!boardEditMode && <PriorityFilter priorities={priorityFilter} onPrioritiesChange={changePriorities} />}
+        {!boardEditMode && <EpicFilter epics={epics} epic={epicFilter} onEpicChange={changeEpic} />}
         {!boardEditMode && <div role="group" aria-label="Quick filter by assignee" className="flex gap-1">
           <Button type="button" size="sm" variant={assigneeFilter === 'mine' ? 'secondary' : 'ghost'} aria-pressed={assigneeFilter === 'mine'} onClick={() => setAssigneeFilter((filter) => filter === 'mine' ? 'all' : 'mine')}>My tickets</Button>
           <Button type="button" size="sm" variant={assigneeFilter === 'unassigned' ? 'secondary' : 'ghost'} aria-pressed={assigneeFilter === 'unassigned'} onClick={() => setAssigneeFilter((filter) => filter === 'unassigned' ? 'all' : 'unassigned')}>Unassigned</Button>

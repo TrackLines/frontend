@@ -2,14 +2,15 @@ import type { Ticket } from '@/lib/api';
 import { filterTicketsByAssignee, type AssigneeFilter } from '@/components/board/assignee-filter';
 import { filterTicketsByLabels } from '@/components/board/label-filter';
 import { filterTicketsByPriorities } from '@/components/board/priority-filter';
+import { filterTicketsByEpic } from '@/components/board/epic-filter';
 
-export type BoardFilters = { labels: string[]; priorities: string[]; assignee: AssigneeFilter; me: string; turn: string | null; editing: boolean };
+export type BoardFilters = { labels: string[]; priorities: string[]; assignee: AssigneeFilter; me: string; turn: string | null; editing: boolean; epic?: string };
 
 // shownTickets: a column's tickets as the board shows them. Editing shows every ticket; otherwise the
 // label, priority and assignee filters apply, and during standup only the speaker's tickets.
 export function shownTickets(tickets: Ticket[], f: BoardFilters): Ticket[] {
   if (f.editing) return tickets;
-  return filterTicketsByAssignee(filterTicketsByPriorities(filterTicketsByLabels(tickets, f.labels), f.priorities), f.assignee, f.me)
+  return filterTicketsByAssignee(filterTicketsByPriorities(filterTicketsByLabels(filterTicketsByEpic(tickets, f.epic ?? ''), f.labels), f.priorities), f.assignee, f.me)
     .filter((t) => !f.turn || t.assigned_to === f.turn);
 }
 

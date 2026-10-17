@@ -18,8 +18,8 @@ import { EstimateSelect } from './estimate';
 import { missingTicketFields } from './ticket-validation';
 import { TicketKey } from '@/components/ticket/ticket-key';
 import type { EstimateScale } from '@/lib/estimates';
-import type { Ticket, TicketType } from '@/lib/api';
-import { backlog, tickets } from '@/lib/api';
+import type { MovedTicket, Ticket, TicketType } from '@/lib/api';
+import { ApiError, backlog, tickets } from '@/lib/api';
 
 type Props = {
   open: boolean;
@@ -34,13 +34,25 @@ type Props = {
   onWontDo?: (id: string) => void; // backlog only: closed as won't do (it stays, with the reason)
   done?: boolean; // in the board's last column: attachments locked
   scale?: EstimateScale; // the board's; no estimate field when absent or 'none'
+  epic?: boolean; // offer the Epic type; defaults to everywhere but creating on a board (epics live in the backlog)
 };
+
+// alsoMovesNote: "Sending it to the backlog also moves 2 sub-tickets: TL-5, TL-6." (TL-218), or ''.
+export function alsoMovesNote(subs: MovedTicket[]): string {
+  if (subs.length === 0) return '';
+  const names = subs.slice(0, 5).map((s) => s.key ?? s.title).join(', ') + (subs.length > 5 ? ` and ${subs.length - 5} more` : '');
+  return `Sending it to the backlog also moves ${subs.length === 1 ? 'its open sub-ticket on this board' : `its ${subs.length} open sub-tickets on this board`}: ${names}.`;
+}
+
+// convertLeavesBoard: saving ticket as type takes it off its board: it's becoming an epic (TL-213).
+export const convertLeavesBoard = (ticket: { type?: TicketType; column_id?: string | null } | undefined, type: TicketType) =>
+  Boolean(ticket && type === 'epic' && ticket.type !== 'epic' && ticket.column_id);
 
 // TICKET_DIALOG_WIDTH: ticket dialogs get room to work, 2/3 of the screen (phones: full width).
 // Every ticket dialog uses it (create, edit and the read-only view), so they look the same.
 export const TICKET_DIALOG_WIDTH = 'sm:max-w-[66vw]';
 
-export function TicketDialog({ open, onOpenChange, token, projectId, columnId, ticket, onSaved, onDeleted, onSentToBacklog, onWontDo, done, scale = 'none' }: Props) {
+export function TicketDialog({ open, onOpenChange, token, projectId, columnId, ticket, onSaved, onDeleted, onSentToBacklog, onWontDo, done, scale = 'none', epic }: Props) {
   const [title, setTitle] = useState(ticket?.title ?? '');
   const [description, setDescription] = useState(ticket?.description ?? '');
   const [type, setType] = useState<TicketType>(ticket?.type ?? 'task');
@@ -56,7 +68,11 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
   const titleInput = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<PendingFile[]>([]); // create mode only
   const editing = Boolean(ticket);
-  const estimating = scale !== 'none'; // the board has a scale, so an estimate is required
+  // the board has a scale, so an estimate is required; epics take none (their sub-tickets are sized)
+  const estimating = scale !== 'none' && type !== 'epic';
+  const offerEpic = epic ?? (editing || !columnId);
+  // making a board ticket an epic takes it off the board (TL-213)
+  const leavesBoard = convertLeavesBoard(ticket, type);
 
   useEffect(() => {
     if (open) {
@@ -76,6 +92,12 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
   }, [open, ticket?.id]);
 
   const duplicateSuggestions = useSimilarTickets(title, projectId, token, open && !ticket);
+  // what would go with it to the backlog: its open sub-tickets on this board (TL-218)
+  const [subs, setSubs] = useState<MovedTicket[]>([]);
+  useEffect(() => {
+    setSubs([]);
+    if (open && ticket?.column_id && onSentToBacklog) tickets.group(ticket.id, token).then(setSubs, () => setSubs([]));
+  }, [open, ticket?.id]);
 
   async function closeWontDo() {
     if (!ticket || !onWontDo || wontDo === null) return;
@@ -109,7 +131,8 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
       if (ticket) {
         await tickets.update(ticket.id, { title: cleanTitle, description: description.trim(), type, priority, ...(estimating && { estimate }) }, token);
         const result = await tickets.setLabels(ticket.id, labels, token);
-        onSaved({ ...ticket, title: cleanTitle, description: description.trim(), type, priority, labels: result.labels, ...(estimating && { estimate: estimate || null }) });
+        if (leavesBoard && onSentToBacklog) onSentToBacklog(ticket.id); // now an epic, in the backlog
+        else onSaved({ ...ticket, title: cleanTitle, description: description.trim(), type, priority, labels: result.labels, ...(estimating && { estimate: estimate || null }), ...(type === 'epic' && { estimate: null }) });
       } else {
         const input = { title: cleanTitle, description: description.trim(), type, priority, labels, ...(estimating && estimate && columnId && { estimate }) };
         const created = columnId ? await tickets.create(columnId, input, token) : (await backlog.create(projectId ?? '', input, token)) as unknown as Ticket;
@@ -118,8 +141,9 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
         onSaved(created);
       }
       onOpenChange(false);
-    } catch {
-      setError('Could not save this ticket. Check your connection and try again.');
+    } catch (err) {
+      // 400/409 say why, e.g. an epic can't go inside another epic
+      setError(err instanceof ApiError && (err.status === 400 || err.status === 409) ? err.message : 'Could not save this ticket. Check your connection and try again.');
     } finally {
       setSaving(false);
     }
@@ -146,11 +170,13 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
     setSaving(true);
     setError('');
     try {
-      await backlog.send(ticket.id, token);
+      const res = await backlog.send(ticket.id, token);
       onSentToBacklog(ticket.id);
+      for (const sub of res?.also_moved ?? []) onSentToBacklog(sub.id); // they left the board too
       onOpenChange(false);
-    } catch {
-      setError('Could not move this ticket to the backlog. Try again.');
+    } catch (err) {
+      // 400/409 say why, e.g. which sub-ticket can't go with it
+      setError(err instanceof ApiError && (err.status === 400 || err.status === 409) ? err.message : 'Could not move this ticket to the backlog. Try again.');
     } finally {
       setSaving(false);
     }
@@ -184,7 +210,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
           </label>
           {/* the short pickers share a row (the dialog is wide); they stack on phones */}
           <div className="grid gap-4 sm:grid-cols-3">
-            <TypePicker value={type} onChange={setType} />
+            <TypePicker value={type} onChange={setType} epic={offerEpic} />
             <label className="grid gap-1.5 text-sm font-medium">
               <span>Priority <span className="font-normal text-muted-foreground">(optional)</span></span>
               <PrioritySelect value={priority} onChange={setPriority} />
@@ -197,6 +223,11 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
               </label>
             )}
           </div>
+          {leavesBoard && (
+            <p role="note" className="rounded-lg border border-violet-500/40 bg-violet-500/5 p-3 text-sm">
+              Making it an epic moves it to the backlog and clears its estimate. Its sub-tickets stay where they are.
+            </p>
+          )}
           <LabelDrawer projectId={projectId ?? ticket?.project_id ?? ''} token={token} labels={labels} onChange={setLabels} disabled={saving || deleting} />
           {ticket && (
             // saves straight away (not with the form) — same as claiming
@@ -230,6 +261,9 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
                 <Button type="button" size="sm" variant="outline" disabled={saving} onClick={() => setWontDo(null)}>Keep it open</Button>
               </div>
             </div>
+          )}
+          {editing && onSentToBacklog && subs.length > 0 && !confirmDelete && wontDo === null && (
+            <p role="note" className="text-xs text-muted-foreground">{alsoMovesNote(subs)}</p>
           )}
           <DialogFooter className="sm:flex-wrap">
             {editing && !confirmDelete && wontDo === null && (
