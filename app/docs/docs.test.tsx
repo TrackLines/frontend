@@ -30,3 +30,17 @@ test('the docs are public and linked from every page’s footer', async () => {
   const proxy = await Bun.file(new URL('../../proxy.ts', import.meta.url)).text();
   expect(proxy).not.toContain("'/docs'"); // no sign-in needed
 });
+
+test('the MCP guide: keys, every client’s setup (the same steps as Connect AI), the tools and how agents work', async () => {
+  const { default: McpDocs, keys, tools, chain } = await import('./mcp/page');
+  const { AGENTS, MCP_URL } = await import('@/components/mcp-connect');
+  const html = renderToStaticMarkup(<McpDocs />);
+  expect(html).toContain(MCP_URL);
+  for (const k of keys) expect(html).toContain(k.kind);
+  for (const a of AGENTS) expect(html).toContain(`>${a.name}<`); // one tab per client, from the dialog's own list
+  expect(html).toContain('claude mcp add'); // the first client's steps are open
+  for (const t of tools) expect(html).toContain(t.name);
+  expect(chain).toHaveLength(7);
+  expect(html).toContain('href="/docs"');
+  expect(renderToStaticMarkup(<DocsPage />)).toContain('href="/docs/mcp"');
+});
