@@ -28,6 +28,8 @@ export type Ticket = {
 export type BacklogTicket = Omit<Ticket, 'column_id'> & { column_id: null; project_id: string; type: TicketType };
 export type BacklogPage = { tickets: BacklogTicket[]; counts: Record<TicketType | 'all', number>; labels: ProjectLabel[] };
 export type BacklogSort = 'manual' | 'newest' | 'oldest';
+// BacklogStatus: open tickets (the default), or closed ones: done, won't do, duplicates, or all of them
+export type BacklogStatus = 'open' | 'done' | 'wont_do' | 'duplicate' | 'closed';
 // A board's time box; the board shows only the open sprint's tickets.
 export type Sprint = {
   id: string; board_id: string; number: number; length_days: number;
@@ -561,10 +563,11 @@ export const backlog = {
   list: (projectId: string, token: T, type?: TicketType) =>
     api<BacklogTicket[]>(`/projects/${projectId}/backlog${type ? `?type=${type}` : ''}`, { token }),
   // one page, filtered and ordered by the server; counts drive the type tabs
-  page: (projectId: string, q: { type?: TicketType; labels?: string[]; priorities?: string[]; sort?: BacklogSort; page: number; perPage: number; epic?: string }, token: T) => {
+  page: (projectId: string, q: { type?: TicketType; labels?: string[]; priorities?: string[]; sort?: BacklogSort; status?: BacklogStatus; page: number; perPage: number; epic?: string }, token: T) => {
     const params = new URLSearchParams({ page: String(q.page), per_page: String(q.perPage) });
     if (q.type) params.set('type', q.type);
     if (q.sort && q.sort !== 'manual') params.set('sort', q.sort);
+    if (q.status && q.status !== 'open') params.set('status', q.status);
     for (const l of q.labels ?? []) params.append('label', l);
     for (const priority of q.priorities ?? []) params.append('priority', priority);
     if (q.epic) params.set('epic', q.epic); // an epic's sub-tickets only (TL-215)

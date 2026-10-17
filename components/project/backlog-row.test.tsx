@@ -37,3 +37,12 @@ test('no labels: no label column or +N, the title still in place', () => {
   expect(html).not.toContain('more labels');
   expect(html).toContain('Roadmap updates and subscriber notifications');
 });
+
+test('a closed backlog ticket says how it was closed; an open one says nothing (owner, 2026-10-17)', async () => {
+  const { STATUS_LABEL } = await import('./backlog');
+  expect(Object.values(STATUS_LABEL)).toEqual(['Open', 'Done', 'Won’t do', 'Duplicates', 'All closed']);
+  const row = (resolution: unknown) => renderToStaticMarkup(<ul><BacklogRow t={{ ...t, resolution } as BacklogTicket} busy={false} onEdit={() => {}} /></ul>);
+  expect(row('wont_do')).toContain('>Won’t do<');
+  expect(row('done')).toContain('>Done<');
+  expect(row(null)).not.toContain('>Done<');
+});

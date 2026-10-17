@@ -20,10 +20,11 @@ import { useHosted } from '@/lib/use-hosted';
 import { usePeople } from '@/lib/use-people';
 import type { EstimateScale } from '@/lib/estimates';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
+import { Badge } from '@/components/ui/badge';
 import { LabelDrawer, MoreLabels, splitLabels, TicketLabels } from '@/components/ticket/labels';
 import { attachAll, PendingAttachments, type PendingFile } from '@/components/ticket/pending-attachments';
 import { BACKLOG_CHANGED } from '@/components/quick-add-ticket';
-import { ApiError, backlog, BacklogTicket, type BacklogPage, type BacklogSort, type EpicSummary, boards as boardsApi, organization, tickets, type Board, type OrganizationRole, type Ticket, type TicketType, hostedPaths } from '@/lib/api';
+import { ApiError, backlog, BacklogTicket, type BacklogPage, type BacklogSort, type BacklogStatus, type EpicSummary, boards as boardsApi, organization, tickets, type Board, type OrganizationRole, type Ticket, type TicketType, hostedPaths } from '@/lib/api';
 import { canRefine } from '@/lib/board-access';
 import { useAutoRefresh } from '@/lib/use-auto-refresh';
 import { useCachedState } from '@/lib/page-cache';
@@ -51,6 +52,7 @@ export function Backlog({ projectId, boards, token }: Props) {
   const [epics, setEpics] = useState<EpicSummary[]>([]);
   useEffect(() => { tickets.epics(projectId, token).then(setEpics, () => setEpics([])); }, [projectId]); // token refreshes must not refetch
   const [sort, setSort] = useState<BacklogSort>('manual');
+  const [status, setStatus] = useState<BacklogStatus>('open'); // closed tickets stay findable (owner, 2026-10-17)
   const [page, setPage] = useState(1);
   const [adding, setAdding] = useState(false);
   const [busy, setBusy] = useState<string | null>(null); // ticket id being moved/deleted
@@ -93,7 +95,7 @@ export function Backlog({ projectId, boards, token }: Props) {
   const load = async (quiet = false) => {
     const req = ++latest.current;
     try {
-      const d = await backlog.page(projectId, { type: filter === 'all' ? undefined : filter, labels: labelFilter, priorities: priorityFilter, sort, page, perPage: PER_PAGE, epic: epicFilter }, token);
+      const d = await backlog.page(projectId, { type: filter === 'all' ? undefined : filter, labels: labelFilter, priorities: priorityFilter, sort, status, page, perPage: PER_PAGE, epic: epicFilter }, token);
       if (req !== latest.current) return;
       const last = Math.max(1, Math.ceil(d.counts[filter] / PER_PAGE));
       if (page > last) return setPage(last); // e.g. the last ticket on the last page moved away
@@ -117,7 +119,7 @@ export function Backlog({ projectId, boards, token }: Props) {
     setPriorityFilter(parsePriorities(searchParams));
     setEpicFilter(parseEpic(searchParams));
   }, [searchParams]);
-  useEffect(() => { void loadRef.current(); }, [projectId, filter, labelFilter, priorityFilter, epicFilter, sort, page]); // token refreshes must not refetch
+  useEffect(() => { void loadRef.current(); }, [projectId, filter, labelFilter, priorityFilter, epicFilter, sort, status, page]); // token refreshes must not refetch
   useEffect(() => {
     const onChange = (e: Event) => { if ((e as CustomEvent).detail?.projectId === projectId) void loadRef.current(); };
     window.addEventListener(BACKLOG_CHANGED, onChange);
@@ -146,6 +148,7 @@ export function Backlog({ projectId, boards, token }: Props) {
   };
   const clearFilters = () => {
     setFilter('all');
+    setStatus('open');
     setLabelFilter([]);
     setPriorityFilter([]);
     changeEpic('', [], []);
@@ -247,13 +250,24 @@ export function Backlog({ projectId, boards, token }: Props) {
         <span className="ml-2 inline-flex"><PriorityFilter priorities={priorityFilter} onPrioritiesChange={changePriorities} /></span>
         <span className="inline-flex"><EpicFilter epics={epics} epic={epicFilter} onEpicChange={changeEpic} /></span>
         <span className="ml-auto inline-flex items-center gap-2 pl-2 text-sm text-muted-foreground">
+          <label htmlFor="backlog-status">Show</label>
+          <Select items={STATUS_LABEL} value={status} onValueChange={(value) => { if (value) { setStatus(value as BacklogStatus); setPage(1); } }}>
+            <SelectTrigger id="backlog-status" size="sm" aria-label="Show open or closed tickets">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {(Object.keys(STATUS_LABEL) as BacklogStatus[]).map((s) => <SelectItem key={s} value={s}>{STATUS_LABEL[s]}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </span>
+        <span className="inline-flex items-center gap-2 pl-2 text-sm text-muted-foreground">
           <label htmlFor="backlog-sort">Sort</label>
           <Select value={sort} onValueChange={(value) => { if (value) { setSort(value as BacklogSort); setPage(1); } }}>
             <SelectTrigger id="backlog-sort" size="sm" aria-label="Sort backlog by date">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="manual">Manual order</SelectItem>
+              <SelectItem value="manual">{status === 'open' ? 'Manual order' : 'Recently closed'}</SelectItem>
               <SelectItem value="newest">Newest first</SelectItem>
               <SelectItem value="oldest">Oldest first</SelectItem>
             </SelectContent>
@@ -268,7 +282,8 @@ export function Backlog({ projectId, boards, token }: Props) {
         <ListSkeleton />
       ) : shown.length === 0 ? (
         <p className="rounded-xl border border-dashed p-6 text-sm text-muted-foreground">
-          {labelFilter.length > 0 || priorityFilter.length > 0 || epicFilter ? (
+          {status !== 'open' && !(labelFilter.length > 0 || priorityFilter.length > 0 || epicFilter) && filter === 'all' ? `No ${STATUS_EMPTY[status]} tickets in the backlog.`
+            : labelFilter.length > 0 || priorityFilter.length > 0 || epicFilter ? (
             <span className="flex flex-wrap items-center gap-2">No tickets match these filters.<Button type="button" size="sm" variant="link" className="h-auto p-0" onClick={clearFilters}>Clear filters</Button></span>
           ) : data.counts.all === 0 ? 'The backlog is empty.' : filter !== 'all' ? (
             <span className="flex flex-wrap items-center gap-2">Nothing of this type in the backlog.<Button type="button" size="sm" variant="link" className="h-auto p-0" onClick={clearFilters}>Clear filters</Button></span>
@@ -412,6 +427,11 @@ function SizeDialog({ ticket, board, onCancel, onMove }: {
 
 // BacklogRow: one backlog line (TL-174): key, type and age on the left; labels with the extra ones
 // under them, beside the title; the description underneath; Edit on the right.
+// the backlog's Show picker, and how a closed ticket was closed
+export const STATUS_LABEL: Record<BacklogStatus, string> = { open: 'Open', done: 'Done', wont_do: 'Won’t do', duplicate: 'Duplicates', closed: 'All closed' };
+const STATUS_EMPTY: Record<BacklogStatus, string> = { open: 'open', done: 'done', wont_do: 'won’t do', duplicate: 'duplicate', closed: 'closed' };
+const RESOLUTION_LABEL = { done: 'Done', wont_do: 'Won’t do', duplicate: 'Duplicate' } as const;
+
 export function BacklogRow({ t, busy, onEdit }: { t: BacklogTicket; busy: boolean; onEdit: () => void }) {
   const [shown, rest] = splitLabels(t.labels, 2);
   // TL-177 layout, a grid: key and type on the left with the two shown labels stacked beside them,
@@ -420,7 +440,7 @@ export function BacklogRow({ t, busy, onEdit }: { t: BacklogTicket; busy: boolea
   return (
     <li className="grid grid-cols-[auto_auto_auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1.5 p-4">
       <span className={`col-start-1 row-start-1 ${t.duplicate_of_id ? 'line-through' : ''}`}><TicketKey value={t.key} /></span>
-      <span className="col-start-1 row-start-2 flex flex-wrap gap-1"><TypeBadge type={t.type} />{t.blocked && <BlockedBadge />}</span>
+      <span className="col-start-1 row-start-2 flex flex-wrap gap-1"><TypeBadge type={t.type} />{t.blocked && <BlockedBadge />}{t.resolution && <Badge variant="secondary">{RESOLUTION_LABEL[t.resolution]}</Badge>}</span>
       {t.created_at && <span className="col-span-2 col-start-1 row-start-3 self-end text-xs whitespace-nowrap text-muted-foreground">Created <When iso={t.created_at} /></span>}
       {shown.length > 0 && <TicketLabels labels={shown} className="col-start-2 row-span-2 row-start-1 flex-col items-start" />}
       {rest.length > 0 && <span className="col-start-3 row-span-2 row-start-1"><MoreLabels labels={rest} /></span>}

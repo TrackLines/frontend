@@ -125,3 +125,12 @@ test('a path built from page params can’t climb out of /api (audit: /r/..%2F..
   for (const bad of ['/roadmaps/../../health', '/roadmaps/%2e%2e/x', '/roadmaps/a%2Fb', '/roadmaps/a\\b', '/roadmaps/%E0%A4%A']) expect(safeApiPath(bad)).toBe(false);
   await expect(api('/roadmaps/../../health')).rejects.toBeInstanceOf(ApiError);
 });
+
+test('backlog page asks for closed tickets by status, and leaves the default (open) off', async () => {
+  const requested: string[] = [];
+  g.fetch = (async (url: string) => { requested.push(url); return Response.json({}); }) as unknown as typeof fetch;
+  await backlog.page('project-1', { status: 'wont_do', page: 1, perPage: 10 }, 'token');
+  await backlog.page('project-1', { status: 'open', page: 1, perPage: 10 }, 'token');
+  expect(new URL(requested[0], 'http://localhost').searchParams.get('status')).toBe('wont_do');
+  expect(new URL(requested[1], 'http://localhost').searchParams.has('status')).toBe(false);
+});
