@@ -67,3 +67,12 @@ test('the Terms promise downtime credit: over an hour, every UTC day it touched 
     expect(TERMS).toContain(s);
   }
 });
+
+test('the privacy policy links each provider to its own site, and spells Flags.gg and BugFix.es their way (owner, 2026-10-17)', async () => {
+  const { PRIVACY } = await import('./privacy');
+  for (const s of ['[Railway](https://railway.com)', '[Clerk](https://clerk.com)', '[Stripe](https://stripe.com)', '[UploadThing](https://uploadthing.com)',
+    '[Google](https://workspace.google.com)', '[Flags.gg](https://flags.gg)', '[BugFix.es](https://bugfix.es)']) expect(PRIVACY).toContain(s);
+  expect(PRIVACY).not.toMatch(/(^|[^/])flags\.gg(?!\))/);
+  expect(PRIVACY).not.toContain('Bugfixes');
+  expect((await import('./terms')).TERMS).not.toContain('Bugfixes');
+});

@@ -20,13 +20,13 @@ You can ask us anything about this policy through our [contact form](/contact).
 
 - **Your account.** Sign-in is handled by Clerk. We receive your name, email address, username, profile picture and which organizations you belong to. We never see your password.
 - **What you put in.** Projects, boards, tickets, comments, labels, roadmaps, files you attach, and anything else you or your team add, including @mentions.
-- **Connections you set up.** Tokens for integrations such as Bugfixes, GitHub or Bitbucket, stored encrypted. API keys you create for AI agents or scripts, stored only as a hash and shown to you once.
+- **Connections you set up.** Tokens for integrations such as BugFix.es, GitHub or Bitbucket, stored encrypted. API keys you create for AI agents or scripts, stored only as a hash and shown to you once.
 - **Payments.** Card payments are handled by Stripe; we never see or store card numbers. We keep your plan and a reference to your Stripe customer record.
 - **Notifications.** If you turn on notifications for a device, we store that device's push subscription so we can deliver them.
 - **Google Chat.** If you link your account to the TrackLin.es app in Google Chat, we store your Google Chat user ID, the ID of your private chat with the app, and when you linked it. The one-time link the app sends you is stored only as a one-way hash and stops working after 30 minutes. We don't store your Google name, email address or anything you write in Google Chat: when you message the app, we read the message only to reply to it. If your organization's admins connect a team space, we store that space's webhook address, encrypted like other integration tokens.
 - **Google Calendar.** If your organization's admins connect Google Calendar, we use access that your Google Workspace admin grants to read two things: each member's **Out of office** events, and, if the admins choose one, the all-day events on a shared calendar of company days off. From these we store only **when** someone is away: the start and end times, and whether it's a whole day. We never store an event's title, description, location or attendees, and we don't ask Google for them. We also store your Workspace domain, the admin email used to check access, and the ID of the company calendar.
 - **Request forms.** If you send a request through a team's public form, we store what you type, the optional contact details you give, and a one-way hash of your network address. We use the hash only to limit abuse; it can't be turned back into your address.
-- **Technical data.** Network addresses and request logs, used to keep the service secure, limit abuse and fix problems. Errors are reported to Bugfixes, our error-tracking service.
+- **Technical data.** Network addresses and request logs, used to keep the service secure, limit abuse and fix problems. Errors are reported to BugFix.es, our error-tracking service.
 
 ## How we use it
 
@@ -40,17 +40,17 @@ We don't look at your content, except when you ask us to for support, when we ne
 
 We share data only with the companies that help us run TrackLin.es, and only what each one needs:
 
-- **Railway** hosts our servers and database.
-- **Clerk** handles sign-in and organizations.
-- **Stripe** handles payments.
-- **UploadThing** stores the files you attach.
-- **Google** delivers Google Chat messages. If you've linked your account, your notifications go to your private chat with the TrackLin.es app; if your organization connected a team space, its notifications go there. Each message says who did what, with the ticket's key and title and a link to it. If your organization connects Google Calendar, Google gives us the dates of Out of office events, as described above. To read your calendar, we send Google only your email address in your organization's Workspace.
+- **[Railway](https://railway.com)** hosts our servers and database.
+- **[Clerk](https://clerk.com)** handles sign-in and organizations.
+- **[Stripe](https://stripe.com)** handles payments.
+- **[UploadThing](https://uploadthing.com)** stores the files you attach.
+- **[Google](https://workspace.google.com)** delivers Google Chat messages. If you've linked your account, your notifications go to your private chat with the TrackLin.es app; if your organization connected a team space, its notifications go there. Each message says who did what, with the ticket's key and title and a link to it. If your organization connects Google Calendar, Google gives us the dates of Out of office events, as described above. To read your calendar, we send Google only your email address in your organization's Workspace.
 - **Push services** run by browser makers (Google, Mozilla, Apple and Microsoft) deliver device notifications. The contents are encrypted, so they can't read them.
-- **flags.gg** turns features on and off. It receives none of your content.
-- **Bugfixes** receives reports of errors in TrackLin.es.
+- **[Flags.gg](https://flags.gg)** turns features on and off. It receives none of your content.
+- **[BugFix.es](https://bugfix.es)** receives reports of errors in TrackLin.es.
 - **ChewedFeed HQ**, our own customer records, receives the name, email address and plan of paying customers.
 
-When your organization connects an integration (such as GitHub, Bitbucket or Bugfixes) or gives an AI agent an API key, data flows to that service as you've set it up. That service's own terms and policies then apply.
+When your organization connects an integration (such as GitHub, Bitbucket or BugFix.es) or gives an AI agent an API key, data flows to that service as you've set it up. That service's own terms and policies then apply.
 
 We may also disclose data when the law requires it, or to protect our users or the service. If the business is ever sold or merged, your data would move with it, under this policy.
 

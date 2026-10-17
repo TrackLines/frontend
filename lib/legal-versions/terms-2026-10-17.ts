@@ -32,7 +32,7 @@ We may suspend accounts or remove content that breaks these rules. Where it's re
 
 ## 5. Integrations and AI agents
 
-TrackLin.es can connect to other services, such as GitHub, Bitbucket, Bugfixes, and AI agents through our MCP server and API. When you connect one, data moves between TrackLin.es and that service as you've set it up, and that service's own terms apply. We aren't responsible for third-party services or for the work AI agents do; check their changes as you would anyone else's.
+TrackLin.es can connect to other services, such as GitHub, Bitbucket, BugFix.es, and AI agents through our MCP server and API. When you connect one, data moves between TrackLin.es and that service as you've set it up, and that service's own terms apply. We aren't responsible for third-party services or for the work AI agents do; check their changes as you would anyone else's.
 
 ## 6. Plans and payment
 

@@ -11,8 +11,10 @@ import { notificationHref, notificationLine } from './notifications';
 // PUBLISHED pins every published version's text. Published versions are never edited: a change is a
 // new version (lib/legal-history.ts), whose fingerprint is added here when it's published.
 const PUBLISHED: Record<LegalDoc, Record<string, string>> = {
-  terms: { '2026-10-17': 'a99483c0cff493561ca6c9d2aeec41a6c164cb21ac9088e40217fe915adebfbe' },
-  privacy: { '2026-10-17': '0fa9368ea63b3a86968dcf1c535e3224d6fc671d338c9ad7b5e1180b7d404816' },
+  // terms 2026-10-17: pre-launch correction (owner, 2026-10-17): "BugFix.es"
+  terms: { '2026-10-17': '6caee2edf71a32e2134fb5dbdae8711c2539377823f7c227e2b3c5b4007b69a2' },
+  // privacy 2026-10-17: pre-launch correction (owner, 2026-10-17): links to each provider, "Flags.gg", "BugFix.es"
+  privacy: { '2026-10-17': '9e82753ee14508d04823b62e3d9564939a2215efc72f2bf6f763e3b68c664b32' },
 };
 const sha = (s: string) => new Bun.CryptoHasher('sha256').update(s).digest('hex');
 
