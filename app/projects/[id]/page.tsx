@@ -69,18 +69,22 @@ export default function ProjectPage() {
         )}
       </Section>
 
-      {/* Backlog and Epics as tabs, the Backlog open (TL-385) */}
-      <WorkTabs projectId={project.id} boards={boardList} token={token} />
-
-      <Section title="Roadmaps" hint="Public roadmaps are readable by anyone you send the link to." action={<Button variant="outline" onClick={() => setDialog('roadmap')}>New roadmap</Button>}>
-        {roadmapList.length === 0 ? (
-          <Empty>No roadmaps yet.</Empty>
-        ) : (
-          <ul className="divide-y rounded-xl border">
-            {roadmapList.map((r) => <RoadmapRow key={r.id} roadmap={r} />)}
-          </ul>
-        )}
-      </Section>
+      {/* Backlog, Epics and Roadmaps as tabs, the Backlog open (TL-385, TL-386) */}
+      <WorkTabs projectId={project.id} boards={boardList} token={token} roadmaps={
+        <section>
+          <div className="mb-4 flex items-end justify-between gap-4">
+            <p className="text-sm text-muted-foreground">Public roadmaps are readable by anyone you send the link to.</p>
+            <Button variant="outline" onClick={() => setDialog('roadmap')}>New roadmap</Button>
+          </div>
+          {roadmapList.length === 0 ? (
+            <Empty>No roadmaps yet.</Empty>
+          ) : (
+            <ul className="divide-y rounded-xl border">
+              {roadmapList.map((r) => <RoadmapRow key={r.id} roadmap={r} />)}
+            </ul>
+          )}
+        </section>
+      } />
 
       <RoadmapEditorForm
         open={dialog === 'roadmap'}
