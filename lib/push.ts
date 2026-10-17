@@ -48,7 +48,8 @@ export function pushFailure(err: unknown): string {
   const e = err instanceof Error ? err : new Error(String(err));
   reportClient('error', Object.assign(new Error(`web push: ${e.name}: ${e.message}`), { stack: e.stack }));
   if (e.name === 'AbortError' || /push service/i.test(e.message)) {
-    return 'This browser couldn’t reach its push service, so it can’t get notifications when TrackLin.es is closed. Chrome, Edge, Firefox and Safari can.';
+    // permission is granted by now: what's missing is the browser maker's delivery service, not the user's say-so
+    return 'Notifications are allowed, but this browser has no push service to deliver them when TrackLin.es is closed (plain Chromium builds don’t include one). Chrome, Edge, Firefox and Safari do.';
   }
   if (e.name === 'NotAllowedError') return 'Notifications are blocked for this site in your browser settings.';
   return 'Couldn’t change notifications on this device. Please try again.';

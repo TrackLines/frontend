@@ -31,7 +31,7 @@ test('a failed Turn on says why instead of doing nothing (TL-393)', async () => 
   const { pushFailure } = await import('./push');
   const named = (name: string, message: string) => Object.assign(new Error(message), { name });
   // plain Chromium (e.g. on Linux) has no push service: subscribe() rejects like this
-  expect(pushFailure(named('AbortError', 'Registration failed - push service error'))).toContain('couldn’t reach its push service');
+  expect(pushFailure(named('AbortError', 'Registration failed - push service error'))).toContain('no push service to deliver them');
   expect(pushFailure(named('NotAllowedError', 'Permission denied'))).toContain('blocked for this site');
   expect(pushFailure(new Error('500'))).toBe('Couldn’t change notifications on this device. Please try again.');
 });
@@ -40,7 +40,7 @@ test('the card and the bell show that reason', async () => {
   const { renderToStaticMarkup } = await import('react-dom/server');
   const { DevicePushView } = await import('@/components/settings/device-push');
   const { PushControl } = await import('@/components/notifications-bell');
-  const why = 'This browser couldn’t reach its push service';
+  const why = 'this browser has no push service';
   expect(renderToStaticMarkup(<DevicePushView state="off" busy={false} error={why} onToggle={() => {}} />)).toContain(`role="alert"`);
   expect(renderToStaticMarkup(<DevicePushView state="off" busy={false} error={why} onToggle={() => {}} />)).toContain(why);
   expect(renderToStaticMarkup(<PushControl state="off" busy={false} error={why} onToggle={() => {}} />)).toContain(why);
