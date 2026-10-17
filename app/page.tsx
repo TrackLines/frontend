@@ -113,7 +113,8 @@ function Feature({ icon: Icon, title, body, links }: (typeof FEATURES)[number]) 
       <span>
         <strong className="font-semibold">{title}</strong>
         <span className="mt-1 block text-sm text-muted-foreground">{body}</span>
-        {links && <span className="mt-2 flex flex-wrap gap-x-4 gap-y-1">{links.map((l) => <Link key={l.href} href={l.href} className="text-sm font-medium text-primary hover:underline">{l.label}</Link>)}</span>}
+        {links && <span className="mt-2 flex flex-wrap gap-x-4 gap-y-1">{links.map((l) => <Link key={l.href} href={l.href} className="text-sm font-medium text-primary hover:underline"
+          {...(l.href.startsWith('https://') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>{l.label}</Link>)}</span>}
       </span>
     </li>
   );

@@ -25,3 +25,8 @@ test('the homepage’s plans say the member limits (TL-419)', async () => {
   expect(page).toContain('Five projects and up to 20 members');
   expect(page).toContain('Unlimited projects and members');
 });
+
+test('the Errors become tickets card links to Bugfixes (cross promotion)', () => {
+  const card = FEATURES.find((f) => f.title === 'Errors become tickets');
+  expect(card?.links).toEqual([{ href: 'https://bugfix.es', label: 'Find out about Bugfixes →' }]);
+});
