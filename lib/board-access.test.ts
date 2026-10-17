@@ -21,3 +21,13 @@ test('refinement is for org admins and the sprint boards’ team leaders (TL-241
   expect(canRefine({ admin: false, leads: ['ops'] }, boards)).toBe(false); // leads only a kanban board
   expect(canRefine(null, boards)).toBe(false); // still loading
 });
+
+test('roadmaps are changed by org admins and leaders of a team with a board in the project (TL-413)', async () => {
+  const { canManageRoadmaps } = await import('./board-access');
+  const boards = [{ team_id: 'backend' }, { team_id: null }];
+  expect(canManageRoadmaps({ admin: true, leads: [] }, boards)).toBe(true);
+  expect(canManageRoadmaps({ admin: false, leads: ['backend'] }, boards)).toBe(true);
+  expect(canManageRoadmaps({ admin: false, leads: ['design'] }, boards)).toBe(false); // leads another project's team
+  expect(canManageRoadmaps({ admin: false, leads: [] }, boards)).toBe(false);
+  expect(canManageRoadmaps(null, boards)).toBe(false); // still loading, or failed
+});

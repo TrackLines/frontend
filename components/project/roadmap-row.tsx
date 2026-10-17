@@ -6,8 +6,8 @@ import { VisibilityBadge } from '@/components/roadmap/visibility';
 import { Button, buttonVariants } from '@/components/ui/button';
 import type { Roadmap } from '@/lib/api';
 
-// RoadmapRow: a project's roadmap with its visibility, Edit, View and copy-the-share-link.
-export function RoadmapRow({ roadmap }: { roadmap: Roadmap }) {
+// RoadmapRow: a project's roadmap with its visibility, Edit (for those who can, TL-413), View and copy-the-share-link.
+export function RoadmapRow({ roadmap, canManage = false }: { roadmap: Roadmap; canManage?: boolean }) {
   const [copied, setCopied] = useState(false);
   const url = typeof window === 'undefined' ? `/r/${roadmap.id}` : `${window.location.origin}/r/${roadmap.id}`;
   return (
@@ -15,7 +15,7 @@ export function RoadmapRow({ roadmap }: { roadmap: Roadmap }) {
       <span className="font-medium">{roadmap.title}</span>
       <VisibilityBadge value={roadmap.visibility} />
       <span className="ml-auto flex gap-2">
-        <Link href={`/roadmaps/${roadmap.id}/edit`} className={buttonVariants({ variant: 'ghost', size: 'sm' })}>Edit</Link>
+        {canManage && <Link href={`/roadmaps/${roadmap.id}/edit`} className={buttonVariants({ variant: 'ghost', size: 'sm' })}>Edit</Link>}
         <Link href={`/r/${roadmap.id}`} className={buttonVariants({ variant: 'ghost', size: 'sm' })}>View</Link>
         <Button
           variant="ghost"

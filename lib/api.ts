@@ -73,7 +73,11 @@ export type TicketComment = {
 export type Roadmap = {
   id: string; project_id: string; title: string; description: string; visibility: Visibility;
   created_at: string; updated_at: string; progress?: { done: number; total: number }; items?: RoadmapItem[];
+  can_manage?: boolean; // you can change it: an org admin or one of its project's team leaders (TL-413)
 };
+// A roadmap update (TL-87): dated, with a health; permanent once posted. author: by name (TL-413).
+export type RoadmapHealth = 'on_track' | 'at_risk' | 'off_track';
+export type RoadmapUpdate = { id: string; health: RoadmapHealth; note: string; published_at: string; author?: string };
 // A project holds a board per team plus its roadmaps; boards/roadmaps are only filled by projects.get.
 export type Project = {
   id: string; name: string; description: string; key_prefix?: string; created_at: string; updated_at: string;
@@ -455,6 +459,10 @@ export const roadmaps = {
     api<void>(`/roadmaps/${id}/items`, { method: 'PUT', body: items, token }),
   setItemTickets: (id: string, itemId: string, ticketIds: string[], token: T) =>
     api<void>(`/roadmaps/${id}/items/${itemId}/tickets`, { method: 'PUT', body: { ticket_ids: ticketIds }, token }),
+  // oldest first; readable by anyone who can read the roadmap (public ones need no token)
+  updates: (id: string, token?: T) => api<RoadmapUpdate[]>(`/roadmaps/${id}/updates`, { token }),
+  postUpdate: (id: string, u: { health: RoadmapHealth; note: string }, token: T) =>
+    api<RoadmapUpdate>(`/roadmaps/${id}/updates`, { method: 'POST', body: u, token }),
 };
 
 export const billing = {

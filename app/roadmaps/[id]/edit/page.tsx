@@ -7,6 +7,7 @@ import { LoadError } from '@/components/load-error';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState, type FormEvent } from 'react';
 import { ItemEditor } from '@/components/roadmap/item-editor';
+import { RoadmapUpdates } from '@/components/roadmap/updates';
 import { VisibilitySelect } from '@/components/roadmap/visibility';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -26,6 +27,7 @@ export default function EditRoadmapPage() {
 
   if (error) return <LoadError status={error} thing="roadmap" />;
   if (!roadmap || !token) return <FormPageSkeleton label="Loading roadmap…" />;
+  if (!roadmap.can_manage) return <NotAManager roadmap={roadmap} />;
 
   return (
     <main className="mx-auto grid max-w-6xl gap-10 px-6 py-10">
@@ -38,7 +40,22 @@ export default function EditRoadmapPage() {
       </div>
       <Details roadmap={roadmap} token={token} onSaved={setRoadmap} />
       <ItemEditor roadmapId={roadmap.id} projectId={roadmap.project_id} items={roadmap.items ?? []} token={token} />
+      <RoadmapUpdates roadmapId={roadmap.id} token={token} canManage />
       <DangerZone roadmap={roadmap} token={token} />
+    </main>
+  );
+}
+
+// NotAManager: roadmaps are changed by org admins and the project's team leaders (TL-413).
+export function NotAManager({ roadmap }: { roadmap: Pick<Roadmap, 'id' | 'project_id'> }) {
+  return (
+    <main className="mx-auto max-w-xl px-6 py-16">
+      <h1 className="text-2xl font-bold tracking-tight">Edit roadmap</h1>
+      <p className="mt-4 text-muted-foreground">Only organization admins and this project’s team leaders can change its roadmaps.</p>
+      <div className="mt-6 flex gap-3">
+        <Link href={`/r/${roadmap.id}`} className={buttonVariants({ variant: 'outline' })}>View the roadmap</Link>
+        <Link href={`/projects/${roadmap.project_id}`} className={buttonVariants({ variant: 'ghost' })}>Back to the project</Link>
+      </div>
     </main>
   );
 }

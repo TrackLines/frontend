@@ -11,7 +11,8 @@ import { NewBoardButton } from '@/components/project/new-board';
 import { RequestsLink } from '@/components/intake/requests-link';
 import { RoadmapEditorForm } from '@/components/roadmap-editor-form';
 import { Button, buttonVariants } from '@/components/ui/button';
-import { ApiError, boards, projects, roadmaps, type Project } from '@/lib/api';
+import { ApiError, boards, organization, projects, roadmaps, type Project } from '@/lib/api';
+import { canManageRoadmaps } from '@/lib/board-access';
 import { useToken } from '@/lib/use-token';
 import { prefetch, useCachedState } from '@/lib/page-cache';
 import { ProjectSkeleton } from '@/components/page-skeletons';
@@ -23,11 +24,15 @@ export default function ProjectPage() {
   const [project, setProject] = useCachedState<Project>(`project:${id}`); // last-seen project shows instantly, then refreshes
   const [error, setError] = useState<number | null>(null);
   const [dialog, setDialog] = useState<'roadmap' | null>(null);
+  const [role, setRole] = useState<{ admin: boolean; leads: string[] } | null>(null); // who can change roadmaps (TL-413)
 
   const loaded = token !== null;
   useEffect(() => {
     if (loaded) projects.get(id, token).then(setProject, (e) => setError(e instanceof ApiError ? e.status : 500));
   }, [id, loaded]); // load once; token refreshes must not refetch
+  useEffect(() => {
+    if (loaded) organization.me(token).then(setRole, () => setRole(null)); // unknown = can't manage
+  }, [loaded]);
   // its boards are the likely next click (one per team, so only a few)
   useEffect(() => {
     if (loaded) for (const b of project?.boards ?? []) prefetch(`board:${b.id}`, () => boards.get(b.id, token));
@@ -38,6 +43,7 @@ export default function ProjectPage() {
 
   const boardList = project.boards ?? [];
   const roadmapList = project.roadmaps ?? [];
+  const manageRoadmaps = canManageRoadmaps(role, boardList);
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
@@ -74,13 +80,13 @@ export default function ProjectPage() {
         <section>
           <div className="mb-4 flex items-end justify-between gap-4">
             <p className="text-sm text-muted-foreground">Public roadmaps are readable by anyone you send the link to.</p>
-            <Button variant="outline" onClick={() => setDialog('roadmap')}>New roadmap</Button>
+            {manageRoadmaps && <Button variant="outline" onClick={() => setDialog('roadmap')}>New roadmap</Button>}
           </div>
           {roadmapList.length === 0 ? (
             <Empty>No roadmaps yet.</Empty>
           ) : (
             <ul className="divide-y rounded-xl border">
-              {roadmapList.map((r) => <RoadmapRow key={r.id} roadmap={r} />)}
+              {roadmapList.map((r) => <RoadmapRow key={r.id} roadmap={r} canManage={manageRoadmaps} />)}
             </ul>
           )}
         </section>

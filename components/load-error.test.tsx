@@ -20,8 +20,8 @@ test('a missing ticket, board or project never says whether it exists in another
   expect(failed).toContain('Please refresh');
 });
 
-test('a roadmap row: visibility, edit, view and the share link', () => {
-  const html = renderToStaticMarkup(<ul><RoadmapRow roadmap={{ id: 'r1', title: 'Q4', visibility: 'login_only' } as Roadmap} /></ul>);
+test('a roadmap row: visibility, edit (for those who can manage it, TL-413), view and the share link', () => {
+  const html = renderToStaticMarkup(<ul><RoadmapRow roadmap={{ id: 'r1', title: 'Q4', visibility: 'login_only' } as Roadmap} canManage /></ul>);
   for (const s of ['Q4', 'href="/roadmaps/r1/edit"', 'href="/r/r1"', 'Copy link']) expect(html).toContain(s);
 });
 
