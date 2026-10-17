@@ -74,7 +74,7 @@ test('the Google Chat guides: linking your own account, and setting up spaces as
 test('the Google Calendar guide: delegation with the scope, connecting, what changes, and what’s kept (TL-411)', async () => {
   const { default: Calendar, CALENDAR_SCOPE } = await import('./google-calendar/page');
   const html = renderToStaticMarkup(<Calendar />);
-  for (const s of ['Domain-wide delegation', CALENDAR_SCOPE, 'Workspace domain', 'Admin email', 'Company days off', 'Sync now', 'Next</strong> skips them', 'Out of office', 'Never the event’s title', 'Disconnect']) expect(html).toContain(s);
+  for (const s of ['Manage Domain Wide Delegation', 'super admin', CALENDAR_SCOPE, 'Workspace domain', 'Admin email', 'Company days off', 'Sync now', 'Next</strong> skips them', 'Out of office', 'Never the event’s title', 'Disconnect']) expect(html).toContain(s);
   expect(CALENDAR_SCOPE).toBe('https://www.googleapis.com/auth/calendar.readonly'); // backend integrations.calendarScope
   expect(renderToStaticMarkup(<DocsPage />)).toContain('href="/docs/google-calendar"');
 });

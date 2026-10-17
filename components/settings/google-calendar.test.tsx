@@ -14,7 +14,7 @@ const connected: CalendarStatus = { ...notConnected, connected: true, connection
 
 test('admins get the steps: what to paste into Google, with copy buttons, then the Workspace (TL-409)', () => {
   const html = view(notConnected);
-  for (const s of [`href="${DELEGATION_URL}"`, 'Domain-wide delegation', '1234567890', 'auth/calendar.readonly', 'aria-label="Copy Client ID"', 'aria-label="Copy OAuth scopes"', 'Workspace domain', 'Admin email', 'Company days off', 'UK bank holidays', '>Connect<', 'Not connected']) {
+  for (const s of [`href="${DELEGATION_URL}"`, 'Access and data control → API controls → Manage Domain Wide Delegation', 'super admin', '1234567890', 'auth/calendar.readonly', 'aria-label="Copy Client ID"', 'aria-label="Copy OAuth scopes"', 'Workspace domain', 'Admin email', 'Company days off', 'UK bank holidays', '>Connect<', 'Not connected']) {
     expect(html).toContain(s);
   }
   expect(html).toContain('Only the dates are kept');

@@ -20,7 +20,7 @@ export default function GoogleCalendarDocs() {
       <H2>1. Let TrackLin.es read calendars, in Google</H2>
       <Steps>
         <li>In TrackLin.es, open Organization settings → <B>Integrations</B> → <B>Calendars</B>. The Google Calendar card shows our <B>Client ID</B> and the scope, each with a Copy button.</li>
-        <li>In admin.google.com, open <B>Security → API controls → Domain-wide delegation</B> and choose <B>Add new</B>.</li>
+        <li>Signed in to admin.google.com as a <B>super admin</B> (other admin roles don’t see it), open <B>Security → Access and data control → API controls → Manage Domain Wide Delegation</B> (or the link on the card), and choose <B>Add new</B>.</li>
         <li>Paste the Client ID, and for OAuth scopes paste <code>{CALENDAR_SCOPE}</code>. Authorize. It can take a few minutes to apply.</li>
       </Steps>
       <P>That one scope is read-only: TrackLin.es can read calendars and nothing else, and can’t create, change or delete events.</P>

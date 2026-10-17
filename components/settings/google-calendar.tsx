@@ -119,8 +119,8 @@ function ConnectForm({ status, busy, onConnect }: { status: CalendarStatus; busy
         <li>
           <p>
             In Google, as a Workspace admin, open{' '}
-            <a href={DELEGATION_URL} target="_blank" rel="noreferrer" className="underline">Security → API controls → Domain-wide delegation</a>,
-            choose <strong>Add new</strong> and paste:
+            <a href={DELEGATION_URL} target="_blank" rel="noreferrer" className="underline">Security → Access and data control → API controls → Manage Domain Wide Delegation</a>{' '}
+            (you need to be a super admin), choose <strong>Add new</strong> and paste:
           </p>
           <div className="mt-2 grid gap-2">
             <Copyable label="Client ID" value={status.client_id ?? ''} />
