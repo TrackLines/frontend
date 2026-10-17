@@ -13,6 +13,11 @@ export function HistoryPanel({ ticketId, token, people }: { ticketId: string; to
   useEffect(() => {
     tickets.history(ticketId, token).then(setEntries, () => setEntries(null)); // no panel rather than an error
   }, [ticketId]); // token refreshes must not refetch
+  // opened from the board's History button (/tickets/<id>#history): the panel loads after the page,
+  // so the browser's own jump to #history found nothing; go there once it's here
+  useEffect(() => {
+    if (entries && window.location.hash === '#history') document.getElementById('history')?.scrollIntoView({ block: 'start' });
+  }, [entries !== null]);
   return entries && <HistoryPanelView entries={entries} people={people} />;
 }
 
@@ -48,7 +53,7 @@ export function historySteps(entries: HistoryEntry[], people: Assignee[] | null)
 export function HistoryPanelView({ entries, people }: { entries: HistoryEntry[]; people: Assignee[] | null }) {
   const steps = historySteps(entries, people);
   return (
-    <section aria-label="History" className="grid gap-2 rounded-lg border p-3 text-sm">
+    <section id="history" aria-label="History" className="grid scroll-mt-4 gap-2 rounded-lg border p-3 text-sm">
       <h2 className="flex items-center gap-1.5 font-semibold"><HistoryIcon className="size-4" aria-hidden /> History</h2>
       {steps.length === 0 ? (
         <p className="text-muted-foreground">Nothing recorded yet. History is kept from October 2026.</p>

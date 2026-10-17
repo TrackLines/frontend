@@ -10,7 +10,7 @@ import { PullRequestsPanel } from '@/components/ticket/pull-requests-panel';
 import { TicketComments } from '@/components/ticket/comments';
 import { TicketLabels } from '@/components/ticket/labels';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import type { Ticket } from '@/lib/api';
 import { EstimateBadge } from './estimate';
@@ -88,7 +88,13 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
         {open && token && <TicketComments ticketId={ticket.id} token={token} />}
         {sample}
         <DialogFooter>
-          {!sample && <CopyLink path={ticketPath(ticket)} token={token} title={linkTitle(ticket)} className="sm:mr-auto" />}
+          {!sample && (
+            <div className="flex flex-wrap gap-2 sm:mr-auto">
+              <CopyLink path={ticketPath(ticket)} token={token} title={linkTitle(ticket)} />
+              {/* history is on the full page only (TL-373): this opens it there, no copy and paste */}
+              <Link href={`${ticketPath(ticket)}#history`} className={buttonVariants({ variant: 'ghost' })}>History</Link>
+            </div>
+          )}
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Close</Button>
           {onEdit && <Button type="button" onClick={onEdit}>Edit</Button>}
         </DialogFooter>

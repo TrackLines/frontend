@@ -49,3 +49,10 @@ test('history is on the full ticket page only, not the board’s dialog or side 
   expect(page.indexOf('<HistoryPanel ')).toBeGreaterThan(page.indexOf('<PullRequestsPanel '));
   for (const f of ['../board/ticket-view.tsx', '../board/ticket-dialog.tsx']) expect(await read(f)).not.toContain('HistoryPanel');
 });
+
+test('the board’s ticket view has a History button that opens the full page at its history', async () => {
+  const view = await Bun.file(new URL('../board/ticket-view.tsx', import.meta.url)).text();
+  expect(view).toContain('href={`${ticketPath(ticket)}#history`}');
+  expect(view.indexOf('<CopyLink ')).toBeLessThan(view.indexOf('#history'));
+  expect(renderToStaticMarkup(<HistoryPanelView people={people} entries={[]} />)).toContain('id="history"');
+});
