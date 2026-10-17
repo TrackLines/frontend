@@ -366,12 +366,20 @@ export type TicketSearchResult = Ticket & {
 
 export type Assignee = { id: string; label: string; kind?: 'person' | 'ai' | 'service'; name?: string; username?: string; image_url?: string }; // name, username, image_url: people only
 
+// HistoryEntry: one step in a ticket's lifecycle (TL-74/76): a stage it entered, or skipped on the way.
+export type HistoryEntry = {
+  at: string; stage: 'backlog' | 'column' | 'resolved'; outcome: 'entered' | 'skipped'; stage_order: number;
+  board_id?: string; board_name?: string; column_id?: string; column_name?: string; done: boolean;
+  resolution?: 'done' | 'wont_do' | 'duplicate'; actor?: string; // actor: user id or agent name; none = the system
+};
+
 export const tickets = {
   get: (id: string, token: T) => api<TicketDetail>(`/tickets/${id}`, { token }),
   getByKey: (key: string, token: T) => api<TicketDetail>(`/ticket-keys/${encodeURIComponent(key)}`, { token }),
   // the Bugfixes panel for a ticket Bugfixes made (404 otherwise)
   bugfixes: (id: string, token: T) => api<TicketBugfixes>(`/tickets/${id}/bugfixes`, { token }),
   prs: (id: string, token: T) => api<TicketPR[]>(`/tickets/${id}/prs`, { token }), // pull requests that mention it (TL-283)
+  history: (id: string, token: T) => api<HistoryEntry[]>(`/tickets/${id}/history`, { token }), // lifecycle, oldest first (TL-76)
   // also "My work": assignee 'me', status 'open', newest change first, paged
   search: (q: { text?: string; project?: string; board?: string; types?: TicketType[]; priorities?: string[]; assignee?: string;
     status?: 'open' | 'done'; limit?: number; page?: number; match?: 'any' }, token: T) => {

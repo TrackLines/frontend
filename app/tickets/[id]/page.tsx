@@ -12,6 +12,7 @@ import { CopyLink } from '@/components/copy-link';
 import { Attachments } from '@/components/ticket/attachments';
 import { BugfixesPanel } from '@/components/ticket/bugfixes-panel';
 import { PullRequestsPanel } from '@/components/ticket/pull-requests-panel';
+import { HistoryPanel } from '@/components/ticket/history-panel';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
 import { AssigneeSelect } from '@/components/ticket/assignee-select';
 import { Dependencies } from '@/components/ticket/dependencies';
@@ -158,6 +159,8 @@ export default function TicketPage() {
       {token && <BugfixesPanel ticket={t} token={token} />}
       {token && <Attachments ticketId={t.id} token={token} locked={t.done} />}
       {token && <PullRequestsPanel ticketId={t.id} token={token} />}
+      {/* full page only: the board's dialog and side view leave history out */}
+      {token && <HistoryPanel ticketId={t.id} token={token} people={people} />}
       {token && <TicketComments ticketId={t.id} token={token} />}
       {token && (
         <TicketDialog
