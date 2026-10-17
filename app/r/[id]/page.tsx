@@ -5,7 +5,7 @@ import { cache } from 'react';
 import { auth } from '@clerk/nextjs/server';
 import { buttonVariants } from '@/components/ui/button';
 import { projects, roadmaps } from '@/lib/api';
-import { ownerOnly, readRoadmap } from '@/lib/public-roadmap';
+import { isRoadmapId, ownerOnly, readRoadmap } from '@/lib/public-roadmap';
 import { Timeline } from '@/components/roadmap/timeline';
 import { HealthBadge, UpdatesTimeline } from '@/components/roadmap/updates';
 import { Locked } from './locked';
@@ -17,6 +17,7 @@ const load = cache((id: string, token: string | null) => readRoadmap(() => roadm
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
+    if (!isRoadmapId((await params).id)) return { title: 'Roadmap' };
     const [{ id }, clerkAuth] = await Promise.all([params, auth()]);
     const r = await load(id, await clerkAuth.getToken());
     return typeof r === 'object' ? { title: `${r.roadmap.title} · Roadmap`, description: r.roadmap.description || undefined } : { title: 'Roadmap' };
@@ -26,6 +27,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function RoadmapPage({ params }: Props) {
+  if (!isRoadmapId((await params).id)) notFound();
   const [{ id }, clerkAuth] = await Promise.all([params, auth()]);
   const token = await clerkAuth.getToken();
   const read = await load(id, token);

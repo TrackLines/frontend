@@ -118,3 +118,10 @@ test('similar-ticket search asks for any word to match; normal search doesn\'t (
   await tickets.search({ text: 'build seperate' }, 'token');
   expect(new URL(requested, 'http://localhost').searchParams.has('match')).toBe(false);
 });
+
+test('a path built from page params can’t climb out of /api (audit: /r/..%2F..%2Fhealth)', async () => {
+  const { safeApiPath, api, ApiError } = await import('./api');
+  for (const ok of ['/roadmaps/0192-ab', '/me/google-chat/link?code=a/b..c', '/projects/x/reports/sprints?from=2026-01-01']) expect(safeApiPath(ok)).toBe(true);
+  for (const bad of ['/roadmaps/../../health', '/roadmaps/%2e%2e/x', '/roadmaps/a%2Fb', '/roadmaps/a\\b', '/roadmaps/%E0%A4%A']) expect(safeApiPath(bad)).toBe(false);
+  await expect(api('/roadmaps/../../health')).rejects.toBeInstanceOf(ApiError);
+});

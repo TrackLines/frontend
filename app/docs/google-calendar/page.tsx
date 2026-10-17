@@ -26,10 +26,11 @@ export default function GoogleCalendarDocs() {
       <P>That one scope is read-only: TrackLin.es can read calendars and nothing else, and can’t create, change or delete events.</P>
 
       <H2>2. Connect it in TrackLin.es</H2>
+      <P>Your own TrackLin.es account needs a verified email address at the Workspace domain (add one under your account’s email addresses if you signed up with another), and a domain can be connected to only one organization. That way nobody can connect a company that isn’t theirs.</P>
       <Items>
         <li><B>Workspace domain</B>: e.g. example.com.</li>
         <li><B>Admin email</B>: a user in that domain. We use it to check access, and to read the company days off calendar.</li>
-        <li><B>Company days off</B> (optional): a shared calendar whose all-day events are days everyone’s off, such as your own office closures, or a public one like UK bank holidays (the card fills that in for you).</li>
+        <li><B>Company days off</B> (optional): a shared calendar (an ID ending @group.calendar.google.com) whose all-day events are days everyone’s off, such as your own office closures, or a public one like UK bank holidays (the card fills that in for you).</li>
       </Items>
       <P>
         Click <B>Connect</B>. We ask Google first, so if delegation isn’t set up yet, or the email isn’t a user in your Workspace, you’ll

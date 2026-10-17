@@ -47,8 +47,9 @@ export function ChatDmView({ link, busy, error, onUnlink }: { link: ChatLink | n
   );
 }
 
-// The /chat/link page (TL-289): linking, linked, or why not.
-export type LinkResult = 'linking' | 'linked' | { error: string };
+// The /chat/link page (TL-289): checking the code, asking which Google account (audit: never link
+// on page load, since the link may be someone else's), linking, linked, or why not.
+export type LinkResult = 'checking' | { confirm: string } | 'linking' | 'linked' | { error: string };
 
 // linkError: what went wrong, in words someone can act on.
 export function linkError(err: unknown): string {
@@ -58,10 +59,18 @@ export function linkError(err: unknown): string {
 }
 
 // ChatLinkView: pure, for tests.
-export function ChatLinkView({ result }: { result: LinkResult }) {
+export function ChatLinkView({ result, onConfirm }: { result: LinkResult; onConfirm?: () => void }) {
   return (
     <main className="mx-auto max-w-xl px-6 py-16">
       <h1 className="text-2xl font-bold tracking-tight">Google Chat</h1>
+      {result === 'checking' && <p role="status" className="mt-4 text-muted-foreground">Checking the link…</p>}
+      {typeof result === 'object' && 'confirm' in result && (
+        <>
+          <p className="mt-4">Send your TrackLin.es notifications to the Google Chat account <strong>{result.confirm || 'that sent this link'}</strong>?</p>
+          <p className="mt-2 text-sm text-muted-foreground">Only link it if that’s your own Google account and you asked the TrackLin.es app for this link yourself. If someone sent it to you, don’t.</p>
+          <Button className="mt-4 mr-2" onClick={onConfirm}>Link this account</Button>
+        </>
+      )}
       {result === 'linking' && <p role="status" className="mt-4 text-muted-foreground">Linking your Google Chat…</p>}
       {result === 'linked' && (
         <>
@@ -69,7 +78,7 @@ export function ChatLinkView({ result }: { result: LinkResult }) {
           <p className="mt-2 text-sm text-muted-foreground">You can unlink it any time in Your settings.</p>
         </>
       )}
-      {typeof result === 'object' && <p role="alert" className="mt-4 text-destructive">{result.error}</p>}
+      {typeof result === 'object' && 'error' in result && <p role="alert" className="mt-4 text-destructive">{result.error}</p>}
       <Link href="/account" className={buttonVariants({ variant: 'outline', className: 'mt-6' })}>Go to Your settings</Link>
     </main>
   );

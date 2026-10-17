@@ -46,3 +46,20 @@ test('.. never reaches the backend; a 429 keeps Retry-After', async () => {
   expect(limited.headers.get('retry-after')).toBe('30');
   expect(limited.headers.has('set-cookie')).toBe(false);
 });
+
+test('bodies are capped before they are buffered: over 5 MiB is a 413 and never reaches the backend (TL-382)', async () => {
+  const { MAX_PROXY_BODY } = await import('@/lib/proxy');
+  const before = seen.length;
+  const exact = await POST(new NextRequest('https://tracklin.es/api/big', { method: 'POST', body: 'a'.repeat(MAX_PROXY_BODY) }), ctx(['big']));
+  expect(exact.status).toBe(200);
+  expect(seen.at(-1)?.body.length).toBe(MAX_PROXY_BODY);
+  const over = await POST(new NextRequest('https://tracklin.es/api/big', { method: 'POST', body: 'a'.repeat(MAX_PROXY_BODY + 1) }), ctx(['big']));
+  expect(over.status).toBe(413);
+  // a body that doesn't declare its length is cut off while streaming
+  let pulled = 0;
+  const stream = new ReadableStream({ pull(c) { pulled++; c.enqueue(new Uint8Array(1 << 20)); } });
+  const streamed = await POST(new NextRequest('https://tracklin.es/api/big', { method: 'POST', body: stream, duplex: 'half' } as ConstructorParameters<typeof NextRequest>[1]), ctx(['big']));
+  expect(streamed.status).toBe(413);
+  expect(pulled).toBeLessThan(10);
+  expect(seen.length).toBe(before + 1);
+});

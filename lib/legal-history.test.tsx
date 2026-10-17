@@ -69,4 +69,5 @@ test('the backend’s list of versions, and the bell’s notice', async () => {
   expect(notificationLine(notice, [])).toBe(notice.text); // not "Someone We've updated…"
   expect(notificationHref(notice)).toBe('/terms/2026-11-20');
   expect(notificationHref({ ...notice, link: '//evil.example/x' })).toBeNull(); // only pages on this site
+  expect(notificationHref({ ...notice, link: '/\\evil.example/x' })).toBeNull(); // browsers read /\ as // (audit)
 });

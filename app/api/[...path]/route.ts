@@ -1,5 +1,5 @@
 import type { NextRequest } from 'next/server';
-import { backendURL, requestHeaders, responseHeaders } from '@/lib/proxy';
+import { backendURL, MAX_PROXY_BODY, readCapped, requestHeaders, responseHeaders } from '@/lib/proxy';
 import { reportServer } from '@/lib/report';
 
 export const dynamic = 'force-dynamic';
@@ -22,7 +22,9 @@ async function forward(request: NextRequest, context: RouteContext): Promise<Res
     signal: request.signal, // the browser left (e.g. a board's live stream): stop asking the backend too
   };
   if (request.method !== 'GET' && request.method !== 'HEAD') {
-    init.body = await request.arrayBuffer();
+    const body = await readCapped(request, MAX_PROXY_BODY); // never buffer more than the backend would take (TL-382)
+    if (!body) return new Response('request too large', { status: 413 });
+    init.body = body;
   }
 
   let upstream: Response;

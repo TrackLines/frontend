@@ -14,8 +14,9 @@ export const UK_HOLIDAYS = 'en.uk#holiday@group.v.calendar.google.com';
 
 // calendarError: the server's reason (it says what to fix in Google), else a fallback.
 export const calendarError = (err: unknown, fallback: string) =>
-  err instanceof ApiError && (err.status === 400 || err.status === 502 || err.status === 503) && err.message ? err.message
-    : err instanceof ApiError && err.status === 403 ? 'Only organization admins can change this.' : fallback;
+  err instanceof ApiError && [400, 409, 502, 503].includes(err.status) && err.message ? err.message
+    // 403: not an admin, or (audit) no verified address of their own at the domain, which says so
+    : err instanceof ApiError && err.status === 403 ? (err.message.includes('verify your own') ? err.message : 'Only organization admins can change this.') : fallback;
 
 type Busy = 'connect' | 'test' | 'sync' | 'remove' | null;
 

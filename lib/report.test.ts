@@ -31,12 +31,12 @@ test('reports are limited: 10 a minute per address, 100 in all', () => {
   expect(allowReport('fresh', now)).toBe(false);
 });
 
-test('the browser\'s errors reach Bugfixes through /api/client-errors, always answered 204', async () => {
+test('the browser\'s errors reach Bugfixes through /api/client-errors, answered 204 (413 when too big)', async () => {
   const res = await post(JSON.stringify({ kind: 'rejection', message: 'fetch failed', stack: 'at Board', path: '/boards/b1?x=1' }));
   expect(res.status).toBe(204);
   expect(reported).toEqual([['browser rejection: fetch failed', '/boards/b1\nat Board']]);
   expect((await post('not json')).status).toBe(204);
-  expect((await post('x'.repeat(20_000))).status).toBe(204);
+  expect((await post('x'.repeat(20_000))).status).toBe(413); // too big: refused unread (TL-382)
   expect(reported.length).toBe(1);
   for (let i = 0; i < 20; i++) await post(JSON.stringify({ message: `m${i}` }), '198.51.100.1');
   expect(reported.length).toBe(11); // that address: 10 a minute

@@ -34,10 +34,13 @@ function Reports() {
     setReport(null);
     setRollup(null);
     setError(null);
-    const failed = (e: unknown) => setError(e instanceof ApiError ? e.status : 500);
-    if (scope.kind === 'board') reports.board(scope.id, range, token).then(setReport, failed);
-    else if (scope.kind === 'project') reports.project(scope.id, range, token).then(setRollup, failed);
-    else reports.org(range, token).then(setRollup, failed);
+    let live = true; // a slower earlier answer mustn't land over this period's (audit)
+    const only = <T,>(set: (v: T) => void) => (v: T) => { if (live) set(v); };
+    const failed = only((e: unknown) => setError(e instanceof ApiError ? e.status : 500));
+    if (scope.kind === 'board') reports.board(scope.id, range, token).then(only(setReport), failed);
+    else if (scope.kind === 'project') reports.project(scope.id, range, token).then(only(setRollup), failed);
+    else reports.org(range, token).then(only(setRollup), failed);
+    return () => { live = false; };
   }, [key, loaded]); // token refreshes must not refetch
 
   if (!scope) return <Message>Open a report from a board’s past sprints, a project, or organization settings.</Message>;

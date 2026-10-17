@@ -25,3 +25,9 @@ test('the lock sends people to sign in and back to this roadmap', () => {
   expect(html).toContain('Sign in to view this roadmap');
   expect(html).toContain('href="/sign-in?redirect_url=%2Fr%2Fabc%201"');
 });
+
+test('/r/<id> only takes roadmap ids: x.png and ../ are 404s before Clerk is asked (TL-301, audit)', async () => {
+  const { isRoadmapId } = await import('./public-roadmap');
+  expect(isRoadmapId('0192f3a4-5b6c-7d8e-9f01-23456789abcd')).toBe(true);
+  for (const bad of ['x.png', '../../health', '0192f3a4-5b6c-7d8e-9f01-23456789abcd.js', '']) expect(isRoadmapId(bad)).toBe(false);
+});

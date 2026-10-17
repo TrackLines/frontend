@@ -47,6 +47,9 @@ test('no service account: admins are told; checking; busy', () => {
 test('Google’s reasons come through in words; other failures fall back', () => {
   expect(calendarError(new ApiError(400, 'Google doesn’t know that user.'), 'x')).toBe('Google doesn’t know that user.');
   expect(calendarError(new ApiError(403, 'forbidden'), 'x')).toBe('Only organization admins can change this.');
+  const own = 'to connect acme.test, add and verify your own acme.test email address on your TrackLin.es account first';
+  expect(calendarError(new ApiError(403, own), 'x')).toBe(own); // audit: says what to do
+  expect(calendarError(new ApiError(409, 'acme.test is already connected to another organization'), 'x')).toContain('another organization');
   expect(calendarError(new Error('boom'), 'Couldn’t connect.')).toBe('Couldn’t connect.');
 });
 

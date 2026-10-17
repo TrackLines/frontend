@@ -183,7 +183,18 @@ async function liveToken(passed: string | null | undefined, skipCache = false): 
   return (await session?.getToken({ skipCache }).catch(() => null)) ?? passed;
 }
 
+// safeApiPath: a path built from a page's params (/r/[id]) can't climb out of /api: on the server
+// these calls go straight to the backend, past the /api proxy's own checks (audit).
+export function safeApiPath(path: string): boolean {
+  return path.split('?')[0].split('/').every((seg) => {
+    let s = seg;
+    try { s = decodeURIComponent(seg); } catch { return false; }
+    return s !== '.' && s !== '..' && !s.includes('\\') && !(s !== seg && s.includes('/'));
+  });
+}
+
 export async function api<T>(path: string, { method = 'GET', body, token }: Options = {}): Promise<T> {
+  if (!safeApiPath(path)) throw new ApiError(404, 'not found');
   const send = async (skipCache: boolean) => {
     const headers: Record<string, string> = {};
     if (body !== undefined) headers['Content-Type'] = 'application/json';
@@ -710,6 +721,7 @@ const chatScope = (projectId?: string) => (projectId ? `?project_id=${encodeURIC
 export type ChatLink = { available: boolean; linked: boolean; linked_at?: string };
 export const chatApp = {
   status: (token: T) => api<ChatLink>('/me/google-chat', { token }),
+  linkCode: (code: string, token: T) => api<{ google: string }>(`/me/google-chat/link?code=${encodeURIComponent(code)}`, { token }),
   link: (code: string, token: T) => api<{ linked: boolean }>('/me/google-chat/link', { method: 'POST', body: { code }, token }),
   unlink: (token: T) => api<void>('/me/google-chat', { method: 'DELETE', token }),
 };

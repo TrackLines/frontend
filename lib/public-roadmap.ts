@@ -18,3 +18,7 @@ export async function ownerOnly<T>(token: string | null, get: (token: string) =>
   if (!token) return null;
   return get(token).catch(() => null);
 }
+
+// isRoadmapId: roadmap ids are UUIDs. Anything else is a 404 before Clerk is asked: a path like
+// /r/x.png skips proxy.ts (static-file matcher), and auth() throws there (TL-301).
+export const isRoadmapId = (id: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);

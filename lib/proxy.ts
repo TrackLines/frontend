@@ -40,3 +40,32 @@ export function responseHeaders(upstream: Headers): Headers {
   }
   return out;
 }
+
+// readCapped reads a request body up to max bytes, stopping as soon as it's over (TL-382): a declared
+// Content-Length over max is refused unread, and a body without one is cut off mid-stream.
+// null: too big.
+export async function readCapped(request: Request, max: number): Promise<Uint8Array<ArrayBuffer> | null> {
+  const declared = Number(request.headers.get('content-length') ?? '');
+  if (declared > max) return null;
+  if (!request.body) return new Uint8Array(new ArrayBuffer(0));
+  const reader = request.body.getReader();
+  const parts: Uint8Array[] = [];
+  let size = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    size += value.byteLength;
+    if (size > max) {
+      await reader.cancel().catch(() => {});
+      return null;
+    }
+    parts.push(value);
+  }
+  const out = new Uint8Array(new ArrayBuffer(size));
+  let at = 0;
+  for (const p of parts) { out.set(p, at); at += p.byteLength; }
+  return out;
+}
+
+// MAX_PROXY_BODY: the largest body the backend takes (its webhooks, 5 MiB); anything bigger is a 413 here.
+export const MAX_PROXY_BODY = 5 << 20;

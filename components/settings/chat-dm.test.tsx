@@ -26,6 +26,18 @@ test('the link page says what happened, and what to do when the link is spent', 
   expect(renderToStaticMarkup(<ChatLinkView result={{ error: 'expired' }} />)).toContain('role="alert"');
 });
 
+test('the link page asks which Google account before linking, and never links on load (audit)', async () => {
+  const ask = renderToStaticMarkup(<ChatLinkView result={{ confirm: 'ava@acme.test' }} />);
+  expect(ask).toContain('<strong>ava@acme.test</strong>');
+  expect(ask).toContain('If someone sent it to you, don’t.');
+  expect(ask).toContain('>Link this account<');
+  expect(ask).not.toContain('role="alert"');
+  const page = await Bun.file(new URL('../../app/chat/link/page.tsx', import.meta.url)).text();
+  const effect = page.slice(page.indexOf('useEffect('), page.indexOf('const confirm'));
+  expect(effect).toContain('chatApp.linkCode(');
+  expect(effect).not.toContain('chatApp.link(');
+});
+
 test('the link page needs sign-in, so the code links the right account', async () => {
   const src = await Bun.file(new URL('../../proxy.ts', import.meta.url)).text();
   expect(src).toContain("'/chat'");
