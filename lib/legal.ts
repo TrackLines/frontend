@@ -1,10 +1,10 @@
 // Who stands behind Tracklines, for the privacy policy, the terms and the footer (TL-203).
-// UK companies must show their registered number and office on their website: fill both in before launch.
+// UK companies must show their registered number and office on their website; keep them matching Companies House.
 export const LEGAL = {
   company: 'Keloran Limited', // Companies House: KELORAN LIMITED
   tradingAs: 'ChewedFeed',
   companyNumber: '16481416',
-  registeredOffice: '', // TODO before launch: the virtual office, once it's the registered office
+  registeredOffice: 'Bartle House, Oxford Court, Manchester, M2 3WQ',
   contact: '/contact', // the contact form (enquiries go to ChewedFeed HQ), not an email address
   law: 'England and Wales',
   retentionDays: 30, // a deleted organization's data is purged after this (backend clerkhooks.Retention)
