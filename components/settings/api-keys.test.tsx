@@ -70,7 +70,7 @@ test('AI agent keys and service keys are in their own tabs, with counts, AI agen
     { id: 'a2', name: 'Codex', kind: 'ai' as const, prefix: 'tl_ai_cd', created_at: '2026-10-02T00:00:00Z', last_used_at: null },
     { id: 's1', name: 'Deploys', kind: 'service' as const, prefix: 'tl_s_ef', created_at: '2026-10-03T00:00:00Z', last_used_at: null },
   ];
-  expect(KEY_TABS.map((t) => t.kind)).toEqual(['ai', 'service']);
+  expect(KEY_TABS.map((t) => t.kind)).toEqual(['personal', 'ai', 'service']);
   const ai = renderToStaticMarkup(<ApiKeyTabs list={keys} tab="ai" onTab={() => {}} onRevoke={() => {}} />);
   expect(ai).toContain('AI agents (2)');
   expect(ai).toContain('Service keys (1)');
@@ -80,9 +80,17 @@ test('AI agent keys and service keys are in their own tabs, with counts, AI agen
   expect(service).toContain('Deploys');
   expect(service).not.toContain('Codex');
   expect(renderToStaticMarkup(<ApiKeyTabs list={keys.slice(0, 2)} tab="service" onTab={() => {}} onRevoke={() => {}} />)).toContain('No service keys yet.');
-  const page = await Bun.file(new URL('../../app/settings/api-keys/page.tsx', import.meta.url)).text();
-  expect(page).toContain('initialKind={tab}'); // New key starts on the open tab's kind
-  expect(page).toContain('setTab(listed.kind)'); // a new key shows in its tab
+  const manager = await Bun.file(new URL('./api-keys.tsx', import.meta.url)).text();
+  expect(manager).toContain('initialKind={tab}'); // New key starts on the open tab's kind
+  expect(manager).toContain('setTab(listed.kind)'); // a new key shows in its tab
+});
+
+test('AI keys are made in Your settings; the org page has them only behind org-ai-keys (TL-451)', async () => {
+  const org = await Bun.file(new URL('../../app/settings/api-keys/page.tsx', import.meta.url)).text();
+  expect(org).toContain(`is('org-ai-keys').enabled() ? ['service', 'ai'] : ['service']`);
+  const account = await Bun.file(new URL('../../app/account/page.tsx', import.meta.url)).text();
+  expect(account).toContain(`<ApiKeysManager token={token} kinds={['personal', 'ai']} />`);
+  expect(account).toContain('id="api-keys"');
 });
 
 test('keys expire: a lifetime picker defaulting to 90 days, up to a year and a day (TL-433)', () => {
@@ -102,4 +110,36 @@ test('the list says when a key expires, and warns in its last 14 days (TL-433)',
   expect(expiry('2026-10-18T11:59:00Z', now)).toEqual({ text: 'expired: make a new key', warn: true });
   const html = renderToStaticMarkup(<ApiKeyList list={[{ ...key, expires_at: '2099-01-01T00:00:00Z' }]} onRevoke={() => {}} />);
   expect(html).toContain('expires 1 Jan 2099');
+});
+
+test('personal keys: named by hand, read-only when asked, only the kinds a page makes (TL-451)', async () => {
+  const { ApiKeyTabs, KIND_LABEL } = await import('./api-keys');
+  expect(keyInput('personal', 'claude-code', '', ' TRMNL ', true)).toEqual({ kind: 'personal', name: 'TRMNL', read_only: true });
+  expect(keyInput('personal', 'claude-code', '', 'TRMNL')).toEqual({ kind: 'personal', name: 'TRMNL' });
+  expect(keyInput('personal', 'claude-code', '', ' ', true)).toBeNull();
+  expect(keyInput('service', 'claude-code', '', 'dash', true)).toEqual({ kind: 'service', name: 'dash', read_only: true });
+
+  const form = (kinds: ('ai' | 'service' | 'personal')[], kind: 'ai' | 'service' | 'personal', readOnly = false) => renderToStaticMarkup(
+    <NewKeyFields kinds={kinds} kind={kind} client="claude-code" label="" name="" readOnly={readOnly} onKind={() => {}} onClient={() => {}} onLabel={() => {}} onName={() => {}} />);
+  const personal = form(['personal', 'ai'], 'personal', true);
+  expect(personal).toContain('Read only');
+  expect(personal).toContain('e.g. TRMNL');
+  expect(personal).toContain('aria-checked="true"');
+  expect(form(['personal', 'ai'], 'ai')).not.toContain('Read only'); // agents work, so they write
+  expect(form(['service'], 'service')).not.toContain('Key type'); // one kind: nothing to pick
+
+  const keys: ApiKey[] = [
+    { id: 'p1', name: 'TRMNL', kind: 'personal', prefix: 'tl_p_ab', created_at: '2026-10-01T00:00:00Z', last_used_at: null, read_only: true },
+    { id: 'a1', name: 'Claude', kind: 'ai', prefix: 'tl_ai_ab', created_at: '2026-10-01T00:00:00Z', last_used_at: null },
+    { id: 's1', name: 'Deploys', kind: 'service', prefix: 'tl_s_ef', created_at: '2026-10-03T00:00:00Z', last_used_at: null },
+  ];
+  // Your settings: personal and AI, never the org's service keys
+  const mine = renderToStaticMarkup(<ApiKeyTabs list={keys} tab="personal" kinds={['personal', 'ai']} onTab={() => {}} onRevoke={() => {}} />);
+  for (const s of ['Personal (1)', 'AI agents (1)', 'TRMNL', 'Read only', KIND_LABEL.personal]) expect(mine).toContain(s);
+  expect(mine).not.toContain('Service keys');
+  // organization settings without org-ai-keys: service keys only
+  const org = renderToStaticMarkup(<ApiKeyTabs list={keys} tab="service" kinds={['service']} onTab={() => {}} onRevoke={() => {}} />);
+  expect(org).toContain('Service keys (1)');
+  expect(org).not.toContain('AI agents');
+  expect(org).not.toContain('Personal');
 });

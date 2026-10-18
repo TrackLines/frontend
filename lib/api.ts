@@ -89,7 +89,8 @@ export type Project = {
 // open/done: board tickets (done = last column); urgent: open urgent tickets anywhere; active: latest change
 export type ProjectStats = { boards: number; roadmaps: number; open: number; done: number; backlog: number; urgent: number; active: string };
 export type ProjectLabel = { label: string; count: number };
-export type ApiKeyKind = 'ai' | 'service';
+// personal: acts exactly as you, for your own scripts and displays (TL-451); service keys are the org's
+export type ApiKeyKind = 'ai' | 'service' | 'personal';
 // the client an AI agent's key is for (TL-269); matches components/mcp-connect.tsx's setup steps
 export type ApiKeyClient = 'claude-code' | 'claude-desktop' | 'codex' | 'cursor' | 'vscode' | 'gemini' | 'other';
 export type ApiKey = {
@@ -97,8 +98,9 @@ export type ApiKey = {
   client?: ApiKeyClient | null; label?: string | null; // AI keys: their client, and an "other" agent's name
   display?: string; // what it's called: "Claude", or a service key's name
   expires_at?: string; // refused after this (TL-433)
+  read_only?: boolean; // GET only (TL-450)
 };
-export type NewApiKey = ({ kind: 'ai'; client: ApiKeyClient; label?: string } | { kind: 'service'; name: string }) & { expires_in_days?: number };
+export type NewApiKey = ({ kind: 'ai'; client: ApiKeyClient; label?: string } | { kind: 'service' | 'personal'; name: string }) & { expires_in_days?: number; read_only?: boolean };
 // the active organization's plan (TL-243). project_limit -1 = unlimited; billed = through Stripe, so there's
 // billing to manage; can_manage = you're an org admin, who buys and manages it
 // plan (TL-290): free 1 project, pro 5, enterprise unlimited; project_limit -1 is unlimited

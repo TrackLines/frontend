@@ -3,11 +3,12 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { AGENTS, McpInstructions } from '@/components/mcp-connect';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import type { ApiKey, ApiKeyClient, ApiKeyKind, NewApiKey } from '@/lib/api';
+import { ApiError, apiKeys, type ApiKey, type ApiKeyClient, type ApiKeyKind, type NewApiKey } from '@/lib/api';
 
 const when = new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeStyle: 'short' });
 const day = new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium' });
@@ -43,31 +44,37 @@ export function splitSecret(created: ApiKey & { key: string }): { listed: ApiKey
   return { listed, secret: key };
 }
 
+// KIND_LABEL: what each kind of key is called in lists and the form.
+export const KIND_LABEL: Record<ApiKeyKind, string> = { ai: 'AI agent', service: 'Server / API', personal: 'Personal' };
+
 // keyInput: what the new-key form sends, or null until it's complete (TL-269). Agent keys are named
-// by their client (an "other" agent optionally by what it's called); script keys by hand.
-export function keyInput(kind: ApiKeyKind, client: ApiKeyClient, label: string, name: string): NewApiKey | null {
-  if (kind === 'service') return name.trim() ? { kind, name: name.trim() } : null;
+// by their client (an "other" agent optionally by what it's called); service and personal keys by hand.
+export function keyInput(kind: ApiKeyKind, client: ApiKeyClient, label: string, name: string, readOnly = false): NewApiKey | null {
+  if (kind !== 'ai') return name.trim() ? { kind, name: name.trim(), ...(readOnly && { read_only: true }) } : null;
   return client === 'other' && label.trim() ? { kind, client, label: label.trim() } : { kind, client };
 }
 
 // NewKeyFields: the new-key form's fields (pure, for tests). Agents pick their client and get its
-// name; only "Other" asks what the agent is called. Scripts are named by hand.
-export function NewKeyFields({ kind, client, label, name, onKind, onClient, onLabel, onName }: {
-  kind: ApiKeyKind; client: ApiKeyClient; label: string; name: string;
-  onKind: (k: ApiKeyKind) => void; onClient: (c: ApiKeyClient) => void; onLabel: (l: string) => void; onName: (n: string) => void;
+// name; only "Other" asks what the agent is called. Service and personal keys are named by hand and
+// can be read-only (TL-451). kinds: the types this page makes; one means no type picker.
+export function NewKeyFields({ kinds = ['ai', 'service'], kind, client, label, name, readOnly = false, onKind, onClient, onLabel, onName, onReadOnly = () => {} }: {
+  kinds?: ApiKeyKind[]; kind: ApiKeyKind; client: ApiKeyClient; label: string; name: string; readOnly?: boolean;
+  onKind: (k: ApiKeyKind) => void; onClient: (c: ApiKeyClient) => void; onLabel: (l: string) => void; onName: (n: string) => void; onReadOnly?: (r: boolean) => void;
 }) {
+  const types: Record<ApiKeyKind, string> = { ai: 'AI agent', service: 'Server / API integration', personal: 'Personal (acts as you)' };
   return (
     <>
-      <label className="grid gap-1.5 text-sm font-medium">
-        Key type
-        <Select items={{ ai: 'AI agent', service: 'Server / API integration' }} value={kind} onValueChange={(v) => v && onKind(v as ApiKeyKind)}>
-          <SelectTrigger aria-label="Key type" className="w-full"><SelectValue /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="ai">AI agent</SelectItem>
-            <SelectItem value="service">Server / API integration</SelectItem>
-          </SelectContent>
-        </Select>
-      </label>
+      {kinds.length > 1 && (
+        <label className="grid gap-1.5 text-sm font-medium">
+          Key type
+          <Select items={Object.fromEntries(kinds.map((k) => [k, types[k]]))} value={kind} onValueChange={(v) => v && onKind(v as ApiKeyKind)}>
+            <SelectTrigger aria-label="Key type" className="w-full"><SelectValue /></SelectTrigger>
+            <SelectContent>
+              {kinds.map((k) => <SelectItem key={k} value={k}>{types[k]}</SelectItem>)}
+            </SelectContent>
+          </Select>
+        </label>
+      )}
       {kind === 'ai' ? (
         <>
           <label className="grid gap-1.5 text-sm font-medium">
@@ -88,10 +95,16 @@ export function NewKeyFields({ kind, client, label, name, onKind, onClient, onLa
           <p className="text-xs text-muted-foreground">It&apos;s named after the agent: you&apos;ll see “{agentName(client, label)}”, and everyone else sees it with your username, e.g. “{agentName(client, label)} (keloran)”.</p>
         </>
       ) : (
-        <label className="grid gap-1.5 text-sm font-medium">
-          Name
-          <Input value={name} maxLength={120} placeholder="e.g. deploys" onChange={(e) => onName(e.target.value)} />
-        </label>
+        <>
+          <label className="grid gap-1.5 text-sm font-medium">
+            Name
+            <Input value={name} maxLength={120} placeholder={kind === 'personal' ? 'e.g. TRMNL' : 'e.g. deploys'} onChange={(e) => onName(e.target.value)} />
+          </label>
+          <label className="flex items-start gap-2 text-sm font-medium">
+            <Checkbox checked={readOnly} onCheckedChange={(c) => onReadOnly(c === true)} aria-label="Read only" className="mt-0.5" />
+            <span>Read only<span className="block text-xs font-normal text-muted-foreground">It can see tickets but not change anything. Best for displays and anything run by someone else.</span></span>
+          </label>
+        </>
       )}
     </>
   );
@@ -121,16 +134,19 @@ export function agentName(client: ApiKeyClient, label: string): string {
 }
 
 // NewKeyDialog: create a key; onCreate throws to show an error.
-// initialKind: the kind it starts on, the open tab's (TL-391).
-export function NewKeyDialog({ open, onOpenChange, onCreate, initialKind = 'ai' }: { open: boolean; onOpenChange: (open: boolean) => void; onCreate: (input: NewApiKey) => Promise<void>; initialKind?: ApiKeyKind }) {
-  const [kind, setKind] = useState<ApiKeyKind>(initialKind);
+// initialKind: the kind it starts on, the open tab's (TL-391); kinds: the types this page makes.
+// Personal keys start read-only (TL-451).
+export function NewKeyDialog({ open, onOpenChange, onCreate, initialKind = 'ai', kinds = ['ai', 'service'] }: { open: boolean; onOpenChange: (open: boolean) => void; onCreate: (input: NewApiKey) => Promise<void>; initialKind?: ApiKeyKind; kinds?: ApiKeyKind[] }) {
+  const [kind, setKindState] = useState<ApiKeyKind>(initialKind);
+  const [readOnly, setReadOnly] = useState(initialKind === 'personal');
+  function setKind(k: ApiKeyKind) { setKindState(k); setReadOnly(k === 'personal'); }
   const [client, setClient] = useState<ApiKeyClient>('claude-code');
   const [label, setLabel] = useState('');
   const [name, setName] = useState('');
   const [days, setDays] = useState<number>(DEFAULT_DAYS);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
-  const input = keyInput(kind, client, label, name);
+  const input = keyInput(kind, client, label, name, readOnly);
   useEffect(() => { if (open) setKind(initialKind); }, [open]); // each time it opens, on the open tab's kind
 
   function reset() { setKind(initialKind); setClient('claude-code'); setLabel(''); setName(''); setDays(DEFAULT_DAYS); setError(''); }
@@ -156,9 +172,9 @@ export function NewKeyDialog({ open, onOpenChange, onCreate, initialKind = 'ai' 
         <form onSubmit={submit} className="grid gap-4">
           <DialogHeader>
             <DialogTitle>New API key</DialogTitle>
-            <DialogDescription>AI keys can be assigned tickets. Service keys are for servers and integrations.</DialogDescription>
+            <DialogDescription>{kinds.map((k) => KIND_HINT[k]).join(' ')}</DialogDescription>
           </DialogHeader>
-          <NewKeyFields kind={kind} client={client} label={label} name={name} onKind={setKind} onClient={setClient} onLabel={setLabel} onName={setName} />
+          <NewKeyFields kinds={kinds} kind={kind} client={client} label={label} name={name} readOnly={readOnly} onKind={setKind} onClient={setClient} onLabel={setLabel} onName={setName} onReadOnly={setReadOnly} />
           <LifetimeField days={days} onDays={setDays} />
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           <DialogFooter>
@@ -188,8 +204,8 @@ export function SetupDialog({ fresh, open, onOpenChange }: { fresh: FreshKeyInfo
 // FreshKey: the one time the secret is shown, with copy; an agent key can reopen its setup steps.
 export function FreshKey({ fresh, copied, onCopy, onSetup }: { fresh: FreshKeyInfo; copied: boolean; onCopy: () => void; onSetup?: () => void }) {
   return (
-    <div role="status" className="mb-6 rounded-xl border border-primary/40 bg-primary/5 p-4">
-      <p className="mb-2 font-medium">{fresh.kind === 'ai' ? 'AI key' : 'Service key'} for “{fresh.name}” — copy it now, it won&apos;t be shown again.</p>
+    <div role="status" className="rounded-xl border border-primary/40 bg-primary/5 p-4">
+      <p className="mb-2 font-medium">{{ ai: 'AI key', service: 'Service key', personal: 'Personal key' }[fresh.kind]} for “{fresh.name}” — copy it now, it won&apos;t be shown again.</p>
       <div className="flex flex-wrap items-center gap-2">
         <code className="min-w-0 flex-1 overflow-x-auto rounded bg-background px-2 py-1.5 text-sm">{fresh.key}</code>
         <Button size="sm" onClick={onCopy}>{copied ? 'Copied' : 'Copy'}</Button>
@@ -199,20 +215,29 @@ export function FreshKey({ fresh, copied, onCopy, onSetup }: { fresh: FreshKeyIn
   );
 }
 
-// KEY_TABS: AI keys and service keys, each in its own tab so it's clear which is which (TL-391).
+// KIND_HINT: one line on what each kind of key is for (the new-key dialog).
+const KIND_HINT: Record<ApiKeyKind, string> = {
+  ai: 'AI keys can be assigned tickets.',
+  service: 'Service keys are for servers and integrations.',
+  personal: 'Personal keys act as you, for your own scripts and displays.',
+};
+
+// KEY_TABS: each kind of key in its own tab so it's clear which is which (TL-391).
 export const KEY_TABS: { kind: ApiKeyKind; name: string; hint: string; empty: string }[] = [
+  { kind: 'personal', name: 'Personal', hint: 'Keys that act as you (tl_p_…), for your own scripts and displays such as TRMNL: “my tickets” are yours, and anything they change is recorded as you. Make them read only unless they need to change things.', empty: 'No personal keys yet.' },
   { kind: 'ai', name: 'AI agents', hint: 'One key per AI agent (tl_ai_…). Agents can be assigned tickets, and their work shows as theirs.', empty: 'No AI agent keys yet.' },
   { kind: 'service', name: 'Service keys', hint: 'For servers, scripts and integrations such as Bugfixes (tl_s_…). They can create and update tickets, but can’t be assigned work.', empty: 'No service keys yet.' },
 ];
 
-// ApiKeyTabs: my keys, AI agents and service keys apart.
-export function ApiKeyTabs({ list, tab, onTab, onRevoke }: { list: ApiKey[]; tab: ApiKeyKind; onTab: (kind: ApiKeyKind) => void; onRevoke: (k: ApiKey) => void }) {
+// ApiKeyTabs: my keys of the given kinds, each kind apart.
+export function ApiKeyTabs({ list, tab, onTab, onRevoke, kinds = ['ai', 'service'] }: { list: ApiKey[]; tab: ApiKeyKind; onTab: (kind: ApiKeyKind) => void; onRevoke: (k: ApiKey) => void; kinds?: ApiKeyKind[] }) {
+  const tabs = KEY_TABS.filter((t) => kinds.includes(t.kind));
   return (
     <Tabs value={tab} onValueChange={(v) => onTab(v as ApiKeyKind)} className="gap-4">
       <TabsList>
-        {KEY_TABS.map((t) => <TabsTrigger key={t.kind} value={t.kind}>{t.name} ({list.filter((k) => k.kind === t.kind).length})</TabsTrigger>)}
+        {tabs.map((t) => <TabsTrigger key={t.kind} value={t.kind}>{t.name} ({list.filter((k) => k.kind === t.kind).length})</TabsTrigger>)}
       </TabsList>
-      {KEY_TABS.map((t) => (
+      {tabs.map((t) => (
         <TabsContent key={t.kind} value={t.kind} className="grid gap-3">
           <p className="text-sm text-muted-foreground">{t.hint}</p>
           <ApiKeyList list={list.filter((k) => k.kind === t.kind)} onRevoke={onRevoke} empty={t.empty} />
@@ -230,7 +255,8 @@ export function ApiKeyList({ list, onRevoke, empty = 'No keys yet.' }: { list: A
       {list.map((k) => (
         <li key={k.id} className="flex flex-wrap items-center gap-x-4 gap-y-1 p-4">
           <span className="font-medium" title={k.client ? `Recorded as ${k.name}` : undefined}>{k.display ?? k.name}</span>
-          <span className="rounded-full border px-2 py-0.5 text-xs text-muted-foreground">{k.kind === 'ai' ? 'AI agent' : 'Server / API'}</span>
+          <span className="rounded-full border px-2 py-0.5 text-xs text-muted-foreground">{KIND_LABEL[k.kind]}</span>
+          {k.read_only && <span className="rounded-full border px-2 py-0.5 text-xs text-muted-foreground">Read only</span>}
           <code className="text-sm text-muted-foreground">{k.prefix}…</code>
           <span className="text-sm text-muted-foreground">{k.last_used_at ? `last used ${when.format(new Date(k.last_used_at))}` : 'never used'}</span>
           {(() => {
@@ -241,5 +267,53 @@ export function ApiKeyList({ list, onRevoke, empty = 'No keys yet.' }: { list: A
         </li>
       ))}
     </ul>
+  );
+}
+
+// ApiKeysManager: list, create and revoke my keys of the given kinds, the first kind's tab open.
+// Your settings has personal and AI keys; organization settings has service keys (TL-451).
+export function ApiKeysManager({ token, kinds }: { token: string; kinds: ApiKeyKind[] }) {
+  const [list, setList] = useState<ApiKey[] | null>(null);
+  const [failed, setFailed] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [fresh, setFresh] = useState<FreshKeyInfo | null>(null); // shown once
+  const [setupOpen, setSetupOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [tab, setTab] = useState<ApiKeyKind>(kinds[0]);
+  useEffect(() => { apiKeys.list(token).then(setList, () => setFailed(true)); }, []); // load once; token refreshes must not refetch
+
+  if (failed) return <p className="text-destructive" role="alert">Couldn&apos;t load your API keys. Please refresh to try again.</p>;
+  if (!list) return <p role="status" className="text-sm text-muted-foreground">Loading API keys…</p>;
+
+  async function revoke(k: ApiKey) {
+    if (!confirm(`Revoke "${k.display ?? k.name}"? Anything using it stops working immediately.`)) return;
+    await apiKeys.revoke(k.id, token);
+    setList((l) => l && l.filter((x) => x.id !== k.id));
+  }
+
+  return (
+    <div className="grid gap-4">
+      <div><Button onClick={() => setCreating(true)}>New key</Button></div>
+      {fresh && <FreshKey fresh={fresh} copied={copied} onCopy={() => navigator.clipboard.writeText(fresh.key).then(() => setCopied(true))} onSetup={() => setSetupOpen(true)} />}
+      <ApiKeyTabs list={list} tab={tab} onTab={setTab} onRevoke={(k) => void revoke(k)} kinds={kinds} />
+      {fresh?.kind === 'ai' && <SetupDialog fresh={fresh} open={setupOpen} onOpenChange={setSetupOpen} />}
+      <NewKeyDialog
+        initialKind={tab}
+        kinds={kinds}
+        open={creating}
+        onOpenChange={setCreating}
+        onCreate={async (input) => {
+          const k = await apiKeys.create(input, token).catch((err) => {
+            throw new Error(err instanceof ApiError && err.status < 500 ? err.message : 'Couldn’t create the key. Please try again.');
+          });
+          const { listed, secret } = splitSecret(k);
+          setList((l) => [...(l ?? []), listed]);
+          setFresh({ name: listed.display ?? listed.name, kind: listed.kind, key: secret, client: listed.client });
+          setCopied(false);
+          setTab(listed.kind); // show it in its own tab
+          setSetupOpen(listed.kind === 'ai'); // straight to that agent's setup steps (TL-269)
+        }}
+      />
+    </div>
   );
 }

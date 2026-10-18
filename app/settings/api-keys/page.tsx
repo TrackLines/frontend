@@ -2,68 +2,28 @@
 
 import { ListPageSkeleton } from '@/components/page-skeletons';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { ApiError, apiKeys, type ApiKey, type ApiKeyKind } from '@/lib/api';
-import { ApiKeyTabs, FreshKey, NewKeyDialog, SetupDialog, splitSecret, type FreshKeyInfo } from '@/components/settings/api-keys';
+import { useFlags } from '@flags-gg/react-library';
+import { ApiKeysManager } from '@/components/settings/api-keys';
+import type { ApiKeyKind } from '@/lib/api';
 import { useToken } from '@/lib/use-token';
 
+// The organization's keys: service keys for servers and integrations. AI agent keys are personal and
+// made in Your settings; this page's AI tab stays behind the org-ai-keys flag (TL-451).
 export default function ApiKeysPage() {
   const token = useToken();
-  const [list, setList] = useState<ApiKey[] | null>(null);
-  const [failed, setFailed] = useState(false);
-  const [creating, setCreating] = useState(false);
-  const [fresh, setFresh] = useState<FreshKeyInfo | null>(null); // shown once
-  const [setupOpen, setSetupOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const [tab, setTab] = useState<ApiKeyKind>('ai'); // AI agents first (TL-391)
-
-  const loaded = token !== null;
-  useEffect(() => {
-    if (loaded) apiKeys.list(token).then(setList, () => setFailed(true));
-  }, [loaded]); // load once; token refreshes must not refetch
-
-  if (failed) return <p className="p-8 text-destructive" role="alert">Couldn&apos;t load your API keys. Please refresh to try again.</p>;
-  if (!list || !token) return <ListPageSkeleton label="Loading API keys…" action />;
-
-  async function revoke(k: ApiKey) {
-    if (!confirm(`Revoke "${k.name}"? Anything using it stops working immediately.`)) return;
-    await apiKeys.revoke(k.id, token);
-    setList((l) => l && l.filter((x) => x.id !== k.id));
-  }
-
+  const { is } = useFlags();
+  if (!token) return <ListPageSkeleton label="Loading API keys…" action />;
+  const kinds: ApiKeyKind[] = is('org-ai-keys').enabled() ? ['service', 'ai'] : ['service'];
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
-      <Link href="/dashboard" className="text-sm text-muted-foreground hover:underline">← Projects</Link>
-      <header className="mt-2 mb-6 flex items-center justify-between gap-4">
-        <h1 className="text-3xl font-bold tracking-tight">API keys</h1>
-        <Button onClick={() => setCreating(true)}>New key</Button>
-      </header>
+      <Link href="/settings" className="text-sm text-muted-foreground hover:underline">← Settings</Link>
+      <h1 className="mt-2 mb-2 text-3xl font-bold tracking-tight">API keys</h1>
       <p className="mb-6 text-muted-foreground">
-        Give each agent or script its own key. A key acts as you: send it as{' '}
-        <code className="rounded bg-muted px-1">Authorization: Bearer tl_ai_…</code> (or <code className="rounded bg-muted px-1">tl_s_…</code> for a service key) to <code className="rounded bg-muted px-1">/api</code>.
+        Service keys for servers and integrations: send one as{' '}
+        <code className="rounded bg-muted px-1">Authorization: Bearer tl_s_…</code> to <code className="rounded bg-muted px-1">/api</code>.
+        Your own keys and AI agents are in <Link href="/account#api-keys" className="font-medium text-foreground underline">Your settings</Link>.
       </p>
-
-      {fresh && <FreshKey fresh={fresh} copied={copied} onCopy={() => navigator.clipboard.writeText(fresh.key).then(() => setCopied(true))} onSetup={() => setSetupOpen(true)} />}
-      <ApiKeyTabs list={list} tab={tab} onTab={setTab} onRevoke={(k) => void revoke(k)} />
-
-      {fresh?.kind === 'ai' && <SetupDialog fresh={fresh} open={setupOpen} onOpenChange={setSetupOpen} />}
-      <NewKeyDialog
-        initialKind={tab}
-        open={creating}
-        onOpenChange={setCreating}
-        onCreate={async (input) => {
-          const k = await apiKeys.create(input, token).catch((err) => {
-            throw new Error(err instanceof ApiError && err.status < 500 ? err.message : 'Couldn’t create the key. Please try again.');
-          });
-          const { listed, secret } = splitSecret(k);
-          setList((l) => [...(l ?? []), listed]);
-          setFresh({ name: listed.display ?? listed.name, kind: listed.kind, key: secret, client: listed.client });
-          setCopied(false);
-          setTab(listed.kind); // show it in its own tab
-          setSetupOpen(listed.kind === 'ai'); // straight to that agent's setup steps (TL-269)
-        }}
-      />
+      <ApiKeysManager token={token} kinds={kinds} />
     </main>
   );
 }

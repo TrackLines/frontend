@@ -57,7 +57,7 @@ export default async function Home() {
             Connect Claude, Codex or any MCP client to the built-in MCP server and just ask it to pick up work. Prefer to script it? The same actions are a documented HTTP API, with the same permissions.
           </p>
           <div className="mt-6">
-            <McpConnect keyHint="Sign up, then create an API key for each agent in Settings → API keys; every change it makes shows its name." />
+            <McpConnect keyHint="Sign up, then create an API key for each agent in Your settings → Your API keys; every change it makes shows its name." />
           </div>
         </div>
         <pre className="overflow-x-auto rounded-xl border bg-card p-5 font-mono text-xs leading-6 text-muted-foreground">

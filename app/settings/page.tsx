@@ -37,11 +37,11 @@ export default function SettingsPage() {
         <OrganizationCard admin={admin} />
         {admin && <OrgReportCard />}
         {admin && <SettingsCard icon={PlugIcon} title="Integrations" href="/settings/integrations" description="Connect GitHub, Bitbucket, Google Chat and Bugfixes." />}
-        <SettingsCard icon={KeyRoundIcon} title="API keys and AI agents"
-          description="Keys let agents and scripts use the API as you. Connect an AI agent (Claude, Codex…) over MCP with its own key.">
+        <SettingsCard icon={KeyRoundIcon} title="API keys"
+          description="Service keys for servers and integrations. Your own keys and AI agents (Claude, Codex…) are in Your settings.">
           <Link href="/settings/api-keys" className={buttonVariants({ variant: 'outline', size: 'sm' })}>Manage API keys</Link>
           <McpConnect
-            keyHint={<>Each agent needs its own API key: create one in <Link href="/settings/api-keys" className="font-medium text-foreground underline">API keys</Link> and use it in place of <code>tl_ai_your_key</code>.</>}
+            keyHint={<>Each agent needs its own API key: create one in <Link href="/account#api-keys" className="font-medium text-foreground underline">Your settings</Link> and use it in place of <code>tl_ai_your_key</code>.</>}
             trigger={(open) => <Button variant="ghost" size="sm" onClick={open}>Connect AI</Button>}
           />
         </SettingsCard>

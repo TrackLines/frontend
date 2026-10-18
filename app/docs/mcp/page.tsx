@@ -12,7 +12,8 @@ export const metadata: Metadata = {
 // keys: the two kinds of API key (TL-271).
 export const keys = [
   { kind: 'AI key (tl_ai_…)', body: 'For an AI agent working alongside you. It can be assigned tickets, claims and moves them, and on boards with agent review its finished work waits for a person to approve it.' },
-  { kind: 'Service key (tl_s_…)', body: 'For scripts and integrations such as Bugfixes. It can create and update tickets, but can’t be assigned work, so nobody can pass an agent’s work off as their own.' },
+  { kind: 'Service key (tl_s_…)', body: 'For scripts and integrations such as Bugfixes, made in organization Settings → API keys. It can create and update tickets, but can’t be assigned work, so nobody can pass an agent’s work off as their own.' },
+  { kind: 'Personal key (tl_p_…)', body: 'For your own scripts and displays (such as TRMNL), made in Your settings. It acts as you: your tickets are its tickets, and what it changes is recorded as you. A read-only key can only read, so it can’t be used over MCP.' },
 ];
 
 // tools: the ones agents use most; every REST action has one, with the same permissions.
@@ -79,7 +80,7 @@ export default function McpDocs() {
 
         <H2>1. Get a key</H2>
         <P>
-          Sign in, then open Settings → <strong className="text-foreground">API keys and AI agents</strong> → Manage API keys,
+          Sign in, then open <strong className="text-foreground">Your settings</strong> (your account menu) → Your API keys,
           and on the <B>AI agents</B> tab create a key for the agent you’re connecting. Each agent gets its own key, named after it, so its work shows
           as that agent’s. The key is shown once: copy it into the setup below.
         </P>
