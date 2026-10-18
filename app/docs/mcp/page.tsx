@@ -80,7 +80,7 @@ export default function McpDocs() {
 
         <H2>1. Get a key</H2>
         <P>
-          Sign in, then open <strong className="text-foreground">Your settings</strong> (your account menu) → Your API keys,
+          Sign in, then open <strong className="text-foreground">Your settings</strong> (your account menu) → API keys,
           and on the <B>AI agents</B> tab create a key for the agent you’re connecting. Each agent gets its own key, named after it, so its work shows
           as that agent’s. The key is shown once: copy it into the setup below.
         </P>

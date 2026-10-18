@@ -88,9 +88,15 @@ test('AI agent keys and service keys are in their own tabs, with counts, AI agen
 test('AI keys are made in Your settings; the org page has them only behind org-ai-keys (TL-451)', async () => {
   const org = await Bun.file(new URL('../../app/settings/api-keys/page.tsx', import.meta.url)).text();
   expect(org).toContain(`is('org-ai-keys').enabled() ? ['service', 'ai'] : ['service']`);
+  // and so is Connect AI on the org Settings card: it only makes sense where AI keys can be made
+  const settings = await Bun.file(new URL('../../app/settings/page.tsx', import.meta.url)).text();
+  expect(settings).toMatch(/is\('org-ai-keys'\)\.enabled\(\) && \(\s*<McpConnect/);
+  // both pages are the same manager, so they look alike: Your settings links to its own page
+  expect(org).toContain('<ApiKeysManager');
+  const mine = await Bun.file(new URL('../../app/account/api-keys/page.tsx', import.meta.url)).text();
+  expect(mine).toContain(`kinds={['personal', 'ai']}`);
   const account = await Bun.file(new URL('../../app/account/page.tsx', import.meta.url)).text();
-  expect(account).toContain(`<ApiKeysManager token={token} kinds={['personal', 'ai']} />`);
-  expect(account).toContain('id="api-keys"');
+  expect(account).toContain('href="/account/api-keys"');
 });
 
 test('keys expire: a lifetime picker defaulting to 90 days, up to a year and a day (TL-433)', () => {

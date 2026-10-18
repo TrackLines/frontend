@@ -3,8 +3,11 @@
 import Link from 'next/link';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ChatDmCard } from '@/components/settings/chat-dm';
-import { ApiKeysManager } from '@/components/settings/api-keys';
+import { KeyRoundIcon } from 'lucide-react';
+import { McpConnect } from '@/components/mcp-connect';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { DevicePushCard } from '@/components/settings/device-push';
+import { SettingsCard } from '@/components/settings/settings-card';
 import { useToken } from '@/lib/use-token';
 
 // Your settings (TL-294): how you personally hear about things, and your own API keys: personal keys
@@ -23,17 +26,17 @@ export default function AccountPage() {
           <>
             <DevicePushCard token={token} />
             <ChatDmCard token={token} />
+            <SettingsCard icon={KeyRoundIcon} title="API keys"
+              description="Keys that act as you, for your own scripts and displays. Connect an AI agent (Claude, Codex…) over MCP with its own key.">
+              <Link href="/account/api-keys" className={buttonVariants({ variant: 'outline', size: 'sm' })}>Manage API keys</Link>
+              <McpConnect
+                keyHint={<>Each agent needs its own API key: create one in <Link href="/account/api-keys" className="font-medium text-foreground underline">API keys</Link> and use it in place of <code>tl_ai_your_key</code>.</>}
+                trigger={(open) => <Button variant="ghost" size="sm" onClick={open}>Connect AI</Button>}
+              />
+            </SettingsCard>
           </>
         ) : <li><Skeleton role="status" aria-label="Loading…" className="h-44 rounded-xl" /></li>}
       </ul>
-      <section id="api-keys" className="mt-10 scroll-mt-20">
-        <h2 className="text-xl font-semibold tracking-tight">Your API keys</h2>
-        <p className="mt-1 mb-4 text-sm text-muted-foreground">
-          Keys that act as you, for your own scripts, displays and AI agents. Send one as{' '}
-          <code className="rounded bg-muted px-1">Authorization: Bearer tl_p_…</code> to <code className="rounded bg-muted px-1">/api</code>.
-        </p>
-        {token && <ApiKeysManager token={token} kinds={['personal', 'ai']} />}
-      </section>
     </main>
   );
 }

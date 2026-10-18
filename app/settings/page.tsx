@@ -5,8 +5,9 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 import { PlanCard } from '@/components/billing/plan-card';
-import { McpConnect } from '@/components/mcp-connect';
+import { useFlags } from '@flags-gg/react-library';
 import { KeyRoundIcon, PlugIcon } from 'lucide-react';
+import { McpConnect } from '@/components/mcp-connect';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { SettingsCard } from '@/components/settings/settings-card';
 import { OrgReportCard } from '@/components/reports/report-links';
@@ -18,6 +19,7 @@ import { useToken } from '@/lib/use-token';
 export default function SettingsPage() {
   // organization and integrations are run by org admins (TL-241): everyone else can look, not manage
   const token = useToken();
+  const { is } = useFlags();
   const [admin, setAdmin] = useState(false);
   const signedIn = token !== null;
   const [cleanup, setCleanup] = useState<FileCleanup | null>(null);
@@ -38,12 +40,15 @@ export default function SettingsPage() {
         {admin && <OrgReportCard />}
         {admin && <SettingsCard icon={PlugIcon} title="Integrations" href="/settings/integrations" description="Connect GitHub, Bitbucket, Google Chat and Bugfixes." />}
         <SettingsCard icon={KeyRoundIcon} title="API keys"
-          description="Service keys for servers and integrations. Your own keys and AI agents (Claude, Codex…) are in Your settings.">
+          description={<>Service keys for servers and integrations. Your own keys and AI agents (Claude, Codex…) are in <Link href="/account/api-keys" className="underline">Your settings</Link>.</>}>
           <Link href="/settings/api-keys" className={buttonVariants({ variant: 'outline', size: 'sm' })}>Manage API keys</Link>
-          <McpConnect
-            keyHint={<>Each agent needs its own API key: create one in <Link href="/account#api-keys" className="font-medium text-foreground underline">Your settings</Link> and use it in place of <code>tl_ai_your_key</code>.</>}
-            trigger={(open) => <Button variant="ghost" size="sm" onClick={open}>Connect AI</Button>}
-          />
+          {/* only where AI keys can be made here too: the org-ai-keys flag (TL-451) */}
+          {is('org-ai-keys').enabled() && (
+            <McpConnect
+              keyHint={<>Each agent needs its own API key: create one in <Link href="/settings/api-keys" className="font-medium text-foreground underline">API keys</Link> and use it in place of <code>tl_ai_your_key</code>.</>}
+              trigger={(open) => <Button variant="ghost" size="sm" onClick={open}>Connect AI</Button>}
+            />
+          )}
         </SettingsCard>
         {admin && <FileCleanupLink report={cleanup} />}
       </ul>

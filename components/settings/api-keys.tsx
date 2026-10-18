@@ -1,6 +1,8 @@
 'use client';
 
-import { useEffect, useState, type FormEvent } from 'react';
+import Link from 'next/link';
+import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
+import { ListPageSkeleton } from '@/components/page-skeletons';
 import { AGENTS, McpInstructions } from '@/components/mcp-connect';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -270,9 +272,10 @@ export function ApiKeyList({ list, onRevoke, empty = 'No keys yet.' }: { list: A
   );
 }
 
-// ApiKeysManager: list, create and revoke my keys of the given kinds, the first kind's tab open.
-// Your settings has personal and AI keys; organization settings has service keys (TL-451).
-export function ApiKeysManager({ token, kinds }: { token: string; kinds: ApiKeyKind[] }) {
+// ApiKeysManager: the API keys page: list, create and revoke my keys of the given kinds, the first
+// kind's tab open. Your settings has personal and AI keys; organization settings has service keys
+// (TL-451). Both pages look the same: back link, title with New key, intro, tabs.
+export function ApiKeysManager({ token, kinds, back, intro }: { token: string; kinds: ApiKeyKind[]; back: { href: string; label: string }; intro: ReactNode }) {
   const [list, setList] = useState<ApiKey[] | null>(null);
   const [failed, setFailed] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -282,8 +285,8 @@ export function ApiKeysManager({ token, kinds }: { token: string; kinds: ApiKeyK
   const [tab, setTab] = useState<ApiKeyKind>(kinds[0]);
   useEffect(() => { apiKeys.list(token).then(setList, () => setFailed(true)); }, []); // load once; token refreshes must not refetch
 
-  if (failed) return <p className="text-destructive" role="alert">Couldn&apos;t load your API keys. Please refresh to try again.</p>;
-  if (!list) return <p role="status" className="text-sm text-muted-foreground">Loading API keys…</p>;
+  if (failed) return <p className="p-8 text-destructive" role="alert">Couldn&apos;t load your API keys. Please refresh to try again.</p>;
+  if (!list) return <ListPageSkeleton label="Loading API keys…" action />;
 
   async function revoke(k: ApiKey) {
     if (!confirm(`Revoke "${k.display ?? k.name}"? Anything using it stops working immediately.`)) return;
@@ -292,8 +295,15 @@ export function ApiKeysManager({ token, kinds }: { token: string; kinds: ApiKeyK
   }
 
   return (
-    <div className="grid gap-4">
-      <div><Button onClick={() => setCreating(true)}>New key</Button></div>
+    <main className="mx-auto grid max-w-6xl gap-6 px-6 py-10">
+      <div>
+        <Link href={back.href} className="text-sm text-muted-foreground hover:underline">← {back.label}</Link>
+        <header className="mt-2 flex items-center justify-between gap-4">
+          <h1 className="text-3xl font-bold tracking-tight">API keys</h1>
+          <Button onClick={() => setCreating(true)}>New key</Button>
+        </header>
+      </div>
+      <p className="text-muted-foreground">{intro}</p>
       {fresh && <FreshKey fresh={fresh} copied={copied} onCopy={() => navigator.clipboard.writeText(fresh.key).then(() => setCopied(true))} onSetup={() => setSetupOpen(true)} />}
       <ApiKeyTabs list={list} tab={tab} onTab={setTab} onRevoke={(k) => void revoke(k)} kinds={kinds} />
       {fresh?.kind === 'ai' && <SetupDialog fresh={fresh} open={setupOpen} onOpenChange={setSetupOpen} />}
@@ -314,6 +324,6 @@ export function ApiKeysManager({ token, kinds }: { token: string; kinds: ApiKeyK
           setSetupOpen(listed.kind === 'ai'); // straight to that agent's setup steps (TL-269)
         }}
       />
-    </div>
+    </main>
   );
 }
