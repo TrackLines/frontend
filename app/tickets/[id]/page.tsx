@@ -132,9 +132,9 @@ export default function TicketPage() {
         </p>
         {!token && <TicketLabels labels={t.labels} />}{/* signed in, the label editor below shows them */}
         {token && (
-          <label className="flex max-w-xs items-center gap-2 text-sm text-muted-foreground">
-            Assigned to
-            <AssigneeSelect ticketId={t.id} value={t.assigned_to} token={token} onChange={(nt) => setT({ ...t, assigned_to: nt.assigned_to })} />
+          <label className="flex flex-wrap items-start gap-x-3 gap-y-1 text-sm text-muted-foreground">
+            <span className="whitespace-nowrap leading-8">Assigned to</span>
+            <div className="w-72 max-w-full"><AssigneeSelect ticketId={t.id} value={t.assigned_to} token={token} onChange={(nt) => setT({ ...t, assigned_to: nt.assigned_to })} /></div>
           </label>
         )}
       </header>

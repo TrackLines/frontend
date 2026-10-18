@@ -16,6 +16,7 @@ import type { Ticket } from '@/lib/api';
 import { EstimateBadge } from './estimate';
 import { TICKET_DIALOG_WIDTH } from './ticket-dialog';
 import { personLabel } from '@/lib/people';
+import { awayText } from '@/lib/away';
 import { usePeople } from '@/lib/use-people';
 import { TicketKey, ticketPath, linkTitle } from '@/components/ticket/ticket-key';
 import Link from 'next/link';
@@ -70,7 +71,7 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
             </>
           )}
           <dt className="text-muted-foreground">Assigned to</dt>
-          <dd>{ticket.assigned_to ? personLabel(ticket.assigned_to, people) : <span className="text-muted-foreground italic">Unassigned</span>}</dd>
+          <dd>{ticket.assigned_to ? <Assignee id={ticket.assigned_to} people={people} /> : <span className="text-muted-foreground italic">Unassigned</span>}</dd>
         </dl>
         {token && onReviewed && <ReviewActions ticket={ticket} token={token} onReviewed={onReviewed} />}
         <TicketLabels labels={ticket.labels} />
@@ -100,5 +101,16 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+}
+
+// Assignee: who has it, and whether they're on holiday, as the ticket page's picker says (TL-436).
+export function Assignee({ id, people }: { id: string; people: Parameters<typeof personLabel>[1] }) {
+  const away = awayText(people?.find((p) => p.id === id));
+  return (
+    <>
+      {personLabel(id, people)}
+      {away && <span className="text-amber-700 dark:text-amber-400"> · {away.charAt(0).toLowerCase()}{away.slice(1)}</span>}
+    </>
   );
 }

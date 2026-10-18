@@ -3,7 +3,7 @@ import { mockDialog } from '@/test/mock-dialog';
 import type { Ticket } from '@/lib/api';
 
 mockDialog();
-const { TicketView } = await import('./ticket-view');
+const { Assignee, TicketView } = await import('./ticket-view');
 const { renderToStaticMarkup } = await import('react-dom/server');
 
 const ticket: Ticket = {
@@ -53,4 +53,15 @@ test('a duplicate links to its original; a done ticket shows when', () => {
 test('the view is as wide as the edit dialog', async () => {
   const { TICKET_DIALOG_WIDTH } = await import('./ticket-dialog');
   expect(view()).toContain(TICKET_DIALOG_WIDTH);
+});
+
+test('the assignee says when they’re on holiday, like the ticket page’s picker (TL-436)', () => {
+  const people = [
+    { id: 'user_me', label: 'You', kind: 'person' as const, away: { until: '2099-10-24T00:00:00Z' } },
+    { id: 'user_sam', label: 'Sam', kind: 'person' as const },
+  ];
+  const away = renderToStaticMarkup(<Assignee id="user_me" people={people} />);
+  expect(away).toContain('You');
+  expect(away).toContain('on holiday until');
+  expect(renderToStaticMarkup(<Assignee id="user_sam" people={people} />)).toBe('Sam');
 });
