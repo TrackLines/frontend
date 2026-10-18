@@ -21,6 +21,10 @@ test('the project’s Epics section lists each epic with its progress, or says h
   expect(html).toContain('Won’t do');
   expect(renderToStaticMarkup(<EpicsView epics={[]} />)).toContain('No epics yet');
   expect(renderToStaticMarkup(<EpicsView epics={null} />)).toBe('');
+  // a failed load says so instead of claiming there are no epics
+  const failed = renderToStaticMarkup(<EpicsView epics={null} failed />);
+  expect(failed).toContain('Couldn&#x27;t load the epics');
+  expect(failed).not.toContain('No epics yet');
 });
 
 test('an epic’s page groups its sub-tickets by board, the backlog last', () => {
@@ -60,4 +64,12 @@ test('a long epic title truncates inside its card instead of running past the ed
   const card = html.match(/<a [^>]*href="\/tickets\/e1"[^>]*>/)?.[0] ?? '';
   expect(card).toContain('grid-cols-1'); // minmax(0,1fr): the column can't grow wider than the card
   expect(html).toMatch(new RegExp(`class="[^"]*min-w-0[^"]*truncate[^"]*">${title}<`));
+});
+
+test('the Epics tab reloads when opened and refreshes like the backlog', async () => {
+  const tabs = await Bun.file(new URL('./work-tabs.tsx', import.meta.url)).text();
+  expect(tabs).toContain(`active={tab === 'epics'}`);
+  const epics = await Bun.file(new URL('./epics.tsx', import.meta.url)).text();
+  expect(epics).toContain('useAutoRefresh(load, active)');
+  expect(epics).toContain('[projectId, active]');
 });

@@ -50,7 +50,8 @@ export function Backlog({ projectId, boards, token }: Props) {
   const [priorityFilter, setPriorityFilter] = useState<string[]>(() => parsePriorities(searchParams));
   const [epicFilter, setEpicFilter] = useState(() => parseEpic(searchParams)); // ?epic=<id> (TL-215)
   const [epics, setEpics] = useState<EpicSummary[]>([]);
-  useEffect(() => { tickets.epics(projectId, token).then(setEpics, () => setEpics([])); }, [projectId]); // token refreshes must not refetch
+  const loadEpics = () => tickets.epics(projectId, token).then(setEpics, () => {}); // a failed refresh keeps the last list
+  useEffect(() => { void loadEpics(); }, [projectId]); // token refreshes must not refetch
   const [sort, setSort] = useState<BacklogSort>('manual');
   const [status, setStatus] = useState<BacklogStatus>('open'); // closed tickets stay findable (owner, 2026-10-17)
   const [page, setPage] = useState(1);
@@ -126,7 +127,7 @@ export function Backlog({ projectId, boards, token }: Props) {
     return () => window.removeEventListener(BACKLOG_CHANGED, onChange);
   }, [projectId]);
 
-  useAutoRefresh(() => load(true), !adding && !editing && !refining && busy === null);
+  useAutoRefresh(() => { void loadEpics(); return load(true); }, !adding && !editing && !refining && busy === null); // epics too, for the filter
 
   const shown = data?.tickets ?? [];
   const lastPage = data ? Math.max(1, Math.ceil(data.counts[filter] / PER_PAGE)) : 1;

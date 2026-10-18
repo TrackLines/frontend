@@ -28,7 +28,7 @@ export function WorkTabs({ projectId, boards, token, roadmaps }: { projectId: st
         <Backlog projectId={projectId} boards={boards} token={token} />
       </TabsContent>
       <TabsContent value="epics" keepMounted>
-        <Epics projectId={projectId} token={token} />
+        <Epics projectId={projectId} token={token} active={tab === 'epics'} />
       </TabsContent>
       <TabsContent value="roadmaps" id="roadmaps" keepMounted>{roadmaps}</TabsContent>
     </Tabs>

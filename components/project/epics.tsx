@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { TicketKey } from '@/components/ticket/ticket-key';
 import { tickets, type EpicProgress, type EpicSummary } from '@/lib/api';
+import { useAutoRefresh } from '@/lib/use-auto-refresh';
 
 // epicSize: "3 of 5 done · 13 points · 2 not sized" (TL-214).
 export function epicSize(p: EpicProgress): string {
@@ -18,16 +19,22 @@ export function epicSize(p: EpicProgress): string {
 
 const percent = (p: EpicProgress) => (p.total ? Math.round((p.done / p.total) * 100) : 0);
 
-// Epics: a project's epics with progress and size (TL-214), between its boards and backlog.
-export function Epics({ projectId, token }: { projectId: string; token: string }) {
+// Epics: a project's epics with progress and size (TL-214), between its boards and backlog. The tab
+// stays mounted, so it reloads when opened and refreshes like the backlog: an epic made after the page
+// loaded (e.g. by an agent) shows up. A failed first load says so, not "No epics yet".
+export function Epics({ projectId, token, active = true }: { projectId: string; token: string; active?: boolean }) {
   const [list, setList] = useState<EpicSummary[] | null>(null);
-  useEffect(() => { tickets.epics(projectId, token).then(setList, () => setList([])); }, [projectId]); // token refreshes must not refetch
-  return <EpicsView epics={list} />;
+  const [failed, setFailed] = useState(false);
+  const load = () => tickets.epics(projectId, token).then((l) => { setList(l); setFailed(false); }, () => setFailed(true));
+  useEffect(() => { if (active) void load(); }, [projectId, active]); // token refreshes must not refetch
+  useAutoRefresh(load, active);
+  return <EpicsView epics={list} failed={failed} />;
 }
 
-// EpicsView: pure, for tests. Nothing until loaded; a hint when there are none.
-export function EpicsView({ epics }: { epics: EpicSummary[] | null }) {
-  if (epics === null) return null;
+// EpicsView: pure, for tests. Nothing until loaded; a hint when there are none; an error when the
+// first load failed (a failed refresh keeps the list it has).
+export function EpicsView({ epics, failed = false }: { epics: EpicSummary[] | null; failed?: boolean }) {
+  if (epics === null) return failed ? <p role="alert" className="text-sm text-destructive">Couldn&apos;t load the epics. Please refresh to try again.</p> : null;
   return (
     <section id="epics">
       <div className="mb-4">
