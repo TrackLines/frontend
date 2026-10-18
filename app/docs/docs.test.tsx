@@ -89,3 +89,11 @@ test('the sprint reports guide: where to open each, what every number means, uni
   }
   expect(renderToStaticMarkup(<DocsPage />)).toContain('href="/docs/sprint-reports"');
 });
+
+test('the TRMNL guide: a read-only personal key and the plugin on TRMNL (TL-450)', async () => {
+  const { default: Trmnl, TRMNL_RECIPE } = await import('./trmnl/page');
+  expect(TRMNL_RECIPE).toBe('https://trmnl.com/recipes/tracklin-es-511430');
+  const html = renderToStaticMarkup(<Trmnl />);
+  for (const s of [`href="${TRMNL_RECIPE}"`, 'href="/account/api-keys"', 'Personal', 'Read only', 'My work']) expect(html).toContain(s);
+  expect(renderToStaticMarkup(<DocsPage />)).toContain('href="/docs/trmnl"');
+});
