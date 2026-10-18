@@ -45,4 +45,9 @@ test('the card and the bell show that reason', async () => {
   expect(renderToStaticMarkup(<DevicePushView state="off" busy={false} error={why} onToggle={() => {}} />)).toContain(why);
   expect(renderToStaticMarkup(<PushControl state="off" busy={false} error={why} onToggle={() => {}} />)).toContain(why);
   expect(renderToStaticMarkup(<PushControl state="off" busy={false} onToggle={() => {}} />)).not.toContain('role="alert"');
+  // a browser without a push service: on while open, nothing to turn on
+  const tab = renderToStaticMarkup(<DevicePushView state="tabonly" busy={false} onToggle={() => {}} />);
+  expect(tab).toContain('>On<');
+  expect(tab).not.toContain('Turn on');
+  expect(renderToStaticMarkup(<PushControl state="tabonly" busy={false} onToggle={() => {}} />)).not.toContain('Turn on');
 });

@@ -141,7 +141,7 @@ export function NotificationsBell() {
         <NotificationsList items={items} people={people} failed={failed} unread={count} showRead={showRead}
           onOpen={(n) => void open(n)} onDismiss={(n) => void dismiss(n)} onReadAll={() => void readAll()}
           onShowRead={setShowRead} onClearRead={() => void clearRead()} />
-        {(pushOn === 'on' || pushOn === 'off' || pushOn === 'blocked') ? (
+        {(pushOn === 'on' || pushOn === 'off' || pushOn === 'blocked' || pushOn === 'tabonly') ? (
           <PushControl state={pushOn} busy={pushBusy} error={pushError} onToggle={() => void togglePush()} />
         ) : permission === 'default' && (
           <div className="border-t px-3 py-2 text-xs">
@@ -212,6 +212,9 @@ export function NotificationsList({ items, people, failed, unread, showRead = fa
 export function PushControl({ state, busy, error = '', onToggle }: { state: PushState; busy: boolean; error?: string; onToggle: () => void }) {
   if (state === 'blocked') {
     return <p className="border-t px-3 py-2 text-xs text-muted-foreground">Notifications are blocked for this site in your browser settings.</p>;
+  }
+  if (state === 'tabonly') {
+    return <p className="border-t px-3 py-2 text-xs text-muted-foreground">Notifications are on while TrackLin.es is open (this browser can’t get them when it’s closed).</p>;
   }
   if (state !== 'on' && state !== 'off') return null;
   return (

@@ -1,7 +1,16 @@
 import { push } from './api';
 import { reportClient } from './report';
 
-export type PushState = 'unsupported' | 'unavailable' | 'blocked' | 'off' | 'on';
+// tabonly: notifications are allowed but this browser has no push service (Helium, plain Chromium), so they
+// only arrive while a TrackLin.es tab is open; there's nothing to turn on.
+export type PushState = 'unsupported' | 'unavailable' | 'blocked' | 'tabonly' | 'off' | 'on';
+
+// ponytail: remembered after the first failed subscribe; no way to ask the browser without trying
+const NO_SERVICE = 'push-no-service';
+function noService(): boolean {
+  try { return localStorage.getItem(NO_SERVICE) === '1'; } catch { return false; }
+}
+
 
 // pushSupported: the browser can do Web Push (on iPhone/iPad only once Tracklines is added to the Home Screen).
 export function pushSupported(): boolean {
@@ -25,7 +34,8 @@ export async function pushState(token: string): Promise<PushState> {
   if (!settings.enabled) return 'unavailable';
   if (Notification.permission === 'denied') return 'blocked';
   const reg = await navigator.serviceWorker.getRegistration('/');
-  return (await reg?.pushManager.getSubscription()) ? 'on' : 'off';
+  if (await reg?.pushManager.getSubscription()) return 'on';
+  return Notification.permission === 'granted' && noService() ? 'tabonly' : 'off';
 }
 
 // enablePush asks permission, subscribes this browser with the server's key, and saves it.
@@ -35,8 +45,15 @@ export async function enablePush(token: string): Promise<PushState> {
   if ((await Notification.requestPermission()) !== 'granted') return 'blocked';
   const reg = await registration();
   await navigator.serviceWorker.ready;
-  const sub = (await reg.pushManager.getSubscription())
-    ?? await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyBytes(settings.public_key) as BufferSource });
+  let sub = await reg.pushManager.getSubscription();
+  try {
+    sub ??= await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyBytes(settings.public_key) as BufferSource });
+  } catch (err) {
+    if (err instanceof Error && (err.name === 'AbortError' || /push service/i.test(err.message))) {
+      try { localStorage.setItem(NO_SERVICE, '1'); } catch { /* private window: asks again next time */ }
+    }
+    throw err;
+  }
   await push.subscribe(sub.toJSON(), token);
   return 'on';
 }

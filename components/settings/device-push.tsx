@@ -32,15 +32,16 @@ export function DevicePushCard({ token }: { token: string }) {
 // unblock it in your browser (TL-392), the same as the bell. Not while it's checking, when the server
 // doesn't send device notifications, or in a browser that can't get them.
 export function DevicePushView({ state, busy, error = '', onToggle }: { state: PushState; busy: boolean; error?: string; onToggle: () => void }) {
-  if (state !== 'on' && state !== 'off' && state !== 'blocked') return null;
+  if (state !== 'on' && state !== 'off' && state !== 'blocked' && state !== 'tabonly') return null;
   const description = {
     on: 'You get notifications on this device, even when TrackLin.es is closed.',
     off: 'Get notifications on this device, even when TrackLin.es is closed.',
     blocked: 'Notifications are blocked for this site in your browser settings.',
+    tabonly: 'You get notifications while TrackLin.es is open. This browser has no push service, so not when it’s closed.',
   }[state];
   return (
     <SettingsCard icon={BellRingIcon} title="This device" description={description}
-      badge={state === 'on' ? <Badge>On</Badge> : <Badge variant="outline">Off</Badge>}>
+      badge={state === 'on' || state === 'tabonly' ? <Badge>On</Badge> : <Badge variant="outline">Off</Badge>}>
       {(state === 'on' || state === 'off') && (
         <Button size="sm" variant={state === 'on' ? 'outline' : 'default'} disabled={busy} onClick={onToggle}>{busy ? '…' : state === 'on' ? 'Turn off' : 'Turn on'}</Button>
       )}
