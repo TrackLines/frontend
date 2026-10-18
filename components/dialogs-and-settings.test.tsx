@@ -22,10 +22,18 @@ test('the name dialog: title, description, extra fields, and submit waits for a 
   expect(renderToStaticMarkup(<NameDialog open={false} onOpenChange={() => {}} title="x" submitLabel="y" onSubmit={async () => {}} />)).toBe('');
 });
 
-test('a new roadmap starts public, needs a title, and says who can read it', () => {
-  const html = renderToStaticMarkup(<RoadmapEditorForm open onOpenChange={() => {}} projectId="p" onSubmit={async () => {}} />);
+test('a new roadmap starts public for admins, needs a title, and says who can read it', () => {
+  const html = renderToStaticMarkup(<RoadmapEditorForm open onOpenChange={() => {}} projectId="p" onSubmit={async () => {}} canPublish />);
   for (const s of ['New roadmap', 'anyone with the link can read it', 'Public']) expect(html).toContain(s);
   expect(html).toMatch(/<button[^>]*type="submit"[^>]*disabled=""[^>]*>Create roadmap/);
+});
+
+test('a team leader’s new roadmap starts inside the organization and can’t be made public (TL-432)', () => {
+  const html = renderToStaticMarkup(<RoadmapEditorForm open onOpenChange={() => {}} projectId="p" onSubmit={async () => {}} />);
+  expect(html).toContain('an organization admin can make it public');
+  const input = (v: string) => html.match(new RegExp(`<input[^>]*value="${v}"[^>]*>`))![0];
+  expect(input('login_only')).toContain('checked=""');
+  expect(input('public')).toContain('disabled=""');
 });
 
 test('the ticket key prefix: shown to everyone, Change only for admins', () => {

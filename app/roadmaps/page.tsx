@@ -7,6 +7,7 @@ import { Pager } from '@/components/pager';
 import { VisibilityBadge } from '@/components/roadmap/visibility';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { projects, roadmaps, type Project, type Roadmap } from '@/lib/api';
+import { useIsAdmin } from '@/lib/use-is-admin';
 import { useToken } from '@/lib/use-token';
 
 type RoadmapEntry = { roadmap: Roadmap; project?: Project };
@@ -20,6 +21,7 @@ export default function RoadmapsPage() {
   const [deleteError, setDeleteError] = useState('');
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [page, setPage] = useState(1);
+  const admin = useIsAdmin(token); // deleting: org admins only (TL-432)
 
   const loaded = token !== null;
   useEffect(() => {
@@ -82,9 +84,11 @@ export default function RoadmapsPage() {
                 <Link href={`/roadmaps/${roadmap.id}/edit`} className={buttonVariants({ variant: 'ghost', size: 'sm' })}>Edit</Link>
                 <Link href={`/r/${roadmap.id}`} className={buttonVariants({ variant: 'ghost', size: 'sm' })}>View</Link>
                 <CopyLink roadmap={roadmap} />
-                <Button variant="ghost" size="sm" className="text-destructive" disabled={deletingId === roadmap.id} onClick={() => remove(roadmap)}>
-                  {deletingId === roadmap.id ? 'Deleting…' : 'Delete'}
-                </Button>
+                {admin && (
+                  <Button variant="ghost" size="sm" className="text-destructive" disabled={deletingId === roadmap.id} onClick={() => remove(roadmap)}>
+                    {deletingId === roadmap.id ? 'Deleting…' : 'Delete'}
+                  </Button>
+                )}
               </div>
             </li>
           ))}

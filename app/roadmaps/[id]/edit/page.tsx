@@ -12,6 +12,7 @@ import { VisibilitySelect } from '@/components/roadmap/visibility';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ApiError, roadmaps, type Roadmap, type Visibility } from '@/lib/api';
+import { useIsAdmin } from '@/lib/use-is-admin';
 import { useToken } from '@/lib/use-token';
 
 export default function EditRoadmapPage() {
@@ -19,6 +20,7 @@ export default function EditRoadmapPage() {
   const token = useToken();
   const [roadmap, setRoadmap] = useState<Roadmap | null>(null);
   const [error, setError] = useState<number | null>(null);
+  const admin = useIsAdmin(token) ?? false; // publishing and deleting: org admins only (TL-432)
 
   const loaded = token !== null;
   useEffect(() => {
@@ -38,10 +40,10 @@ export default function EditRoadmapPage() {
           <Link href={`/r/${roadmap.id}`} className={buttonVariants({ variant: 'outline', size: 'sm' })}>View</Link>
         </div>
       </div>
-      <Details roadmap={roadmap} token={token} onSaved={setRoadmap} />
+      <Details roadmap={roadmap} token={token} onSaved={setRoadmap} canPublish={admin} />
       <ItemEditor roadmapId={roadmap.id} projectId={roadmap.project_id} items={roadmap.items ?? []} token={token} />
       <RoadmapUpdates roadmapId={roadmap.id} token={token} canManage />
-      <DangerZone roadmap={roadmap} token={token} />
+      {admin && <DangerZone roadmap={roadmap} token={token} />}
     </main>
   );
 }
@@ -60,7 +62,7 @@ export function NotAManager({ roadmap }: { roadmap: Pick<Roadmap, 'id' | 'projec
   );
 }
 
-function Details({ roadmap, token, onSaved }: { roadmap: Roadmap; token: string; onSaved: (r: Roadmap) => void }) {
+function Details({ roadmap, token, onSaved, canPublish }: { roadmap: Roadmap; token: string; onSaved: (r: Roadmap) => void; canPublish: boolean }) {
   const [title, setTitle] = useState(roadmap.title);
   const [description, setDescription] = useState(roadmap.description);
   const [visibility, setVisibility] = useState<Visibility>(roadmap.visibility);
@@ -100,7 +102,7 @@ function Details({ roadmap, token, onSaved }: { roadmap: Roadmap; token: string;
           onChange={(e) => setDescription(e.target.value)}
         />
       </label>
-      <VisibilitySelect name="visibility" value={visibility} onChange={setVisibility} />
+      <VisibilitySelect name="visibility" value={visibility} onChange={setVisibility} canPublish={canPublish} />
       <div className="flex flex-wrap items-center gap-3">
         <Button type="submit" disabled={saving || !title.trim()}>{saving ? 'Saving…' : 'Save details'}</Button>
         {message && <p role="status" className="text-sm text-muted-foreground">{message}</p>}

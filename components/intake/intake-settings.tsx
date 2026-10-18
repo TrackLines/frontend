@@ -48,15 +48,17 @@ export function IntakeSettingsView({ settings, busy, error, onChange, origin }: 
               <code className="min-w-0 break-all rounded bg-muted px-2 py-1 font-mono text-xs select-all">{requestLink(settings.token, origin)}</code>
               <CopyButton value={requestLink(settings.token, origin)} label="Copy link" size="sm" ariaLabel="Copy request form link" />
             </div>
-            <div className="flex flex-wrap gap-2">
-              <Button type="button" size="sm" variant="outline" disabled={busy} onClick={() => onChange(true, true)}>New link</Button>
-              <Button type="button" size="sm" variant="ghost" className="text-destructive" disabled={busy} onClick={() => onChange(false)}>Close the form</Button>
-            </div>
+            {settings.can_manage ? (
+              <div className="flex flex-wrap gap-2">
+                <Button type="button" size="sm" variant="outline" disabled={busy} onClick={() => onChange(true, true)}>New link</Button>
+                <Button type="button" size="sm" variant="ghost" className="text-destructive" disabled={busy} onClick={() => onChange(false)}>Close the form</Button>
+              </div>
+            ) : <p className="text-muted-foreground">Only organization admins can close the form or make a new link.</p>}
           </>
         ) : (
           <div className="flex flex-wrap items-center gap-3">
-            <span className="text-muted-foreground">The form is closed.</span>
-            <Button type="button" size="sm" disabled={busy} onClick={() => onChange(true)}>{busy ? 'Opening…' : 'Open the form'}</Button>
+            <span className="text-muted-foreground">The form is closed.{!settings.can_manage && ' An organization admin can open it.'}</span>
+            {settings.can_manage && <Button type="button" size="sm" disabled={busy} onClick={() => onChange(true)}>{busy ? 'Opening…' : 'Open the form'}</Button>}
           </div>
         )}
       {error && <p role="alert" className="text-destructive">{error}</p>}

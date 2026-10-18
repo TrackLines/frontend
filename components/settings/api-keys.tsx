@@ -10,6 +10,27 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import type { ApiKey, ApiKeyClient, ApiKeyKind, NewApiKey } from '@/lib/api';
 
 const when = new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeStyle: 'short' });
+const day = new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium' });
+
+// LIFETIMES: how long a new key works (TL-433); the backend allows 1 to 366 days, 90 by default.
+export const LIFETIMES = [
+  { days: 30, label: '30 days' },
+  { days: 90, label: '90 days' },
+  { days: 180, label: '180 days' },
+  { days: 366, label: '1 year and a day' },
+] as const;
+export const DEFAULT_DAYS = 90;
+const SOON_DAYS = 14;
+
+// expiry: what a key's row says about when it stops working, and whether to warn (14 days or less).
+export function expiry(expiresAt: string | undefined, now = new Date()): { text: string; warn: boolean } | null {
+  if (!expiresAt) return null;
+  const at = new Date(expiresAt);
+  const days = Math.ceil((at.getTime() - now.getTime()) / 86_400_000);
+  if (days <= 0) return { text: 'expired: make a new key', warn: true };
+  if (days <= SOON_DAYS) return { text: `expires in ${days} day${days === 1 ? '' : 's'}`, warn: true };
+  return { text: `expires ${day.format(at)}`, warn: false };
+}
 
 export type FreshKeyInfo = { name: string; kind: ApiKeyKind; key: string; client?: ApiKeyClient | null };
 
@@ -76,6 +97,23 @@ export function NewKeyFields({ kind, client, label, name, onKind, onClient, onLa
   );
 }
 
+// LifetimeField: how long the new key works (TL-433). After that it's refused and needs replacing.
+export function LifetimeField({ days, onDays }: { days: number; onDays: (d: number) => void }) {
+  const items = Object.fromEntries(LIFETIMES.map((l) => [String(l.days), l.label]));
+  return (
+    <label className="grid gap-1.5 text-sm font-medium">
+      Expires after
+      <Select items={items} value={String(days)} onValueChange={(v) => v && onDays(Number(v))}>
+        <SelectTrigger aria-label="Expires after" className="w-full"><SelectValue /></SelectTrigger>
+        <SelectContent>
+          {LIFETIMES.map((l) => <SelectItem key={l.days} value={String(l.days)}>{l.label}</SelectItem>)}
+        </SelectContent>
+      </Select>
+      <span className="text-xs font-normal text-muted-foreground">After that the key stops working and you make a new one.</span>
+    </label>
+  );
+}
+
 // agentName mirrors the backend's apikeys.DisplayName, for the form's preview.
 export function agentName(client: ApiKeyClient, label: string): string {
   const known: Partial<Record<ApiKeyClient, string>> = { 'claude-code': 'Claude', 'claude-desktop': 'Claude', codex: 'Codex', cursor: 'Cursor', vscode: 'Copilot', gemini: 'Gemini' };
@@ -89,19 +127,20 @@ export function NewKeyDialog({ open, onOpenChange, onCreate, initialKind = 'ai' 
   const [client, setClient] = useState<ApiKeyClient>('claude-code');
   const [label, setLabel] = useState('');
   const [name, setName] = useState('');
+  const [days, setDays] = useState<number>(DEFAULT_DAYS);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const input = keyInput(kind, client, label, name);
   useEffect(() => { if (open) setKind(initialKind); }, [open]); // each time it opens, on the open tab's kind
 
-  function reset() { setKind(initialKind); setClient('claude-code'); setLabel(''); setName(''); setError(''); }
+  function reset() { setKind(initialKind); setClient('claude-code'); setLabel(''); setName(''); setDays(DEFAULT_DAYS); setError(''); }
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!input) return;
     setSaving(true);
     setError('');
     try {
-      await onCreate(input);
+      await onCreate({ ...input, expires_in_days: days });
       reset();
       onOpenChange(false);
     } catch (err) {
@@ -120,6 +159,7 @@ export function NewKeyDialog({ open, onOpenChange, onCreate, initialKind = 'ai' 
             <DialogDescription>AI keys can be assigned tickets. Service keys are for servers and integrations.</DialogDescription>
           </DialogHeader>
           <NewKeyFields kind={kind} client={client} label={label} name={name} onKind={setKind} onClient={setClient} onLabel={setLabel} onName={setName} />
+          <LifetimeField days={days} onDays={setDays} />
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           <DialogFooter>
             <Button type="submit" disabled={saving || !input}>{saving ? 'Creating…' : 'Create key'}</Button>
@@ -193,6 +233,10 @@ export function ApiKeyList({ list, onRevoke, empty = 'No keys yet.' }: { list: A
           <span className="rounded-full border px-2 py-0.5 text-xs text-muted-foreground">{k.kind === 'ai' ? 'AI agent' : 'Server / API'}</span>
           <code className="text-sm text-muted-foreground">{k.prefix}…</code>
           <span className="text-sm text-muted-foreground">{k.last_used_at ? `last used ${when.format(new Date(k.last_used_at))}` : 'never used'}</span>
+          {(() => {
+            const e = expiry(k.expires_at);
+            return e && <span className={e.warn ? 'text-sm font-medium text-destructive' : 'text-sm text-muted-foreground'}>{e.text}</span>;
+          })()}
           <Button variant="ghost" size="sm" className="ml-auto text-destructive" onClick={() => onRevoke(k)}>Revoke</Button>
         </li>
       ))}

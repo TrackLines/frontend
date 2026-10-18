@@ -29,11 +29,21 @@ test('send errors are actionable: invalid, closed, rate limited', () => {
 });
 
 test('settings: closed offers Open; open shows the link to copy, New link and Close', () => {
-  const closed = renderToStaticMarkup(<IntakeSettingsView settings={{ open: false, token: null }} busy={false} error="" onChange={() => {}} />);
+  const closed = renderToStaticMarkup(<IntakeSettingsView settings={{ open: false, token: null, can_manage: true }} busy={false} error="" onChange={() => {}} />);
   expect(closed).toContain('The form is closed');
   expect(closed).toContain('Open the form');
-  const open = renderToStaticMarkup(<IntakeSettingsView settings={{ open: true, token: 'abc123' }} busy={false} error="" onChange={() => {}} origin="https://tracklin.es" />);
+  const open = renderToStaticMarkup(<IntakeSettingsView settings={{ open: true, token: 'abc123', can_manage: true }} busy={false} error="" onChange={() => {}} origin="https://tracklin.es" />);
   expect(open).toContain('https://tracklin.es/request/abc123');
   for (const s of ['Copy link', 'New link', 'Close the form']) expect(open).toContain(s);
   expect(requestLink('t', 'https://x.y')).toBe('https://x.y/request/t');
+});
+
+test('settings: only org admins open, close or reset the form (TL-432); others can still copy the link', () => {
+  const closed = renderToStaticMarkup(<IntakeSettingsView settings={{ open: false, token: null, can_manage: false }} busy={false} error="" onChange={() => {}} />);
+  expect(closed).toContain('An organization admin can open it');
+  expect(closed).not.toContain('Open the form');
+  const open = renderToStaticMarkup(<IntakeSettingsView settings={{ open: true, token: 'abc123', can_manage: false }} busy={false} error="" onChange={() => {}} origin="https://tracklin.es" />);
+  expect(open).toContain('Copy link');
+  expect(open).toContain('Only organization admins');
+  for (const s of ['New link', 'Close the form']) expect(open).not.toContain(s);
 });

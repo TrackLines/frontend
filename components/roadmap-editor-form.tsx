@@ -14,12 +14,14 @@ type Props = {
   projectId: string;
   /** Resolved promise = close; throw = show error */
   onSubmit: (r: { title: string; description?: string; visibility?: Visibility }) => Promise<void>;
+  canPublish?: boolean; // org admins only (TL-432): others start, and stay, inside the organization
 };
 
-export function RoadmapEditorForm({ open, onOpenChange, projectId, onSubmit }: Props) {
+export function RoadmapEditorForm({ open, onOpenChange, projectId, onSubmit, canPublish = false }: Props) {
+  const start: Visibility = canPublish ? 'public' : 'login_only';
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [visibility, setVisibility] = useState<Visibility>('public');
+  const [visibility, setVisibility] = useState<Visibility>(start);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
@@ -31,7 +33,7 @@ export function RoadmapEditorForm({ open, onOpenChange, projectId, onSubmit }: P
       await onSubmit({ title: title.trim(), description: description.trim(), visibility });
       setTitle('');
       setDescription('');
-      setVisibility('public');
+      setVisibility(start);
       onOpenChange(false);
     } catch (err) {
       setError(err instanceof Error && err.message ? err.message : 'Something went wrong. Please try again.');
@@ -46,7 +48,9 @@ export function RoadmapEditorForm({ open, onOpenChange, projectId, onSubmit }: P
         <form onSubmit={submit} className="grid gap-4">
           <DialogHeader>
             <DialogTitle>New roadmap</DialogTitle>
-            <DialogDescription>Starts public by default — anyone with the link can read it.</DialogDescription>
+            <DialogDescription>
+              {canPublish ? 'Starts public by default — anyone with the link can read it.' : 'Starts visible to your organization; an organization admin can make it public.'}
+            </DialogDescription>
           </DialogHeader>
           <Input
             autoFocus
@@ -66,6 +70,7 @@ export function RoadmapEditorForm({ open, onOpenChange, projectId, onSubmit }: P
             name="visibility"
             value={visibility}
             onChange={(v) => setVisibility(v)}
+            canPublish={canPublish}
           />
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           <DialogFooter>

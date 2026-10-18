@@ -96,8 +96,9 @@ export type ApiKey = {
   id: string; name: string; kind: ApiKeyKind; prefix: string; created_at: string; last_used_at: string | null;
   client?: ApiKeyClient | null; label?: string | null; // AI keys: their client, and an "other" agent's name
   display?: string; // what it's called: "Claude", or a service key's name
+  expires_at?: string; // refused after this (TL-433)
 };
-export type NewApiKey = { kind: 'ai'; client: ApiKeyClient; label?: string } | { kind: 'service'; name: string };
+export type NewApiKey = ({ kind: 'ai'; client: ApiKeyClient; label?: string } | { kind: 'service'; name: string }) & { expires_in_days?: number };
 // the active organization's plan (TL-243). project_limit -1 = unlimited; billed = through Stripe, so there's
 // billing to manage; can_manage = you're an org admin, who buys and manages it
 // plan (TL-290): free 1 project, pro 5, enterprise unlimited; project_limit -1 is unlimited
@@ -677,7 +678,7 @@ export const notifications = {
 };
 
 // Request intake: a project's public, unlisted form (no account) and the team's triage of what comes in.
-export type IntakeSettings = { open: boolean; token: string | null };
+export type IntakeSettings = { open: boolean; token: string | null; can_manage?: boolean }; // can_manage: a signed-in org admin (TL-432)
 export type IntakeRequest = { type: 'bug' | 'feature'; title: string; details?: string; contact?: string; website?: string };
 export type IntakeSubmission = {
   id: string; project_id: string; type: 'bug' | 'feature'; title: string; details: string; contact: string;

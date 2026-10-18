@@ -98,6 +98,7 @@ export default function ProjectPage() {
         open={dialog === 'roadmap'}
         onOpenChange={(o) => !o && setDialog(null)}
         projectId={project.id}
+        canPublish={role?.admin ?? false}
         onSubmit={async (r) => {
           const rm = await roadmaps.create(project.id, r, token).catch(() => { throw new Error('Couldn’t create the roadmap. Please try again.'); });
           setProject((p) => p && { ...p, roadmaps: [rm, ...(p.roadmaps ?? [])] });

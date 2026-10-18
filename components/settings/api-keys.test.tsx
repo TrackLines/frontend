@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { agentName, ApiKeyList, FreshKey, keyInput, NewKeyFields, splitSecret } from './api-keys';
+import { agentName, ApiKeyList, DEFAULT_DAYS, expiry, FreshKey, keyInput, LifetimeField, LIFETIMES, NewKeyFields, splitSecret } from './api-keys';
 import { McpInstructions } from '@/components/mcp-connect';
 import type { ApiKey } from '@/lib/api';
 
@@ -83,4 +83,23 @@ test('AI agent keys and service keys are in their own tabs, with counts, AI agen
   const page = await Bun.file(new URL('../../app/settings/api-keys/page.tsx', import.meta.url)).text();
   expect(page).toContain('initialKind={tab}'); // New key starts on the open tab's kind
   expect(page).toContain('setTab(listed.kind)'); // a new key shows in its tab
+});
+
+test('keys expire: a lifetime picker defaulting to 90 days, up to a year and a day (TL-433)', () => {
+  expect(DEFAULT_DAYS).toBe(90);
+  expect(LIFETIMES.map((l) => l.days)).toEqual([30, 90, 180, 366]);
+  const html = renderToStaticMarkup(<LifetimeField days={DEFAULT_DAYS} onDays={() => {}} />);
+  expect(html).toContain('Expires after');
+  expect(html).toContain('90 days');
+});
+
+test('the list says when a key expires, and warns in its last 14 days (TL-433)', () => {
+  const now = new Date('2026-10-18T12:00:00Z');
+  expect(expiry(undefined, now)).toBeNull();
+  expect(expiry('2027-01-16T12:00:00Z', now)).toEqual({ text: 'expires 16 Jan 2027', warn: false });
+  expect(expiry('2026-11-01T12:00:00Z', now)).toEqual({ text: 'expires in 14 days', warn: true });
+  expect(expiry('2026-10-19T11:00:00Z', now)).toEqual({ text: 'expires in 1 day', warn: true });
+  expect(expiry('2026-10-18T11:59:00Z', now)).toEqual({ text: 'expired: make a new key', warn: true });
+  const html = renderToStaticMarkup(<ApiKeyList list={[{ ...key, expires_at: '2099-01-01T00:00:00Z' }]} onRevoke={() => {}} />);
+  expect(html).toContain('expires 1 Jan 2099');
 });
