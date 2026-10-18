@@ -27,6 +27,10 @@ test('the epics guide has the table of differences, and how to use them on roadm
 
 test('the docs are public and linked from every page’s footer', async () => {
   expect(renderToStaticMarkup(<SiteFooter />)).toContain('href="/docs"');
+  // two columns from sm up: the company line, and the links pinned right
+  const footer = renderToStaticMarkup(<SiteFooter />);
+  expect(footer).toContain('sm:grid-cols-[1fr_auto]');
+  expect(footer).toContain('sm:justify-end');
   const proxy = await Bun.file(new URL('../../proxy.ts', import.meta.url)).text();
   expect(proxy).not.toContain("'/docs'"); // no sign-in needed
 });
