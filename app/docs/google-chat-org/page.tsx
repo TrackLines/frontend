@@ -46,7 +46,8 @@ export default function GoogleChatOrgDocs() {
         {CHAT_KINDS.map((k) => <li key={k.kind}>{k.label}</li>)}
       </Items>
       <P>
-        Each post has an <B>Open</B> button to the ticket. Mentions are never posted to a space, since they’re personal: people
+        Each post has an <B>Open</B> button to the ticket. Space posts come through a webhook, so that’s their only button; the
+        Chat app’s personal messages also have buttons to act (<Link href="/docs/google-chat" className="underline">Google Chat for you</Link>). Mentions are never posted to a space, since they’re personal: people
         get those from the Chat app, in their inbox, or as push notifications.
       </P>
 

@@ -25,6 +25,15 @@ export default function GoogleChatDocs() {
       <H2>What you’ll get</H2>
       <Items>
         <li>The same notifications as your TrackLin.es inbox (assigned to you, mentions, reviews), each with an <B>Open</B> button that takes you to the ticket.</li>
+        <li>Buttons to act without leaving Chat (they act as you, with your permissions):
+          <Items>
+            <li><B>Assigned to you:</B> Start (moves it to the board’s second column, usually In progress), Add comment, Make urgent.</li>
+            <li><B>You were mentioned:</B> Reply, Make urgent.</li>
+            <li><B>Needs your review:</B> Approve, or Send back with an optional reason.</li>
+            <li><B>Sent back to you:</B> Add comment, Make urgent.</li>
+          </Items>
+          Add comment, Reply and Send back open a box in Chat to type into.
+        </li>
         <li>Never your own actions: assigning yourself a ticket doesn’t message you.</li>
         <li>Your inbox and any push notifications carry on as before; Chat is an extra place to see them.</li>
       </Items>
