@@ -231,8 +231,9 @@ export const KEY_TABS: { kind: ApiKeyKind; name: string; hint: string; empty: st
   { kind: 'service', name: 'Service keys', hint: 'For servers, scripts and integrations such as Bugfixes (tl_s_…). They can create and update tickets, but can’t be assigned work.', empty: 'No service keys yet.' },
 ];
 
-// ApiKeyTabs: my keys of the given kinds, each kind apart.
-export function ApiKeyTabs({ list, tab, onTab, onRevoke, kinds = ['ai', 'service'] }: { list: ApiKey[]; tab: ApiKeyKind; onTab: (kind: ApiKeyKind) => void; onRevoke: (k: ApiKey) => void; kinds?: ApiKeyKind[] }) {
+// ApiKeyTabs: my keys of the given kinds, each kind apart. manage: the kinds I can revoke (TL-462:
+// everyone sees the organization's service keys, only admins revoke them); all of them by default.
+export function ApiKeyTabs({ list, tab, onTab, onRevoke, kinds = ['ai', 'service'], manage = kinds }: { list: ApiKey[]; tab: ApiKeyKind; onTab: (kind: ApiKeyKind) => void; onRevoke: (k: ApiKey) => void; kinds?: ApiKeyKind[]; manage?: ApiKeyKind[] }) {
   const tabs = KEY_TABS.filter((t) => kinds.includes(t.kind));
   return (
     <Tabs value={tab} onValueChange={(v) => onTab(v as ApiKeyKind)} className="gap-4">
@@ -242,15 +243,15 @@ export function ApiKeyTabs({ list, tab, onTab, onRevoke, kinds = ['ai', 'service
       {tabs.map((t) => (
         <TabsContent key={t.kind} value={t.kind} className="grid gap-3">
           <p className="text-sm text-muted-foreground">{t.hint}</p>
-          <ApiKeyList list={list.filter((k) => k.kind === t.kind)} onRevoke={onRevoke} empty={t.empty} />
+          <ApiKeyList list={list.filter((k) => k.kind === t.kind)} onRevoke={manage.includes(t.kind) ? onRevoke : undefined} empty={t.empty} />
         </TabsContent>
       ))}
     </Tabs>
   );
 }
 
-// ApiKeyList: my keys by name, kind, prefix and last use; never the secret.
-export function ApiKeyList({ list, onRevoke, empty = 'No keys yet.' }: { list: ApiKey[]; onRevoke: (k: ApiKey) => void; empty?: string }) {
+// ApiKeyList: my keys by name, kind, prefix and last use; never the secret. No onRevoke: look, don't touch.
+export function ApiKeyList({ list, onRevoke, empty = 'No keys yet.' }: { list: ApiKey[]; onRevoke?: (k: ApiKey) => void; empty?: string }) {
   if (list.length === 0) return <p className="rounded-xl border border-dashed p-6 text-sm text-muted-foreground">{empty}</p>;
   return (
     <ul className="divide-y rounded-xl border">
@@ -265,7 +266,7 @@ export function ApiKeyList({ list, onRevoke, empty = 'No keys yet.' }: { list: A
             const e = expiry(k.expires_at);
             return e && <span className={e.warn ? 'text-sm font-medium text-destructive' : 'text-sm text-muted-foreground'}>{e.text}</span>;
           })()}
-          <Button variant="ghost" size="sm" className="ml-auto text-destructive" onClick={() => onRevoke(k)}>Revoke</Button>
+          {onRevoke && <Button variant="ghost" size="sm" className="ml-auto text-destructive" onClick={() => onRevoke(k)}>Revoke</Button>}
         </li>
       ))}
     </ul>
@@ -274,8 +275,9 @@ export function ApiKeyList({ list, onRevoke, empty = 'No keys yet.' }: { list: A
 
 // ApiKeysManager: the API keys page: list, create and revoke my keys of the given kinds, the first
 // kind's tab open. Your settings has personal and AI keys; organization settings has service keys
-// (TL-451). Both pages look the same: back link, title with New key, intro, tabs.
-export function ApiKeysManager({ token, kinds, back, intro }: { token: string; kinds: ApiKeyKind[]; back: { href: string; label: string }; intro: ReactNode }) {
+// (TL-451). Both pages look the same: back link, title with New key, intro, tabs. manage: the kinds I
+// can make and revoke, all of them by default (TL-462: only admins manage service keys).
+export function ApiKeysManager({ token, kinds, manage = kinds, back, intro }: { token: string; kinds: ApiKeyKind[]; manage?: ApiKeyKind[]; back: { href: string; label: string }; intro: ReactNode }) {
   const [list, setList] = useState<ApiKey[] | null>(null);
   const [failed, setFailed] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -300,16 +302,16 @@ export function ApiKeysManager({ token, kinds, back, intro }: { token: string; k
         <Link href={back.href} className="text-sm text-muted-foreground hover:underline">← {back.label}</Link>
         <header className="mt-2 flex items-center justify-between gap-4">
           <h1 className="text-3xl font-bold tracking-tight">API keys</h1>
-          <Button onClick={() => setCreating(true)}>New key</Button>
+          {manage.length > 0 && <Button onClick={() => setCreating(true)}>New key</Button>}
         </header>
       </div>
       <p className="text-muted-foreground">{intro}</p>
       {fresh && <FreshKey fresh={fresh} copied={copied} onCopy={() => navigator.clipboard.writeText(fresh.key).then(() => setCopied(true))} onSetup={() => setSetupOpen(true)} />}
-      <ApiKeyTabs list={list} tab={tab} onTab={setTab} onRevoke={(k) => void revoke(k)} kinds={kinds} />
+      <ApiKeyTabs list={list} tab={tab} onTab={setTab} onRevoke={(k) => void revoke(k)} kinds={kinds} manage={manage} />
       {fresh?.kind === 'ai' && <SetupDialog fresh={fresh} open={setupOpen} onOpenChange={setSetupOpen} />}
       <NewKeyDialog
-        initialKind={tab}
-        kinds={kinds}
+        initialKind={manage.includes(tab) ? tab : manage[0]}
+        kinds={manage}
         open={creating}
         onOpenChange={setCreating}
         onCreate={async (input) => {

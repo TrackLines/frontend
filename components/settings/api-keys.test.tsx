@@ -81,7 +81,7 @@ test('AI agent keys and service keys are in their own tabs, with counts, AI agen
   expect(service).not.toContain('Codex');
   expect(renderToStaticMarkup(<ApiKeyTabs list={keys.slice(0, 2)} tab="service" onTab={() => {}} onRevoke={() => {}} />)).toContain('No service keys yet.');
   const manager = await Bun.file(new URL('./api-keys.tsx', import.meta.url)).text();
-  expect(manager).toContain('initialKind={tab}'); // New key starts on the open tab's kind
+  expect(manager).toContain('initialKind={manage.includes(tab) ? tab : manage[0]}'); // New key starts on the open tab's kind (if I can make that kind)
   expect(manager).toContain('setTab(listed.kind)'); // a new key shows in its tab
 });
 
@@ -148,4 +148,16 @@ test('personal keys: named by hand, read-only when asked, only the kinds a page 
   expect(org).toContain('Service keys (1)');
   expect(org).not.toContain('AI agents');
   expect(org).not.toContain('Personal');
+});
+
+test('service keys are the organization’s: everyone sees them and their expiry, only admins revoke (TL-462)', async () => {
+  const { ApiKeyTabs } = await import('./api-keys');
+  const keys: ApiKey[] = [{ ...key, id: 's1', name: 'Deploys', kind: 'service', expires_at: '2099-01-01T00:00:00Z' }];
+  const member = renderToStaticMarkup(<ApiKeyTabs list={keys} tab="service" kinds={['service']} manage={[]} onTab={() => {}} onRevoke={() => {}} />);
+  expect(member).toContain('Deploys');
+  expect(member).toContain('expires 1 Jan 2099');
+  expect(member).not.toContain('Revoke');
+  expect(renderToStaticMarkup(<ApiKeyTabs list={keys} tab="service" kinds={['service']} onTab={() => {}} onRevoke={() => {}} />)).toContain('Revoke');
+  const page = await Bun.file(new URL('../../app/settings/api-keys/page.tsx', import.meta.url)).text();
+  expect(page).toContain("manage={admin ? kinds : kinds.filter((k) => k !== 'service')}");
 });
