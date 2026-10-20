@@ -549,6 +549,7 @@ export type Velocity = {
   // oldest first; planned: what the sprint held when it closed (null: closed before that was recorded)
   sprints: { number: number; starts_at: string; closed_at: string; completed: number; planned?: number | null }[];
   current: Burn | null;
+  cap?: number | null; // a sprint's capacity, velocity + 10% (null: no closed sprints yet, so no limit) (TL-464)
 };
 // SprintDetail is one sprint, read-only. A closed sprint's tickets are what it finished; carried_over
 // is how many moved to the next sprint (null when that wasn't recorded).

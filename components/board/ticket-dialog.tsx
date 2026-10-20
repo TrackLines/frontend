@@ -17,8 +17,9 @@ import { PrioritySelect } from './priority-select';
 import { EstimateSelect } from './estimate';
 import { missingTicketFields } from './ticket-validation';
 import { TicketKey } from '@/components/ticket/ticket-key';
+import { MoveToBoard } from '@/components/project/move-to-board';
 import type { EstimateScale } from '@/lib/estimates';
-import type { MovedTicket, Ticket, TicketType } from '@/lib/api';
+import type { Board, MovedTicket, Ticket, TicketType } from '@/lib/api';
 import { ApiError, backlog, tickets } from '@/lib/api';
 
 type Props = {
@@ -35,6 +36,7 @@ type Props = {
   done?: boolean; // in the board's last column: attachments locked
   scale?: EstimateScale; // the board's; no estimate field when absent or 'none'
   epic?: boolean; // offer the Epic type; defaults to everywhere but creating on a board (epics live in the backlog)
+  move?: { boards: Board[]; onMoved: (id: string, planned: boolean) => void }; // backlog: Move to board, for those who can refine (TL-464)
 };
 
 // alsoMovesNote: "Sending it to the backlog also moves 2 sub-tickets: TL-5, TL-6." (TL-218), or ''.
@@ -52,7 +54,7 @@ export const convertLeavesBoard = (ticket: { type?: TicketType; column_id?: stri
 // Every ticket dialog uses it (create, edit and the read-only view), so they look the same.
 export const TICKET_DIALOG_WIDTH = 'sm:max-w-[66vw]';
 
-export function TicketDialog({ open, onOpenChange, token, projectId, columnId, ticket, onSaved, onDeleted, onSentToBacklog, onWontDo, done, scale = 'none', epic }: Props) {
+export function TicketDialog({ open, onOpenChange, token, projectId, columnId, ticket, onSaved, onDeleted, onSentToBacklog, onWontDo, done, scale = 'none', epic, move }: Props) {
   const [title, setTitle] = useState(ticket?.title ?? '');
   const [description, setDescription] = useState(ticket?.description ?? '');
   const [type, setType] = useState<TicketType>(ticket?.type ?? 'task');
@@ -62,6 +64,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [moving, setMoving] = useState(false);
   const [wontDo, setWontDo] = useState<string | null>(null); // the reason, while confirming won't do
   const [error, setError] = useState('');
   const [missing, setMissing] = useState<{ title: boolean; estimate: boolean }>({ title: false, estimate: false });
@@ -83,6 +86,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
       setLabels(ticket?.labels ?? []);
       setEstimate(ticket?.estimate ?? '');
       setConfirmDelete(false);
+      setMoving(false);
       setWontDo(null);
       setError('');
       setMissing({ title: false, estimate: false });
@@ -249,6 +253,10 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
               </div>
             </div>
           )}
+          {moving && ticket && move && (
+            <MoveToBoard ticket={ticket} boards={move.boards} token={token} onCancel={() => setMoving(false)}
+              onMoved={(planned) => { move.onMoved(ticket.id, planned); onOpenChange(false); }} />
+          )}
           {wontDo !== null && (
             <div role="alert" className="grid gap-2 rounded-lg border p-3 text-sm">
               <p>Close this ticket as <strong>won&apos;t do</strong>? It leaves the backlog but is kept, so whoever raised it can be told.</p>
@@ -266,11 +274,12 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
             <p role="note" className="text-xs text-muted-foreground">{alsoMovesNote(subs)}</p>
           )}
           <DialogFooter className="sm:flex-wrap">
-            {editing && !confirmDelete && wontDo === null && (
+            {editing && !confirmDelete && wontDo === null && !moving && (
               <div className="flex gap-2 sm:mr-auto">
                 {onDeleted && <Button type="button" variant="destructive" disabled={saving} onClick={() => setConfirmDelete(true)}>Delete</Button>}
                 {onWontDo && <Button type="button" variant="outline" disabled={saving} onClick={() => setWontDo('')}>Won&apos;t do</Button>}
                 {onSentToBacklog && <Button type="button" variant="ghost" disabled={saving} onClick={toBacklog}>Send to backlog</Button>}
+                {move && move.boards.length > 0 && <Button type="button" variant="outline" disabled={saving} onClick={() => setMoving(true)}>Move to board…</Button>}
               </div>
             )}
             <Button type="button" variant="outline" disabled={saving || deleting} onClick={() => onOpenChange(false)}>Cancel</Button>

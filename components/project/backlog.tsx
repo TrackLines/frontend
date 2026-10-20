@@ -321,6 +321,8 @@ export function Backlog({ projectId, boards, token }: Props) {
           onSaved={(nt) => { setData((d) => d && { ...d, tickets: d.tickets.map((x) => (x.id === nt.id ? { ...x, ...nt, column_id: null, type: nt.type ?? x.type } : x)) }); void load(); }}
           onDeleted={(id) => { drop(id); void load(); }} // the edit dialog can delete (it asks first)
           onWontDo={(id) => { drop(id); void load(); }}
+          // Move to board without a refinement session (TL-464), for the people who can refine
+          move={canRefine(role, boards) ? { boards, onMoved: (id, planned) => { if (!planned) drop(id); void load(); } } : undefined}
         />
       )}
       <AddDialog

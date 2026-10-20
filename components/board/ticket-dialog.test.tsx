@@ -38,3 +38,10 @@ test('an estimate is asked for only on boards with a scale', () => {
 test('details take @mentions', () => {
   expect(dialog({ ticket })).toContain('aria-autocomplete="list"');
 });
+
+test('a backlog ticket can be moved to a board from its edit dialog, when the caller allows it (TL-464)', () => {
+  const board = { id: 'b1', project_id: 'p', owner_clerk_id: 'o', name: 'Team', description: '', created_at: '', updated_at: '' };
+  expect(dialog({ ticket })).not.toContain('Move to board');
+  expect(dialog({ ticket, move: { boards: [], onMoved: () => {} } })).not.toContain('Move to board'); // nowhere to go
+  expect(dialog({ ticket, move: { boards: [board], onMoved: () => {} } })).toContain('Move to board…');
+});
