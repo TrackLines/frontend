@@ -39,6 +39,10 @@ test('the reference: how to authenticate, every endpoint with shared and $ref pa
   const html = renderToStaticMarkup(<ApiReference spec={spec} />);
   expect(html).toContain('Authorization: Bearer tl_');
   expect(html).toContain('read-only');
+  // agent keys are a person's, like personal keys; only service keys are the organization's
+  expect(html).toContain('Personal and agent keys are yours');
+  expect(html).toContain('Service keys</strong> (<code>tl_s_…</code>) belong to the organization');
+  expect(html).not.toContain('agent keys</strong> (<code>tl_ai_…</code>) act inside their organization');
   expect(html).toContain(`href="${SPEC_URL}"`);
   expect(html).toContain('<strong>bearer</strong>'); // the spec's own description, as Markdown
   expect(html).toContain('Get a ticket');
