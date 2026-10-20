@@ -366,6 +366,9 @@ export const columns = {
   update: (id: string, c: { name?: string; wip_limit?: number }, token: T) => api<void>(`/columns/${id}`, { method: 'PATCH', body: c, token }),
   remove: (id: string, token: T) => api<void>(`/columns/${id}`, { method: 'DELETE', token }),
   reorder: (boardId: string, ids: string[], token: T) => api<void>(`/boards/${boardId}/columns/order`, { method: 'PUT', body: { column_ids: ids }, token }),
+  // the edit board page's save: every column in order, new ones without an id (TL-470)
+  layout: (boardId: string, cols: { id?: string; name: string; wip_limit: number | null }[], token: T) =>
+    api<void>(`/boards/${boardId}/columns`, { method: 'PUT', body: { columns: cols }, token }),
 };
 
 // A linked ticket under "blocked by" / "blocks".

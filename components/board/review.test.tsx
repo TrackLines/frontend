@@ -1,7 +1,7 @@
 import { afterEach, expect, test } from 'bun:test';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { tickets } from '@/lib/api';
-import { AgentReviewSetting, NeedsReviewBadge, ReviewActions } from './review';
+import { NeedsReviewBadge, ReviewActions } from './review';
 import { TicketCard } from './ticket-card';
 
 const waiting = { id: 't1', review_requested_at: '2026-10-11T20:00:00Z' };
@@ -21,12 +21,6 @@ test('cards waiting for review say so', () => {
   );
   expect(card('2026-10-11T20:00:00Z')).toContain('Needs review');
   expect(card(null)).not.toContain('Needs review');
-});
-
-test('the board setting shows its current state', () => {
-  const on = renderToStaticMarkup(<AgentReviewSetting boardId="b" on token="x" onChanged={() => {}} />);
-  expect(on).toContain('Agent work needs review');
-  expect(on).toMatch(/aria-pressed="true"[^>]*>On<|data-pressed[^>]*>On</);
 });
 
 const realFetch = globalThis.fetch;

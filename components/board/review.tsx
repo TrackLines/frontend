@@ -20,37 +20,6 @@ export function NeedsReviewBadge({ ticket }: { ticket: Pick<Ticket, 'review_requ
   );
 }
 
-// AgentReviewSetting: the board setting (Edit board mode), like Style and Estimates.
-export function AgentReviewSetting({ boardId, on, token, onChanged }: { boardId: string; on: boolean; token: string; onChanged: () => void }) {
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState('');
-
-  async function change(next: boolean) {
-    setBusy(true);
-    setError('');
-    try {
-      await boards.update(boardId, { agent_review: next }, token);
-      onChanged();
-    } catch (err) {
-      setError(err instanceof ApiError && err.status === 403 ? 'Only organization admins and the board’s team leaders can change this.' : 'Couldn’t change agent review. Please try again.');
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  return (
-    <div className="flex flex-wrap items-center gap-2 text-sm">
-      <span className="text-muted-foreground" title="When an AI agent moves a ticket to Done, it waits for a person to approve it">Agent work needs review</span>
-      <ToggleGroup size="sm" variant="outline" aria-label="Agent work needs review" disabled={busy} value={[on ? 'on' : 'off']}
-        onValueChange={(v) => { if (v[0] && (v[0] === 'on') !== on) void change(v[0] === 'on'); }}>
-        <ToggleGroupItem value="off">Off</ToggleGroupItem>
-        <ToggleGroupItem value="on">On</ToggleGroupItem>
-      </ToggleGroup>
-      {error && <span role="alert" className="text-destructive">{error}</span>}
-    </div>
-  );
-}
-
 // ReviewActions: Approve (to Done) or Send back (to the first column, with a comment). Shown only
 // while the ticket waits for review.
 export function ReviewActions({ ticket, token, onReviewed }: { ticket: Pick<Ticket, 'id' | 'review_requested_at'>; token: string; onReviewed: () => void }) {

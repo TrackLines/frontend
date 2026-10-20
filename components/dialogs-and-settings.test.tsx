@@ -8,8 +8,7 @@ const { renderToStaticMarkup } = await import('react-dom/server');
 const { NameDialog } = await import('./name-dialog');
 const { RoadmapEditorForm } = await import('./roadmap-editor-form');
 const { ProjectKeyPrefix } = await import('./project/key-prefix');
-const { StyleSetting } = await import('./board/board-style');
-const { EstimateSelect, ScaleSetting } = await import('./board/estimate');
+const { EstimateSelect } = await import('./board/estimate');
 const { FlowCharts } = await import('./board/flow-charts');
 const { ThemeChooser } = await import('./theme-chooser');
 const { FeatureFlags } = await import('./feature-flags');
@@ -42,13 +41,6 @@ test('the ticket key prefix: shown to everyone, Change only for admins', () => {
   expect(member).toContain('>TL</code>');
   expect(member).not.toContain('Change');
   expect(renderToStaticMarkup(<ProjectKeyPrefix project={project} token="tok" editable onChanged={() => {}} />)).toContain('>Change<');
-});
-
-test('board style and estimate scale settings show the current choice', () => {
-  const style = renderToStaticMarkup(<StyleSetting boardId="b" style="kanban" token="tok" onChanged={() => {}} />);
-  expect(style).toContain('aria-label="Board style"');
-  expect(style).toMatch(/aria-pressed="true"[^>]*>Kanban|data-pressed=""[^>]*>Kanban/);
-  expect(renderToStaticMarkup(<ScaleSetting boardId="b" scale="fibonacci" estimated={0} token="tok" onChanged={() => {}} />)).toContain('Estimates');
 });
 
 test('the estimate picker asks for a choice when one is required, else offers "Not estimated"', () => {

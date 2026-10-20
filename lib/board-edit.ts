@@ -1,0 +1,86 @@
+import type { Board, BoardStyle } from './api';
+import type { EstimateScale } from './estimates';
+
+// The edit board page (TL-470) works on a draft: nothing reaches the backend until Save, which sends
+// the settings that changed (PATCH /boards/{id}) and the column layout if it changed
+// (PUT /boards/{id}/columns). To do stays first and Done stays last: new tickets go into the first
+// column, and a ticket is done when it's in the last.
+
+export type DraftColumn = {
+  key: string; // stable for the list, also for new columns (which have no id yet)
+  id?: string;
+  name: string;
+  wip: number | null;
+  tickets: number; // in the current sprint: a column with any can't be removed
+};
+export type Draft = { name: string; style: BoardStyle; scale: EstimateScale; agentReview: boolean; columns: DraftColumn[] };
+
+export const MAX_COLUMN_NAME = 80; // the backend's columns.maxColumnName
+
+export function draftOf(b: Board): Draft {
+  return {
+    name: b.name, style: b.style ?? 'sprints', scale: b.estimate_scale ?? 'none', agentReview: !!b.agent_review,
+    columns: (b.columns ?? []).map((c) => ({ key: c.id, id: c.id, name: c.name, wip: c.wip_limit ?? null, tickets: c.tickets.length })),
+  };
+}
+
+// movable: only the columns between To do and Done move, take a WIP limit, or can be removed.
+export const movable = (d: Draft, index: number) => index > 0 && index < d.columns.length - 1;
+
+export function addColumn(d: Draft, name: string, key: string): Draft {
+  const at = Math.max(d.columns.length - 1, 0); // before Done
+  const col: DraftColumn = { key, name: name.trim(), wip: null, tickets: 0 };
+  return { ...d, columns: [...d.columns.slice(0, at), col, ...d.columns.slice(at)] };
+}
+
+export function removeColumn(d: Draft, key: string): Draft {
+  const i = d.columns.findIndex((c) => c.key === key);
+  if (!movable(d, i) || d.columns[i].tickets > 0) return d;
+  return { ...d, columns: d.columns.filter((c) => c.key !== key) };
+}
+
+// moveColumn puts the column at index to, kept between To do and Done.
+export function moveColumn(d: Draft, key: string, to: number): Draft {
+  const from = d.columns.findIndex((c) => c.key === key);
+  if (!movable(d, from)) return d;
+  const target = Math.min(Math.max(to, 1), d.columns.length - 2);
+  if (target === from) return d;
+  const cols = [...d.columns];
+  const [col] = cols.splice(from, 1);
+  cols.splice(target, 0, col);
+  return { ...d, columns: cols };
+}
+
+export function changeColumn(d: Draft, key: string, change: Partial<Pick<DraftColumn, 'name' | 'wip'>>): Draft {
+  return { ...d, columns: d.columns.map((c) => (c.key === key ? { ...c, ...change } : c)) };
+}
+
+// problem is why the draft can't be saved yet, or null.
+export function problem(d: Draft): string | null {
+  if (!d.name.trim()) return 'The board needs a name.';
+  for (const c of d.columns) {
+    if (!c.name.trim()) return 'Every column needs a name.';
+    if (c.name.trim().length > MAX_COLUMN_NAME) return `Column names can be up to ${MAX_COLUMN_NAME} characters.`;
+    if (c.wip !== null && (!Number.isInteger(c.wip) || c.wip < 1 || c.wip > 999)) return `“${c.name}”: a WIP limit is a whole number from 1 to 999, or none.`;
+  }
+  return null;
+}
+
+// settingsPatch is what PATCH /boards/{id} gets: only what changed, or null when nothing did.
+export function settingsPatch(d: Draft, was: Draft): { name?: string; style?: BoardStyle; estimate_scale?: EstimateScale; agent_review?: boolean } | null {
+  const patch = {
+    ...(d.name.trim() !== was.name && { name: d.name.trim() }),
+    ...(d.style !== was.style && { style: d.style }),
+    ...(d.scale !== was.scale && { estimate_scale: d.scale }),
+    ...(d.agentReview !== was.agentReview && { agent_review: d.agentReview }),
+  };
+  return Object.keys(patch).length ? patch : null;
+}
+
+// layout is what PUT /boards/{id}/columns gets: every column in order (new ones without an id).
+export function layout(d: Draft): { id?: string; name: string; wip_limit: number | null }[] {
+  return d.columns.map((c, i) => ({ ...(c.id && { id: c.id }), name: c.name.trim(), wip_limit: movable(d, i) ? c.wip : null }));
+}
+
+export const layoutChanged = (d: Draft, was: Draft) => JSON.stringify(layout(d)) !== JSON.stringify(layout(was));
+export const dirty = (d: Draft, was: Draft) => settingsPatch(d, was) !== null || layoutChanged(d, was);

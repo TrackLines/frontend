@@ -1,27 +1,22 @@
 'use client';
 
-import { AgentReviewSetting } from '@/components/board/review';
-import { ArchivedBanner, BoardLifecycle } from '@/components/board/board-lifecycle';
+import { ArchivedBanner } from '@/components/board/board-lifecycle';
 import Link from 'next/link';
 import { LoadError } from '@/components/load-error';
 import { LiveToast } from '@/components/live-toast';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { EpicFilter, epicQuery, parseEpic } from '@/components/board/epic-filter';
 import { useEffect, useMemo, useState } from 'react';
-import { AddColumn, Column } from '@/components/board/column';
+import { Column } from '@/components/board/column';
 import { BoardDnd, DroppableColumn, SortableTicket } from '@/components/board/board-dnd';
 import { SprintBar } from '@/components/board/sprint-bar';
 import { FlowCharts } from '@/components/board/flow-charts';
 import { StandupPanel } from '@/components/board/standup';
 import { TicketCard } from '@/components/board/ticket-card';
-import { ScaleSetting } from '@/components/board/estimate';
-import { StyleSetting } from '@/components/board/board-style';
 import { TicketDialog } from '@/components/board/ticket-dialog';
-import { EditableTitle } from '@/components/editable-title';
-import { NameDialog } from '@/components/name-dialog';
 import { CopyLink } from '@/components/copy-link';
-import { Button } from '@/components/ui/button';
-import { ApiError, boardTemplates, boards, hostedPaths, organization, projects, teams, tickets, type Board, type EpicSummary, type Ticket } from '@/lib/api';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { ApiError, boards, hostedPaths, organization, projects, teams, tickets, type Board, type EpicSummary, type Ticket } from '@/lib/api';
 import { FollowedTicket, HostedBar } from '@/components/hosted-bar';
 import { followedFilters, followedTicket } from '@/lib/hosted';
 import { useHosted } from '@/lib/use-hosted';
@@ -49,8 +44,6 @@ export default function BoardPage() {
   const [error, setError] = useState<number | null>(null);
   const [addingTo, setAddingTo] = useState<string | null>(null); // column id for the "new ticket" dialog
   const [toBacklog, setToBacklog] = useState<Ticket | null>(null); // created on the sprint's last day, so it went to the backlog
-  const [savingTemplate, setSavingTemplate] = useState(false);
-  const [editMode, setEditMode] = useState(false);
   const [canManage, setCanManage] = useState<boolean | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [currentUserId, setCurrentUserId] = useState('');
@@ -94,7 +87,6 @@ export default function BoardPage() {
       setIsAdmin(false);
       setCanManage(false);
       setPermissionError(true);
-      setEditMode(false);
     }
   }, (e) => {
     if (!background) setError(e instanceof ApiError ? e.status : 500);
@@ -105,13 +97,12 @@ export default function BoardPage() {
     // load once per board; later token refreshes must not refetch and wipe local edits
   }, [id, loaded]);
 
-  useAutoRefresh(() => load(true), loaded && !editMode && !addingTo);
+  useAutoRefresh(() => load(true), loaded && !addingTo);
   // "← Project" is the likely next click
   useEffect(() => {
     if (board && token) prefetch(`project:${board.project_id}`, () => projects.get(board.project_id, token));
   }, [board?.project_id, loaded]);
 
-  useEffect(() => { if (canManage === false) setEditMode(false); }, [canManage]);
   useEffect(() => {
     setLabelFilter(parseLabels(searchParams));
     setPriorityFilter(parsePriorities(searchParams));
@@ -150,7 +141,6 @@ export default function BoardPage() {
         b.team_id ? teams.members(b.team_id, token).catch(() => []) : Promise.resolve([]),
       ]);
       const people = participants(members.map((m) => m.user_id), (b.columns ?? []).flatMap((c) => c.tickets), new Map(names.map((a) => [a.id, a.label])));
-      setEditMode(false);
       await startSharedStandup(people);
       setJoinedStandup(true);
     } catch {
@@ -163,7 +153,7 @@ export default function BoardPage() {
   if (error) return <LoadError status={error} thing="board" />;
   if (!board || !token) return <BoardSkeleton />;
   const archived = Boolean(board.archived_at); // read-only: history kept, no new work
-  const { manage: boardCanManage, admin: boardIsAdmin, editing: boardEditMode } = boardAccess({ checkedBoard: permissionBoardId, board: board.id, canManage, isAdmin, editMode });
+  const { manage: boardCanManage } = boardAccess({ checkedBoard: permissionBoardId, board: board.id, canManage, isAdmin });
   const kanban = board.style === 'kanban';
   const turn = joinedStandup && standup ? speaker(standup) : null;
   const followedId = followedTicket(hostedStandup.session, hostedStandup.role, hostedStandup.following);
@@ -174,40 +164,30 @@ export default function BoardPage() {
   const filters = following
     ? { labels: following.labels ?? [], priorities: following.priorities ?? [], assignee: (following.assignee?.[0] ?? 'all') as AssigneeFilter, me: hostedStandup.session?.host ?? currentUserId, turn: turn?.id ?? null }
     : { labels: labelFilter, priorities: priorityFilter, assignee: assigneeFilter, me: currentUserId, turn: turn?.id ?? null, epic: epicFilter };
-  const hasVisibleTickets = (board.columns ?? []).some((column) => shownTickets(column.tickets, { ...filters, editing: false }).length > 0);
+  const hasVisibleTickets = (board.columns ?? []).some((column) => shownTickets(column.tickets, filters).length > 0);
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col">
       <header className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b px-6 py-4">
         <Link href={`/projects/${board.project_id}`} className="text-sm text-muted-foreground hover:underline">← Project</Link>
-        <EditableTitle
-          value={board.name}
-          label="board"
-          editable={boardEditMode}
-          className="text-2xl font-bold tracking-tight"
-          onSave={async (name) => {
-            try { await boards.update(board.id, { name }, token); }
-            catch (err) { if (err instanceof ApiError && err.status === 403) throw new Error('Only organization admins and this board’s team leaders can edit it.'); throw err; }
-            setBoard((current) => current && { ...current, name });
-          }}
-        />
-        {!boardEditMode && <LabelFilter
+        <h1 className="text-2xl font-bold tracking-tight">{board.name}</h1>
+        <LabelFilter
           options={labelCounts((board.columns ?? []).flatMap((c) => c.tickets))}
           labels={labelFilter}
           onLabelsChange={changeLabels}
           syncUrl={false}
-        />}
-        {!boardEditMode && <PriorityFilter priorities={priorityFilter} onPrioritiesChange={changePriorities} />}
-        {!boardEditMode && <EpicFilter epics={epics} epic={epicFilter} onEpicChange={changeEpic} />}
-        {!boardEditMode && <div role="group" aria-label="Quick filter by assignee" className="flex gap-1">
+        />
+        <PriorityFilter priorities={priorityFilter} onPrioritiesChange={changePriorities} />
+        <EpicFilter epics={epics} epic={epicFilter} onEpicChange={changeEpic} />
+        <div role="group" aria-label="Quick filter by assignee" className="flex gap-1">
           <Button type="button" size="sm" variant={assigneeFilter === 'mine' ? 'secondary' : 'ghost'} aria-pressed={assigneeFilter === 'mine'} onClick={() => setAssigneeFilter((filter) => filter === 'mine' ? 'all' : 'mine')}>My tickets</Button>
           <Button type="button" size="sm" variant={assigneeFilter === 'unassigned' ? 'secondary' : 'ghost'} aria-pressed={assigneeFilter === 'unassigned'} onClick={() => setAssigneeFilter((filter) => filter === 'unassigned' ? 'all' : 'unassigned')}>Unassigned</Button>
-        </div>}
+        </div>
         {/* the same actions in and out of edit mode, so the header doesn't jump around */}
         <div className="ml-auto flex flex-wrap items-center gap-2">
           <CopyLink path={`/boards/${board.id}`} token={token} title="A board on TrackLin.es" />
           {/* standup is for running the board, not configuring it */}
-          {!joinedStandup && !boardEditMode && <Button type="button" variant="outline" size="sm" disabled={startingStandup} onClick={() => standup ? setJoinedStandup(true) : void beginStandup(board)}>
+          {!joinedStandup && <Button type="button" variant="outline" size="sm" disabled={startingStandup} onClick={() => standup ? setJoinedStandup(true) : void beginStandup(board)}>
             {startingStandup ? 'Starting…' : standup ? 'Join standup' : 'Standup'}
           </Button>}
           {joinedStandup && hostedStandup.session && (
@@ -216,30 +196,11 @@ export default function BoardPage() {
               onEnd={() => void actOnStandup('end').catch(() => setStandupError('Couldn’t end the standup. Please try again.'))} />
           )}
           {/* only while you're in the standup */ joinedStandup && <LiveToast state={live} />}
-          {boardCanManage && !archived && !joinedStandup && <Button type="button" variant={editMode ? 'secondary' : 'outline'} size="sm" aria-pressed={editMode} onClick={() => setEditMode((editing) => !editing)}>
-            {editMode ? 'Done editing' : 'Edit board'}
-          </Button>}
+          {/* settings and columns have their own page (TL-470) */}
+          {boardCanManage && !archived && !joinedStandup && <Link href={`/boards/${board.id}/edit`} className={buttonVariants({ variant: 'outline', size: 'sm' })}>Edit board</Link>}
         </div>
         {board.description && <p className="w-full text-muted-foreground">{board.description}</p>}
       </header>
-      {boardEditMode && (
-        // board settings get their own strip under the header while editing
-        <section aria-label="Board settings" className="flex flex-wrap items-center gap-x-6 gap-y-2 border-b bg-muted/40 px-6 py-3 text-sm">
-          <StyleSetting boardId={board.id} style={board.style ?? 'sprints'} token={token} onChanged={() => void load(true)} />
-          <ScaleSetting
-            boardId={board.id}
-            scale={board.estimate_scale ?? 'none'}
-            estimated={(board.columns ?? []).flatMap((c) => c.tickets).filter((t) => t.estimate).length}
-            token={token}
-            onChanged={() => void load(true)}
-          />
-          <AgentReviewSetting boardId={board.id} on={!!board.agent_review} token={token} onChanged={() => void load(true)} />
-          <span className="ml-auto flex flex-wrap gap-2">
-            {boardIsAdmin && <Button type="button" variant="outline" size="sm" onClick={() => setSavingTemplate(true)}>Save as template</Button>}
-            <BoardLifecycle board={board} isAdmin={boardIsAdmin} canManage={boardCanManage} token={token} />
-          </span>
-        </section>
-      )}
       <ArchivedBanner board={board} canManage={boardCanManage} token={token} onRestored={() => void load(true)} />
       {permissionError && <p role="status" className="border-b px-6 py-2 text-sm text-muted-foreground">Couldn’t verify board permissions. Board settings are hidden until permissions can be checked.</p>}
       {standupError && <p role="alert" className="border-b px-6 py-2 text-sm text-destructive">{standupError}</p>}
@@ -264,10 +225,10 @@ export default function BoardPage() {
       {kanban
         ? <div className="flex flex-wrap items-center justify-between gap-2 border-b px-6 py-3">
             <p className="text-sm text-muted-foreground">Kanban board: work flows continuously. Keep each column within its WIP limit.</p>
-            {!boardEditMode && <FlowCharts boardId={board.id} token={token} />}
+            <FlowCharts boardId={board.id} token={token} />
           </div>
-        : <SprintBar board={board} token={token} canManage={boardCanManage} editMode={boardEditMode} onChanged={load} />}
-      {!boardEditMode && !hasVisibleTickets && (labelFilter.length > 0 || priorityFilter.length > 0 || assigneeFilter !== 'all') && (
+        : <SprintBar board={board} token={token} canManage={boardCanManage} onChanged={load} />}
+      {!hasVisibleTickets && (labelFilter.length > 0 || priorityFilter.length > 0 || assigneeFilter !== 'all') && (
         <p role="status" className="mx-6 mt-4 flex flex-wrap items-center gap-2 rounded-lg border border-dashed p-3 text-sm text-muted-foreground">
           No tickets match these filters.
           <Button type="button" variant="link" size="sm" className="h-auto p-0" onClick={() => { changeFilters([], []); setAssigneeFilter('all'); }}>Clear filters</Button>
@@ -292,12 +253,12 @@ export default function BoardPage() {
       <div className="flex min-w-0 flex-1 items-start gap-4 overflow-x-auto">
         {board.columns?.map((col) => {
           const cols = board.columns ?? [];
-          const shown = shownTickets(col.tickets, { ...filters, editing: boardEditMode });
+          const shown = shownTickets(col.tickets, filters);
           const done = col.id === cols.at(-1)?.id; // last column = Done
           return (
             <div key={col.id} className="min-w-72 flex-1">
               <Column
-                column={col} token={token} editMode={boardEditMode} scale={board.estimate_scale} done={done}
+                column={col} scale={board.estimate_scale} done={done}
                 limited={!done && col.id !== cols[0]?.id} // WIP limits are for work in progress: not To do, not Done
                 note={kanban && done && (board.hidden_done ?? 0) > 0 && (
                   <p className="text-xs text-muted-foreground">{board.hidden_done} finished over 14 days ago {board.hidden_done === 1 ? 'is' : 'are'} hidden.</p>
@@ -305,13 +266,13 @@ export default function BoardPage() {
               >
                 <DroppableColumn id={col.id} ticketIds={shown.map((t) => t.id)}>
                   {shown.map((t) => (
-                    <SortableTicket key={t.id} id={t.id} disabled={boardEditMode || archived}>
+                    <SortableTicket key={t.id} id={t.id} disabled={archived}>
                       <TicketCard
                         ticket={t}
                         openOnLoad={t.id === focus ? { columnName: col.name } : undefined}
                         done={done}
                         scale={board.estimate_scale}
-                        readOnly={boardEditMode || archived}
+                        readOnly={archived}
                         token={token}
                         onUpdated={(nt) => updateTickets(col.id, (ts) => ts.map((x) => (x.id === nt.id ? nt : x)))}
                         onReviewed={() => void load(true)}
@@ -322,39 +283,16 @@ export default function BoardPage() {
                   ))}
                 </DroppableColumn>
                 {/* tickets reach Done by being moved there, not created in it; none are added while editing */}
-                {canAddTicket({ editing: boardEditMode, archived, done, columns: cols.length }) && (
+                {canAddTicket({ archived, done, columns: cols.length }) && (
                   <Button variant="ghost" className="justify-start" onClick={() => setAddingTo(col.id)}>+ Add ticket</Button>
                 )}
               </Column>
             </div>
           );
         })}
-        {boardEditMode && (
-          <div className="w-72 shrink-0">
-            <AddColumn
-              boardId={board.id}
-              token={token}
-              onCreated={(c) => setBoard((b) => b && { ...b, columns: [...(b.columns ?? []), { ...c, tickets: [] }] })}
-            />
-          </div>
-        )}
       </div>
       </div>
       </BoardDnd>
-      <NameDialog
-        open={savingTemplate}
-        onOpenChange={setSavingTemplate}
-        title="Save as template"
-        description="New boards can start with this board's columns, WIP limits, style and estimate scale. Tickets aren't copied."
-        placeholder="e.g. Our delivery flow"
-        initialValue={board.name}
-        submitLabel="Save template"
-        onSubmit={async (name) => {
-          await boardTemplates.saveBoard(name, board.id, token).catch((err) => {
-            throw new Error(err instanceof ApiError && err.status === 403 ? 'Only organization admins can save templates.' : 'Couldn’t save the template. Please try again.');
-          });
-        }}
-      />
       {addingTo && (
         <TicketDialog
           open

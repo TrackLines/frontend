@@ -22,7 +22,6 @@ test('a board shows only the chosen epic’s tickets, with the other filters sti
   expect(filterTicketsByEpic(ts, '').map((t) => t.id)).toEqual(['a', 'b', 'c']);
   const base = { labels: [], priorities: [], assignee: 'all' as const, me: 'u', turn: null, editing: false };
   expect(shownTickets(ts, { ...base, epic: 'e2' }).map((t) => t.id)).toEqual(['b']);
-  expect(shownTickets(ts, { ...base, epic: 'e2', editing: true }).length).toBe(3); // edit mode shows everything
 });
 
 test('the filter shows when there are open epics, or one is chosen (so it can be cleared)', () => {
