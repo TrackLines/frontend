@@ -8,6 +8,15 @@ test('the sample board shows every card, clickable, laid out like the real ones'
   expect(html.match(/<button/g)?.length).toBe(5); // one per card title
 });
 
+test('a sample pull request shows like a real one, linking nowhere (SHOP-37)', () => {
+  const html = renderToStaticMarkup(<SampleSections s={{ ticket: { id: 'SHOP-2', key: 'SHOP-2', column_id: '', position: 0, title: 't', description: '', created_by: 'Sam' },
+    prs: [{ provider: 'github', repo: 'acme/shop', number: 214, url: '', title: 'SHOP-2: a change', state: 'open', author: 'claude', branch: 'b', updated_at: new Date().toISOString() }] }} />);
+  for (const want of ['Pull requests', 'acme/shop#214', 'SHOP-2: a change', 'Open', 'claude']) expect(html).toContain(want);
+  expect(html).not.toContain('github.com');
+  expect(html.indexOf('Attachments')).toBeLessThan(html.indexOf('Pull requests')); // the real modal's order
+  expect(html.indexOf('Pull requests')).toBeLessThan(html.indexOf('Conversation'));
+});
+
 test('sample details are read-only: no comment box, reply, upload or remove', () => {
   const s = { ticket: { id: 'SHOP-1', key: 'SHOP-1', column_id: '', position: 0, title: 't', description: '', created_by: 'Sam' },
     bugfixes: { source: 'bugfixes' as const, project: 'p', report_id: '1', url: '', available: true, regressed: false,

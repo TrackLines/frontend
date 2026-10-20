@@ -35,9 +35,13 @@ export function PullRequestsPanelView({ prs }: { prs: TicketPR[] }) {
           return (
             <li key={`${pr.provider}:${pr.repo}#${pr.number}`} className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
               <s.icon className={`size-4 shrink-0 ${s.className}`} aria-hidden />
-              <a href={pr.url} target="_blank" rel="noopener noreferrer" className="min-w-0 font-medium hover:underline">
-                <span className="text-muted-foreground">{pr.repo}#{pr.number}</span> {pr.title}
-              </a>
+              {pr.url ? (
+                <a href={pr.url} target="_blank" rel="noopener noreferrer" className="min-w-0 font-medium hover:underline">
+                  <span className="text-muted-foreground">{pr.repo}#{pr.number}</span> {pr.title}
+                </a>
+              ) : ( // the landing page's sample: nowhere to link
+                <span className="min-w-0 font-medium"><span className="text-muted-foreground">{pr.repo}#{pr.number}</span> {pr.title}</span>
+              )}
               <Badge variant={pr.state === 'open' ? 'secondary' : 'outline'}>{s.label}</Badge>
               <span className="text-xs text-muted-foreground">{pr.author}{pr.updated_at && <> · <When iso={pr.updated_at} /></>}</span>
             </li>

@@ -7,6 +7,7 @@ import { TicketView } from '@/components/board/ticket-view';
 import { formatSize } from '@/components/ticket/attachments';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
 import { BugfixesPanelView } from '@/components/ticket/bugfixes-panel';
+import { PullRequestsPanelView } from '@/components/ticket/pull-requests-panel';
 import { CommentList } from '@/components/ticket/comments';
 import { TicketLabels } from '@/components/ticket/labels';
 import { TicketKey } from '@/components/ticket/ticket-key';
@@ -15,7 +16,7 @@ import { When } from '@/components/when';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import type { Ticket, TicketBugfixes, TicketComment } from '@/lib/api';
+import type { Ticket, TicketBugfixes, TicketComment, TicketPR } from '@/lib/api';
 
 // BoardPreview: the landing page's sample board. Cards are laid out like the real TicketCard and open
 // the real TicketView with sample content: read-only, no edit, comment box or attaching.
@@ -25,6 +26,7 @@ export type Sample = {
   ticket: Ticket;
   bugfixes?: TicketBugfixes;
   files?: { name: string; size: number; by: string }[];
+  prs?: TicketPR[]; // no url: a sample links nowhere
   comments?: { author: string; hours: number; body: string; reply?: boolean }[];
 };
 
@@ -61,6 +63,7 @@ const COLUMNS: { name: string; tickets: Sample[] }[] = [
       title: 'Paginate the backlog', type: 'task', priority: 'high', labels: ['perf'], estimate: '2', assigned_to: 'claude', created_by: 'Alex', hours: 26,
       description: 'The backlog loads every ticket at once; big projects take seconds.\n\n- 50 per page\n- Filters and sort still apply across pages',
     }, {
+      prs: [{ provider: 'github', repo: 'acme/shop', number: 214, url: '', title: 'SHOP-37: paginate the backlog', state: 'open', author: 'claude', branch: 'shop-37-paginate-backlog', updated_at: hoursAgo(1) }],
       comments: [
         { author: 'claude', hours: 3, body: 'Claimed it. Plan: `LIMIT/OFFSET` with a stable sort, counts in the same query, pager under the list.' },
         { author: 'claude', hours: 1, body: 'Pagination works and the tests pass. PR #214 is open for review.' },
@@ -158,6 +161,7 @@ export function SampleSections({ s }: { s: Sample }) {
           </ul>
         ) : <p className="text-sm text-muted-foreground">No files attached.</p>}
       </section>
+      {s.prs && <PullRequestsPanelView prs={s.prs} />}
       <section aria-label="Ticket conversation" className="grid min-w-0 gap-4 border-t pt-4">
         <h2 className="font-semibold">Conversation</h2>
         {comments.length ? <CommentList comments={comments} /> : <p className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">No comments yet.</p>}
