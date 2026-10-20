@@ -298,6 +298,7 @@ export default function BoardPage() {
             <div key={col.id} className="min-w-72 flex-1">
               <Column
                 column={col} token={token} editMode={boardEditMode} scale={board.estimate_scale} done={done}
+                limited={!done && col.id !== cols[0]?.id} // WIP limits are for work in progress: not To do, not Done
                 note={kanban && done && (board.hidden_done ?? 0) > 0 && (
                   <p className="text-xs text-muted-foreground">{board.hidden_done} finished over 14 days ago {board.hidden_done === 1 ? 'is' : 'are'} hidden.</p>
                 )}

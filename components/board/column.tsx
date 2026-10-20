@@ -16,12 +16,14 @@ type ColumnProps = {
   note?: ReactNode; // under the header, e.g. kanban's hidden Done tickets
   scale?: EstimateScale; // the board's: with one, the header also shows the column's points
   done?: boolean; // the board's last column: its points are completed, the others' still to do
+  limited?: boolean; // takes a WIP limit: the columns between the first (waiting) and the last (Done)
   children?: ReactNode;
 };
 
-export function Column({ column, token, editMode = false, note, scale = 'none', done = false, children }: ColumnProps) {
+export function Column({ column, token, editMode = false, note, scale = 'none', done = false, limited = true, children }: ColumnProps) {
   const [name, setName] = useState(column.name);
-  const [limit, setLimit] = useState(column.wip_limit ?? null);
+  const [saved, setLimit] = useState(column.wip_limit ?? null);
+  const limit = limited ? saved : null; // one left on To do or Done (from before) means nothing
   const count = column.tickets.length;
   const over = limit !== null && count > limit;
   const total = column.tickets.reduce((sum, t) => sum + points(t.estimate), 0);
@@ -52,7 +54,7 @@ export function Column({ column, token, editMode = false, note, scale = 'none', 
         </div>
       </header>
       {over && <p role="status" className="text-xs text-destructive">Over the limit of {limit}: finish something before starting more.</p>}
-      {editMode && <WipLimit columnId={column.id} token={token} value={limit} onChange={setLimit} />}
+      {editMode && limited && <WipLimit columnId={column.id} token={token} value={limit} onChange={setLimit} />}
       {note}
       <div className="grid content-start gap-3">{children}</div>
     </section>

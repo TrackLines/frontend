@@ -30,3 +30,15 @@ test('on an estimated board the header shows points: left to do, or completed in
   const shirts = { ...col(2, null), tickets: [{ ...ticket('a'), estimate: 'M' }, { ...ticket('b'), estimate: 'XS' }] };
   expect(renderToStaticMarkup(<Column column={shirts} token="x" scale="tshirt" />)).toContain('4 pts left'); // M=3 + XS=1
 });
+
+test('WIP limits are only for work in progress: not the first column (waiting) or the last (Done)', async () => {
+  const page = await Bun.file(new URL('../../app/boards/[id]/page.tsx', import.meta.url)).text();
+  expect(page).toContain('limited={!done && col.id !== cols[0]?.id}');
+  // no box to set one, even editing
+  expect(renderToStaticMarkup(<Column column={col(1, null)} token="x" editMode limited={false} />)).not.toContain('WIP limit');
+  // and a limit saved there before is ignored: no "/ 3", no warning
+  const html = renderToStaticMarkup(<Column column={col(4, 3)} token="x" limited={false} />);
+  expect(html).not.toContain('/ 3');
+  expect(html).not.toContain('Over the limit');
+  expect(html).not.toContain('ring-2 ring-destructive/50'); // the over-limit outline
+});
