@@ -35,6 +35,7 @@ test('the homepage highlights the terminal app, Google Chat buttons and TRMNL, e
   const { OUR_TUI } = await import('@/lib/our-links');
   expect(FEATURES.find((f) => f.title === 'Your work in the terminal')?.links).toEqual([{ href: OUR_TUI, label: 'Get the terminal app →' }]);
   expect(OUR_TUI).toBe('https://github.com/TrackLines/tui');
+  expect(FEATURES.find((f) => f.title === 'Your work in the terminal')?.body).toContain('follow along when someone runs a standup or refinement'); // it follows, it doesn't host (TL-465)
   expect(FEATURES.find((f) => f.title === 'Act on it from Google Chat')?.links?.[0].href).toBe('/docs/google-chat');
   expect(FEATURES.find((f) => f.title === 'Your tickets on a TRMNL')?.links?.map((l) => l.href)).toContain('/docs/trmnl');
 });
