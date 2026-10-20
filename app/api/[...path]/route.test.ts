@@ -1,4 +1,4 @@
-import { afterAll, expect, test } from 'bun:test';
+import { afterAll, expect, mock, test } from 'bun:test';
 import { NextRequest } from 'next/server';
 
 // a fake backend that echoes what it received
@@ -7,6 +7,7 @@ const backend = Bun.serve({
   port: 0,
   async fetch(req) {
     seen.push({ path: new URL(req.url).pathname + new URL(req.url).search, headers: Object.fromEntries(req.headers), body: await req.text() });
+    if (new URL(req.url).pathname === '/api/slow') await new Promise((r) => setTimeout(r, 500)); // answers late
     if (new URL(req.url).pathname === '/api/limited') {
       return new Response('slow down', { status: 429, headers: { 'retry-after': '30', 'set-cookie': 'x=1' } });
     }
@@ -14,6 +15,9 @@ const backend = Bun.serve({
   },
 });
 process.env.BACKEND_URL = `http://localhost:${backend.port}`;
+const reported: string[] = [];
+const realReport = await import('@/lib/report'); // module mocks reach every test file: keep the rest real
+mock.module('@/lib/report', () => ({ ...realReport, reportServer: async (message: string, detail: string) => { reported.push(`${message} | ${detail}`); } }));
 afterAll(() => backend.stop());
 const { GET, POST } = await import('./route');
 
@@ -62,4 +66,25 @@ test('bodies are capped before they are buffered: over 5 MiB is a 413 and never 
   expect(streamed.status).toBe(413);
   expect(pulled).toBeLessThan(10);
   expect(seen.length).toBe(before + 1);
+});
+
+test('the browser leaving before the backend answers is not "backend unreachable"; the backend being down is', async () => {
+  const left = new AbortController();
+  const req = new NextRequest('https://tracklin.es/api/slow', { signal: left.signal });
+  setTimeout(() => left.abort(), 20); // a live stream closed, or the page changed
+  const res = await GET(req, ctx(['slow']));
+  expect(res.status).toBe(499);
+  expect(reported).toEqual([]);
+
+  const backendURL = process.env.BACKEND_URL;
+  process.env.BACKEND_URL = 'http://localhost:1'; // nothing listening
+  try {
+    const down = await GET(new NextRequest('https://tracklin.es/api/projects/p1/live'), ctx(['projects', 'p1', 'live']));
+    expect(down.status).toBe(502);
+  } finally {
+    process.env.BACKEND_URL = backendURL;
+  }
+  expect(reported).toHaveLength(1);
+  expect(reported[0]).toStartWith('backend unreachable from the /api proxy | GET /api/projects/p1/live: ');
+  expect(reported[0]).not.toEndWith(': '); // says what went wrong
 });
