@@ -30,3 +30,11 @@ test('the Errors become tickets card links to BugFix.es (cross promotion), named
   const card = FEATURES.find((f) => f.title === 'Errors become tickets');
   expect(card?.links).toEqual([{ href: 'https://bugfix.es', label: 'Find out about BugFix.es →' }]);
 });
+
+test('the homepage highlights the terminal app, Google Chat buttons and TRMNL, each with where to get it', async () => {
+  const { OUR_TUI } = await import('@/lib/our-links');
+  expect(FEATURES.find((f) => f.title === 'Your work in the terminal')?.links).toEqual([{ href: OUR_TUI, label: 'Get the terminal app →' }]);
+  expect(OUR_TUI).toBe('https://github.com/TrackLines/tui');
+  expect(FEATURES.find((f) => f.title === 'Act on it from Google Chat')?.links?.[0].href).toBe('/docs/google-chat');
+  expect(FEATURES.find((f) => f.title === 'Your tickets on a TRMNL')?.links?.map((l) => l.href)).toContain('/docs/trmnl');
+});
