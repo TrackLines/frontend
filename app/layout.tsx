@@ -42,16 +42,17 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <FeatureFlags>
           <CacheGuard />
           <Show when="signed-in"><CompleteInvitations /></Show>
-          <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 print:hidden">
-            <div className="flex items-center gap-4">
-              <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight">
+          {/* on phones: 16px gutters, tighter gaps, and the name and buttons' words drop to icons (TL-471) */}
+          <header className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 sm:px-6 py-4 print:hidden">
+            <div className="flex min-w-0 items-center gap-2 sm:gap-4">
+              <Link href="/" aria-label="TrackLin.es" className="flex shrink-0 items-center gap-2 font-semibold tracking-tight">
                 {/* the logo on its dark tile: its white ring would vanish on a light background */}
                 <Image src="/logo-tile.png" alt="" width={28} height={28} className="size-7 rounded-md" priority />
-                TrackLin.es
+                <span className="hidden sm:inline">TrackLin.es</span>
               </Link>
               <Show when="signed-in"><OrgSwitcher /></Show>
             </div>
-            <nav className="flex items-center gap-4" aria-label="Account">
+            <nav className="flex shrink-0 items-center gap-1.5 sm:gap-4" aria-label="Account">
               {/* QuickAddTicket only renders on some pages, so it goes first: the toggle and avatar never move */}
               <Show when="signed-in"><QuickAddTicket /></Show>
               <Show when="signed-in"><TicketSearch /></Show>

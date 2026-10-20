@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { SearchIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -101,7 +102,9 @@ export function TicketSearch() {
 
   return (
     <>
-      <Button type="button" size="sm" variant="outline" aria-label="Search tickets (Ctrl+K)" onClick={() => setOpen(true)}>Search <kbd className="ml-1 text-xs text-muted-foreground">⌘K</kbd></Button>
+      <Button type="button" size="sm" variant="outline" aria-label="Search tickets (Ctrl+K)" onClick={() => setOpen(true)}>
+        <SearchIcon aria-hidden className="sm:hidden" /><span className="hidden sm:inline">Search</span> <kbd className="ml-1 hidden text-xs text-muted-foreground sm:inline">⌘K</kbd>
+      </Button>
       <Dialog open={open} onOpenChange={(next) => { setOpen(next); if (!next) setQuery(''); }}>
         <DialogContent className="top-[12%] max-h-[76vh] translate-y-0 overflow-hidden p-0 sm:max-w-2xl">
           <DialogHeader className="px-4 pt-4">

@@ -7,6 +7,7 @@ import { SimilarTickets, useSimilarTickets } from '@/components/ticket/similar-t
 import { attachAll, PendingAttachments, type PendingFile } from '@/components/ticket/pending-attachments';
 import { TypePicker } from '@/components/ticket-type';
 import { LabelDrawer } from '@/components/ticket/labels';
+import { PlusIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -34,7 +35,9 @@ export function QuickAddTicket() {
   if (!scope) return null;
   return (
     <>
-      <Button size="sm" onClick={() => setOpen(true)}>New ticket</Button>
+      <Button size="sm" aria-label="New ticket" onClick={() => setOpen(true)}>
+        <PlusIcon aria-hidden /><span className="hidden sm:inline">New ticket</span>
+      </Button>
       {open && <QuickAddDialog scope={scope} onClose={() => setOpen(false)} />}
     </>
   );
