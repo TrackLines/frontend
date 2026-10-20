@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { B, Guide, H2, Items, P, Steps } from '@/components/docs/prose';
+import { B, Code, Guide, H2, Items, P, Steps } from '@/components/docs/prose';
 
 export const metadata: Metadata = {
   title: 'Terminal app · TrackLin.es docs',
@@ -9,6 +9,14 @@ export const metadata: Metadata = {
 
 // TUI_REPO: the terminal app's source and releases.
 export const TUI_REPO = 'https://github.com/TrackLines/tui';
+
+// downloads: a release's binaries, one per machine (the TUI's CI builds these four).
+export const downloads = [
+  { machine: 'Linux (x86)', file: 'tracklines-linux-amd64' },
+  { machine: 'Linux (arm)', file: 'tracklines-linux-arm64' },
+  { machine: 'macOS (Apple silicon)', file: 'tracklines-darwin-arm64' },
+  { machine: 'macOS (Intel)', file: 'tracklines-darwin-amd64' },
+];
 
 // keys: what works where. The README in the repo has the full list.
 export const keys = [
@@ -30,10 +38,32 @@ export default function TuiDocs() {
       <H2>Install</H2>
       <Steps>
         <li>Make a <B>Personal</B> key in <Link href="/account/api-keys" className="underline">Your settings → API keys</Link>. Leave <B>Read only</B> unticked to move and comment; a read-only key can still browse.</li>
-        <li>Save it: <code>mkdir -p ~/.config/tracklines && echo &apos;tl_p_…&apos; &gt; ~/.config/tracklines/key && chmod 600 ~/.config/tracklines/key</code>. Or set <code>TRACKLINES_API_KEY</code>.</li>
-        <li>Download it from <a href={`${TUI_REPO}/releases`} className="underline" target="_blank" rel="noopener noreferrer">Releases</a>, make it executable (<code>chmod +x</code>) and put it on your path. <B>Linux:</B> <code>tracklines-linux-amd64</code> or <code>tracklines-linux-arm64</code>. <B>macOS:</B> <code>tracklines-darwin-arm64</code> (Apple silicon) or <code>tracklines-darwin-amd64</code> (Intel). It isn’t signed, so if you download it in a browser, run <code>xattr -d com.apple.quarantine</code> on it before macOS will open it. On Windows, build it with Go: <code>go install github.com/tracklines/tui/cmd/tracklines@latest</code>.</li>
+        <li>
+          Save it (or set <code>TRACKLINES_API_KEY</code> instead):
+          <Code>{`mkdir -p ~/.config/tracklines
+echo 'tl_p_…' > ~/.config/tracklines/key
+chmod 600 ~/.config/tracklines/key`}</Code>
+        </li>
+        <li>
+          Download the file for your machine from <a href={`${TUI_REPO}/releases`} className="underline" target="_blank" rel="noopener noreferrer">Releases</a>:
+          <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
+            {downloads.map((d) => (
+              <div key={d.file} className="contents">
+                <dt>{d.machine}</dt>
+                <dd><code>{d.file}</code></dd>
+              </div>
+            ))}
+          </dl>
+          <p className="mt-2">Then make it executable and put it on your path. For example, on Linux x86:</p>
+          <Code>{`curl -fLo ~/.local/bin/tracklines ${TUI_REPO}/releases/latest/download/tracklines-linux-amd64
+chmod +x ~/.local/bin/tracklines`}</Code>
+        </li>
         <li>Run <code>tracklines</code>.</li>
       </Steps>
+      <P><B>On macOS</B>, the binary isn’t signed. Downloaded with <code>curl</code> it runs as it is; downloaded in a browser, macOS blocks it until you run:</P>
+      <Code>xattr -d com.apple.quarantine tracklines-darwin-arm64</Code>
+      <P><B>On Windows</B>, build it with Go 1.26 or later:</P>
+      <Code>go install github.com/tracklines/tui/cmd/tracklines@latest</Code>
 
       <H2>Keys</H2>
       <P>Each screen lists its own keys at the bottom, and <code>?</code> shows the ones that work everywhere.</P>

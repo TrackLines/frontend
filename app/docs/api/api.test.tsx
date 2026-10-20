@@ -1,7 +1,7 @@
 import { expect, test } from 'bun:test';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { ApiReference, groups, SPEC_URL, typeOf, type Spec } from './page';
-import TuiDocs, { keys, TUI_REPO } from '../tui/page';
+import TuiDocs, { downloads, keys, TUI_REPO } from '../tui/page';
 
 const spec: Spec = {
   info: { description: 'API keys are **bearer** tokens.' },
@@ -60,7 +60,10 @@ test('the reference: how to authenticate, every endpoint with shared and $ref pa
 test('the terminal app guide: install from releases, the key, its keys and config', () => {
   const html = renderToStaticMarkup(<TuiDocs />);
   expect(html).toContain(`${TUI_REPO}/releases`);
-  for (const build of ['tracklines-linux-amd64', 'tracklines-linux-arm64', 'tracklines-darwin-arm64', 'tracklines-darwin-amd64']) expect(html).toContain(build);
+  expect(downloads.map((d) => d.file)).toEqual(['tracklines-linux-amd64', 'tracklines-linux-arm64', 'tracklines-darwin-arm64', 'tracklines-darwin-amd64']);
+  for (const d of downloads) expect(html).toContain(d.file);
+  for (const cmd of ['chmod 600 ~/.config/tracklines/key', 'xattr -d com.apple.quarantine', 'go install github.com/tracklines/tui/cmd/tracklines@latest']) expect(html).toContain(cmd);
+  expect(html.match(/<pre/g)?.length).toBe(4); // the key, the download, macOS, Windows
   expect(html).toContain('tl_p_');
   expect(html).toContain('href="/account/api-keys"');
   for (const k of keys) expect(html).toContain(k.where);

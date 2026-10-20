@@ -84,7 +84,7 @@ export function ApiReference({ spec }: { spec: Spec }) {
       <Items>
         <li><B>Personal keys</B> (<code>tl_p_…</code>) are you: you see and change what you can in the web app, and what they change is recorded as you.</li>
         <li><B>Agent keys</B> (<code>tl_ai_…</code>) are your AI agent, working alongside you: they can be assigned tickets, and their work is recorded as the agent. Others see it with your name (<B>Claude (you)</B>).</li>
-        <li><B>Service keys</B> (<code>tl_s_…</code>) belong to the organization, for scripts and integrations such as Bugfixes: everyone can see them and when they expire, and their writes carry the key’s name.</li>
+        <li><B>Service keys</B> (<code>tl_s_…</code>) belong to the organization, for scripts and integrations such as Bugfixes, and their writes carry the key’s name. Everyone in the organization sees each one’s name, the first few characters of the key, when it was last used and when it expires; the key itself is shown once, when it’s made.</li>
         <li>A <B>read-only</B> key gets <code>403</code> for anything but <code>GET</code>. Keys expire; their expiry shows next to them.</li>
         <li>Each key has a per-minute limit, in every response’s <code>X-RateLimit-Limit</code> and <code>X-RateLimit-Remaining</code>. Over it: <code>429</code> with <code>Retry-After</code>.</li>
         <li>Times are UTC. Send <code>Tracklines-Timezone: Europe/London</code> (any IANA zone) for day-based rules, such as a sprint’s last day, to use your day.</li>

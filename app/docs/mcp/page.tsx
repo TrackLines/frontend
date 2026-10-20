@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 // keys: the two kinds of API key (TL-271).
 export const keys = [
   { kind: 'AI key (tl_ai_…)', body: 'For an AI agent working alongside you. It can be assigned tickets, claims and moves them, and on boards with agent review its finished work waits for a person to approve it.' },
-  { kind: 'Service key (tl_s_…)', body: 'For scripts and integrations such as Bugfixes, made by organization admins in Settings → API keys (everyone can see them and when they expire). It can create and update tickets, but can’t be assigned work, so nobody can pass an agent’s work off as their own.' },
+  { kind: 'Service key (tl_s_…)', body: 'For scripts and integrations such as Bugfixes, made by organization admins in Settings → API keys. Everyone sees its name, the start of the key and when it expires, never the whole key. It can create and update tickets, but can’t be assigned work, so nobody can pass an agent’s work off as their own.' },
   { kind: 'Personal key (tl_p_…)', body: 'For your own scripts and displays (such as TRMNL), made in Your settings. It acts as you: your tickets are its tickets, and what it changes is recorded as you. A read-only key can only read, so it can’t be used over MCP.' },
 ];
 
