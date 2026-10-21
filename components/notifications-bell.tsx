@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { BellIcon, XIcon } from 'lucide-react';
+import { BellIcon, SettingsIcon, XIcon } from 'lucide-react';
 import { NotificationIcon } from '@/components/notification-icon';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -138,19 +138,18 @@ export function NotificationsBell() {
         )}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-96 max-w-[calc(100vw-2rem)] p-0">
-        <NotificationsList items={items} people={people} failed={failed} unread={count} showRead={showRead}
+        <NotificationsList items={items} people={people} failed={failed} unread={count} showRead={showRead} settings
           onOpen={(n) => void open(n)} onDismiss={(n) => void dismiss(n)} onReadAll={() => void readAll()}
           onShowRead={setShowRead} onClearRead={() => void clearRead()} />
-        {(pushOn === 'on' || pushOn === 'off' || pushOn === 'blocked' || pushOn === 'tabonly') ? (
+        {/* only when there's something to do here; why a browser can't (blocked, no push service) is on the settings page */}
+        {(pushOn === 'on' || pushOn === 'off') ? (
           <PushControl state={pushOn} busy={pushBusy} error={pushError} onToggle={() => void togglePush()} />
-        ) : permission === 'default' && (
+        ) : pushOn !== 'blocked' && pushOn !== 'tabonly' && permission === 'default' && (
           <div className="border-t px-3 py-2 text-xs">
             <button type="button" className="font-medium hover:underline" onClick={() => void enableDesktop()}>Turn on desktop notifications</button>
             <span className="text-muted-foreground"> while TrackLin.es is open</span>
           </div>
         )}
-        {pushOn !== 'blocked' && permission === 'denied' && <p className="border-t px-3 py-2 text-xs text-muted-foreground">Desktop notifications are blocked for this site in your browser settings.</p>}
-        <Link href="/account" className="block border-t px-3 py-2 text-xs font-medium hover:underline">Notification settings: this device, Google Chat</Link>
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -158,8 +157,8 @@ export function NotificationsBell() {
 
 // NotificationsList: the inbox (pure, for tests): unread marked, newest-first within read/unread.
 // Read ones are hidden unless showRead: opening or dismissing one takes it out of the bell.
-export function NotificationsList({ items, people, failed, unread, showRead = false, onOpen, onDismiss, onReadAll, onShowRead, onClearRead }: {
-  items: AppNotification[] | null; people: Assignee[]; failed: boolean; unread: number; showRead?: boolean;
+export function NotificationsList({ items, people, failed, unread, showRead = false, settings = false, onOpen, onDismiss, onReadAll, onShowRead, onClearRead }: {
+  items: AppNotification[] | null; people: Assignee[]; failed: boolean; unread: number; showRead?: boolean; settings?: boolean;
   onOpen: (n: AppNotification) => void; onDismiss?: (n: AppNotification) => void; onReadAll: () => void;
   onShowRead?: (show: boolean) => void; onClearRead?: () => void;
 }) {
@@ -169,7 +168,15 @@ export function NotificationsList({ items, people, failed, unread, showRead = fa
     <div className="grid">
       <div className="flex items-center justify-between border-b px-3 py-2">
         <span className="text-sm font-semibold">Notifications</span>
-        {unread > 0 && <button type="button" className="text-xs font-medium text-muted-foreground hover:text-foreground hover:underline" onClick={onReadAll}>Mark all read</button>}
+        <span className="flex items-center gap-2">
+          {unread > 0 && <button type="button" className="text-xs font-medium text-muted-foreground hover:text-foreground hover:underline" onClick={onReadAll}>Mark all read</button>}
+          {/* this device, Google Chat: Your settings */}
+          {settings && (
+            <Link href="/account" aria-label="Notification settings" title="Notification settings" className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground">
+              <SettingsIcon className="size-4" aria-hidden />
+            </Link>
+          )}
+        </span>
       </div>
       {failed ? <p role="alert" className="px-3 py-6 text-center text-sm text-destructive">Couldn&apos;t load notifications.</p>
         : shown === null ? <p role="status" className="px-3 py-6 text-center text-sm text-muted-foreground">Loading…</p>

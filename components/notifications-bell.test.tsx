@@ -64,3 +64,12 @@ test('each notification shows its type\'s icon (TL-280)', () => {
   expect(html).toContain('data-kind="assigned"');
   expect(html).toContain('data-kind="over_capacity"');
 });
+
+test('settings are a cog by the heading, not a line at the bottom', () => {
+  const html = view({ settings: true });
+  expect(html).toContain('aria-label="Notification settings"');
+  expect(html).toContain('href="/account"');
+  expect(html).not.toContain('Notification settings: this device');
+  expect(html.indexOf('Notification settings')).toBeLessThan(html.indexOf('all caught up'));
+  expect(view({})).not.toContain('href="/account"'); // the list on its own has no cog
+});

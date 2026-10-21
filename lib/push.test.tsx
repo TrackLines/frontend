@@ -51,3 +51,29 @@ test('the card and the bell show that reason', async () => {
   expect(tab).not.toContain('Turn on');
   expect(renderToStaticMarkup(<PushControl state="tabonly" busy={false} onToggle={() => {}} />)).not.toContain('Turn on');
 });
+
+// Notifications allowed but nothing subscribed: find out once whether this browser can push, instead
+// of offering Turn on until someone presses it and fails (Helium, plain Chromium).
+test('a quiet check: no push service means "while open", never a Turn on button', async () => {
+  const { probePush } = await import('./push');
+  const store = new Map<string, string>();
+  const real = globalThis.localStorage;
+  globalThis.localStorage = { getItem: (k: string) => store.get(k) ?? null, setItem: (k: string, v: string) => void store.set(k, v) } as Storage;
+  const noService = { subscribe: async () => { throw Object.assign(new Error('Registration failed - push service error'), { name: 'AbortError' }); } };
+  expect(await probePush(noService, 'aGVsbG8_')).toBe('tabonly');
+  expect(store.get('push-no-service')).toBe('1'); // remembered: pushState says tabonly from now on
+
+  // a browser that can: the trial subscription is removed at once and nothing is turned on
+  store.clear();
+  let removed = false;
+  const canPush = { subscribe: async () => ({ unsubscribe: async () => { removed = true; return true; } }) as unknown as PushSubscription };
+  expect(await probePush(canPush, 'aGVsbG8_')).toBe('off');
+  expect(removed).toBe(true);
+  expect(store.size).toBe(0);
+
+  // anything else (a flaky network): still offer Turn on, remember nothing
+  const flaky = { subscribe: async () => { throw new Error('network'); } };
+  expect(await probePush(flaky, 'aGVsbG8_')).toBe('off');
+  expect(store.size).toBe(0);
+  globalThis.localStorage = real;
+});

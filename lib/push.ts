@@ -27,15 +27,39 @@ async function registration() {
   return navigator.serviceWorker.register('/sw.js');
 }
 
+// noPushService: the error a browser without a push service (Helium, plain Chromium) gives on subscribe.
+const noPushService = (err: unknown) => err instanceof Error && (err.name === 'AbortError' || /push service/i.test(err.message));
+
+// probePush finds out whether this browser has a push service, for when notifications are already
+// allowed but nothing's subscribed: otherwise the only way to learn was pressing Turn on and failing,
+// so those browsers offered it forever. A trial subscription is removed at once and never sent to the
+// server; nothing is turned on. Only "no service" is remembered (a browser that has one stays 'off').
+export async function probePush(pm: Pick<PushManager, 'subscribe'>, key: string): Promise<'tabonly' | 'off'> {
+  try {
+    const trial = await pm.subscribe({ userVisibleOnly: true, applicationServerKey: keyBytes(key) as BufferSource });
+    await trial.unsubscribe().catch(() => {});
+    return 'off';
+  } catch (err) {
+    if (!noPushService(err)) return 'off';
+    try { localStorage.setItem(NO_SERVICE, '1'); } catch { /* private window: checks again next time */ }
+    return 'tabonly';
+  }
+}
+
 // pushState: whether this device gets pushes (and why not).
 export async function pushState(token: string): Promise<PushState> {
   if (!pushSupported()) return 'unsupported';
-  const settings = await push.settings(token).catch(() => ({ enabled: false }));
+  const settings = await push.settings(token).catch(() => ({ enabled: false, public_key: '' }));
   if (!settings.enabled) return 'unavailable';
   if (Notification.permission === 'denied') return 'blocked';
   const reg = await navigator.serviceWorker.getRegistration('/');
   if (await reg?.pushManager.getSubscription()) return 'on';
-  return Notification.permission === 'granted' && noService() ? 'tabonly' : 'off';
+  if (Notification.permission !== 'granted') return 'off';
+  if (noService()) return 'tabonly';
+  if (!settings.public_key) return 'off';
+  const r = reg ?? (await registration());
+  await navigator.serviceWorker.ready;
+  return probePush(r.pushManager, settings.public_key);
 }
 
 // enablePush asks permission, subscribes this browser with the server's key, and saves it.
@@ -49,7 +73,7 @@ export async function enablePush(token: string): Promise<PushState> {
   try {
     sub ??= await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyBytes(settings.public_key) as BufferSource });
   } catch (err) {
-    if (err instanceof Error && (err.name === 'AbortError' || /push service/i.test(err.message))) {
+    if (noPushService(err)) {
       try { localStorage.setItem(NO_SERVICE, '1'); } catch { /* private window: asks again next time */ }
     }
     throw err;
