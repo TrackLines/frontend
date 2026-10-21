@@ -9,7 +9,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: 1.4.2
+          bun-version: 1.4.3
       - run: bun install --frozen-lockfile
+      # known vulnerabilities in the shipped (production) dependencies (PCI DSS 6.3.1); dev-only tooling is out of scope
+      - run: bun audit --prod
       - run: bun run test
       - run: bun run build
