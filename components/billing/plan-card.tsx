@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ApiError, billing, type Subscription } from '@/lib/api';
 import { MEMBER_LIMIT, membersText, PLAN_NAMES, planOf, projectsText } from '@/lib/plans';
+import { stripeRedirect } from '@/lib/stripe-redirect';
 
 // billingError turns checkout/portal failures into something a person can act on.
 export function billingError(err: unknown, action: 'checkout' | 'portal'): string {
@@ -62,7 +63,7 @@ export function PlanCard({ token }: { token: string }) {
     setBusy(true);
     setError('');
     try {
-      window.location.href = (await (action === 'checkout' ? billing.checkout(token, to) : billing.portal(token))).url;
+      stripeRedirect((await (action === 'checkout' ? billing.checkout(token, to) : billing.portal(token))).url);
     } catch (err) {
       setError(billingError(err, action));
       setBusy(false);

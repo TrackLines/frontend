@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ApiError, billing, type Subscription } from '@/lib/api';
 import { PLAN_NAMES, planOf, projectsText } from '@/lib/plans';
+import { stripeRedirect } from '@/lib/stripe-redirect';
 import { planActions } from './plan-card';
 
 // atProjectLimit: creating a project failed because the plan's project limit is reached (402).
@@ -25,7 +26,7 @@ export function UpgradeDialog({ open, onOpenChange, token, plan: known }: { open
     setBusy(true);
     try {
       if (a.kind === 'checkout') {
-        window.location.href = (await billing.checkout(token, a.plan)).url;
+        stripeRedirect((await billing.checkout(token, a.plan)).url);
         return;
       }
       await billing.changePlan(a.plan, token);
