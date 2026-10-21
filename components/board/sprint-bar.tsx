@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { ApiError, sprints, type Board, type Sprint } from '@/lib/api';
 import { LENGTH_PRESETS, dateInput, daysUntil, sprintLocked, sprintStatus } from './sprint-status';
@@ -137,17 +137,22 @@ function StartDialog({ open, onOpenChange, boardId, token, onStarted }: {
 function ChangeLengthDialog({ open, onOpenChange, sprint, token, onChanged }: {
   open: boolean; onOpenChange: (o: boolean) => void; sprint: Sprint; token: string; onChanged: () => void;
 }) {
+  const start = new Date(sprint.starts_at);
+  // set the length in days, or pick the end date; either way it's measured from the original start
+  const [mode, setMode] = useState<'days' | 'date'>('days');
   const [days, setDays] = useState(String(sprint.length_days));
+  const [endDate, setEndDate] = useState(() => dateInput(new Date(sprint.ends_at)));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
-  const valid = Number.isInteger(Number(days)) && Number(days) >= 1 && Number(days) <= 365;
+  const length = mode === 'date' ? daysUntil(endDate, start) : Number(days);
+  const valid = Number.isInteger(length) && length >= 1 && length <= 365;
 
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSaving(true);
     setError('');
     try {
-      await sprints.updateLength(sprint.id, Number(days), token);
+      await sprints.updateLength(sprint.id, length, token);
       onOpenChange(false);
       onChanged();
     } catch (err) {
@@ -163,15 +168,32 @@ function ChangeLengthDialog({ open, onOpenChange, sprint, token, onChanged }: {
         <form onSubmit={submit} className="grid gap-4">
           <DialogHeader>
             <DialogTitle>Change sprint {sprint.number} length</DialogTitle>
-            <DialogDescription>The end date updates from the sprint’s original start date.</DialogDescription>
+            <DialogDescription>Set it in days, or pick an end date — either way it’s measured from the sprint’s original start date.</DialogDescription>
           </DialogHeader>
-          <label className="grid gap-2 text-sm font-medium">
-            Length in days
-            <Input type="number" min={1} max={365} value={days} onChange={(e) => setDays(e.target.value)} />
-          </label>
+          <fieldset className="grid gap-2">
+            <legend className="mb-1 text-sm font-medium">Length</legend>
+            <label className="flex flex-wrap items-center gap-2">
+              <input type="radio" name="length-mode" checked={mode === 'days'} onChange={() => setMode('days')} className="accent-primary" />
+              <Input
+                type="number" min={1} max={365} value={days} aria-label="Length in days" className="h-8 w-24"
+                onFocus={() => setMode('days')} onChange={(e) => { setMode('days'); setDays(e.target.value); }}
+              />
+              days
+            </label>
+            <label className="flex flex-wrap items-center gap-2">
+              <input type="radio" name="length-mode" checked={mode === 'date'} onChange={() => setMode('date')} className="accent-primary" />
+              Ends on
+              <Input
+                type="date" value={endDate} aria-label="Sprint end date" className="h-8 w-auto"
+                min={dateInput(new Date(start.getTime() + 864e5))} max={dateInput(new Date(start.getTime() + 365 * 864e5))}
+                onFocus={() => setMode('date')} onChange={(e) => { setMode('date'); setEndDate(e.target.value); }}
+              />
+              {mode === 'date' && valid && <span className="text-muted-foreground">{length} day{length === 1 ? '' : 's'}</span>}
+            </label>
+          </fieldset>
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+            <DialogClose render={<Button type="button" variant="outline" />}>Cancel</DialogClose>
             <Button type="submit" disabled={saving || !valid}>{saving ? 'Saving…' : 'Save length'}</Button>
           </DialogFooter>
         </form>
