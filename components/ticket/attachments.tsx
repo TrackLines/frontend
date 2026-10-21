@@ -88,20 +88,49 @@ export function Attachments({ ticketId, token, locked = false }: { ticketId: str
 
 const dueDay = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 
+// previewKind: what a file shows inline so people needn't download it, or null to leave it a plain
+// link. Sensible types only (TL-489): images, PDFs and media; documents, archives (zip) etc. stay links.
+export function previewKind(contentType: string): 'image' | 'pdf' | 'video' | 'audio' | null {
+  const t = contentType.toLowerCase();
+  if (t.startsWith('image/')) return 'image';
+  if (t === 'application/pdf') return 'pdf';
+  if (t.startsWith('video/')) return 'video';
+  if (t.startsWith('audio/')) return 'audio';
+  return null;
+}
+
+// Preview renders the inline view for a previewable file (the row decides whether to show it).
+function Preview({ a, kind }: { a: Attachment; kind: NonNullable<ReturnType<typeof previewKind>> }) {
+  if (kind === 'image')
+    return (
+      <a href={a.url} target="_blank" rel="noopener noreferrer" className="block w-fit">
+        <img src={a.url} alt={a.name} loading="lazy" className="max-h-72 w-auto rounded-md border object-contain" />
+      </a>
+    );
+  if (kind === 'pdf') return <iframe src={a.url} title={a.name} className="h-96 w-full rounded-md border" />;
+  if (kind === 'video') return <video src={a.url} controls preload="metadata" className="max-h-96 w-full rounded-md border" />;
+  return <audio src={a.url} controls preload="metadata" className="w-full" />;
+}
+
 // AttachmentRow: one file; a year-old one says when it goes and can be kept another year (TL-259).
 // Keep shows even when the ticket is done: keeping changes nothing on the ticket (pure, for tests).
+// Images, PDFs and media preview inline (TL-489); everything else is just the download link.
 export function AttachmentRow({ a, people = null, locked, onRemove, onKeep }: { a: Attachment; people?: Assignee[] | null; locked: boolean; onRemove: () => void; onKeep: () => void }) {
+  const kind = previewKind(a.content_type);
   return (
-    <li className="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-2 text-sm">
-      <a href={a.url} target="_blank" rel="noopener noreferrer" className="min-w-0 flex-1 truncate font-medium hover:underline">{a.name}</a>
-      <span className="text-muted-foreground">{formatSize(a.size)} · {personLabel(a.created_by, people)}</span>
-      {a.delete_on && (
-        <span className="flex items-center gap-2 text-amber-700 dark:text-amber-400">
-          Deleted on {dueDay.format(new Date(`${a.delete_on}T00:00:00Z`))} unless kept
-          <Button size="sm" variant="outline" onClick={onKeep} title="Keep it for another year">Keep</Button>
-        </span>
-      )}
-      {!locked && <Button size="sm" variant="ghost" className="text-destructive" onClick={onRemove}>Remove</Button>}
+    <li className="grid gap-2 px-3 py-2 text-sm">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+        <a href={a.url} target="_blank" rel="noopener noreferrer" className="min-w-0 flex-1 truncate font-medium hover:underline">{a.name}</a>
+        <span className="text-muted-foreground">{formatSize(a.size)} · {personLabel(a.created_by, people)}</span>
+        {a.delete_on && (
+          <span className="flex items-center gap-2 text-amber-700 dark:text-amber-400">
+            Deleted on {dueDay.format(new Date(`${a.delete_on}T00:00:00Z`))} unless kept
+            <Button size="sm" variant="outline" onClick={onKeep} title="Keep it for another year">Keep</Button>
+          </span>
+        )}
+        {!locked && <Button size="sm" variant="ghost" className="text-destructive" onClick={onRemove}>Remove</Button>}
+      </div>
+      {kind && <Preview a={a} kind={kind} />}
     </li>
   );
 }

@@ -422,7 +422,7 @@ export const tickets = {
   group: (id: string, token: T) => api<MovedTicket[]>(`/tickets/${id}/group`, { token }), // open sub-tickets that would leave the board with it (TL-218)
   // also "My work": assignee 'me', status 'open', newest change first, paged
   search: (q: { text?: string; project?: string; board?: string; types?: TicketType[]; priorities?: string[]; assignee?: string;
-    status?: 'open' | 'done'; limit?: number; page?: number; match?: 'any' }, token: T) => {
+    creator?: string; status?: 'open' | 'done'; limit?: number; page?: number; match?: 'any' }, token: T) => {
     const params = new URLSearchParams();
     if (q.text?.trim()) params.set('q', q.text.trim());
     if (q.project) params.set('project', q.project);
@@ -431,6 +431,7 @@ export const tickets = {
     for (const type of q.types ?? []) params.append('type', type);
     for (const p of q.priorities ?? []) params.append('priority', p);
     if (q.assignee) params.set('assignee', q.assignee);
+    if (q.creator) params.set('creator', q.creator); // "created by me" (TL-490)
     if (q.status) params.set('status', q.status);
     if (q.page && q.page > 1) params.set('page', String(q.page));
     params.set('limit', String(q.limit ?? 20));
