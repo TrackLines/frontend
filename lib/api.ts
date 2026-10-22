@@ -516,6 +516,8 @@ export const apiKeys = {
 export type Capacity = {
   unit: 'points' | 'tickets'; velocity: number | null; cap: number | null; used: number; unestimated: number;
   over: boolean; approved_total: number | null; approved_by: string | null; approved_at: string | null; needs_approval: boolean;
+  // the board team's time away over the sprint (Google Calendar); cap is already scaled by it. null: not connected / no team
+  availability?: { percent: number; person_days_away: number } | null;
 };
 export type PlannedSprint = { id: string; board_id: string; position: number; number: number; length_days: number; goal?: string; tickets: Ticket[]; capacity: Capacity };
 
