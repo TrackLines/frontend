@@ -6,6 +6,8 @@ const nextConfig: NextConfig = {
   poweredByHeader: false, // don't advertise the framework in X-Powered-By (pen-2)
   // app/global-not-found.tsx: unmatched URLs skip the root layout (and its Clerk calls) (TL-298)
   experimental: { globalNotFound: true },
+  // the 1Password SDK loads a .wasm file at runtime: keep it a real package in the standalone build (TL-525)
+  serverExternalPackages: ['@1password/sdk', '@1password/sdk-core'],
   headers: async () => [{ source: '/:path*', headers: SECURITY_HEADERS }],
 };
 export default nextConfig;
