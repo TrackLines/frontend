@@ -1,9 +1,11 @@
 'use client';
 
 import { ListSkeleton } from '@/components/page-skeletons';
-import { PaperclipIcon } from 'lucide-react';
+import { Dialog as DialogPrimitive } from '@base-ui/react/dialog';
+import { DownloadIcon, EyeIcon, PaperclipIcon, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogClose, DialogOverlay, DialogPortal, DialogTitle } from '@/components/ui/dialog';
 import { ApiError, attachments, type Assignee, type Attachment } from '@/lib/api';
 import { personLabel } from '@/lib/people';
 import { usePeople } from '@/lib/use-people';
@@ -99,26 +101,74 @@ export function previewKind(contentType: string): 'image' | 'pdf' | 'video' | 'a
   return null;
 }
 
-// Preview renders the inline view for a previewable file (the row decides whether to show it).
-function Preview({ a, kind }: { a: Attachment; kind: NonNullable<ReturnType<typeof previewKind>> }) {
-  if (kind === 'image')
-    return (
-      <a href={a.url} target="_blank" rel="noopener noreferrer" className="block w-fit">
-        <img src={a.url} alt={a.name} loading="lazy" className="max-h-72 w-auto rounded-md border object-contain" />
-      </a>
-    );
-  if (kind === 'pdf') return <iframe src={a.url} title={a.name} className="h-96 w-full rounded-md border" />;
-  if (kind === 'video') return <video src={a.url} controls preload="metadata" className="max-h-96 w-full rounded-md border" />;
+// downloadAttachment saves a file under its own name. The files live on UploadThing (another
+// origin), where <a download> is ignored, so it fetches the bytes and saves a blob; if that fails
+// (CORS, offline) it opens the file in a new tab instead, so the click always does something (TL-516).
+export async function downloadAttachment(
+  a: Pick<Attachment, 'url' | 'name'>,
+  get: typeof fetch = fetch,
+  open: (url: string) => void = (url) => void window.open(url, '_blank', 'noopener'),
+): Promise<'saved' | 'opened'> {
+  try {
+    const res = await get(a.url);
+    if (!res.ok) throw new Error(String(res.status));
+    const url = URL.createObjectURL(await res.blob());
+    Object.assign(document.createElement('a'), { href: url, download: a.name }).click();
+    URL.revokeObjectURL(url);
+    return 'saved';
+  } catch {
+    open(a.url);
+    return 'opened';
+  }
+}
+
+// popupWidth: the preview sizes to the file, between 30% and 80% of the screen (full width less the
+// gutter on phones): images and video at their natural width, PDFs (no size of their own) wide, audio narrow.
+const popupWidth: Record<NonNullable<ReturnType<typeof previewKind>>, string> = {
+  image: 'w-fit sm:min-w-[30vw] sm:max-w-[80vw]',
+  video: 'w-fit sm:min-w-[30vw] sm:max-w-[80vw]',
+  pdf: 'w-full sm:w-[80vw]',
+  audio: 'w-full sm:w-[30vw]',
+};
+
+// PreviewBody is the file itself, at full height: a long screenshot isn't squashed, the page scrolls.
+export function PreviewBody({ a, kind }: { a: Attachment; kind: NonNullable<ReturnType<typeof previewKind>> }) {
+  if (kind === 'image') return <img src={a.url} alt={a.name} className="h-auto max-w-full rounded-md border" />;
+  if (kind === 'pdf') return <iframe src={a.url} title={a.name} className="h-[85vh] w-full rounded-md border" />;
+  if (kind === 'video') return <video src={a.url} controls preload="metadata" className="h-auto max-w-full rounded-md border" />;
   return <audio src={a.url} controls preload="metadata" className="w-full" />;
+}
+
+// PreviewDialog: the file in a modal (TL-516), so the list stays a list. It scrolls with the page
+// (Base UI's Viewport) instead of fitting the screen, so a tall file can be read to the bottom.
+function PreviewDialog({ a, kind, open, onOpenChange }: { a: Attachment; kind: NonNullable<ReturnType<typeof previewKind>>; open: boolean; onOpenChange: (open: boolean) => void }) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogPortal>
+        <DialogOverlay />
+        <DialogPrimitive.Viewport className="fixed inset-0 z-50 flex justify-center overflow-y-auto px-4 py-8">
+          <DialogPrimitive.Popup className={`grid h-fit max-w-full gap-3 rounded-xl bg-popover p-4 text-sm text-popover-foreground ring-1 ring-foreground/10 outline-none ${popupWidth[kind]}`}>
+            <div className="flex items-center gap-2">
+              <DialogTitle className="min-w-0 flex-1 truncate">{a.name}</DialogTitle>
+              <Button size="sm" variant="outline" onClick={() => void downloadAttachment(a)}><DownloadIcon aria-hidden />Download</Button>
+              <DialogClose render={<Button variant="ghost" size="icon-sm" aria-label="Close" />}><XIcon aria-hidden /></DialogClose>
+            </div>
+            <PreviewBody a={a} kind={kind} />
+          </DialogPrimitive.Popup>
+        </DialogPrimitive.Viewport>
+      </DialogPortal>
+    </Dialog>
+  );
 }
 
 // AttachmentRow: one file; a year-old one says when it goes and can be kept another year (TL-259).
 // Keep shows even when the ticket is done: keeping changes nothing on the ticket (pure, for tests).
-// Images, PDFs and media preview inline (TL-489); everything else is just the download link.
+// Images, PDFs and media open in a preview modal (TL-516); everything else gets a download button.
 export function AttachmentRow({ a, people = null, locked, onRemove, onKeep }: { a: Attachment; people?: Assignee[] | null; locked: boolean; onRemove: () => void; onKeep: () => void }) {
   const kind = previewKind(a.content_type);
+  const [previewing, setPreviewing] = useState(false);
   return (
-    <li className="grid gap-2 px-3 py-2 text-sm">
+    <li className="px-3 py-2 text-sm">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
         <a href={a.url} target="_blank" rel="noopener noreferrer" className="min-w-0 flex-1 truncate font-medium hover:underline">{a.name}</a>
         <span className="text-muted-foreground">{formatSize(a.size)} · {personLabel(a.created_by, people)}</span>
@@ -128,9 +178,14 @@ export function AttachmentRow({ a, people = null, locked, onRemove, onKeep }: { 
             <Button size="sm" variant="outline" onClick={onKeep} title="Keep it for another year">Keep</Button>
           </span>
         )}
+        {kind ? (
+          <Button size="icon-sm" variant="ghost" aria-label={`Preview ${a.name}`} title="Preview" onClick={() => setPreviewing(true)}><EyeIcon aria-hidden /></Button>
+        ) : (
+          <Button size="icon-sm" variant="ghost" aria-label={`Download ${a.name}`} title="Download" onClick={() => void downloadAttachment(a)}><DownloadIcon aria-hidden /></Button>
+        )}
         {!locked && <Button size="sm" variant="ghost" className="text-destructive" onClick={onRemove}>Remove</Button>}
       </div>
-      {kind && <Preview a={a} kind={kind} />}
+      {kind && <PreviewDialog a={a} kind={kind} open={previewing} onOpenChange={setPreviewing} />}
     </li>
   );
 }

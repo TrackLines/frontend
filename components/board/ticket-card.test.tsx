@@ -65,3 +65,9 @@ test('TL-134 layout: key, type, priority, blocked, estimate and pencil on top; t
   expect(order).toEqual([...order].sort((a, b) => a - b));
   expect(html).toContain('rounded-full'); // the estimate is a round badge
 });
+
+test('TL-517: the key links to the full ticket page by id; the title still opens the modal', () => {
+  const html = card({ id: 'abc-123', key: 'TL-517', title: 'Open me' });
+  expect(html).toMatch(/<a [^>]*href="\/tickets\/abc-123"[^>]*>.*TL-517.*<\/a>/);
+  expect(html).toMatch(/<button[^>]*>Open me<\/button>/);
+});

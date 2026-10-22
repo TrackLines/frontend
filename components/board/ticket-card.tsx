@@ -18,7 +18,8 @@ import { tickets, type Ticket } from '@/lib/api';
 import { ChecklistCount } from '@/components/ticket/checklist-count';
 import { TicketDialog } from './ticket-dialog';
 import { TicketView } from './ticket-view';
-import { TicketKey } from '@/components/ticket/ticket-key';
+import Link from 'next/link';
+import { TicketKey, ticketPath } from '@/components/ticket/ticket-key';
 import type { EstimateScale } from '@/lib/estimates';
 
 type Props = {
@@ -52,7 +53,8 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
       <Card className="w-full min-w-0 gap-2 py-3 shadow-xs">
         {/* TL-134 layout: key, type, priority, blocked; then estimate and pencil, on top; the title underneath */}
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 px-3">
-          {ticket.key && <span className={ticket.duplicate_of_id ? 'line-through' : undefined}><TicketKey value={ticket.key} /></span>}
+          {/* the key opens the full ticket page (TL-517); the title below opens the modal */}
+          {ticket.key && <Link href={ticketPath(ticket)} title="Open the full ticket" className={`hover:underline ${ticket.duplicate_of_id ? 'line-through' : ''}`}><TicketKey value={ticket.key} /></Link>}
           {ticket.duplicate_of_key && <Badge variant="outline" title="Marked as a duplicate">Duplicate of {ticket.duplicate_of_key}</Badge>}
           {ticket.type && ticket.type !== 'task' && <TypeBadge type={ticket.type} />}
           {ticket.type === 'spike' && <TimeboxBadge days={ticket.timebox_days} hours={ticket.timebox_hours} />}
