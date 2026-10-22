@@ -12,7 +12,6 @@ import { UserMenu } from '@/components/user-menu';
 import { QuickAddTicket } from '@/components/quick-add-ticket';
 import { TicketSearch } from '@/components/ticket-search';
 import { NotificationsBell } from '@/components/notifications-bell';
-import { CompleteInvitations } from '@/components/complete-invitations';
 import { CacheGuard } from '@/components/cache-guard';
 import { OrgSwitcher } from '@/components/org-switcher';
 import { FeatureFlags } from '@/components/feature-flags';
@@ -41,7 +40,6 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <ClerkProvider dynamic appearance={{ theme: shadcn }}>
         <FeatureFlags>
           <CacheGuard />
-          <Show when="signed-in"><CompleteInvitations /></Show>
           {/* on phones: 16px gutters, tighter gaps, and the name and buttons' words drop to icons (TL-471) */}
           <header className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 sm:px-6 py-4 print:hidden">
             <div className="flex min-w-0 items-center gap-2 sm:gap-4">
