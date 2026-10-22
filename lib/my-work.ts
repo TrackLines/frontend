@@ -1,5 +1,11 @@
 import type { TicketSearchResult } from './api';
 
+export type WorkMode = 'assigned' | 'created';
+
+// workQuery: which search filter a My work tab uses — tickets assigned to me, or ones I raised.
+export const workQuery = (mode: WorkMode): { assignee: 'me' } | { creator: 'me' } =>
+  mode === 'created' ? { creator: 'me' } : { assignee: 'me' };
+
 export type WorkGroup = { project: string; boards: { name: string; tickets: TicketSearchResult[] }[] };
 
 // groupWork puts my tickets under their project, then their board (or the backlog), keeping the

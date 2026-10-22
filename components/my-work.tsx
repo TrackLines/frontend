@@ -11,15 +11,17 @@ import { When } from '@/components/when';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { projects as projectsApi, tickets, type Project, type TicketSearchResult } from '@/lib/api';
-import { boardOptions, groupWork } from '@/lib/my-work';
+import { boardOptions, groupWork, workQuery, type WorkMode } from '@/lib/my-work';
 
 const PAGE = 50;
 const ALL = '__all';
 
-// MyWork: the tickets assigned to me across every board and project in the org, most recently
-// changed first. Open by default; done work on request.
+// MyWork: my tickets across every board and project in the org, most recently changed first — those
+// assigned to me, or (Created by me tab) those I raised. Open by default; done work on request.
 export function MyWork({ token }: { token: string }) {
+  const [mode, setMode] = useState<WorkMode>('assigned');
   const [items, setItems] = useState<TicketSearchResult[] | null>(null);
   const [more, setMore] = useState(false);
   const [page, setPage] = useState(1);
@@ -38,8 +40,8 @@ export function MyWork({ token }: { token: string }) {
     const request = ++latest.current;
     setFailed(false);
     try {
-      const found = await tickets.search({ assignee: 'me', status: includeDone ? undefined : 'open', project: project || undefined,
-        board: board || undefined, priorities, limit: PAGE, page: nextPage }, token);
+      const found = await tickets.search({ ...workQuery(mode), status: includeDone ? undefined : 'open',
+        project: project || undefined, board: board || undefined, priorities, limit: PAGE, page: nextPage }, token);
       if (request !== latest.current) return;
       setItems((cur) => (nextPage === 1 ? found : [...(cur ?? []), ...found]));
       setMore(found.length === PAGE);
@@ -49,10 +51,16 @@ export function MyWork({ token }: { token: string }) {
       if (request === latest.current) setFailed(true);
     }
   }
-  useEffect(() => { setItems(null); void load(1); }, [project, board, priorities.join(','), includeDone]);
+  useEffect(() => { setItems(null); void load(1); }, [mode, project, board, priorities.join(','), includeDone]);
 
   return (
     <div className="grid gap-4">
+      <Tabs value={mode} onValueChange={(v) => setMode(v as WorkMode)}>
+        <TabsList>
+          <TabsTrigger value="assigned">Assigned to me</TabsTrigger>
+          <TabsTrigger value="created">Created by me</TabsTrigger>
+        </TabsList>
+      </Tabs>
       <div className="flex flex-wrap items-center gap-2">
         <Select items={{ [ALL]: 'All projects', ...Object.fromEntries(projectList.map((p) => [p.id, p.name])) }} value={project || ALL}
           onValueChange={(v) => { setProject(!v || v === ALL ? '' : String(v)); setBoard(''); }}>
@@ -75,20 +83,23 @@ export function MyWork({ token }: { token: string }) {
           Include done
         </Button>
       </div>
-      <MyWorkView items={items} failed={failed} filtered={!!project || !!board || priorities.length > 0} />
+      <MyWorkView items={items} failed={failed} filtered={!!project || !!board || priorities.length > 0}
+        empty={mode === 'created' ? 'You haven’t created any tickets yet.' : 'Nothing assigned to you right now.'} />
       {more && <Button variant="outline" className="justify-self-start" onClick={() => void load(page + 1)}>Load more</Button>}
     </div>
   );
 }
 
 // MyWorkView: my tickets grouped by project and board (pure, for tests).
-export function MyWorkView({ items, failed, filtered }: { items: TicketSearchResult[] | null; failed: boolean; filtered: boolean }) {
+export function MyWorkView({ items, failed, filtered, empty = 'Nothing assigned to you right now.' }: {
+  items: TicketSearchResult[] | null; failed: boolean; filtered: boolean; empty?: string;
+}) {
   if (failed) return <p role="alert" className="text-sm text-destructive">Couldn&apos;t load your work. Please try again.</p>;
   if (items === null) return <p role="status" className="text-sm text-muted-foreground">Loading your work…</p>;
   if (items.length === 0) {
     return (
       <p className="rounded-xl border border-dashed p-8 text-center text-muted-foreground">
-        {filtered ? 'Nothing of yours matches these filters.' : 'Nothing assigned to you right now.'}
+        {filtered ? 'Nothing of yours matches these filters.' : empty}
       </p>
     );
   }

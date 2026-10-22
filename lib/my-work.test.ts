@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 import type { TicketSearchResult } from './api';
-import { boardOptions, groupWork } from './my-work';
+import { boardOptions, groupWork, workQuery } from './my-work';
 
 const t = (id: string, project: string, board: string | null, boardId: string | null = board) =>
   ({ id, project_name: project, board_name: board, board_id: boardId, title: id }) as TicketSearchResult;
@@ -11,6 +11,11 @@ test('grouped by project, then board or backlog, in the order they came', () => 
   expect(g[0].boards.map((b) => [b.name, b.tickets.map((x) => x.id)])).toEqual([['Web', ['a', 'd']], ['API', ['c']]]);
   expect(g[1].boards[0].name).toBe('Backlog');
   expect(groupWork([])).toEqual([]);
+});
+
+test('each tab searches by the right filter (TL-500)', () => {
+  expect(workQuery('assigned')).toEqual({ assignee: 'me' });
+  expect(workQuery('created')).toEqual({ creator: 'me' });
 });
 
 test('board filter options come from my tickets', () => {

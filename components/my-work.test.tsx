@@ -27,3 +27,9 @@ test('loading, error and empty states', () => {
   expect(view([])).toContain('Nothing assigned to you right now');
   expect(view([], false, true)).toContain('Nothing of yours matches these filters');
 });
+
+test('the Created by me tab shows its own empty message (TL-500)', () => {
+  const html = renderToStaticMarkup(<MyWorkView items={[]} failed={false} filtered={false} empty="You haven’t created any tickets yet." />);
+  expect(html).toContain('You haven');
+  expect(html).not.toContain('Nothing assigned to you');
+});
