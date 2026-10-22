@@ -6,6 +6,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AssigneeSelect } from '@/components/ticket/assignee-select';
 import { LabelDrawer } from '@/components/ticket/labels';
 import { Attachments } from '@/components/ticket/attachments';
@@ -236,13 +237,29 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
           {type === 'spike' && (
             <fieldset className="grid gap-1.5 text-sm font-medium">
               <legend>Timebox <span className="font-normal text-muted-foreground">(optional)</span></legend>
-              <div className="flex items-center gap-2">
-                <Input type="number" min={0} max={60} aria-label="Timebox days" className="w-20" value={timeboxDays || ''} placeholder="0"
-                  onChange={(e) => setTimeboxDays(Math.max(0, Math.min(60, Number(e.target.value) || 0)))} />
-                <span className="font-normal text-muted-foreground">days</span>
-                <Input type="number" min={0} max={23} aria-label="Timebox hours" className="w-20" value={timeboxHours || ''} placeholder="0"
-                  onChange={(e) => setTimeboxHours(Math.max(0, Math.min(23, Number(e.target.value) || 0)))} />
-                <span className="font-normal text-muted-foreground">hours</span>
+              <div className="grid max-w-sm grid-cols-2 gap-3">
+                <label className="grid gap-1 font-normal text-muted-foreground">
+                  Days
+                  <Select value={String(timeboxDays)} onValueChange={(value) => { if (value) setTimeboxDays(Number(value)); }}>
+                    <SelectTrigger aria-label="Timebox days" className="w-full text-foreground"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {Array.from({ length: 61 }, (_, days) => (
+                        <SelectItem key={days} value={String(days)}>{days} {days === 1 ? 'day' : 'days'}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </label>
+                <label className="grid gap-1 font-normal text-muted-foreground">
+                  Hours
+                  <Select value={String(timeboxHours)} onValueChange={(value) => { if (value) setTimeboxHours(Number(value)); }}>
+                    <SelectTrigger aria-label="Timebox hours" className="w-full text-foreground"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {Array.from({ length: 24 }, (_, hours) => (
+                        <SelectItem key={hours} value={String(hours)}>{hours} {hours === 1 ? 'hour' : 'hours'}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </label>
               </div>
             </fieldset>
           )}
