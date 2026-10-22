@@ -710,6 +710,22 @@ export const intake = {
   dismiss: (id: string, t: T) => api<void>(`/intake-submissions/${id}/dismiss`, { method: 'POST', token: t }),
 };
 
+// Embedding (TL-494): the origins an org allows its public roadmap/request-form widgets to run on.
+// Adding one opens the API's CORS to it; org admins manage the list (can_manage).
+export type EmbedOrigin = { id: string; origin: string; created_by: string; created_at: string };
+// A public embed key (tle_…) and the usage recorded against it; last_used is YYYY-MM-DD or null.
+export type EmbedKey = { id: string; key: string; label: string; created_by: string; created_at: string; hits: number; origins: number; last_used: string | null };
+export type EmbedUsage = { origin: string; resource: string; hits: number; last_used: string };
+export const embed = {
+  origins: (t: T) => api<{ origins: EmbedOrigin[]; can_manage: boolean }>('/embed/origins', { token: t }),
+  addOrigin: (origin: string, t: T) => api<EmbedOrigin>('/embed/origins', { method: 'POST', body: { origin }, token: t }),
+  removeOrigin: (id: string, t: T) => api<void>(`/embed/origins/${encodeURIComponent(id)}`, { method: 'DELETE', token: t }),
+  keys: (t: T) => api<{ keys: EmbedKey[]; can_manage: boolean }>('/embed/keys', { token: t }),
+  createKey: (label: string, t: T) => api<EmbedKey>('/embed/keys', { method: 'POST', body: { label }, token: t }),
+  deleteKey: (id: string, t: T) => api<void>(`/embed/keys/${encodeURIComponent(id)}`, { method: 'DELETE', token: t }),
+  keyUsage: (id: string, t: T) => api<EmbedUsage[]>(`/embed/keys/${encodeURIComponent(id)}/usage`, { token: t }),
+};
+
 // Web Push: notifications on this device even when Tracklines is closed (if the server has VAPID keys).
 export type PushSettings = { enabled: boolean; public_key?: string };
 export const push = {

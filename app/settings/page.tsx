@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 import { PlanCard } from '@/components/billing/plan-card';
 import { useFlags } from '@flags-gg/react-library';
-import { KeyRoundIcon, PlugIcon } from 'lucide-react';
+import { CodeIcon, KeyRoundIcon, PlugIcon } from 'lucide-react';
 import { McpConnect } from '@/components/mcp-connect';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { SettingsCard } from '@/components/settings/settings-card';
@@ -39,6 +39,8 @@ export default function SettingsPage() {
         <OrganizationCard admin={admin} />
         {admin && <OrgReportCard />}
         {admin && <SettingsCard icon={PlugIcon} title="Integrations" href="/settings/integrations" description="Connect GitHub, Bitbucket, Google Chat and Bugfixes." />}
+        {/* embedding is behind the flags.gg "embedding" flag so it can be rolled out and tested (TL-494) */}
+        {admin && is('embedding').enabled() && <SettingsCard icon={CodeIcon} title="Embedding" href="/settings/embedding" description="Put a public roadmap or your request form on your own site." />}
         <SettingsCard icon={KeyRoundIcon} title="API keys"
           description={<>Service keys for servers and integrations. Your own keys and AI agents (Claude, Codex…) are in <Link href="/account/api-keys" className="underline">Your settings</Link>.</>}>
           <Link href="/settings/api-keys" className={buttonVariants({ variant: 'outline', size: 'sm' })}>Manage API keys</Link>
