@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { ReportView } from './report-view';
+import { ReportView, SpikeLine } from './report-view';
 import { ReportLink } from '@/components/board/past-sprints';
 import type { BoardReport } from '@/lib/api';
 import { presetOf, presetRange, readQuery, scopeChange, trend, writeQuery } from '@/lib/sprint-report';
@@ -68,4 +68,18 @@ test('trends and scope change', () => {
 
 test('the Sprint report link is on every board’s Past sprints (no flag)', () => {
   expect(renderToStaticMarkup(<ReportLink boardId="b1" />)).toContain('href="/reports?board=b1"');
+});
+
+test('spikes: how many finished within or over their timebox, only when one finished (TL-509)', () => {
+  const html = renderToStaticMarkup(<ReportView report={{ ...report, spikes: { done: 3, within: 2, over: 1, over_hours: 2.5 } }} />);
+  expect(html).toContain('aria-label="Spikes"');
+  expect(html).toContain('3 timeboxed spikes finished');
+  expect(html).toMatch(/2 within<\/span> their timebox/);
+  expect(html).toMatch(/1 over<\/span> by 2\.5 working hours in all/);
+  const allWithin = renderToStaticMarkup(<SpikeLine spikes={{ done: 1, within: 1, over: 0, over_hours: 0 }} />);
+  expect(allWithin).toContain('1 timeboxed spike finished');
+  expect(allWithin).not.toContain('over');
+  for (const spikes of [undefined, { done: 0, within: 0, over: 0, over_hours: 0 }]) {
+    expect(renderToStaticMarkup(<ReportView report={{ ...report, spikes }} />)).not.toContain('aria-label="Spikes"');
+  }
 });

@@ -6,7 +6,7 @@ import { Bar, BarChart, CartesianGrid, Line, LineChart, ReferenceArea, XAxis, YA
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import type { BoardReport, SprintReport } from '@/lib/api';
+import type { BoardReport, ReportSpikes, SprintReport } from '@/lib/api';
 import { num, pct, scopeChange, trend, TYPE_LABEL } from '@/lib/sprint-report';
 
 // ReportView: one board's sprint report (TL-400), laid out for showing to leadership: the summary,
@@ -27,6 +27,8 @@ export function ReportView({ report }: { report: BoardReport }) {
         <Headline title="Scope change" value={pct(scopeChange(totals))} note="added after sprints started" />
         <Headline title="Carried over" value={totals.carried == null ? '–' : num(totals.carried)} note={`${unitName} unfinished at the end`} />
       </div>
+
+      {report.spikes && report.spikes.done > 0 && <SpikeLine spikes={report.spikes} />}
 
       {sprints.length === 0 ? (
         <p className="rounded-xl border border-dashed p-6 text-sm text-muted-foreground">No sprints in this period. Try a longer one.</p>
@@ -89,7 +91,7 @@ export function ReportView({ report }: { report: BoardReport }) {
                 <YAxis allowDecimals={false} tickLine={false} axisLine={false} width={32} />
                 <ChartTooltip content={<ChartTooltipContent />} />
                 <ChartLegend content={<ChartLegendContent />} />
-                {['bug', 'feature', 'task'].map((t) => <Bar key={t} dataKey={t} stackId="mix" fill={`var(--color-${t})`} isAnimationActive={false} />)}
+                {['bug', 'feature', 'task', 'spike'].map((t) => <Bar key={t} dataKey={t} stackId="mix" fill={`var(--color-${t})`} isAnimationActive={false} />)}
               </BarChart>
             </ChartCard>
           </div>
@@ -148,6 +150,22 @@ export function ReportView({ report }: { report: BoardReport }) {
 const dayFmt = new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short' });
 const dates = (s: SprintReport) => `${dayFmt.format(new Date(s.starts_at))} – ${dayFmt.format(new Date(s.closed_at ?? s.ends_at))}`;
 
+// SpikeLine: how timeboxed spikes went (TL-509): finished, within their timebox, over (and by how
+// long, in working hours). Shown only when a spike finished in the period.
+export function SpikeLine({ spikes }: { spikes: ReportSpikes }) {
+  const plural = (n: number, one: string) => `${n} ${one}${n === 1 ? '' : 's'}`;
+  return (
+    <section aria-label="Spikes" className="grid gap-1">
+      <h2 className="text-lg font-semibold">Spikes</h2>
+      <p className="text-sm">
+        {plural(spikes.done, 'timeboxed spike')} finished: <span className="font-medium">{spikes.within} within</span> their timebox
+        {spikes.over > 0 && <>, <span className="font-medium text-destructive">{spikes.over} over</span> by {num(spikes.over_hours)} working hour{spikes.over_hours === 1 ? '' : 's'} in all</>}.
+      </p>
+      <p className="text-xs text-muted-foreground">Timeboxes count working hours, Monday to Friday, 9:00 to 17:00.</p>
+    </section>
+  );
+}
+
 function Headline({ title, value, note, trend: t }: { title: string; value: string; note: string; trend?: 'up' | 'down' | 'same' | null }) {
   const Icon = t === 'up' ? ArrowUpIcon : t === 'down' ? ArrowDownIcon : ArrowRightIcon;
   return (
@@ -176,6 +194,7 @@ export const SERIES = {
   bug: { label: TYPE_LABEL.bug, color: 'var(--chart-4)' },
   feature: { label: TYPE_LABEL.feature, color: 'var(--chart-1)' },
   task: { label: TYPE_LABEL.task, color: 'var(--chart-2)' },
+  spike: { label: TYPE_LABEL.spike, color: 'var(--chart-5)' },
 } satisfies ChartConfig;
 
 // ChartCard: a chart with its title and a sentence saying what it shows (its text label).

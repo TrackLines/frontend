@@ -775,7 +775,10 @@ export type ReportTotals = {
 export type BoardReport = {
   board_id: string; board_name: string; unit: 'points' | 'tickets'; from: string; to: string;
   sprints: SprintReport[]; totals: ReportTotals; previous: ReportTotals; summary: string;
+  spikes?: ReportSpikes; // TL-508; absent from an older backend
 };
+// Timeboxed spikes finished in the period, against their timebox in business hours (TL-508).
+export type ReportSpikes = { done: number; within: number; over: number; over_hours: number };
 // A project's boards, or every project, together (TL-398): points and tickets apart, predictability across both.
 export type ReportOverall = { sprints: number; predictability: number | null; goals_set: number; goals_met: number };
 export type ReportMonth = { month: string; sprints: number; predictability: number | null; points_done: number; tickets_done: number };

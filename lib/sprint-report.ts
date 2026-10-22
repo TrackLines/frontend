@@ -65,4 +65,4 @@ export function trend(now: number | null | undefined, before: number | null | un
 // scopeChange: work added after the start, as a share of what was planned.
 export const scopeChange = (t: ReportTotals) => (t.added == null || t.planned === 0 ? null : t.added / t.planned);
 
-export const TYPE_LABEL: Record<string, string> = { bug: 'Bugs', feature: 'Features', task: 'Tasks', epic: 'Epics' };
+export const TYPE_LABEL: Record<string, string> = { bug: 'Bugs', feature: 'Features', task: 'Tasks', spike: 'Spikes', epic: 'Epics' };
