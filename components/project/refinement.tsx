@@ -197,6 +197,7 @@ export function PlannedSprintCard({ plan, scale, canManage, busy, token, act, on
       <div className="grid gap-1">
         {view.percent !== null && <Progress value={view.percent} aria-label={`Sprint ${plan.number} capacity`} />}
         <p className={view.state === 'over' ? 'font-medium text-destructive' : 'text-muted-foreground'}>{view.label}</p>
+        {view.availability && <p className="text-muted-foreground">{view.availability}</p>}
         {view.note && <p className="text-muted-foreground">{view.note}</p>}
         {view.state === 'over' && canManage && (
           <Button size="sm" className="justify-self-start" disabled={busy}

@@ -9,11 +9,11 @@ const cap = (c: Partial<Capacity>): Capacity => ({
 
 test('no velocity yet: no limit, no bar', () => {
   const v = capacityView(cap({ velocity: null, cap: null, used: 5, unestimated: 2 }));
-  expect(v).toEqual({ label: '5 points · no velocity yet · 2 unestimated', percent: null, state: 'unknown', note: 'No closed sprints yet, so there’s no limit.' });
+  expect(v).toEqual({ label: '5 points · no velocity yet · 2 unestimated', percent: null, state: 'unknown', note: 'No closed sprints yet, so there’s no limit.', availability: null });
 });
 
 test('within capacity', () => {
-  expect(capacityView(cap({ used: 4.4 }))).toEqual({ label: '4.4 / 8.8 points', percent: 50, state: 'ok', note: null });
+  expect(capacityView(cap({ used: 4.4 }))).toEqual({ label: '4.4 / 8.8 points', percent: 50, state: 'ok', note: null, availability: null });
   expect(capacityView(cap({ unit: 'tickets', cap: 5, used: 5 })).label).toBe('5 / 5 tickets');
 });
 
@@ -23,4 +23,10 @@ test('over: needs approval, until approved', () => {
   expect(over.percent).toBe(100);
   expect(over.note).toBe('1.2 over: needs approval to start, or move tickets out');
   expect(capacityView(cap({ used: 10, over: true, approved_total: 10 })).state).toBe('approved');
+});
+
+test('team availability shows beside the (already scaled) cap (TL-408)', () => {
+  expect(capacityView(cap({ availability: { percent: 85, person_days_away: 6 } })).availability).toBe('85% available · 6 person-days away');
+  expect(capacityView(cap({ availability: { percent: 95, person_days_away: 1 } })).availability).toBe('95% available · 1 person-day away');
+  expect(capacityView(cap({ availability: null })).availability).toBeNull();
 });

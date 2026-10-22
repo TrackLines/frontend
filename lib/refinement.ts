@@ -7,12 +7,22 @@ export type CapacityView = {
   percent: number | null; // how full, for the bar (capped at 100); null without a cap
   state: 'unknown' | 'ok' | 'over' | 'approved';
   note: string | null; // what to do or know, e.g. "2 over: needs approval to start"
+  availability: string | null; // "85% available · 6 person-days away" (a team figure, TL-408); null without Google Calendar
 };
 
 const fmt = (n: number) => String(Math.round(n * 10) / 10);
 
 // capacityView turns a planned sprint's capacity into what the refinement view shows.
 export function capacityView(c: Capacity): CapacityView {
+  return { ...capacityState(c), availability: availabilityLabel(c) };
+}
+
+function availabilityLabel({ availability: a }: Capacity): string | null {
+  if (!a) return null;
+  return `${fmt(a.percent)}% available · ${fmt(a.person_days_away)} person-day${a.person_days_away === 1 ? '' : 's'} away`;
+}
+
+function capacityState(c: Capacity): Omit<CapacityView, 'availability'> {
   const unit = c.unit === 'points' ? 'points' : 'tickets';
   const unestimated = c.unestimated > 0 ? ` · ${c.unestimated} unestimated` : '';
   if (c.cap === null) {
