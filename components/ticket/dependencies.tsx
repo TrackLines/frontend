@@ -48,7 +48,7 @@ export function Dependencies({ ticket, token, onChanged }: { ticket: TicketDetai
       await tickets.setBlockedBy(ticket.id, ids, token);
       onChanged();
     } catch (err) {
-      setError(err instanceof ApiError && err.status === 400 ? err.message : 'Couldn’t update dependencies. Please try again.');
+      setError(err instanceof ApiError && (err.status === 400 || err.status === 409) ? err.message : 'Couldn’t update dependencies. Please try again.');
     } finally {
       setSaving(false);
     }
@@ -62,11 +62,12 @@ export function Dependencies({ ticket, token, onChanged }: { ticket: TicketDetai
       <div className="grid gap-1.5">
         <p className="text-xs font-medium text-muted-foreground uppercase">Blocked by</p>
         {ticket.blocked_by.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Nothing — it can be picked up.</p>
+          <p className="text-sm text-muted-foreground">{ticket.done ? 'Nothing.' : 'Nothing — it can be picked up.'}</p>
         ) : (
           <ul className="grid gap-1">{ticket.blocked_by.map((d) => <DepRow key={d.id} d={d} onRemove={saving ? undefined : () => save(current.filter((x) => x !== d.id))} />)}</ul>
         )}
-        <div className="flex items-center gap-2">
+        {/* a done ticket can drop blockers but not gain them (TL-528) */}
+        {!ticket.done && <div className="flex items-center gap-2">
           {options === null ? (
             <Button size="sm" variant="outline" disabled={saving} onClick={() => projectTickets(ticket.project_id, token).then(setOptions, () => setError('Couldn’t load the project’s tickets.'))}>
               Add a blocker…
@@ -79,7 +80,7 @@ export function Dependencies({ ticket, token, onChanged }: { ticket: TicketDetai
               <SelectContent>{choices.map((o) => <SelectItem key={o.id} value={o.id}>{o.title}</SelectItem>)}</SelectContent>
             </Select>
           )}
-        </div>
+        </div>}
       </div>
       {ticket.blocks.length > 0 && (
         <div className="grid gap-1.5">
