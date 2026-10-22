@@ -51,8 +51,8 @@ export function SubTickets({ ticket, token, onChanged }: { ticket: TicketDetail;
       await tickets.setParent(childId, parentId, token);
       onChanged();
     } catch (err) {
-      // 400 explains it (e.g. that ticket is already above this one)
-      setError(err instanceof ApiError && err.status === 400 ? err.message : 'Couldn’t update sub-tickets. Please try again.');
+      // 400/409 explain it (e.g. that ticket is already above this one, or this one is done)
+      setError(err instanceof ApiError && (err.status === 400 || err.status === 409) ? err.message : 'Couldn’t update sub-tickets. Please try again.');
     } finally {
       setSaving(false);
     }
@@ -77,7 +77,7 @@ export function SubTickets({ ticket, token, onChanged }: { ticket: TicketDetail;
         {children.length > 0 && <span className="text-sm text-muted-foreground">{ticket.epic ? epicSize(ticket.epic) : subTicketSummary(children)}</span>}
       </div>
       {children.length === 0 ? (
-        <p className="text-sm text-muted-foreground">{ticket.type === 'epic' ? 'None yet. Add the work this epic is made of; it can sit on any board.' : 'None — split bigger work into sub-tickets here.'}</p>
+        <p className="text-sm text-muted-foreground">{ticket.done ? 'None.' : ticket.type === 'epic' ? 'None yet. Add the work this epic is made of; it can sit on any board.' : 'None — split bigger work into sub-tickets here.'}</p>
       ) : ticket.type === 'epic' ? (
         // an epic's work spans boards: grouped by where each piece is
         <div className="grid gap-3">
@@ -95,7 +95,8 @@ export function SubTickets({ ticket, token, onChanged }: { ticket: TicketDetail;
           {children.map((c) => <DepRow key={c.id} d={c} removeLabel={`Detach ${c.title}`} onRemove={saving ? undefined : () => setParent(c.id, null)} />)}
         </ul>
       )}
-      <div className="flex items-center gap-2">
+      {/* a done ticket takes no new sub-tickets (TL-528) */}
+      {!ticket.done && <div className="flex items-center gap-2">
         {options === null ? (
           <Button size="sm" variant="outline" disabled={saving} onClick={() => projectTickets(ticket.project_id, token).then(setOptions, () => setError('Couldn’t load the project’s tickets.'))}>
             Add a sub-ticket…
@@ -109,7 +110,7 @@ export function SubTickets({ ticket, token, onChanged }: { ticket: TicketDetail;
           </Select>
         )}
         <Button size="sm" variant="outline" disabled={saving} onClick={startNew}>New sub-ticket…</Button>
-      </div>
+      </div>}
       {newIn !== null && (
         <TicketDialog
           open

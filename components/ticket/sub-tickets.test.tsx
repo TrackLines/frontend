@@ -20,3 +20,10 @@ test('sub-ticket links to its parent; top-level shows nothing', () => {
   expect(renderToStaticMarkup(<PartOf ticket={{ ...base, parent: { id: 'e', title: 'Epic', done: false } }} />)).toContain('href="/tickets/e"');
   expect(renderToStaticMarkup(<PartOf ticket={base} />)).toBe('');
 });
+
+test('a done ticket offers no new sub-tickets, but children can still be detached (TL-528)', () => {
+  const html = renderToStaticMarkup(<SubTickets token="x" onChanged={() => {}} ticket={{ ...base, done: true, children: [{ id: 'a', title: 'schema', done: true }] }} />);
+  expect(html).not.toContain('Add a sub-ticket');
+  expect(html).not.toContain('New sub-ticket');
+  expect(html).toContain('Detach schema');
+});

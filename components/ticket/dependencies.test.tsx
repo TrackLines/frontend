@@ -29,3 +29,9 @@ test('projectTickets gathers every board’s tickets (last column = done) and th
   }) as typeof fetch;
   expect(await projectTickets('p', 'tok')).toEqual([{ id: 'o', title: 'open', done: false }, { id: 'd', title: 'shipped', done: true }, { id: 'k', title: 'later', done: false }]);
 });
+
+test('a done ticket can drop blockers but not add them (TL-528)', () => {
+  const html = renderToStaticMarkup(<Dependencies ticket={{ ...base, done: true, blocked_by: [{ id: 'a', title: 'API first', done: true }] }} token="tok" onChanged={() => {}} />);
+  expect(html).not.toContain('Add a blocker');
+  expect(html).toContain('Stop waiting on API first');
+});
