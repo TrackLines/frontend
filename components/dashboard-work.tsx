@@ -9,6 +9,7 @@ import { When } from '@/components/when';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { TimeboxCountdown } from '@/components/timebox-countdown';
 import { mentions, tickets, type Assignee, type Mention, type TicketSearchResult } from '@/lib/api';
 import { actorName } from '@/lib/notifications';
 
@@ -44,6 +45,7 @@ export function DashboardWorkView({ assigned, created, mentioned, people }: {
     <Row key={t.id} href={ticketPath(t)} ticketKey={t.key} title={t.title}>
       <PriorityBadge priority={t.priority} hideDefault />
       {t.blocked && <BlockedBadge />}
+      {t.type === 'spike' && <TimeboxCountdown startedAt={t.started_at} doneAt={t.done_at} days={t.timebox_days} hours={t.timebox_hours} />}
       <Badge variant="secondary">{t.column_name ?? 'Backlog'}</Badge>
       <span className="truncate">{t.project_name}</span>
     </Row>
