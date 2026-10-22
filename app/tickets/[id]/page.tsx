@@ -23,7 +23,7 @@ import { LabelDrawer, TicketLabels } from '@/components/ticket/labels';
 import { Button } from '@/components/ui/button';
 import { PriorityBadge } from '@/components/board/priority-badge';
 import { EstimateBadge } from '@/components/board/estimate';
-import { TypeBadge } from '@/components/ticket-type';
+import { TypeBadge, TimeboxBadge } from '@/components/ticket-type';
 import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
 import { ApiError, tickets, type Ticket, type TicketDetail } from '@/lib/api';
@@ -109,6 +109,7 @@ export default function TicketPage() {
       <header className="grid gap-3">
         <div className="flex flex-wrap items-center gap-2">
           <TypeBadge type={t.type} />
+          {t.type === 'spike' && <TimeboxBadge days={t.timebox_days} hours={t.timebox_hours} />}
           <PriorityBadge priority={t.priority} />
           <EstimateBadge estimate={t.estimate} />
           {t.sprint_number != null && <Badge variant="secondary">Sprint {t.sprint_number}</Badge>}

@@ -61,6 +61,8 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
   const [priority, setPriority] = useState<string>(ticket?.priority ?? '');
   const [labels, setLabels] = useState<string[]>(ticket?.labels ?? []);
   const [estimate, setEstimate] = useState(ticket?.estimate ?? '');
+  const [timeboxDays, setTimeboxDays] = useState(ticket?.timebox_days ?? 0); // spike timebox (TL-502)
+  const [timeboxHours, setTimeboxHours] = useState(ticket?.timebox_hours ?? 0);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -85,6 +87,8 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
       setPriority(ticket?.priority ?? '');
       setLabels(ticket?.labels ?? []);
       setEstimate(ticket?.estimate ?? '');
+      setTimeboxDays(ticket?.timebox_days ?? 0);
+      setTimeboxHours(ticket?.timebox_hours ?? 0);
       setConfirmDelete(false);
       setMoving(false);
       setWontDo(null);
@@ -132,13 +136,15 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
     setSaving(true);
     setError('');
     try {
+      // a spike's timebox (TL-502); other types don't carry one, so clear it (0/0) if the type changed away
+      const timebox = type === 'spike' ? { timebox_days: timeboxDays, timebox_hours: timeboxHours } : { timebox_days: 0, timebox_hours: 0 };
       if (ticket) {
-        await tickets.update(ticket.id, { title: cleanTitle, description: description.trim(), type, priority, ...(estimating && { estimate }) }, token);
+        await tickets.update(ticket.id, { title: cleanTitle, description: description.trim(), type, priority, ...(estimating && { estimate }), ...timebox }, token);
         const result = await tickets.setLabels(ticket.id, labels, token);
         if (leavesBoard && onSentToBacklog) onSentToBacklog(ticket.id); // now an epic, in the backlog
-        else onSaved({ ...ticket, title: cleanTitle, description: description.trim(), type, priority, labels: result.labels, ...(estimating && { estimate: estimate || null }), ...(type === 'epic' && { estimate: null }) });
+        else onSaved({ ...ticket, title: cleanTitle, description: description.trim(), type, priority, labels: result.labels, ...(estimating && { estimate: estimate || null }), ...(type === 'epic' && { estimate: null }), timebox_days: type === 'spike' ? timeboxDays || null : null, timebox_hours: type === 'spike' ? timeboxHours || null : null });
       } else {
-        const input = { title: cleanTitle, description: description.trim(), type, priority, labels, ...(estimating && estimate && columnId && { estimate }) };
+        const input = { title: cleanTitle, description: description.trim(), type, priority, labels, ...(estimating && estimate && columnId && { estimate }), ...(type === 'spike' && { timebox_days: timeboxDays, timebox_hours: timeboxHours }) };
         const created = columnId ? await tickets.create(columnId, input, token) : (await backlog.create(projectId ?? '', input, token)) as unknown as Ticket;
         await attachAll(created.id, files, token); // failures are visible on the ticket's attachment list
         setFiles([]);
@@ -227,6 +233,19 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
               </label>
             )}
           </div>
+          {type === 'spike' && (
+            <fieldset className="grid gap-1.5 text-sm font-medium">
+              <legend>Timebox <span className="font-normal text-muted-foreground">(optional)</span></legend>
+              <div className="flex items-center gap-2">
+                <Input type="number" min={0} max={60} aria-label="Timebox days" className="w-20" value={timeboxDays || ''} placeholder="0"
+                  onChange={(e) => setTimeboxDays(Math.max(0, Math.min(60, Number(e.target.value) || 0)))} />
+                <span className="font-normal text-muted-foreground">days</span>
+                <Input type="number" min={0} max={23} aria-label="Timebox hours" className="w-20" value={timeboxHours || ''} placeholder="0"
+                  onChange={(e) => setTimeboxHours(Math.max(0, Math.min(23, Number(e.target.value) || 0)))} />
+                <span className="font-normal text-muted-foreground">hours</span>
+              </div>
+            </fieldset>
+          )}
           {leavesBoard && (
             <p role="note" className="rounded-lg border border-violet-500/40 bg-violet-500/5 p-3 text-sm">
               Making it an epic moves it to the backlog and clears its estimate. Its sub-tickets stay where they are.

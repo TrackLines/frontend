@@ -13,7 +13,7 @@ import { usePeople } from '@/lib/use-people';
 import { PriorityBadge } from './priority-badge';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
 import { TicketLabels } from '@/components/ticket/labels';
-import { TypeBadge } from '@/components/ticket-type';
+import { TypeBadge, TimeboxBadge } from '@/components/ticket-type';
 import { tickets, type Ticket } from '@/lib/api';
 import { ChecklistCount } from '@/components/ticket/checklist-count';
 import { TicketDialog } from './ticket-dialog';
@@ -55,6 +55,7 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
           {ticket.key && <span className={ticket.duplicate_of_id ? 'line-through' : undefined}><TicketKey value={ticket.key} /></span>}
           {ticket.duplicate_of_key && <Badge variant="outline" title="Marked as a duplicate">Duplicate of {ticket.duplicate_of_key}</Badge>}
           {ticket.type && ticket.type !== 'task' && <TypeBadge type={ticket.type} />}
+          {ticket.type === 'spike' && <TimeboxBadge days={ticket.timebox_days} hours={ticket.timebox_hours} />}
           <PriorityBadge priority={ticket.priority} hideDefault />
           {ticket.blocked && <BlockedBadge />}
           <NeedsReviewBadge ticket={ticket} />

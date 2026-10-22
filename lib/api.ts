@@ -7,7 +7,7 @@ import type { EstimateScale } from './estimates';
 
 export type Visibility = 'public' | 'login_only' | 'team';
 
-export type TicketType = 'bug' | 'feature' | 'task' | 'epic'; // epic: backlog only, sized by its sub-tickets (TL-213)
+export type TicketType = 'bug' | 'feature' | 'task' | 'epic' | 'spike'; // epic: backlog only (TL-213); spike: timeboxed investigation (TL-502)
 export type Ticket = {
   id: string; key?: string; column_id: string; title: string; description: string; position: number;
   project_id?: string; labels?: string[];
@@ -23,6 +23,7 @@ export type Ticket = {
   resolution?: 'done' | 'wont_do' | 'duplicate' | null; // how a backlog ticket was closed
   duplicate_of_id?: string | null; duplicate_of_key?: string | null; duplicate_of_title?: string | null;
   review_requested_at?: string | null; // an agent finished it on a review board: waiting for a person
+  timebox_days?: number | null; timebox_hours?: number | null; // a spike's timebox (TL-502); null = not a spike or not yet timed
 };
 // A project ticket not on any board or sprint yet.
 export type BacklogTicket = Omit<Ticket, 'column_id'> & { column_id: null; project_id: string; type: TicketType };
@@ -450,9 +451,9 @@ export const tickets = {
   assign: (id: string, assignee: string | null, token: T) => api<Ticket>(`/tickets/${id}/assignee`, { method: 'PUT', body: { assignee }, token }),
   assignees: (token: T) => api<Assignee[]>('/assignees', { token }),
   // on the sprint's last day the ticket goes to the backlog instead: column_id null, redirected_to_backlog
-  create: (columnId: string, t: { title: string; description?: string; type?: TicketType; priority?: string; labels?: string[]; estimate?: string }, token: T) =>
+  create: (columnId: string, t: { title: string; description?: string; type?: TicketType; priority?: string; labels?: string[]; estimate?: string; timebox_days?: number; timebox_hours?: number }, token: T) =>
     api<Ticket & { redirected_to_backlog?: boolean }>(`/columns/${columnId}/tickets`, { method: 'POST', body: t, token }),
-  update: (id: string, t: { title: string; description: string; type?: TicketType; priority?: string; estimate?: string }, token: T) => api<void>(`/tickets/${id}`, { method: 'PATCH', body: t, token }),
+  update: (id: string, t: { title: string; description: string; type?: TicketType; priority?: string; estimate?: string; timebox_days?: number; timebox_hours?: number }, token: T) => api<void>(`/tickets/${id}`, { method: 'PATCH', body: t, token }),
   setLabels: (id: string, labels: string[], token: T) => api<{ labels: string[] }>(`/tickets/${id}/labels`, { method: 'PUT', body: { labels }, token }),
   remove: (id: string, token: T) => api<void>(`/tickets/${id}`, { method: 'DELETE', token }),
   // dependencies: replace what ticket {id} waits on (same project, no loops); claim is refused while blocked
@@ -581,7 +582,7 @@ export const backlog = {
     if (q.epic) params.set('epic', q.epic); // an epic's sub-tickets only (TL-215)
     return api<BacklogPage>(`/projects/${projectId}/backlog/page?${params}`, { token });
   },
-  create: (projectId: string, t: { title: string; description?: string; type: TicketType; priority?: string; labels?: string[] }, token: T) =>
+  create: (projectId: string, t: { title: string; description?: string; type: TicketType; priority?: string; labels?: string[]; timebox_days?: number; timebox_hours?: number }, token: T) =>
     api<BacklogTicket>(`/projects/${projectId}/backlog`, { method: 'POST', body: t, token }),
   // its open sub-tickets on the board go too (TL-218): also_moved lists them
   send: (ticketId: string, token: T) => api<{ also_moved?: MovedTicket[] } | undefined>(`/tickets/${ticketId}/backlog`, { method: 'POST', token }),
