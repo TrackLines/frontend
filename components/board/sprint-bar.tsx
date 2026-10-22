@@ -57,9 +57,9 @@ export function SprintBar({ board, token, canManage, editMode = false, onChanged
       {!editMode && (sprint ? sprintStarted && sprint.number > 1 : true) && <PastSprints boardId={board.id} token={token} />}
       {!editMode && sprint && sprintStarted && <Charts boardId={board.id} token={token} />}
       {canManage && <StartDialog open={starting} onOpenChange={setStarting} boardId={board.id} token={token} onStarted={onChanged} />}
-      {canManage && sprint && <ChangeLengthDialog key={sprint.id} open={editingLength} onOpenChange={setEditingLength} sprint={sprint} token={token} onChanged={onChanged} />}
+      {canManage && sprint && <ChangeLengthDialog key={`length-${sprint.id}`} open={editingLength} onOpenChange={setEditingLength} sprint={sprint} token={token} onChanged={onChanged} />}
       {canManage && sprint && <GoalDialog key={`goal-${sprint.id}`} open={editingGoal} onOpenChange={setEditingGoal} sprint={sprint} token={token} onChanged={onChanged} />}
-      {canManage && sprint && sprintStarted && <CloseDialog key={sprint.id} open={closing} onOpenChange={setClosing} board={board} sprint={sprint} token={token} onClosed={onChanged} />}
+      {canManage && sprint && sprintStarted && <CloseDialog key={`close-${sprint.id}`} open={closing} onOpenChange={setClosing} board={board} sprint={sprint} token={token} onClosed={onChanged} />}
     </div>
   );
 }
