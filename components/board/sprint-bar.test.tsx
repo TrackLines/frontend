@@ -105,3 +105,10 @@ test('the sprint goal shows on the bar; managers set or edit it in edit mode', (
   expect(bar('', false)).not.toContain('Goal:');
   expect(bar('Ship search', true, false)).not.toContain('Edit goal');
 });
+
+test('each sprint dialog has its own key, or React shows a stale one that Save and Cancel can’t close', async () => {
+  const src = await Bun.file(new URL('./sprint-bar.tsx', import.meta.url)).text();
+  const keys = [...src.matchAll(/<\w+Dialog key=\{([^}]+)\}/g)].map((m) => m[1]);
+  expect(keys.length).toBeGreaterThanOrEqual(3);
+  expect(new Set(keys).size).toBe(keys.length);
+});
