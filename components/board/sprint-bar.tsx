@@ -233,8 +233,17 @@ function CloseDialog({ open, onOpenChange, board, sprint, token, onClosed }: {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Close sprint {sprint.number}?</DialogTitle>
-          <DialogDescription>{closeSummary(sprint.number, carry, done, doneCol?.name ?? 'Done')}</DialogDescription>
+          <DialogDescription>Closing it now:</DialogDescription>
         </DialogHeader>
+        <ul className="grid gap-1.5 text-sm">
+          {closeSummary(sprint.number, carry, done, doneCol?.name ?? 'Done').map((line) => (
+            <li key={line.count + line.text} className="flex items-baseline gap-2">
+              <span className="min-w-6 text-right font-semibold tabular-nums">{line.count}</span>
+              <span>{line.text}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="text-sm text-muted-foreground">{CLOSE_NEXT}</p>
         {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
@@ -245,13 +254,17 @@ function CloseDialog({ open, onOpenChange, board, sprint, token, onClosed }: {
   );
 }
 
-// closeSummary: what closing a sprint by hand does. The next sprint doesn't start until someone
-// starts it, so its length (or end date) can be chosen then.
-export function closeSummary(number: number, carry: number, done: number, doneName: string): string {
+// closeSummary: where a sprint's tickets go when it's closed by hand, one line each.
+export function closeSummary(number: number, carry: number, done: number, doneName: string): { count: number; text: string }[] {
   const s = (n: number) => (n === 1 ? '' : 's');
-  return `${carry} unfinished ticket${s(carry)} stay${carry === 1 ? 's' : ''} on the board, and ${done} in “${doneName}” stay${done === 1 ? 's' : ''} with sprint ${number}. `
-    + 'The next sprint doesn’t start until you start it, so you can choose how long it runs. A planned next sprint joins then.';
+  return [
+    { count: carry, text: `unfinished ticket${s(carry)} stay${carry === 1 ? 's' : ''} on the board` },
+    { count: done, text: `in “${doneName}” stay${done === 1 ? 's' : ''} with sprint ${number}` },
+  ];
 }
+
+// the next sprint doesn't start until someone starts it, so its length (or end date) can be chosen then
+export const CLOSE_NEXT = 'The next sprint won’t start until you start it, so you can choose its length then. A planned next sprint joins when it starts.';
 
 export const GOAL_MAX = 200; // backend: sprints.goal
 

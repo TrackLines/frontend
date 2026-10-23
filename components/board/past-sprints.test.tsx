@@ -1,7 +1,7 @@
 import { expect, test } from 'bun:test';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { PastSprintList, SprintDetailBody, sprintResult } from './past-sprints';
-import { SprintBar, closeSummary } from './sprint-bar';
+import { CLOSE_NEXT, SprintBar, closeSummary } from './sprint-bar';
 
 const sprint = (number: number) => ({ id: 's', board_id: 'b', number, length_days: 14, starts_at: '2026-10-01T00:00:00Z', ends_at: '2026-10-15T00:00:00Z', closed_at: null });
 const board = { id: 'b', project_id: 'p', owner_clerk_id: 'o', name: 'B', description: '', created_at: '', updated_at: '' };
@@ -48,9 +48,10 @@ test('sprint results read naturally in points or tickets', () => {
 });
 
 test('closing by hand says the next sprint waits, so its length can be chosen', () => {
-  const text = closeSummary(3, 2, 1, 'Done');
-  expect(text).toContain('2 unfinished tickets stay on the board');
-  expect(text).toContain('1 in “Done” stays with sprint 3');
-  expect(text).toContain('doesn’t start until you start it');
-  expect(closeSummary(3, 1, 0, 'Shipped')).toContain('1 unfinished ticket stays');
+  expect(closeSummary(3, 2, 1, 'Done')).toEqual([
+    { count: 2, text: 'unfinished tickets stay on the board' },
+    { count: 1, text: 'in “Done” stays with sprint 3' },
+  ]);
+  expect(closeSummary(3, 1, 0, 'Shipped')[0].text).toBe('unfinished ticket stays on the board');
+  expect(CLOSE_NEXT).toContain('won’t start until you start it');
 });
