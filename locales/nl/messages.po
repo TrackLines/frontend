@@ -1,0 +1,56 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2026-10-23 20:23+0100\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: nl\n"
+
+#: components/dashboard-work.tsx
+msgid "{shown} of {total, plural, one {# ticket} other {# tickets}} · <0>See all</0>"
+msgstr ""
+
+#: components/dashboard-work.tsx
+msgid "All mentions"
+msgstr ""
+
+#: components/dashboard-work.tsx
+msgid "All my work"
+msgstr ""
+
+#: components/dashboard-work.tsx
+msgid "Assigned to me"
+msgstr ""
+
+#: components/dashboard-work.tsx
+msgid "Backlog"
+msgstr ""
+
+#: components/dashboard-work.tsx
+msgid "Couldn’t load this. Please refresh to try again."
+msgstr ""
+
+#: components/dashboard-work.tsx
+msgid "Created by me"
+msgstr ""
+
+#: components/dashboard-work.tsx
+msgid "Loading…"
+msgstr ""
+
+#: components/dashboard-work.tsx
+msgid "Mentions"
+msgstr ""
+
+#: components/dashboard-work.tsx
+msgid "Nobody has mentioned you yet."
+msgstr ""
+
+#: components/dashboard-work.tsx
+msgid "Nothing assigned to you right now."
+msgstr ""
+
+#: components/dashboard-work.tsx
+msgid "You haven’t created any tickets."
+msgstr ""

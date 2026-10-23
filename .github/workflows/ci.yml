@@ -13,5 +13,7 @@ jobs:
       - run: bun install --frozen-lockfile
       # known vulnerabilities in the shipped (production) dependencies (PCI DSS 6.3.1); dev-only tooling is out of scope
       - run: bun audit --prod
+      # every visible string is in the catalogues (TL-550): wrapped strings that weren't extracted fail here
+      - run: bun run i18n && git diff --exit-code -I 'POT-Creation-Date' -- locales
       - run: bun run test
       - run: bun run build

@@ -15,6 +15,7 @@ import { NotificationsBell } from '@/components/notifications-bell';
 import { CacheGuard } from '@/components/cache-guard';
 import { OrgSwitcher } from '@/components/org-switcher';
 import { FeatureFlags } from '@/components/feature-flags';
+import { I18n } from '@/components/i18n-provider';
 import { Toaster } from '@/components/ui/sonner';
 import { ErrorReporter } from '@/components/error-reporter';
 import './globals.css';
@@ -39,6 +40,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange storageKey="tracklines-theme" nonce={nonce}>
         <ClerkProvider dynamic appearance={{ theme: shadcn }}>
         <FeatureFlags>
+        <I18n>
           <CacheGuard />
           {/* on phones: 16px gutters, tighter gaps, and the name and buttons' words drop to icons (TL-471) */}
           <header className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 sm:px-6 py-4 print:hidden">
@@ -69,6 +71,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           {/* bottom left: the hosted drawer and its buttons are on the right */}
           <Toaster position="bottom-left" offset={8} mobileOffset={8} />
           <ErrorReporter />
+        </I18n>
         </FeatureFlags>
         </ClerkProvider>
         </ThemeProvider>

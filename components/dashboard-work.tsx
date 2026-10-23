@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { Plural, Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState, type ReactNode } from 'react';
 import { PriorityBadge } from '@/components/board/priority-badge';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
@@ -11,7 +12,6 @@ import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TimeboxCountdown } from '@/components/timebox-countdown';
 import { mentions, tickets, type Assignee, type Mention, type TicketSearchResult } from '@/lib/api';
-import { countLabel } from '@/lib/my-work';
 import { actorName } from '@/lib/notifications';
 
 const SHOW = 5;
@@ -48,13 +48,14 @@ type Totals = { assigned?: number; created?: number };
 export function DashboardWorkView({ assigned, created, mentioned, people, totals = {} }: {
   assigned: Load<TicketSearchResult>; created: Load<TicketSearchResult>; mentioned: Load<Mention>; people: Assignee[]; totals?: Totals;
 }) {
-  const ticketRow = (t: TicketSearchResult) => (
-    <Row key={t.id} href={ticketPath(t)} ticketKey={t.key} title={t.title}>
-      <PriorityBadge priority={t.priority} hideDefault />
-      {t.blocked && <BlockedBadge />}
-      {t.type === 'spike' && <TimeboxCountdown startedAt={t.started_at} doneAt={t.done_at} days={t.timebox_days} hours={t.timebox_hours} />}
-      <Badge variant="secondary">{t.column_name ?? 'Backlog'}</Badge>
-      <span className="truncate">{t.project_name}</span>
+  const { t } = useLingui();
+  const ticketRow = (tk: TicketSearchResult) => (
+    <Row key={tk.id} href={ticketPath(tk)} ticketKey={tk.key} title={tk.title}>
+      <PriorityBadge priority={tk.priority} hideDefault />
+      {tk.blocked && <BlockedBadge />}
+      {tk.type === 'spike' && <TimeboxCountdown startedAt={tk.started_at} doneAt={tk.done_at} days={tk.timebox_days} hours={tk.timebox_hours} />}
+      <Badge variant="secondary">{tk.column_name ?? t`Backlog`}</Badge>
+      <span className="truncate">{tk.project_name}</span>
     </Row>
   );
 
@@ -67,28 +68,28 @@ export function DashboardWorkView({ assigned, created, mentioned, people, totals
       <Tabs defaultValue="assigned" className="gap-0">
         <div className="flex items-center justify-between border-b px-4 py-3">
           <TabsList>
-            <TabsTrigger value="assigned">Assigned to me</TabsTrigger>
-            <TabsTrigger value="created">Created by me</TabsTrigger>
+            <TabsTrigger value="assigned"><Trans>Assigned to me</Trans></TabsTrigger>
+            <TabsTrigger value="created"><Trans>Created by me</Trans></TabsTrigger>
           </TabsList>
-          <Link href="/my-work" className="text-sm text-muted-foreground hover:text-foreground hover:underline">All my work</Link>
+          <Link href="/my-work" className="text-sm text-muted-foreground hover:text-foreground hover:underline"><Trans>All my work</Trans></Link>
         </div>
         <TabsContent value="assigned" keepMounted>
-          <Items items={assigned} empty="Nothing assigned to you right now.">{ticketRow}</Items>
+          <Items items={assigned} empty={t`Nothing assigned to you right now.`}>{ticketRow}</Items>
           <More items={assigned} total={totals.assigned} href="/my-work" />
         </TabsContent>
         <TabsContent value="created" keepMounted>
-          <Items items={created} empty="You haven’t created any tickets.">{ticketRow}</Items>
+          <Items items={created} empty={t`You haven’t created any tickets.`}>{ticketRow}</Items>
           <More items={created} total={totals.created} href="/my-work?tab=created" />
         </TabsContent>
       </Tabs>
     </Card>
   ) : (
-    <Panel title="Assigned to me" more={{ href: '/my-work', label: 'All my work' }} items={assigned} empty="Nothing assigned to you right now."
+    <Panel title={t`Assigned to me`} more={{ href: '/my-work', label: t`All my work` }} items={assigned} empty={t`Nothing assigned to you right now.`}
       footer={<More items={assigned} total={totals.assigned} href="/my-work" />}>{ticketRow}</Panel>
   );
 
   const mentionsPanel = !(pending(mentioned) || has(mentioned)) ? null : (
-    <Panel title="Mentions" more={{ href: '/mentions', label: 'All mentions' }} items={mentioned} empty="Nobody has mentioned you yet.">
+    <Panel title={t`Mentions`} more={{ href: '/mentions', label: t`All mentions` }} items={mentioned} empty={t`Nobody has mentioned you yet.`}>
       {(m: Mention) => (
         <Row key={m.ticket_id} href={`/tickets/${m.ticket_id}`} ticketKey={m.key} title={m.title} done={m.done}>
           <span className="truncate">{actorName(m.actor, people)} · <When iso={m.mentioned_at} /></span>
@@ -104,19 +105,19 @@ export function DashboardWorkView({ assigned, created, mentioned, people, totals
 
 // Items: the body of a list — its loading, failed, empty and populated states.
 function Items<I>({ items, empty, children }: { items: Load<I>; empty: string; children: (item: I) => ReactNode }) {
-  if (items === 'failed') return <p role="alert" className="px-4 py-6 text-sm text-destructive">Couldn&apos;t load this. Please refresh to try again.</p>;
-  if (items === null) return <p role="status" className="px-4 py-6 text-sm text-muted-foreground">Loading…</p>;
+  if (items === 'failed') return <p role="alert" className="px-4 py-6 text-sm text-destructive"><Trans>Couldn’t load this. Please refresh to try again.</Trans></p>;
+  if (items === null) return <p role="status" className="px-4 py-6 text-sm text-muted-foreground"><Trans>Loading…</Trans></p>;
   if (items.length === 0) return <p className="px-4 py-6 text-sm text-muted-foreground">{empty}</p>;
   return <ul className="divide-y">{items.map(children)}</ul>;
 }
 
 // More: "5 of 9 tickets · See all" under a list that shows only part of what there is.
 function More<I>({ items, total, href }: { items: Load<I>; total?: number; href: string }) {
-  const label = Array.isArray(items) && total !== undefined ? countLabel(items.length, total) : null;
-  if (!label) return null;
+  if (!Array.isArray(items) || total === undefined || total <= items.length) return null;
+  const shown = items.length;
   return (
     <p className="border-t px-4 py-2.5 text-sm text-muted-foreground">
-      {label} · <Link href={href} className="hover:text-foreground hover:underline">See all</Link>
+      <Trans>{shown} of <Plural value={total} one="# ticket" other="# tickets" /> · <Link href={href} className="hover:text-foreground hover:underline">See all</Link></Trans>
     </p>
   );
 }
