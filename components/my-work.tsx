@@ -13,17 +13,17 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { projects as projectsApi, tickets, type Project, type TicketSearchResult } from '@/lib/api';
-import { boardOptions, groupWork, workQuery, type WorkMode } from '@/lib/my-work';
+import { boardOptions, countLabel, groupWork, workQuery, type WorkMode } from '@/lib/my-work';
 
 const PAGE = 50;
 const ALL = '__all';
 
 // MyWork: my tickets across every board and project in the org, most recently changed first — those
 // assigned to me, or (Created by me tab) those I raised. Open by default; done work on request.
-export function MyWork({ token }: { token: string }) {
-  const [mode, setMode] = useState<WorkMode>('assigned');
+export function MyWork({ token, initialMode = 'assigned' }: { token: string; initialMode?: WorkMode }) {
+  const [mode, setMode] = useState<WorkMode>(initialMode);
   const [items, setItems] = useState<TicketSearchResult[] | null>(null);
-  const [more, setMore] = useState(false);
+  const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [failed, setFailed] = useState(false);
   const [project, setProject] = useState('');
@@ -40,11 +40,11 @@ export function MyWork({ token }: { token: string }) {
     const request = ++latest.current;
     setFailed(false);
     try {
-      const found = await tickets.search({ ...workQuery(mode), status: includeDone ? undefined : 'open',
+      const { tickets: found, total: all } = await tickets.searchPage({ ...workQuery(mode), status: includeDone ? undefined : 'open',
         project: project || undefined, board: board || undefined, priorities, limit: PAGE, page: nextPage }, token);
       if (request !== latest.current) return;
       setItems((cur) => (nextPage === 1 ? found : [...(cur ?? []), ...found]));
-      setMore(found.length === PAGE);
+      if (nextPage === 1 || all > 0) setTotal(all); // past the last page the count is 0: keep the one we had
       setPage(nextPage);
       if (nextPage === 1 && !board) setBoards(boardOptions(found));
     } catch {
@@ -85,7 +85,12 @@ export function MyWork({ token }: { token: string }) {
       </div>
       <MyWorkView items={items} failed={failed} filtered={!!project || !!board || priorities.length > 0}
         empty={mode === 'created' ? 'You haven’t created any tickets yet.' : 'Nothing assigned to you right now.'} />
-      {more && <Button variant="outline" className="justify-self-start" onClick={() => void load(page + 1)}>Load more</Button>}
+      {items && countLabel(items.length, total) && (
+        <div className="flex items-center gap-3">
+          <Button variant="outline" onClick={() => void load(page + 1)}>Load more</Button>
+          <span className="text-sm text-muted-foreground">Showing {countLabel(items.length, total)}</span>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 import type { TicketSearchResult } from './api';
-import { boardOptions, groupWork, workQuery } from './my-work';
+import { boardOptions, groupWork, workQuery, countLabel } from './my-work';
 
 const t = (id: string, project: string, board: string | null, boardId: string | null = board) =>
   ({ id, project_name: project, board_name: board, board_id: boardId, title: id }) as TicketSearchResult;
@@ -21,4 +21,10 @@ test('each tab searches by the right filter (TL-500)', () => {
 test('board filter options come from my tickets', () => {
   expect(boardOptions([t('a', 'Shop', 'Web', 'w'), t('b', 'Docs', null), t('c', 'Shop', 'Web', 'w'), t('d', 'Docs', 'Site', 's')]))
     .toEqual([{ id: 's', name: 'Docs · Site' }, { id: 'w', name: 'Shop · Web' }]);
+});
+
+test('countLabel says how many of how many tickets, only when some are left out (TL-548)', () => {
+  expect(countLabel(5, 9)).toBe('5 of 9 tickets');
+  expect(countLabel(9, 9)).toBeNull();
+  expect(countLabel(3, 0)).toBeNull(); // past the last page the backend counts 0
 });

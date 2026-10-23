@@ -29,3 +29,8 @@ export function boardOptions(tickets: TicketSearchResult[]): { id: string; name:
   for (const t of tickets) if (t.board_id && t.board_name) seen.set(t.board_id, `${t.project_name} · ${t.board_name}`);
   return [...seen].map(([id, name]) => ({ id, name })).sort((a, b) => a.name.localeCompare(b.name));
 }
+
+// countLabel: "5 of 9 tickets" when a list shows only part of what matches; null when it shows it all.
+export function countLabel(shown: number, total: number): string | null {
+  return total > shown ? `${shown} of ${total} tickets` : null;
+}

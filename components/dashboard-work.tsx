@@ -11,6 +11,7 @@ import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TimeboxCountdown } from '@/components/timebox-countdown';
 import { mentions, tickets, type Assignee, type Mention, type TicketSearchResult } from '@/lib/api';
+import { countLabel } from '@/lib/my-work';
 import { actorName } from '@/lib/notifications';
 
 const SHOW = 5;
@@ -27,19 +28,25 @@ export function DashboardWork({ token }: { token: string }) {
   const [created, setCreated] = useState<Load<TicketSearchResult>>(null);
   const [mentioned, setMentioned] = useState<Load<Mention>>(null);
   const [people, setPeople] = useState<Assignee[]>([]);
+  const [totals, setTotals] = useState<Totals>({});
   useEffect(() => {
-    tickets.search({ assignee: 'me', status: 'open', limit: SHOW }, token).then(setAssigned, () => setAssigned('failed'));
-    tickets.search({ creator: 'me', status: 'open', limit: SHOW }, token).then(setCreated, () => setCreated('failed'));
+    tickets.searchPage({ assignee: 'me', status: 'open', limit: SHOW }, token)
+      .then((r) => { setAssigned(r.tickets); setTotals((t) => ({ ...t, assigned: r.total })); }, () => setAssigned('failed'));
+    tickets.searchPage({ creator: 'me', status: 'open', limit: SHOW }, token)
+      .then((r) => { setCreated(r.tickets); setTotals((t) => ({ ...t, created: r.total })); }, () => setCreated('failed'));
     mentions.list(token, SHOW).then(setMentioned, () => setMentioned('failed'));
     tickets.assignees(token).then(setPeople, () => {});
   }, []); // load once; token refreshes must not refetch
-  return <DashboardWorkView assigned={assigned} created={created} mentioned={mentioned} people={people} />;
+  return <DashboardWorkView assigned={assigned} created={created} mentioned={mentioned} people={people} totals={totals} />;
 }
+
+// Totals: how many open tickets each My work tab has in all, when it shows only some (TL-548)
+type Totals = { assigned?: number; created?: number };
 
 // DashboardWorkView: the cards (pure, for tests). The "My work" card is hidden once nothing is
 // assigned and nothing was created by me; "Mentions" is hidden once nobody has mentioned me.
-export function DashboardWorkView({ assigned, created, mentioned, people }: {
-  assigned: Load<TicketSearchResult>; created: Load<TicketSearchResult>; mentioned: Load<Mention>; people: Assignee[];
+export function DashboardWorkView({ assigned, created, mentioned, people, totals = {} }: {
+  assigned: Load<TicketSearchResult>; created: Load<TicketSearchResult>; mentioned: Load<Mention>; people: Assignee[]; totals?: Totals;
 }) {
   const ticketRow = (t: TicketSearchResult) => (
     <Row key={t.id} href={ticketPath(t)} ticketKey={t.key} title={t.title}>
@@ -65,12 +72,19 @@ export function DashboardWorkView({ assigned, created, mentioned, people }: {
           </TabsList>
           <Link href="/my-work" className="text-sm text-muted-foreground hover:text-foreground hover:underline">All my work</Link>
         </div>
-        <TabsContent value="assigned" keepMounted><Items items={assigned} empty="Nothing assigned to you right now.">{ticketRow}</Items></TabsContent>
-        <TabsContent value="created" keepMounted><Items items={created} empty="You haven’t created any tickets.">{ticketRow}</Items></TabsContent>
+        <TabsContent value="assigned" keepMounted>
+          <Items items={assigned} empty="Nothing assigned to you right now.">{ticketRow}</Items>
+          <More items={assigned} total={totals.assigned} href="/my-work" />
+        </TabsContent>
+        <TabsContent value="created" keepMounted>
+          <Items items={created} empty="You haven’t created any tickets.">{ticketRow}</Items>
+          <More items={created} total={totals.created} href="/my-work?tab=created" />
+        </TabsContent>
       </Tabs>
     </Card>
   ) : (
-    <Panel title="Assigned to me" more={{ href: '/my-work', label: 'All my work' }} items={assigned} empty="Nothing assigned to you right now.">{ticketRow}</Panel>
+    <Panel title="Assigned to me" more={{ href: '/my-work', label: 'All my work' }} items={assigned} empty="Nothing assigned to you right now."
+      footer={<More items={assigned} total={totals.assigned} href="/my-work" />}>{ticketRow}</Panel>
   );
 
   const mentionsPanel = !(pending(mentioned) || has(mentioned)) ? null : (
@@ -96,8 +110,19 @@ function Items<I>({ items, empty, children }: { items: Load<I>; empty: string; c
   return <ul className="divide-y">{items.map(children)}</ul>;
 }
 
-function Panel<I>({ title, more, items, empty, children }: {
-  title: string; more?: { href: string; label: string }; items: Load<I>; empty: string; children: (item: I) => ReactNode;
+// More: "5 of 9 tickets · See all" under a list that shows only part of what there is.
+function More<I>({ items, total, href }: { items: Load<I>; total?: number; href: string }) {
+  const label = Array.isArray(items) && total !== undefined ? countLabel(items.length, total) : null;
+  if (!label) return null;
+  return (
+    <p className="border-t px-4 py-2.5 text-sm text-muted-foreground">
+      {label} · <Link href={href} className="hover:text-foreground hover:underline">See all</Link>
+    </p>
+  );
+}
+
+function Panel<I>({ title, more, items, empty, footer, children }: {
+  title: string; more?: { href: string; label: string }; items: Load<I>; empty: string; footer?: ReactNode; children: (item: I) => ReactNode;
 }) {
   return (
     <Card className="gap-0 py-0">
@@ -107,6 +132,7 @@ function Panel<I>({ title, more, items, empty, children }: {
           {more && <Link href={more.href} className="text-sm text-muted-foreground hover:text-foreground hover:underline">{more.label}</Link>}
         </div>
         <Items items={items} empty={empty}>{children}</Items>
+        {footer}
       </section>
     </Card>
   );
