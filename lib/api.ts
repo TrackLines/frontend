@@ -47,6 +47,7 @@ export type Board = {
   hidden_done?: number; // kanban: Done tickets finished over 14 days ago, left off the board
   estimate_scale?: EstimateScale;
   agent_review?: boolean; // agents' moves into Done wait for a person's review
+  dev_complete_column_id?: string | null; // merged PRs land here, a release moves them to Done (TL-531)
   archived_at?: string | null; // archived: off the project page, history kept, no new work
   deletable?: boolean; // never used (no tickets, no sprints): can be deleted; otherwise archive it
   sprint?: Sprint; // open sprint, absent when the board doesn't run sprints
@@ -331,7 +332,7 @@ export const boards = {
   create: (projectId: string, b: { name: string; description?: string; template_id?: string }, token: T) =>
     api<Board>(`/projects/${projectId}/boards`, { method: 'POST', body: b, token }),
   // Update the board name and/or settings; switching estimate_scale clears open tickets' estimates.
-  update: (id: string, b: { name?: string; estimate_scale?: EstimateScale; style?: BoardStyle; agent_review?: boolean }, token: T) => api<void>(`/boards/${id}`, { method: 'PATCH', body: b, token }),
+  update: (id: string, b: { name?: string; estimate_scale?: EstimateScale; style?: BoardStyle; agent_review?: boolean; dev_complete_column_id?: string }, token: T) => api<void>(`/boards/${id}`, { method: 'PATCH', body: b, token }),
   remove: (id: string, token: T) => api<void>(`/boards/${id}`, { method: 'DELETE', token }), // never-used boards only
   archive: (id: string, token: T) => api<void>(`/boards/${id}/archive`, { method: 'POST', token }),
   restore: (id: string, token: T) => api<void>(`/boards/${id}/restore`, { method: 'POST', token }),
@@ -637,6 +638,7 @@ export type IntegrationStatus = { provider: IntegrationProvider; connected: bool
 export type TicketPR = {
   provider: 'github' | 'bitbucket'; repo: string; number: number; url: string; title: string;
   state: 'open' | 'draft' | 'merged' | 'closed'; author: string; branch: string; updated_at: string;
+  released_in?: string | null; // the release tag that shipped it (TL-531)
 };
 export type GitRepo = { full_name: string; default_branch: string; private: boolean };
 export type ProjectRepo = { provider: 'github' | 'bitbucket'; full_name: string; default_branch: string; created_at?: string };

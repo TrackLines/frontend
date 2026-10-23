@@ -43,6 +43,7 @@ export function PullRequestsPanelView({ prs }: { prs: TicketPR[] }) {
                 <span className="min-w-0 font-medium"><span className="text-muted-foreground">{pr.repo}#{pr.number}</span> {pr.title}</span>
               )}
               <Badge variant={pr.state === 'open' ? 'secondary' : 'outline'}>{s.label}</Badge>
+              {pr.released_in && <Badge variant="outline">Released in {pr.released_in}</Badge>}
               <span className="text-xs text-muted-foreground">{pr.author}{pr.updated_at && <> · <When iso={pr.updated_at} /></>}</span>
             </li>
           );

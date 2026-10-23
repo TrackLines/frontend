@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 import type { Board } from './api';
-import { addColumn, changeColumn, dirty, draftOf, layout, layoutChanged, moveColumn, problem, removeColumn, settingsPatch } from './board-edit';
+import { addColumn, changeColumn, devComplete, devCompleteOptions, dirty, draftOf, layout, layoutChanged, moveColumn, problem, removeColumn, settingsPatch } from './board-edit';
 
 const board = {
   id: 'b', project_id: 'p', owner_clerk_id: 'o', name: 'Web', description: '', created_at: '', updated_at: '', style: 'kanban', estimate_scale: 'none',
@@ -58,4 +58,15 @@ test('what stops a save is said plainly', () => {
   expect(problem(changeColumn(d, 'doing', { name: 'x'.repeat(81) }))).toContain('up to 80');
   expect(problem(changeColumn(d, 'doing', { wip: 1000 }))).toContain('from 1 to 999');
   expect(problem(changeColumn(d, 'doing', { wip: 0 }))).toContain('from 1 to 999');
+});
+
+test('Dev complete (TL-532): only saved columns between To do and Done; a removed one turns it off', () => {
+  const d = addColumn(draftOf({ ...board, dev_complete_column_id: 'review' } as Board), 'QA', 'new1');
+  expect(d.devComplete).toBe('review');
+  expect(devCompleteOptions(d).map((c) => c.id)).toEqual(['doing', 'review']);
+  expect(settingsPatch(d, draftOf(board))).toEqual({ dev_complete_column_id: 'review' });
+  expect(settingsPatch({ ...d, devComplete: 'todo' }, draftOf(board))).toBeNull(); // To do isn't an option
+  const gone = removeColumn(d, 'review');
+  expect(devComplete(gone)).toBe('');
+  expect(settingsPatch(gone, d)).toEqual({ dev_complete_column_id: '' });
 });

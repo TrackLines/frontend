@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useFlags } from '@flags-gg/react-library';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { BoardLifecycle } from '@/components/board/board-lifecycle';
@@ -14,7 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { ApiError, boards, boardTemplates, columns, organization, type Board, type BoardStyle } from '@/lib/api';
 import { canManageBoard } from '@/lib/board-access';
-import { dirty, draftOf, layout, layoutChanged, problem, settingsPatch, type Draft } from '@/lib/board-edit';
+import { devComplete, devCompleteOptions, dirty, draftOf, layout, layoutChanged, problem, settingsPatch, type Draft } from '@/lib/board-edit';
 import { SCALES, type EstimateScale } from '@/lib/estimates';
 import { useToken } from '@/lib/use-token';
 
@@ -25,6 +26,7 @@ export default function EditBoardPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const token = useToken();
+  const { is } = useFlags();
   const [board, setBoard] = useState<Board | null>(null);
   const [was, setWas] = useState<Draft | null>(null);
   const [draft, setDraft] = useState<Draft | null>(null);
@@ -123,6 +125,20 @@ export default function EditBoardPage() {
         </div>
         <Choice label="Agent work needs review" hint="An AI agent's ticket moved to Done waits for a person to approve it." value={draft.agentReview ? 'on' : 'off'}
           options={[['off', 'Off'], ['on', 'On']]} onChange={(v) => setDraft({ ...draft, agentReview: v === 'on' })} />
+        {is('release-done').enabled() && (
+          <div className="grid gap-1.5 text-sm">
+            <span className="font-medium">Finish tickets on release</span>
+            <Select items={{ merge: 'On merge', ...Object.fromEntries(devCompleteOptions(draft).map((c) => [c.id!, c.name])) }} value={devComplete(draft) || 'merge'}
+              onValueChange={(v) => setDraft({ ...draft, devComplete: !v || v === 'merge' ? '' : v })}>
+              <SelectTrigger aria-label="Finish tickets on release" className="w-48"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="merge">On merge</SelectItem>
+                {devCompleteOptions(draft).map((c) => <SelectItem key={c.id} value={c.id!}>{c.name}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <span className="text-xs text-muted-foreground">On merge: a merged pull request moves its tickets to Done. Pick a column and they go there instead, then to Done once a GitHub release ships them.</span>
+          </div>
+        )}
       </section>
 
       <section aria-labelledby="columns" className="grid gap-3">
