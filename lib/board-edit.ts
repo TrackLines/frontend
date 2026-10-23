@@ -13,19 +13,26 @@ export type DraftColumn = {
   wip: number | null;
   tickets: number; // in the current sprint: a column with any can't be removed
 };
-export type Draft = { name: string; style: BoardStyle; scale: EstimateScale; agentReview: boolean; columns: DraftColumn[] };
+// devComplete (TL-532): the column merged PRs move tickets to, until a release ships them; '' = merging finishes them
+export type Draft = { name: string; style: BoardStyle; scale: EstimateScale; agentReview: boolean; devComplete: string; columns: DraftColumn[] };
 
 export const MAX_COLUMN_NAME = 80; // the backend's columns.maxColumnName
 
 export function draftOf(b: Board): Draft {
   return {
-    name: b.name, style: b.style ?? 'sprints', scale: b.estimate_scale ?? 'none', agentReview: !!b.agent_review,
+    name: b.name, style: b.style ?? 'sprints', scale: b.estimate_scale ?? 'none', agentReview: !!b.agent_review, devComplete: b.dev_complete_column_id ?? '',
     columns: (b.columns ?? []).map((c) => ({ key: c.id, id: c.id, name: c.name, wip: c.wip_limit ?? null, tickets: c.tickets.length })),
   };
 }
 
 // movable: only the columns between To do and Done move, take a WIP limit, or can be removed.
 export const movable = (d: Draft, index: number) => index > 0 && index < d.columns.length - 1;
+
+// devCompleteOptions: the saved columns between To do and Done (a new column has no id to pick yet).
+export const devCompleteOptions = (d: Draft) => d.columns.filter((c, i) => c.id && movable(d, i));
+
+// devComplete is the draft's Dev complete column, or '' once that column is removed.
+export const devComplete = (d: Draft) => (devCompleteOptions(d).some((c) => c.id === d.devComplete) ? d.devComplete : '');
 
 export function addColumn(d: Draft, name: string, key: string): Draft {
   const at = Math.max(d.columns.length - 1, 0); // before Done
@@ -67,12 +74,13 @@ export function problem(d: Draft): string | null {
 }
 
 // settingsPatch is what PATCH /boards/{id} gets: only what changed, or null when nothing did.
-export function settingsPatch(d: Draft, was: Draft): { name?: string; style?: BoardStyle; estimate_scale?: EstimateScale; agent_review?: boolean } | null {
+export function settingsPatch(d: Draft, was: Draft): { name?: string; style?: BoardStyle; estimate_scale?: EstimateScale; agent_review?: boolean; dev_complete_column_id?: string } | null {
   const patch = {
     ...(d.name.trim() !== was.name && { name: d.name.trim() }),
     ...(d.style !== was.style && { style: d.style }),
     ...(d.scale !== was.scale && { estimate_scale: d.scale }),
     ...(d.agentReview !== was.agentReview && { agent_review: d.agentReview }),
+    ...(devComplete(d) !== was.devComplete && { dev_complete_column_id: devComplete(d) }),
   };
   return Object.keys(patch).length ? patch : null;
 }

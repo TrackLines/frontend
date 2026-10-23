@@ -22,3 +22,8 @@ test('a ticket shows the pull requests that mention it, linked, with their state
 test('no pull requests: no panel', () => {
   expect(renderToStaticMarkup(<PullRequestsPanelView prs={[]} />)).toBe('');
 });
+
+test('a shipped PR says which release it was in (TL-532)', () => {
+  expect(renderToStaticMarkup(<PullRequestsPanelView prs={[pr({ state: 'merged', released_in: 'v1.4.0' })]} />)).toContain('Released in v1.4.0');
+  expect(renderToStaticMarkup(<PullRequestsPanelView prs={[pr({ state: 'merged' })]} />)).not.toContain('Released in');
+});
