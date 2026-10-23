@@ -9,7 +9,7 @@ plugin({
     build.onLoad({ filter: /\/(app|components|lib)\/.*\.tsx?$/ }, async ({ path }) => {
       const src = await Bun.file(path).text();
       const loader = path.endsWith('x') ? 'tsx' : 'ts';
-      if (!/from '@lingui\/(core|react)\/macro'/.test(src)) return { contents: src, loader };
+      if (!/from ['"]@lingui\/(core|react)\/macro['"]/.test(src)) return { contents: src, loader };
       const out = await transformAsync(src, {
         filename: path, babelrc: false, configFile: false, retainLines: true,
         parserOpts: { plugins: ['typescript', 'jsx'] },

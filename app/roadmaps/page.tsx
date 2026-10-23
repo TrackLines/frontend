@@ -2,6 +2,7 @@
 
 import { ListPageSkeleton } from '@/components/page-skeletons';
 import Link from 'next/link';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
 import { Pager } from '@/components/pager';
 import { VisibilityBadge } from '@/components/roadmap/visibility';
@@ -15,6 +16,7 @@ type RoadmapEntry = { roadmap: Roadmap; project?: Project };
 const PER_PAGE = 10; // ponytail: pages in the browser; the list is the org's roadmaps, small enough to load at once
 
 export default function RoadmapsPage() {
+  const { t } = useLingui();
   const token = useToken();
   const [entries, setEntries] = useState<RoadmapEntry[] | null>(null);
   const [failed, setFailed] = useState(false);
@@ -37,37 +39,38 @@ export default function RoadmapsPage() {
   }, [loaded]); // load once; token refreshes must not refetch
 
   async function remove(roadmap: Roadmap) {
-    if (!token || !confirm(`Delete “${roadmap.title}”? Its link stops working for everyone.`)) return;
+    const name = roadmap.title;
+    if (!token || !confirm(t`Delete “${name}”? Its link stops working for everyone.`)) return;
     setDeletingId(roadmap.id);
     setDeleteError('');
     try {
       await roadmaps.remove(roadmap.id, token);
       setEntries((current) => current?.filter((entry) => entry.roadmap.id !== roadmap.id) ?? []);
     } catch {
-      setDeleteError(`Could not delete “${roadmap.title}”. Please try again.`);
+      setDeleteError(t`Could not delete “${name}”. Please try again.`);
     } finally {
       setDeletingId(null);
     }
   }
 
-  if (failed) return <Message title="Couldn't load your roadmaps" body="Please refresh to try again." />;
-  if (!entries || !token) return <ListPageSkeleton label="Loading roadmaps…" />;
+  if (failed) return <Message title={t`Couldn't load your roadmaps`} body={t`Please refresh to try again.`} />;
+  if (!entries || !token) return <ListPageSkeleton label={t`Loading roadmaps…`} />;
   const lastPage = Math.max(1, Math.ceil(entries.length / PER_PAGE));
   const current = Math.min(page, lastPage); // e.g. the last roadmap on the last page was deleted
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
-      <Link href="/dashboard" className="text-sm text-muted-foreground hover:underline">← Projects</Link>
+      <Link href="/dashboard" className="text-sm text-muted-foreground hover:underline"><Trans>← Projects</Trans></Link>
       <header className="mb-8 mt-2">
-        <h1 className="text-3xl font-bold tracking-tight">Roadmaps</h1>
-        <p className="mt-2 text-muted-foreground">Your roadmaps across all projects. Public roadmaps are only available to others through their shared link.</p>
+        <h1 className="text-3xl font-bold tracking-tight"><Trans>Roadmaps</Trans></h1>
+        <p className="mt-2 text-muted-foreground"><Trans>Your roadmaps across all projects. Public roadmaps are only available to others through their shared link.</Trans></p>
       </header>
 
       {deleteError && <p className="mb-4 text-sm text-destructive" role="alert">{deleteError}</p>}
       {entries.length === 0 ? (
         <div className="rounded-xl border border-dashed p-8 text-center">
-          <p className="mb-4 text-muted-foreground">No roadmaps yet. Create one from a project.</p>
-          <Link href="/dashboard" className={buttonVariants({ variant: 'outline' })}>Browse projects</Link>
+          <p className="mb-4 text-muted-foreground"><Trans>No roadmaps yet. Create one from a project.</Trans></p>
+          <Link href="/dashboard" className={buttonVariants({ variant: 'outline' })}><Trans>Browse projects</Trans></Link>
         </div>
       ) : (
         <ul id="roadmaps" className="divide-y rounded-xl border">
@@ -76,17 +79,17 @@ export default function RoadmapsPage() {
               <div className="min-w-48 flex-1">
                 <p className="font-medium">{roadmap.title}</p>
                 <Link href={`/projects/${roadmap.project_id}`} className="text-sm text-muted-foreground hover:underline">
-                  {project?.name ?? 'Project'}
+                  {project?.name ?? t`Project`}
                 </Link>
               </div>
               <VisibilityBadge value={roadmap.visibility} />
               <div className="flex flex-wrap gap-2 sm:ml-auto">
-                <Link href={`/roadmaps/${roadmap.id}/edit`} className={buttonVariants({ variant: 'ghost', size: 'sm' })}>Edit</Link>
-                <Link href={`/r/${roadmap.id}`} className={buttonVariants({ variant: 'ghost', size: 'sm' })}>View</Link>
+                <Link href={`/roadmaps/${roadmap.id}/edit`} className={buttonVariants({ variant: 'ghost', size: 'sm' })}><Trans>Edit</Trans></Link>
+                <Link href={`/r/${roadmap.id}`} className={buttonVariants({ variant: 'ghost', size: 'sm' })}><Trans>View</Trans></Link>
                 <CopyLink roadmap={roadmap} />
                 {admin && (
                   <Button variant="ghost" size="sm" className="text-destructive" disabled={deletingId === roadmap.id} onClick={() => remove(roadmap)}>
-                    {deletingId === roadmap.id ? 'Deleting…' : 'Delete'}
+                    {deletingId === roadmap.id ? t`Deleting…` : t`Delete`}
                   </Button>
                 )}
               </div>
@@ -100,6 +103,7 @@ export default function RoadmapsPage() {
 }
 
 function CopyLink({ roadmap }: { roadmap: Roadmap }) {
+  const { t } = useLingui();
   const [copied, setCopied] = useState(false);
   const [failed, setFailed] = useState(false);
 
@@ -116,8 +120,8 @@ function CopyLink({ roadmap }: { roadmap: Roadmap }) {
 
   return (
     <span className="flex items-center gap-2">
-      <Button variant="ghost" size="sm" onClick={copy}>{copied ? 'Copied' : 'Copy link'}</Button>
-      {failed && <span role="status" className="text-xs text-destructive">Could not copy</span>}
+      <Button variant="ghost" size="sm" onClick={copy}>{copied ? t`Copied` : t`Copy link`}</Button>
+      {failed && <span role="status" className="text-xs text-destructive"><Trans>Could not copy</Trans></span>}
     </span>
   );
 }
@@ -127,7 +131,7 @@ function Message({ title, body }: { title: string; body: string }) {
     <main className="mx-auto flex min-h-[60vh] max-w-md flex-col items-center justify-center gap-3 px-6 text-center">
       <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
       <p className="text-muted-foreground">{body}</p>
-      <Link href="/dashboard" className={buttonVariants({ variant: 'outline' })}>Back to projects</Link>
+      <Link href="/dashboard" className={buttonVariants({ variant: 'outline' })}><Trans>Back to projects</Trans></Link>
     </main>
   );
 }

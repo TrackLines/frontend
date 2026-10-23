@@ -4,7 +4,7 @@ import type { Ticket } from '@/lib/api';
 
 mockDialog();
 const { TicketDialog } = await import('./ticket-dialog');
-const { renderToStaticMarkup } = await import('react-dom/server');
+const { render: renderToStaticMarkup } = await import('@/test/i18n');
 
 const ticket: Ticket = { id: 't1', key: 'TL-7', column_id: 'c', position: 0, title: 'Fix login', description: 'details', created_by: 'Sam', project_id: 'p', type: 'bug' };
 const dialog = (props: Partial<Parameters<typeof TicketDialog>[0]> = {}) =>

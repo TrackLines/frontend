@@ -10,6 +10,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Pager } from '@/components/pager';
+import { Trans as TransMessage } from '@lingui/react';
+import type { MessageDescriptor } from '@lingui/core';
+import { msg } from '@lingui/core/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { TICKET_TYPES as TYPES, TypeBadge, TypePicker } from '@/components/ticket-type';
 import { TICKET_DIALOG_WIDTH, TicketDialog } from '@/components/board/ticket-dialog';
 import { EstimateSelect } from '@/components/board/estimate';
@@ -41,6 +45,7 @@ const PER_PAGE = 10;
 
 // Backlog: tickets in the project that aren't on any board or sprint yet (e.g. triaged bugs).
 export function Backlog({ projectId, boards, token }: Props) {
+  const { t, i18n } = useLingui();
   const searchParams = useSearchParams();
   const router = useRouter();
   const [data, setData] = useCachedState<BacklogPage>(`backlog-page:${projectId}`); // instant on revisit, refreshed on mount
@@ -63,7 +68,7 @@ export function Backlog({ projectId, boards, token }: Props) {
   const [editing, setEditing] = useState<BacklogTicket | null>(null);
   const [editScale, setEditScale] = useState<EstimateScale>('none'); // a planned ticket is sized on its planned board's scale
   const [changes, setChanges] = useState(0); // bumps on every reload, so refine mode refreshes too
-  const openEditor = (t: BacklogTicket, scale: EstimateScale = 'none') => { setEditScale(scale); setEditing(t); };
+  const openEditor = (tk: BacklogTicket, scale: EstimateScale = 'none') => { setEditScale(scale); setEditing(tk); };
 
   // hosted refinement (TL-224): Refine starts a session others can join; the host's open ticket opens
   // read-only for followers, so nobody has to share their screen
@@ -80,7 +85,7 @@ export function Backlog({ projectId, boards, token }: Props) {
     try {
       if (session.session) await session.join(); else await session.start(); // joining also brings a returning host back
     } catch {
-      setError('Couldn’t start the shared session; refining on your own.');
+      setError(t`Couldn’t start the shared session; refining on your own.`);
     }
     setRefining(true);
   }
@@ -158,37 +163,37 @@ export function Backlog({ projectId, boards, token }: Props) {
 
   // moveTo puts t at the bottom of the board's first column, inside its open sprint. A board with an
   // estimate scale only takes estimated tickets, so it asks for one first (sizing) and moves with it.
-  async function moveTo(t: BacklogTicket, boardId: string, estimate?: string) {
-    setBusy(t.id);
+  async function moveTo(tk: BacklogTicket, boardId: string, estimate?: string) {
+    setBusy(tk.id);
     setError('');
     try {
       const target = await boardsApi.get(boardId, token);
       const first = target.columns?.[0];
       if (!first) throw new Error('board has no columns');
       if ((target.estimate_scale ?? 'none') !== 'none' && !estimate) {
-        setSizing({ ticket: t, board: target });
+        setSizing({ ticket: tk, board: target });
         return;
       }
-      await tickets.move(t.id, first.id, first.tickets.length, token, estimate);
-      drop(t.id);
+      await tickets.move(tk.id, first.id, first.tickets.length, token, estimate);
+      drop(tk.id);
       void load();
     } catch (err) {
       // 409: the sprint ends today (scope locked); 400: e.g. estimate required. The backend says which.
-      setError(err instanceof ApiError && (err.status === 409 || err.status === 400) ? err.message : `Couldn’t move “${t.title}”. Please try again.`);
+      setError(err instanceof ApiError && (err.status === 409 || err.status === 400) ? err.message : t`Couldn’t move “${tk.title}”. Please try again.`);
     } finally {
       setBusy(null);
     }
   }
 
-  async function remove(t: BacklogTicket) {
-    if (!confirm(`Delete “${t.title}”?`)) return;
-    setBusy(t.id);
+  async function remove(tk: BacklogTicket) {
+    if (!confirm(t`Delete “${tk.title}”?`)) return;
+    setBusy(tk.id);
     try {
-      await tickets.remove(t.id, token);
-      drop(t.id);
+      await tickets.remove(tk.id, token);
+      drop(tk.id);
       void load();
     } catch {
-      setError(`Couldn’t delete “${t.title}”. Please try again.`);
+      setError(t`Couldn’t delete “${tk.title}”. Please try again.`);
     } finally {
       setBusy(null);
     }
@@ -200,7 +205,7 @@ export function Backlog({ projectId, boards, token }: Props) {
         {/* the text takes what's left, so a long "Join refinement · … is hosting" doesn't push the buttons onto their own line */}
         <div className="min-w-0 flex-1 basis-80">
           {/* the Backlog tab names it (TL-385) */}
-          <p className="text-sm text-muted-foreground">Tickets not on a board yet. Move one to a board to put it in that team&apos;s sprint, or refine to plan the next sprints.</p>
+          <p className="text-sm text-muted-foreground"><Trans>Tickets not on a board yet. Move one to a board to put it in that team&apos;s sprint, or refine to plan the next sprints.</Trans></p>
         </div>
         {refining && session.session && session.role !== 'outside' && (
           <HostedBar session={session.session} role={session.role} following={session.following} people={people} noun="refinement"
@@ -209,7 +214,7 @@ export function Backlog({ projectId, boards, token }: Props) {
         {!refining && (
           <div className="ml-auto flex shrink-0 gap-2">
             {(session.session || canRefine(role, boards)) && <Button variant="outline" onClick={() => void refine()}>{refineLabel(session.session)}</Button>}
-            <Button variant="outline" onClick={() => setAdding(true)}>Add to backlog</Button>
+            <Button variant="outline" onClick={() => setAdding(true)}><Trans>Add to backlog</Trans></Button>
           </div>
         )}
       </div>
@@ -219,29 +224,29 @@ export function Backlog({ projectId, boards, token }: Props) {
           projectId={projectId} boards={boards} token={token} version={changes}
           priorities={priorityFilter} onPrioritiesChange={changePriorities}
           onClose={doneRefining}
-          onOpen={(t, scale) => openEditor(t as unknown as BacklogTicket, scale)}
-          ticketActions={(t) => (
+          onOpen={(tk, scale) => openEditor(tk as unknown as BacklogTicket, scale)}
+          ticketActions={(tk) => (
             <>
               {boards.length > 0 && (
-                <Select items={Object.fromEntries(boards.map((b) => [b.id, b.name]))} value={null} onValueChange={(v) => v && moveTo(t, String(v))} disabled={busy === t.id}>
-                  <SelectTrigger size="sm" aria-label={`Move “${t.title}” to a board`}>
-                    <SelectValue placeholder={busy === t.id ? 'Moving…' : 'Move to board…'} />
+                <Select items={Object.fromEntries(boards.map((b) => [b.id, b.name]))} value={null} onValueChange={(v) => v && moveTo(tk, String(v))} disabled={busy === tk.id}>
+                  <SelectTrigger size="sm" aria-label={t`Move “${tk.title}” to a board`}>
+                    <SelectValue placeholder={busy === tk.id ? t`Moving…` : t`Move to board…`} />
                   </SelectTrigger>
                   <SelectContent>
                     {boards.map((b) => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
                   </SelectContent>
                 </Select>
               )}
-              <Button size="sm" variant="ghost" className="text-destructive" disabled={busy === t.id} onClick={() => remove(t)}>Delete</Button>
+              <Button size="sm" variant="ghost" className="text-destructive" disabled={busy === tk.id} onClick={() => remove(tk)}><Trans>Delete</Trans></Button>
             </>
           )}
         />
       ) : <>
 
-      <div role="group" aria-label="Filter by type" className="mb-3 flex gap-1">
-        {(['all', ...TYPES.map((t) => t.value)] as const).map((f) => (
+      <div role="group" aria-label={t`Filter by type`} className="mb-3 flex gap-1">
+        {(['all', ...TYPES.map((type) => type.value)] as const).map((f) => (
           <Button key={f} size="sm" variant={filter === f ? 'secondary' : 'ghost'} aria-pressed={filter === f} onClick={() => changeFilter(f)}>
-            {f === 'all' ? 'All' : TYPES.find((t) => t.value === f)!.label + 's'}
+            {f === 'all' ? t`All` : <TransMessage {...TYPES.find((type) => type.value === f)!.plural} />}
             {data && <span className="text-muted-foreground">{data.counts[f]}</span>}
           </Button>
         ))}
@@ -251,26 +256,26 @@ export function Backlog({ projectId, boards, token }: Props) {
         <span className="ml-2 inline-flex"><PriorityFilter priorities={priorityFilter} onPrioritiesChange={changePriorities} /></span>
         <span className="inline-flex"><EpicFilter epics={epics} epic={epicFilter} onEpicChange={changeEpic} /></span>
         <span className="ml-auto inline-flex items-center gap-2 pl-2 text-sm text-muted-foreground">
-          <label htmlFor="backlog-status">Show</label>
-          <Select items={STATUS_LABEL} value={status} onValueChange={(value) => { if (value) { setStatus(value as BacklogStatus); setPage(1); } }}>
-            <SelectTrigger id="backlog-status" size="sm" aria-label="Show open or closed tickets">
+          <label htmlFor="backlog-status"><Trans>Show</Trans></label>
+          <Select items={Object.fromEntries(Object.entries(STATUS_LABEL).map(([s, label]) => [s, i18n._(label)]))} value={status} onValueChange={(value) => { if (value) { setStatus(value as BacklogStatus); setPage(1); } }}>
+            <SelectTrigger id="backlog-status" size="sm" aria-label={t`Show open or closed tickets`}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {(Object.keys(STATUS_LABEL) as BacklogStatus[]).map((s) => <SelectItem key={s} value={s}>{STATUS_LABEL[s]}</SelectItem>)}
+              {(Object.keys(STATUS_LABEL) as BacklogStatus[]).map((s) => <SelectItem key={s} value={s}>{i18n._(STATUS_LABEL[s])}</SelectItem>)}
             </SelectContent>
           </Select>
         </span>
         <span className="inline-flex items-center gap-2 pl-2 text-sm text-muted-foreground">
-          <label htmlFor="backlog-sort">Sort</label>
+          <label htmlFor="backlog-sort"><Trans>Sort</Trans></label>
           <Select value={sort} onValueChange={(value) => { if (value) { setSort(value as BacklogSort); setPage(1); } }}>
-            <SelectTrigger id="backlog-sort" size="sm" aria-label="Sort backlog by date">
+            <SelectTrigger id="backlog-sort" size="sm" aria-label={t`Sort backlog by date`}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="manual">{status === 'open' ? 'Manual order' : 'Recently closed'}</SelectItem>
-              <SelectItem value="newest">Newest first</SelectItem>
-              <SelectItem value="oldest">Oldest first</SelectItem>
+              <SelectItem value="manual">{status === 'open' ? t`Manual order` : t`Recently closed`}</SelectItem>
+              <SelectItem value="newest"><Trans>Newest first</Trans></SelectItem>
+              <SelectItem value="oldest"><Trans>Oldest first</Trans></SelectItem>
             </SelectContent>
           </Select>
         </span>
@@ -278,22 +283,22 @@ export function Backlog({ projectId, boards, token }: Props) {
 
       {error && <p role="alert" className="mb-3 text-sm text-destructive">{error}</p>}
       {failed ? (
-        <p role="alert" className="text-sm text-destructive">Couldn&apos;t load the backlog. Please refresh to try again.</p>
+        <p role="alert" className="text-sm text-destructive"><Trans>Couldn&apos;t load the backlog. Please refresh to try again.</Trans></p>
       ) : data === null ? (
         <ListSkeleton />
       ) : shown.length === 0 ? (
         <p className="rounded-xl border border-dashed p-6 text-sm text-muted-foreground">
-          {status !== 'open' && !(labelFilter.length > 0 || priorityFilter.length > 0 || epicFilter) && filter === 'all' ? `No ${STATUS_EMPTY[status]} tickets in the backlog.`
+          {status !== 'open' && !(labelFilter.length > 0 || priorityFilter.length > 0 || epicFilter) && filter === 'all' ? i18n._(STATUS_EMPTY[status])
             : labelFilter.length > 0 || priorityFilter.length > 0 || epicFilter ? (
-            <span className="flex flex-wrap items-center gap-2">No tickets match these filters.<Button type="button" size="sm" variant="link" className="h-auto p-0" onClick={clearFilters}>Clear filters</Button></span>
-          ) : data.counts.all === 0 ? 'The backlog is empty.' : filter !== 'all' ? (
-            <span className="flex flex-wrap items-center gap-2">Nothing of this type in the backlog.<Button type="button" size="sm" variant="link" className="h-auto p-0" onClick={clearFilters}>Clear filters</Button></span>
-          ) : 'The backlog is empty.'}
+            <span className="flex flex-wrap items-center gap-2"><Trans>No tickets match these filters.</Trans><Button type="button" size="sm" variant="link" className="h-auto p-0" onClick={clearFilters}><Trans>Clear filters</Trans></Button></span>
+          ) : data.counts.all === 0 ? t`The backlog is empty.` : filter !== 'all' ? (
+            <span className="flex flex-wrap items-center gap-2"><Trans>Nothing of this type in the backlog.</Trans><Button type="button" size="sm" variant="link" className="h-auto p-0" onClick={clearFilters}><Trans>Clear filters</Trans></Button></span>
+          ) : t`The backlog is empty.`}
         </p>
       ) : (
         <ul className="divide-y rounded-xl border">
-          {shown.map((t) => (
-            <BacklogRow key={t.id} t={t} busy={busy === t.id} onEdit={() => openEditor(t)} />
+          {shown.map((tk) => (
+            <BacklogRow key={tk.id} t={tk} busy={busy === tk.id} onEdit={() => openEditor(tk)} />
           ))}
         </ul>
       )}
@@ -331,8 +336,8 @@ export function Backlog({ projectId, boards, token }: Props) {
         projectId={projectId}
         token={token}
         onAdd={async ({ files, ...input }) => {
-          const t = await backlog.create(projectId, input, token);
-          if (await attachAll(t.id, files, token)) setError(`“${t.title}” was added, but some files didn’t attach — add them from the ticket.`);
+          const tk = await backlog.create(projectId, input, token);
+          if (await attachAll(tk.id, files, token)) setError(t`“${tk.title}” was added, but some files didn’t attach — add them from the ticket.`);
           void load(); // lands wherever the server orders it
         }}
       />
@@ -345,6 +350,7 @@ function AddDialog({ open, onOpenChange, projectId, token, onAdd }: {
   projectId: string; token: string;
   onAdd: (t: { title: string; description: string; type: TicketType; labels: string[]; files: PendingFile[] }) => Promise<void>;
 }) {
+  const { t } = useLingui();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [type, setType] = useState<TicketType>('bug');
@@ -366,7 +372,7 @@ function AddDialog({ open, onOpenChange, projectId, token, onAdd }: {
       setLabels([]);
       onOpenChange(false);
     } catch {
-      setError('Couldn’t add the ticket. Please try again.');
+      setError(t`Couldn’t add the ticket. Please try again.`);
     } finally {
       setSaving(false);
     }
@@ -377,15 +383,15 @@ function AddDialog({ open, onOpenChange, projectId, token, onAdd }: {
       <DialogContent className={`max-h-[90vh] overflow-y-auto ${TICKET_DIALOG_WIDTH}`}>
         <form onSubmit={submit} className="grid gap-4">
           <DialogHeader>
-            <DialogTitle>Add to backlog</DialogTitle>
-            <DialogDescription>It stays here until you move it onto a team board.</DialogDescription>
+            <DialogTitle><Trans>Add to backlog</Trans></DialogTitle>
+            <DialogDescription><Trans>It stays here until you move it onto a team board.</Trans></DialogDescription>
           </DialogHeader>
           <TypePicker value={type} onChange={setType} />
           <LabelDrawer projectId={projectId} token={token} labels={labels} onChange={setLabels} disabled={saving} />
-          <Input autoFocus required maxLength={200} placeholder="What's wrong / what's needed?" value={title} onChange={(e) => setTitle(e.target.value)} />
+          <Input autoFocus required maxLength={200} placeholder={t`What's wrong / what's needed?`} value={title} onChange={(e) => setTitle(e.target.value)} />
           <SimilarTickets suggestions={similar} description={description} />
           <MarkdownTextarea
-            placeholder="Details, steps to reproduce… (optional)"
+            placeholder={t`Details, steps to reproduce… (optional)`}
             value={description}
             mentions={token}
             onChange={(e) => setDescription(e.target.value)}
@@ -393,7 +399,7 @@ function AddDialog({ open, onOpenChange, projectId, token, onAdd }: {
           <PendingAttachments files={files} onChange={setFiles} projectId={projectId} />
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           <DialogFooter>
-            <Button type="submit" disabled={saving || !title.trim()}>{saving ? 'Adding…' : 'Add to backlog'}</Button>
+            <Button type="submit" disabled={saving || !title.trim()}>{saving ? t`Adding…` : t`Add to backlog`}</Button>
           </DialogFooter>
         </form>
       </DialogContent>
@@ -411,16 +417,16 @@ function SizeDialog({ ticket, board, onCancel, onMove }: {
       <DialogContent>
         <form onSubmit={(e) => { e.preventDefault(); if (estimate) onMove(estimate); }} className="grid gap-4">
           <DialogHeader>
-            <DialogTitle>Estimate “{ticket.title}”</DialogTitle>
-            <DialogDescription>{board.name} estimates every ticket, so size this one before it joins the board.</DialogDescription>
+            <DialogTitle><Trans>Estimate “{ticket.title}”</Trans></DialogTitle>
+            <DialogDescription><Trans>{board.name} estimates every ticket, so size this one before it joins the board.</Trans></DialogDescription>
           </DialogHeader>
           <label className="grid gap-1.5 text-sm font-medium">
-            Estimate
+            <Trans>Estimate</Trans>
             <EstimateSelect scale={board.estimate_scale ?? 'none'} value={estimate} onChange={setEstimate} required />
           </label>
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={onCancel}>Cancel</Button>
-            <Button type="submit" disabled={!estimate}>Move to {board.name}</Button>
+            <Button type="button" variant="outline" onClick={onCancel}><Trans>Cancel</Trans></Button>
+            <Button type="submit" disabled={!estimate}><Trans>Move to {board.name}</Trans></Button>
           </DialogFooter>
         </form>
       </DialogContent>
@@ -431,29 +437,33 @@ function SizeDialog({ ticket, board, onCancel, onMove }: {
 // BacklogRow: one backlog line (TL-174): key, type and age on the left; labels with the extra ones
 // under them, beside the title; the description underneath; Edit on the right.
 // the backlog's Show picker, and how a closed ticket was closed
-export const STATUS_LABEL: Record<BacklogStatus, string> = { open: 'Open', done: 'Done', wont_do: 'Won’t do', duplicate: 'Duplicates', closed: 'All closed' };
-const STATUS_EMPTY: Record<BacklogStatus, string> = { open: 'open', done: 'done', wont_do: 'won’t do', duplicate: 'duplicate', closed: 'closed' };
-const RESOLUTION_LABEL = { done: 'Done', wont_do: 'Won’t do', duplicate: 'Duplicate' } as const;
+export const STATUS_LABEL: Record<BacklogStatus, MessageDescriptor> = { open: msg`Open`, done: msg`Done`, wont_do: msg`Won’t do`, duplicate: msg`Duplicates`, closed: msg`All closed` };
+const STATUS_EMPTY: Record<BacklogStatus, MessageDescriptor> = {
+  open: msg`No open tickets in the backlog.`, done: msg`No done tickets in the backlog.`, wont_do: msg`No won’t do tickets in the backlog.`,
+  duplicate: msg`No duplicate tickets in the backlog.`, closed: msg`No closed tickets in the backlog.`,
+};
+const RESOLUTION_LABEL = { done: msg`Done`, wont_do: msg`Won’t do`, duplicate: msg`Duplicate` } as const;
 
-export function BacklogRow({ t, busy, onEdit }: { t: BacklogTicket; busy: boolean; onEdit: () => void }) {
-  const [shown, rest] = splitLabels(t.labels, 2);
+export function BacklogRow({ t: tk, busy, onEdit }: { t: BacklogTicket; busy: boolean; onEdit: () => void }) {
+  const { i18n } = useLingui();
+  const [shown, rest] = splitLabels(tk.labels, 2);
   // TL-177 layout, a grid: key and type on the left with the two shown labels stacked beside them,
   // the +N then the title centred across those two rows; "Created …" under the left column and the
   // description under the +N and title; Edit pinned top right, the date bottom left.
   return (
     <li className="grid grid-cols-[auto_auto_auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1.5 p-4">
-      <span className={`col-start-1 row-start-1 ${t.duplicate_of_id ? 'line-through' : ''}`}><TicketKey value={t.key} /></span>
-      <span className="col-start-1 row-start-2 flex flex-wrap gap-1"><TypeBadge type={t.type} />{t.blocked && <BlockedBadge />}{t.resolution && <Badge variant="secondary">{RESOLUTION_LABEL[t.resolution]}</Badge>}</span>
-      {t.created_at && <span className="col-span-2 col-start-1 row-start-3 self-end text-xs whitespace-nowrap text-muted-foreground">Created <When iso={t.created_at} /></span>}
+      <span className={`col-start-1 row-start-1 ${tk.duplicate_of_id ? 'line-through' : ''}`}><TicketKey value={tk.key} /></span>
+      <span className="col-start-1 row-start-2 flex flex-wrap gap-1"><TypeBadge type={tk.type} />{tk.blocked && <BlockedBadge />}{tk.resolution && <Badge variant="secondary">{i18n._(RESOLUTION_LABEL[tk.resolution])}</Badge>}</span>
+      {tk.created_at && <span className="col-span-2 col-start-1 row-start-3 self-end text-xs whitespace-nowrap text-muted-foreground"><Trans>Created <When iso={tk.created_at} /></Trans></span>}
       {shown.length > 0 && <TicketLabels labels={shown} className="col-start-2 row-span-2 row-start-1 flex-col items-start" />}
       {rest.length > 0 && <span className="col-start-3 row-span-2 row-start-1"><MoreLabels labels={rest} /></span>}
       <span className="col-start-4 row-span-2 row-start-1 min-w-0">
-        <Link href={ticketPath(t)} className={`font-medium hover:underline ${t.duplicate_of_id ? 'line-through text-muted-foreground' : ''}`}>{t.title}</Link>
-        {t.duplicate_of_key && <span className="ml-2 text-xs text-muted-foreground">Duplicate of {t.duplicate_of_key}</span>}
+        <Link href={ticketPath(tk)} className={`font-medium hover:underline ${tk.duplicate_of_id ? 'line-through text-muted-foreground' : ''}`}>{tk.title}</Link>
+        {tk.duplicate_of_key && <span className="ml-2 text-xs text-muted-foreground"><Trans>Duplicate of {tk.duplicate_of_key}</Trans></span>}
       </span>
-      {t.description && <p className="col-span-2 col-start-3 row-start-3 line-clamp-1 text-sm text-muted-foreground">{plainText(t.description)}</p>}
+      {tk.description && <p className="col-span-2 col-start-3 row-start-3 line-clamp-1 text-sm text-muted-foreground">{plainText(tk.description)}</p>}
       {/* moving to a board and deleting are planning decisions: they live in refine mode */}
-      <Button size="sm" variant="ghost" className="col-start-5 row-start-1 self-start justify-self-end" disabled={busy} onClick={onEdit}>Edit</Button>
+      <Button size="sm" variant="ghost" className="col-start-5 row-start-1 self-start justify-self-end" disabled={busy} onClick={onEdit}><Trans>Edit</Trans></Button>
     </li>
   );
 }

@@ -2,7 +2,7 @@ import { expect, test } from 'bun:test';
 import { mockDialog } from '@/test/mock-dialog';
 
 mockDialog();
-const { renderToStaticMarkup } = await import('react-dom/server');
+const { render: renderToStaticMarkup } = await import('@/test/i18n');
 const { UpgradeDialog } = await import('./upgrade-dialog');
 const render = (plan: Parameters<typeof UpgradeDialog>[0]['plan']) => renderToStaticMarkup(<UpgradeDialog open onOpenChange={() => {}} token="t" plan={plan} />);
 

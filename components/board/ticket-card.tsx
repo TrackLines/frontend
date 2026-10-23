@@ -1,5 +1,6 @@
 'use client';
 
+import { Trans, useLingui } from '@lingui/react/macro';
 import { NeedsReviewBadge } from './review';
 import { plainText } from '@/components/markdown';
 import { When } from '@/components/when';
@@ -36,6 +37,7 @@ type Props = {
 };
 
 export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, done, scale, readOnly = false, onReviewed, onViewChange }: Props) {
+  const { t, i18n } = useLingui();
   const [viewOpen, setViewOpenState] = useState(Boolean(openOnLoad));
   const setViewOpen = (open: boolean) => { setViewOpenState(open); onViewChange?.(open); };
   const [editOpen, setEditOpen] = useState(false);
@@ -43,8 +45,7 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
   const people = usePeople(token);
 
   function openView(event: MouseEvent<HTMLButtonElement>) {
-    const label = event.currentTarget.closest<HTMLElement>('[data-column-id]')?.getAttribute('aria-label') ?? '';
-    setColumnName(label.replace(/\s+column$/i, '') || 'Current column');
+    setColumnName(event.currentTarget.closest<HTMLElement>('[data-column-id]')?.dataset.columnName || t`Current column`);
     setViewOpen(true);
   }
 
@@ -54,17 +55,17 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
         {/* TL-134 layout: key, type, priority, blocked; then estimate and pencil, on top; the title underneath */}
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 px-3">
           {/* the key opens the full ticket page (TL-517); the title below opens the modal */}
-          {ticket.key && <Link href={ticketPath(ticket)} title="Open the full ticket" className={`hover:underline ${ticket.duplicate_of_id ? 'line-through' : ''}`}><TicketKey value={ticket.key} /></Link>}
-          {ticket.duplicate_of_key && <Badge variant="outline" title="Marked as a duplicate">Duplicate of {ticket.duplicate_of_key}</Badge>}
+          {ticket.key && <Link href={ticketPath(ticket)} title={t`Open the full ticket`} className={`hover:underline ${ticket.duplicate_of_id ? 'line-through' : ''}`}><TicketKey value={ticket.key} /></Link>}
+          {ticket.duplicate_of_key && <Badge variant="outline" title={t`Marked as a duplicate`}><Trans>Duplicate of {ticket.duplicate_of_key}</Trans></Badge>}
           {ticket.type && ticket.type !== 'task' && <TypeBadge type={ticket.type} />}
           {ticket.type === 'spike' && <TimeboxBadge days={ticket.timebox_days} hours={ticket.timebox_hours} />}
           <PriorityBadge priority={ticket.priority} hideDefault />
           {ticket.blocked && <BlockedBadge />}
           <NeedsReviewBadge ticket={ticket} />
-          {ticket.external_source === 'bugfixes' && <Badge variant="outline" title="Reported by Bugfixes">Bugfixes</Badge>}
+          {ticket.external_source === 'bugfixes' && <Badge variant="outline" title={t`Reported by Bugfixes`}>Bugfixes</Badge>}
           <span className="ml-auto flex shrink-0 items-center gap-1">
-            {ticket.estimate && <Badge variant="outline" className="size-6 justify-center rounded-full p-0" title="Estimate" aria-label={`Estimate ${ticket.estimate}`}>{ticket.estimate}</Badge>}
-            {!readOnly && <Button type="button" variant="ghost" size="icon" className="-mr-1.5 size-7 text-muted-foreground" aria-label={`Edit ${ticket.title}`} onClick={() => setEditOpen(true)}>
+            {ticket.estimate && <Badge variant="outline" className="size-6 justify-center rounded-full p-0" title={t`Estimate`} aria-label={t`Estimate ${ticket.estimate}`}>{ticket.estimate}</Badge>}
+            {!readOnly && <Button type="button" variant="ghost" size="icon" className="-mr-1.5 size-7 text-muted-foreground" aria-label={t`Edit ${ticket.title}`} onClick={() => setEditOpen(true)}>
               <PencilIcon className="size-3.5" aria-hidden />
             </Button>}
           </span>
@@ -79,8 +80,8 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
           <p className="line-clamp-2 break-words px-3 text-sm whitespace-pre-line text-muted-foreground">{plainText(ticket.description)}</p>
         )}
         <div className="mt-auto flex items-center justify-between gap-2 px-3 pt-2 text-xs text-muted-foreground">
-          <span className="truncate">{ticket.assigned_to ? personLabel(ticket.assigned_to, people) : <span className="italic">Unassigned</span>}</span>
-          <span className="truncate">by {personLabel(ticket.created_by, people)}{ticket.created_at && <>, <When iso={ticket.created_at} /></>}</span>
+          <span className="truncate">{ticket.assigned_to ? personLabel(i18n, ticket.assigned_to, people) : <span className="italic"><Trans>Unassigned</Trans></span>}</span>
+          <span className="truncate"><Trans>by {personLabel(i18n, ticket.created_by, people)}</Trans>{ticket.created_at && <>, <When iso={ticket.created_at} /></>}</span>
         </div>
       </Card>
       <TicketView

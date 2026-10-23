@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { Elsewhere } from '@/components/ticket/other-org';
 import { LoadError } from '@/components/load-error';
 import { useParams, useRouter } from 'next/navigation';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
 import { CopyLink } from '@/components/copy-link';
 import { Attachments } from '@/components/ticket/attachments';
@@ -41,11 +42,12 @@ import { toggleTask } from '@/lib/checklist';
 
 // A shareable page for one ticket — works for board and backlog tickets.
 export default function TicketPage() {
+  const { t, i18n } = useLingui();
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const token = useToken();
   const people = usePeople(token);
-  const [t, setT] = useCachedState<TicketDetail>(`ticket:${id}`); // last-seen ticket shows instantly, then refreshes
+  const [tk, setT] = useCachedState<TicketDetail>(`ticket:${id}`); // last-seen ticket shows instantly, then refreshes
   const [error, setError] = useState<number | null>(null);
   const [elsewhere, setElsewhere] = useState<string | null>(null); // the org it's in, when not this one
   const [labels, setLabels] = useState<string[]>([]);
@@ -70,19 +72,19 @@ export default function TicketPage() {
   }, [id, loaded]); // load once; token refreshes must not refetch
 
   useEffect(() => {
-    if (t) setLabels(t.labels ?? []);
-  }, [t?.id, t?.labels]);
+    if (tk) setLabels(tk.labels ?? []);
+  }, [tk?.id, tk?.labels]);
 
   async function saveLabels() {
-    if (!t || !token) return;
+    if (!tk || !token) return;
     setSavingLabels(true);
     setLabelError('');
     try {
-      const result = await tickets.setLabels(t.id, labels, token);
+      const result = await tickets.setLabels(tk.id, labels, token);
       setLabels(result.labels);
       setT((current) => current && { ...current, labels: result.labels });
     } catch {
-      setLabelError('Couldn’t save labels. Please try again.');
+      setLabelError(t`Couldn’t save labels. Please try again.`);
     } finally {
       setSavingLabels(false);
     }
@@ -90,105 +92,107 @@ export default function TicketPage() {
 
   if (error && elsewhere) return <Elsewhere orgId={elsewhere} />;
   if (error) return <LoadError status={error} thing="ticket" />;
-  if (!t) return <TicketSkeleton />;
+  if (!tk) return <TicketSkeleton />;
+  const creator = personLabel(i18n, tk.created_by, people);
+  const assignee = tk.assigned_to && personLabel(i18n, tk.assigned_to, people);
 
   return (
     <main className="mx-auto grid max-w-6xl gap-6 px-6 py-10">
-      <nav aria-label="Breadcrumb" className="flex flex-wrap gap-1.5 text-sm text-muted-foreground">
-        <Link href={`/projects/${t.project_id}`} className="hover:underline">{t.project_name}</Link>
+      <nav aria-label={t`Breadcrumb`} className="flex flex-wrap gap-1.5 text-sm text-muted-foreground">
+        <Link href={`/projects/${tk.project_id}`} className="hover:underline">{tk.project_name}</Link>
         <span aria-hidden>›</span>
-        {t.board_id ? (
+        {tk.board_id ? (
           <>
-            <Link href={`/boards/${t.board_id}`} className="hover:underline">{t.board_name}</Link>
+            <Link href={`/boards/${tk.board_id}`} className="hover:underline">{tk.board_name}</Link>
             <span aria-hidden>›</span>
-            <span>{t.column_name}</span>
+            <span>{tk.column_name}</span>
           </>
         ) : (
-          <span>Backlog</span>
+          <span><Trans>Backlog</Trans></span>
         )}
       </nav>
       <header className="grid gap-3">
         <div className="flex flex-wrap items-center gap-2">
-          <TypeBadge type={t.type} />
-          {t.type === 'spike' && <TimeboxCountdown startedAt={t.started_at} doneAt={t.done_at} days={t.timebox_days} hours={t.timebox_hours} />}
-          <PriorityBadge priority={t.priority} />
-          <EstimateBadge estimate={t.estimate} />
-          {t.sprint_number != null && <Badge variant="secondary">Sprint {t.sprint_number}</Badge>}
-          {t.blocked && <BlockedBadge />}
-          <NeedsReviewBadge ticket={t} />
-          {t.resolution === 'wont_do' && <Badge variant="outline" title="Closed as decided against">Won&apos;t do</Badge>}
-          {t.resolution === 'duplicate' && <Badge variant="outline">Duplicate</Badge>}
+          <TypeBadge type={tk.type} />
+          {tk.type === 'spike' && <TimeboxCountdown startedAt={tk.started_at} doneAt={tk.done_at} days={tk.timebox_days} hours={tk.timebox_hours} />}
+          <PriorityBadge priority={tk.priority} />
+          <EstimateBadge estimate={tk.estimate} />
+          {tk.sprint_number != null && <Badge variant="secondary"><Trans>Sprint {tk.sprint_number}</Trans></Badge>}
+          {tk.blocked && <BlockedBadge />}
+          <NeedsReviewBadge ticket={tk} />
+          {tk.resolution === 'wont_do' && <Badge variant="outline" title={t`Closed as decided against`}><Trans>Won&apos;t do</Trans></Badge>}
+          {tk.resolution === 'duplicate' && <Badge variant="outline"><Trans>Duplicate</Trans></Badge>}
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <span className={t.duplicate_of_id ? 'line-through' : undefined}><TicketKey value={t.key} copy /></span><h1 className={`text-3xl font-bold tracking-tight ${t.duplicate_of_id ? 'line-through text-muted-foreground' : ''}`}>{t.title}</h1>
+          <span className={tk.duplicate_of_id ? 'line-through' : undefined}><TicketKey value={tk.key} copy /></span><h1 className={`text-3xl font-bold tracking-tight ${tk.duplicate_of_id ? 'line-through text-muted-foreground' : ''}`}>{tk.title}</h1>
           {/* board and backlog tickets alike: edit (and delete, inside the dialog) right here */}
-          {token && <Button type="button" variant="outline" size="sm" className="ml-auto" onClick={() => setEditing(true)}>Edit</Button>}
+          {token && <Button type="button" variant="outline" size="sm" className="ml-auto" onClick={() => setEditing(true)}><Trans>Edit</Trans></Button>}
         </div>
-        <PartOf ticket={t} />
-      <DuplicateLinks ticket={t} />
+        <PartOf ticket={tk} />
+      <DuplicateLinks ticket={tk} />
         <p className="text-sm text-muted-foreground">
-          Created by {personLabel(t.created_by, people)}{t.created_at && <> <When iso={t.created_at} /></>}
-          {t.updated_at && t.updated_at !== t.created_at && <> · updated <When iso={t.updated_at} /></>}
-          {t.done_at && <> · {closedAs(t)} <When iso={t.done_at} /></>}
-          {!token && (t.assigned_to ? ` · assigned to ${personLabel(t.assigned_to, people)}` : ' · unassigned')}
+          {tk.created_at ? <Trans>Created by {creator} <When iso={tk.created_at} /></Trans> : <Trans>Created by {creator}</Trans>}
+          {tk.updated_at && tk.updated_at !== tk.created_at && <> · <Trans>updated <When iso={tk.updated_at} /></Trans></>}
+          {tk.done_at && <> · {closedAs(i18n, tk)} <When iso={tk.done_at} /></>}
+          {!token && <> · {assignee ? <Trans>assigned to {assignee}</Trans> : <Trans>unassigned</Trans>}</>}
         </p>
-        {!token && <TicketLabels labels={t.labels} />}{/* signed in, the label editor below shows them */}
+        {!token && <TicketLabels labels={tk.labels} />}{/* signed in, the label editor below shows them */}
         {token && (
           <label className="flex flex-wrap items-start gap-x-3 gap-y-1 text-sm text-muted-foreground">
-            <span className="whitespace-nowrap leading-8">Assigned to</span>
-            <div className="w-72 max-w-full"><AssigneeSelect ticketId={t.id} value={t.assigned_to} token={token} onChange={(nt) => setT({ ...t, assigned_to: nt.assigned_to })} /></div>
+            <span className="whitespace-nowrap leading-8"><Trans>Assigned to</Trans></span>
+            <div className="w-72 max-w-full"><AssigneeSelect ticketId={tk.id} value={tk.assigned_to} token={token} onChange={(nt) => setT({ ...tk, assigned_to: nt.assigned_to })} /></div>
           </label>
         )}
       </header>
       {token && (
-        <div className="grid gap-2" aria-label="Edit ticket labels">
-          <LabelDrawer projectId={t.project_id} token={token} labels={labels} onChange={setLabels} disabled={savingLabels} onSave={saveLabels} saveLabel={savingLabels ? 'Saving labels…' : 'Save labels'} />
+        <div className="grid gap-2" aria-label={t`Edit ticket labels`}>
+          <LabelDrawer projectId={tk.project_id} token={token} labels={labels} onChange={setLabels} disabled={savingLabels} onSave={saveLabels} saveLabel={savingLabels ? t`Saving labels…` : t`Save labels`} />
           {labelError && <p role="alert" className="text-sm text-destructive">{labelError}</p>}
         </div>
       )}
-      {token && <ReviewActions ticket={t} token={token} onReviewed={() => { void tickets.get(t.id, token).then(setT); }} />}
-      <section aria-label="Ticket details" className="rounded-xl border p-5 text-sm">
-        <ChecklistCount markdown={t.description} className="mb-3" />
-        {t.description ? <Markdown onToggleTask={token ? (line) => {
-          const next = toggleTask(t.description, line);
-          setT({ ...t, description: next }); // ticks show at once; put back if saving fails
-          void tickets.update(t.id, { title: t.title, description: next }, token).catch(() => setT(t));
-        } : undefined}>{t.description}</Markdown> : <p className="text-muted-foreground">No details provided.</p>}
+      {token && <ReviewActions ticket={tk} token={token} onReviewed={() => { void tickets.get(tk.id, token).then(setT); }} />}
+      <section aria-label={t`Ticket details`} className="rounded-xl border p-5 text-sm">
+        <ChecklistCount markdown={tk.description} className="mb-3" />
+        {tk.description ? <Markdown onToggleTask={token ? (line) => {
+          const next = toggleTask(tk.description, line);
+          setT({ ...tk, description: next }); // ticks show at once; put back if saving fails
+          void tickets.update(tk.id, { title: tk.title, description: next }, token).catch(() => setT(tk));
+        } : undefined}>{tk.description}</Markdown> : <p className="text-muted-foreground"><Trans>No details provided.</Trans></p>}
       </section>
-      {token && <SubTickets ticket={t} token={token} onChanged={() => tickets.get(id, token).then(setT)} />}
-      {token && <Dependencies ticket={t} token={token} onChanged={() => tickets.get(id, token).then(setT)} />}
-      {token && <MarkDuplicate ticket={t} token={token} onChanged={() => { void tickets.get(t.id, token).then(setT); }} />}
-      {token && <BugfixesPanel ticket={t} token={token} />}
-      {token && <Attachments ticketId={t.id} token={token} locked={t.done} />}
-      {token && <PullRequestsPanel ticketId={t.id} token={token} />}
-      {token && <TicketComments ticketId={t.id} token={token} />}
+      {token && <SubTickets ticket={tk} token={token} onChanged={() => tickets.get(id, token).then(setT)} />}
+      {token && <Dependencies ticket={tk} token={token} onChanged={() => tickets.get(id, token).then(setT)} />}
+      {token && <MarkDuplicate ticket={tk} token={token} onChanged={() => { void tickets.get(tk.id, token).then(setT); }} />}
+      {token && <BugfixesPanel ticket={tk} token={token} />}
+      {token && <Attachments ticketId={tk.id} token={token} locked={tk.done} />}
+      {token && <PullRequestsPanel ticketId={tk.id} token={token} />}
+      {token && <TicketComments ticketId={tk.id} token={token} />}
       {/* last, below the conversation; full page only: the board's dialog and side view leave history out */}
-      {token && <HistoryPanel ticketId={t.id} token={token} people={people} />}
+      {token && <HistoryPanel ticketId={tk.id} token={token} people={people} />}
       {token && (
         <TicketDialog
           open={editing}
           onOpenChange={setEditing}
           token={token}
-          projectId={t.project_id}
-          columnId={t.column_id ?? ''}
-          ticket={t as Ticket}
-          scale={t.estimate_scale}
-          done={t.done}
-          onSaved={() => { void tickets.get(t.id, token).then(setT); }}
-          onDeleted={() => router.push(afterDelete(t))}
-          onSentToBacklog={ticketActions(t).sendToBacklog ? () => { void tickets.get(t.id, token).then(setT); } : undefined}
-          onWontDo={ticketActions(t).wontDo ? () => { void tickets.get(t.id, token).then(setT); } : undefined}
+          projectId={tk.project_id}
+          columnId={tk.column_id ?? ''}
+          ticket={tk as Ticket}
+          scale={tk.estimate_scale}
+          done={tk.done}
+          onSaved={() => { void tickets.get(tk.id, token).then(setT); }}
+          onDeleted={() => router.push(afterDelete(tk))}
+          onSentToBacklog={ticketActions(tk).sendToBacklog ? () => { void tickets.get(tk.id, token).then(setT); } : undefined}
+          onWontDo={ticketActions(tk).wontDo ? () => { void tickets.get(tk.id, token).then(setT); } : undefined}
         />
       )}
       <div className="flex flex-wrap gap-2">
-        {t.board_id && (
+        {tk.board_id && (
           <>
-            <Link href={`/boards/${t.board_id}`} className={buttonVariants()}>Open board</Link>
-            <Link href={`/boards/${t.board_id}?ticket=${t.id}`} className={buttonVariants({ variant: 'outline' })}>Open in board</Link>
+            <Link href={`/boards/${tk.board_id}`} className={buttonVariants()}><Trans>Open board</Trans></Link>
+            <Link href={`/boards/${tk.board_id}?ticket=${tk.id}`} className={buttonVariants({ variant: 'outline' })}><Trans>Open in board</Trans></Link>
           </>
         )}
-        <Link href={`/projects/${t.project_id}`} className={buttonVariants({ variant: 'outline' })}>Open project</Link>
-        <CopyLink path={ticketPath(t)} token={token} title={linkTitle(t)} />
+        <Link href={`/projects/${tk.project_id}`} className={buttonVariants({ variant: 'outline' })}><Trans>Open project</Trans></Link>
+        <CopyLink path={ticketPath(tk)} token={token} title={linkTitle(tk)} />
       </div>
     </main>
   );

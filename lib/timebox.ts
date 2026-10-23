@@ -1,3 +1,6 @@
+import type { I18n } from '@lingui/core';
+import { msg } from '@lingui/core/macro';
+
 // Spike timebox tracking (TL-506): how much of a spike's timebox is used, in business hours.
 // ponytail: working week hard-coded to Mon–Fri 09:00–17:00 (8h/day) in the viewer's local timezone;
 // TL-510 will make it configurable. A "day" of timebox is a business day = WORK_HOURS_PER_DAY hours.
@@ -52,14 +55,14 @@ export function timeboxStatus(
 
 // formatDuration: a minute count as business time, e.g. "2d 1h", "3h", "45m". Minutes show only under
 // an hour-ish (when there are no days), to keep the badge short.
-export function formatDuration(mins: number): string {
+export function formatDuration(i18n: I18n, mins: number): string {
   const m = Math.max(0, Math.round(mins));
   const d = Math.floor(m / 60 / WORK_HOURS_PER_DAY);
   const h = Math.floor((m / 60) % WORK_HOURS_PER_DAY);
   const mm = m % 60;
   const parts: string[] = [];
-  if (d) parts.push(`${d}d`);
-  if (h) parts.push(`${h}h`);
-  if (mm && !d) parts.push(`${mm}m`);
-  return parts.join(' ') || '0m';
+  if (d) parts.push(i18n._(msg`${d}d`));
+  if (h) parts.push(i18n._(msg`${h}h`));
+  if (mm && !d) parts.push(i18n._(msg`${mm}m`));
+  return parts.join(' ') || i18n._(msg`0m`);
 }

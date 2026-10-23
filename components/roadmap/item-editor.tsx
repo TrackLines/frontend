@@ -1,5 +1,7 @@
 'use client';
 
+import { msg } from '@lingui/core/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Textarea } from '@/components/ui/textarea';
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -36,7 +38,7 @@ export const toPayload = (drafts: DraftItem[]) => drafts.map(({ key, title, desc
   start_date: start_date || null, manual_status, id: key, title: title.trim(), description: description.trim(), target_date: target_date || null,
 }));
 
-const STATUS_LABEL = { not_started: 'Not started', in_progress: 'In progress', done: 'Done' } as const;
+const STATUS_LABEL = { not_started: msg`Not started`, in_progress: msg`In progress`, done: msg`Done` };
 
 // itemStatus: what a milestone shows, the same rule as the server (roadmaps.DeriveItemStatus): from its
 // linked tickets once it has any, else the manual status.
@@ -47,6 +49,7 @@ export function itemStatus(manual: DraftItem['manual_status'], progress: { done:
 }
 
 export function ItemEditor({ roadmapId, projectId, items, token }: Props) {
+  const { t, i18n } = useLingui();
   const [saved, setSaved] = useState<RoadmapItem[]>(items); // server copy: real ids + linked tickets
   const [drafts, setDrafts] = useState<DraftItem[]>(() => toDrafts(items));
   const [saving, setSaving] = useState(false);
@@ -76,7 +79,7 @@ export function ItemEditor({ roadmapId, projectId, items, token }: Props) {
 
   async function save() {
     if (drafts.some((item) => !item.title.trim())) {
-      setError('Add a title to each roadmap item before saving.');
+      setError(t`Add a title to each roadmap item before saving.`);
       setMessage('');
       return;
     }
@@ -90,9 +93,9 @@ export function ItemEditor({ roadmapId, projectId, items, token }: Props) {
       setSaved(fresh);
       setProgress(Object.fromEntries(fresh.flatMap((i) => (i.progress ? [[i.id, i.progress]] : []))));
       setDrafts(toDrafts(fresh));
-      setMessage('Roadmap items saved.');
+      setMessage(t`Roadmap items saved.`);
     } catch {
-      setError('Could not save roadmap items. Check your connection and try again.');
+      setError(t`Could not save roadmap items. Check your connection and try again.`);
     } finally {
       setSaving(false);
     }
@@ -102,79 +105,79 @@ export function ItemEditor({ roadmapId, projectId, items, token }: Props) {
     <section aria-labelledby="roadmap-items-heading" className="grid gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 id="roadmap-items-heading" className="text-lg font-semibold">Roadmap items</h2>
-          <p className="text-sm text-muted-foreground">Add milestones and arrange them in the order you want people to read.</p>
+          <h2 id="roadmap-items-heading" className="text-lg font-semibold"><Trans>Roadmap items</Trans></h2>
+          <p className="text-sm text-muted-foreground"><Trans>Add milestones and arrange them in the order you want people to read.</Trans></p>
         </div>
         <Button type="button" variant="outline" onClick={() => {
           const key = crypto.randomUUID();
           setDrafts((current) => [...current, { key, title: '', description: '', target_date: null, manual_status: 'not_started' }]);
           setAdded(key);
         }}>
-          Add item
+          <Trans>Add item</Trans>
         </Button>
       </div>
 
       {drafts.length === 0 ? (
         <p className="rounded-lg border border-dashed p-5 text-sm text-muted-foreground">
-          No milestones yet. Add an item to start your roadmap.
+          <Trans>No milestones yet. Add an item to start your roadmap.</Trans>
         </p>
       ) : (
         <ol className="grid gap-3">
-          {drafts.map((item, index) => (
+          {drafts.map((item, index) => { const n = index + 1; return (
             <li key={item.key} id={`milestone-${item.key}`} className="grid scroll-mt-4 gap-3 rounded-lg border p-4">
               <div className="flex items-center justify-between gap-3">
-                <h3 className="text-sm font-medium">Milestone {index + 1}</h3>
+                <h3 className="text-sm font-medium"><Trans>Milestone {n}</Trans></h3>
                 <div className="flex gap-2">
-                  <Button type="button" variant="ghost" size="sm" aria-label={`Move milestone ${index + 1} up`} disabled={index === 0} onClick={() => move(index, -1)}>Move up</Button>
-                  <Button type="button" variant="ghost" size="sm" aria-label={`Move milestone ${index + 1} down`} disabled={index === drafts.length - 1} onClick={() => move(index, 1)}>Move down</Button>
-                  <Button type="button" variant="destructive" size="sm" onClick={() => setDrafts((current) => current.filter((_, i) => i !== index))}>Remove</Button>
+                  <Button type="button" variant="ghost" size="sm" aria-label={t`Move milestone ${n} up`} disabled={index === 0} onClick={() => move(index, -1)}><Trans>Move up</Trans></Button>
+                  <Button type="button" variant="ghost" size="sm" aria-label={t`Move milestone ${n} down`} disabled={index === drafts.length - 1} onClick={() => move(index, 1)}><Trans>Move down</Trans></Button>
+                  <Button type="button" variant="destructive" size="sm" onClick={() => setDrafts((current) => current.filter((_, i) => i !== index))}><Trans>Remove</Trans></Button>
                 </div>
               </div>
               <label className="grid gap-1.5 text-sm font-medium">
-                Title
-                <Input value={item.title} maxLength={200} required placeholder="e.g. Invite your team" onChange={(event) => update(index, { title: event.target.value })} />
+                <Trans>Title</Trans>
+                <Input value={item.title} maxLength={200} required placeholder={t`e.g. Invite your team`} onChange={(event) => update(index, { title: event.target.value })} />
               </label>
               <label className="grid gap-1.5 text-sm font-medium">
-                <span>Description <span className="font-normal text-muted-foreground">(optional)</span></span>
+                <span><Trans>Description <span className="font-normal text-muted-foreground">(optional)</span></Trans></span>
                 <Textarea
                   value={item.description}
                   maxLength={4000}
                   rows={3}
-                  placeholder="What will be included in this milestone?"
+                  placeholder={t`What will be included in this milestone?`}
                   onChange={(event) => update(index, { description: event.target.value })}
                 />
               </label>
               <div className="flex flex-wrap gap-3">
                 <label className="grid gap-1.5 text-sm font-medium">
-                  <span>Start date <span className="font-normal text-muted-foreground">(optional)</span></span>
+                  <span><Trans>Start date <span className="font-normal text-muted-foreground">(optional)</span></Trans></span>
                   <Input type="date" value={item.start_date ?? ''} max={item.target_date ?? undefined} onChange={(event) => update(index, { start_date: event.target.value || null })} />
                 </label>
                 <label className="grid gap-1.5 text-sm font-medium">
-                  <span>Target date <span className="font-normal text-muted-foreground">(optional)</span></span>
+                  <span><Trans>Target date <span className="font-normal text-muted-foreground">(optional)</span></Trans></span>
                   <Input type="date" value={item.target_date ?? ''} min={item.start_date ?? undefined} onChange={(event) => update(index, { target_date: event.target.value || null })} />
                 </label>
               </div>
               {(progress[item.key]?.total ?? 0) > 0 ? (
                 // linked tickets decide it: show what they give, not a manual choice that's ignored (TL-412)
                 <p className="text-sm">
-                  <span className="font-medium">Status:</span> {STATUS_LABEL[itemStatus(item.manual_status, progress[item.key])]}{' '}
-                  <span className="text-muted-foreground">(from its linked tickets)</span>
+                  <Trans><span className="font-medium">Status:</span> {i18n._(STATUS_LABEL[itemStatus(item.manual_status, progress[item.key])])}{' '}
+                  <span className="text-muted-foreground">(from its linked tickets)</span></Trans>
                 </p>
               ) : (
               <label className="grid max-w-xs gap-1.5 text-sm font-medium">
-                Status <span className="font-normal text-muted-foreground">(set by hand until tickets are linked)</span>
+                <Trans>Status <span className="font-normal text-muted-foreground">(set by hand until tickets are linked)</span></Trans>
                 <Select
-                  items={{ not_started: 'Not started', in_progress: 'In progress', done: 'Done' }}
+                  items={{ not_started: i18n._(STATUS_LABEL.not_started), in_progress: i18n._(STATUS_LABEL.in_progress), done: i18n._(STATUS_LABEL.done) }}
                   value={item.manual_status ?? 'not_started'}
                   onValueChange={(value) => value && update(index, { manual_status: String(value) as DraftItem['manual_status'] })}
                 >
-                  <SelectTrigger aria-label={`Manual status for milestone ${index + 1}`}>
+                  <SelectTrigger aria-label={t`Manual status for milestone ${n}`}>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="not_started">Not started</SelectItem>
-                    <SelectItem value="in_progress">In progress</SelectItem>
-                    <SelectItem value="done">Done</SelectItem>
+                    <SelectItem value="not_started">{i18n._(STATUS_LABEL.not_started)}</SelectItem>
+                    <SelectItem value="in_progress">{i18n._(STATUS_LABEL.in_progress)}</SelectItem>
+                    <SelectItem value="done">{i18n._(STATUS_LABEL.done)}</SelectItem>
                   </SelectContent>
                 </Select>
               </label>
@@ -185,16 +188,16 @@ export function ItemEditor({ roadmapId, projectId, items, token }: Props) {
                   <ItemTickets key={s.id} roadmapId={roadmapId} itemId={s.id} projectId={projectId} initial={s.tickets ?? []} progress={s.progress} token={token}
                     onProgress={(p) => setProgress((cur) => (cur[s.id]?.done === p.done && cur[s.id]?.total === p.total ? cur : { ...cur, [s.id]: p }))} />
                 ) : (
-                  <p className="text-sm text-muted-foreground">Save items to link tickets to this milestone.</p>
+                  <p className="text-sm text-muted-foreground"><Trans>Save items to link tickets to this milestone.</Trans></p>
                 );
               })()}
             </li>
-          ))}
+          ); })}
         </ol>
       )}
 
       <div className="flex flex-wrap items-center gap-3">
-        <Button type="button" disabled={saving} onClick={save}>{saving ? 'Saving…' : 'Save items'}</Button>
+        <Button type="button" disabled={saving} onClick={save}>{saving ? t`Saving…` : t`Save items`}</Button>
         {message && <p role="status" className="text-sm text-muted-foreground">{message}</p>}
         {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       </div>

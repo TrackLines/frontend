@@ -48,7 +48,7 @@ type Totals = { assigned?: number; created?: number };
 export function DashboardWorkView({ assigned, created, mentioned, people, totals = {} }: {
   assigned: Load<TicketSearchResult>; created: Load<TicketSearchResult>; mentioned: Load<Mention>; people: Assignee[]; totals?: Totals;
 }) {
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
   const ticketRow = (tk: TicketSearchResult) => (
     <Row key={tk.id} href={ticketPath(tk)} ticketKey={tk.key} title={tk.title}>
       <PriorityBadge priority={tk.priority} hideDefault />
@@ -92,7 +92,7 @@ export function DashboardWorkView({ assigned, created, mentioned, people, totals
     <Panel title={t`Mentions`} more={{ href: '/mentions', label: t`All mentions` }} items={mentioned} empty={t`Nobody has mentioned you yet.`}>
       {(m: Mention) => (
         <Row key={m.ticket_id} href={`/tickets/${m.ticket_id}`} ticketKey={m.key} title={m.title} done={m.done}>
-          <span className="truncate">{actorName(m.actor, people)} · <When iso={m.mentioned_at} /></span>
+          <span className="truncate">{actorName(i18n, m.actor, people)} · <When iso={m.mentioned_at} /></span>
           <span className="truncate">{m.project_name}</span>
         </Row>
       )}

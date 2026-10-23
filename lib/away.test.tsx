@@ -1,5 +1,6 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
+import { i18nFor } from './i18n';
 import { awayText, isAway, nextPresent, untilText } from './away';
 import { PersonFace } from '@/components/board/person-face';
 import { StandupPanel } from '@/components/board/standup';
@@ -8,17 +9,18 @@ import type { Assignee } from './api';
 
 // dates built in the viewer's own zone, as the app shows them
 const local = (y: number, m: number, d: number, h = 0, min = 0) => new Date(y, m - 1, d, h, min);
+const en = i18nFor('en');
 const now = local(2026, 10, 20, 9);
 const iso = (d: Date) => d.toISOString();
 
 test('leave reads as people say it: the last day off, or a time today (TL-410)', () => {
-  expect(untilText(iso(local(2026, 10, 24)), now)).toMatch(/^until Fri\b.*(23.*Oct|Oct.*23)/); // back Saturday = off until Friday (any locale's order)
-  expect(untilText(iso(local(2026, 10, 20, 17)), now)).toMatch(/^until \d/); // back this afternoon
-  expect(untilText(iso(local(2026, 10, 22, 13)), now)).toMatch(/^until Thu\b.*(22.*Oct|Oct.*22), \d/);
-  expect(awayText({ away: { until: iso(local(2026, 10, 24)) } }, now)).toMatch(/^On holiday until Fri/);
-  expect(awayText({ away: { until: iso(local(2026, 10, 21)), company: true } }, now)).toMatch(/^Company day off until Tue/);
-  expect(awayText({ away_next: { from: iso(local(2026, 10, 22)), until: iso(local(2026, 10, 24)) } }, now)).toMatch(/^Off from Thu/);
-  expect(awayText({}, now)).toBeNull(); // no Google Calendar: nothing said
+  expect(untilText(iso(local(2026, 10, 24)), en, now)).toMatch(/^until Fri\b.*(23.*Oct|Oct.*23)/); // back Saturday = off until Friday (any locale's order)
+  expect(untilText(iso(local(2026, 10, 20, 17)), en, now)).toMatch(/^until \d/); // back this afternoon
+  expect(untilText(iso(local(2026, 10, 22, 13)), en, now)).toMatch(/^until Thu\b.*(22.*Oct|Oct.*22), \d/);
+  expect(awayText({ away: { until: iso(local(2026, 10, 24)) } }, en, now)).toMatch(/^On holiday until Fri/);
+  expect(awayText({ away: { until: iso(local(2026, 10, 21)), company: true } }, en, now)).toMatch(/^Company day off until Tue/);
+  expect(awayText({ away_next: { from: iso(local(2026, 10, 22)), until: iso(local(2026, 10, 24)) } }, en, now)).toMatch(/^Off from Thu/);
+  expect(awayText({}, en, now)).toBeNull(); // no Google Calendar: nothing said
 });
 
 const people: Assignee[] = [
@@ -40,14 +42,14 @@ test('standup’s Next skips people on holiday; the review comes after everyone 
 });
 
 test('the picker says who’s away or leaving, and warns when the assignee is away', () => {
-  const items = assigneeItems(people, null);
+  const items = assigneeItems(en, people, null);
   expect(items.u_ava).toMatch(/^Ava · on holiday until /);
   expect(items.u_ben).toMatch(/^Ben · off from /);
   expect(items.u_cat).toBe('Cat');
   expect(items.claude).toBe('Claude · AI');
-  expect(awayWarning(people, 'u_ava')).toMatch(/^Ava Smith is on holiday until .*\.$/);
-  expect(awayWarning(people, 'u_ben')).toBeNull();
-  expect(awayWarning(people, null)).toBeNull();
+  expect(awayWarning(en, people, 'u_ava')).toMatch(/^Ava Smith is on holiday until .*\.$/);
+  expect(awayWarning(en, people, 'u_ben')).toBeNull();
+  expect(awayWarning(en, people, null)).toBeNull();
 });
 
 test('faces fade, with when they’re back, while someone is away', () => {

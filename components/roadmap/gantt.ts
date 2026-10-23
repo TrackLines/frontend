@@ -1,4 +1,6 @@
+import type { I18n } from '@lingui/core';
 import type { RoadmapItem } from '@/lib/api';
+import { dates } from '@/lib/i18n';
 
 export const DAY_MS = 24 * 60 * 60 * 1000;
 export const dayStamp = (date: string) => Date.parse(`${date}T00:00:00Z`);
@@ -26,11 +28,11 @@ export function getGanttRange(items: GanttItem[], today: number) {
   return { start, days: Math.max(1, Math.ceil((end - start) / DAY_MS)) };
 }
 
-export function monthSegments(start: number, days: number) {
+export function monthSegments(i18n: I18n, start: number, days: number) {
   const segments: { label: string; left: number; width: number }[] = [];
   const end = start + days * DAY_MS;
   let cursor = start;
-  const formatter = new Intl.DateTimeFormat('en-GB', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+  const formatter = dates(i18n, { month: 'short', year: 'numeric', timeZone: 'UTC' });
   while (cursor < end) {
     const date = new Date(cursor);
     const monthEnd = Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1, 1);

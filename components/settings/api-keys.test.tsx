@@ -1,8 +1,11 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
+import { i18nFor } from '@/lib/i18n';
 import { agentName, ApiKeyList, DEFAULT_DAYS, expiry, FreshKey, keyInput, LifetimeField, LIFETIMES, NewKeyFields, splitSecret } from './api-keys';
 import { McpInstructions } from '@/components/mcp-connect';
 import type { ApiKey } from '@/lib/api';
+
+const i18n = i18nFor('en');
 
 const key: ApiKey = { id: 'k1', name: 'Claude', kind: 'ai', prefix: 'tl_ab12', created_at: '2026-10-01T10:00:00Z', last_used_at: null };
 
@@ -109,11 +112,11 @@ test('keys expire: a lifetime picker defaulting to 90 days, up to a year and a d
 
 test('the list says when a key expires, and warns in its last 14 days (TL-433)', () => {
   const now = new Date('2026-10-18T12:00:00Z');
-  expect(expiry(undefined, now)).toBeNull();
-  expect(expiry('2027-01-16T12:00:00Z', now)).toEqual({ text: 'expires 16 Jan 2027', warn: false });
-  expect(expiry('2026-11-01T12:00:00Z', now)).toEqual({ text: 'expires in 14 days', warn: true });
-  expect(expiry('2026-10-19T11:00:00Z', now)).toEqual({ text: 'expires in 1 day', warn: true });
-  expect(expiry('2026-10-18T11:59:00Z', now)).toEqual({ text: 'expired: make a new key', warn: true });
+  expect(expiry(i18n, undefined, now)).toBeNull();
+  expect(expiry(i18n, '2027-01-16T12:00:00Z', now)).toEqual({ text: 'expires 16 Jan 2027', warn: false });
+  expect(expiry(i18n, '2026-11-01T12:00:00Z', now)).toEqual({ text: 'expires in 14 days', warn: true });
+  expect(expiry(i18n, '2026-10-19T11:00:00Z', now)).toEqual({ text: 'expires in 1 day', warn: true });
+  expect(expiry(i18n, '2026-10-18T11:59:00Z', now)).toEqual({ text: 'expired: make a new key', warn: true });
   const html = renderToStaticMarkup(<ApiKeyList list={[{ ...key, expires_at: '2099-01-01T00:00:00Z' }]} onRevoke={() => {}} />);
   expect(html).toContain('expires 1 Jan 2099');
 });
@@ -141,7 +144,7 @@ test('personal keys: named by hand, read-only when asked, only the kinds a page 
   ];
   // Your settings: personal and AI, never the org's service keys
   const mine = renderToStaticMarkup(<ApiKeyTabs list={keys} tab="personal" kinds={['personal', 'ai']} onTab={() => {}} onRevoke={() => {}} />);
-  for (const s of ['Personal (1)', 'AI agents (1)', 'TRMNL', 'Read only', KIND_LABEL.personal]) expect(mine).toContain(s);
+  for (const s of ['Personal (1)', 'AI agents (1)', 'TRMNL', 'Read only', i18n._(KIND_LABEL.personal)]) expect(mine).toContain(s);
   expect(mine).not.toContain('Service keys');
   // organization settings without org-ai-keys: service keys only
   const org = renderToStaticMarkup(<ApiKeyTabs list={keys} tab="service" kinds={['service']} onTab={() => {}} onRevoke={() => {}} />);

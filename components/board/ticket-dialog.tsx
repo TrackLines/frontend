@@ -1,5 +1,8 @@
 'use client';
 
+import type { I18n } from '@lingui/core';
+import { msg, plural } from '@lingui/core/macro';
+import { Plural, Trans, useLingui } from '@lingui/react/macro';
 import { MarkdownTextarea } from '@/components/markdown';
 import { SimilarTickets, useSimilarTickets } from '@/components/ticket/similar-tickets';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
@@ -41,10 +44,11 @@ type Props = {
 };
 
 // alsoMovesNote: "Sending it to the backlog also moves 2 sub-tickets: TL-5, TL-6." (TL-218), or ''.
-export function alsoMovesNote(subs: MovedTicket[]): string {
+export function alsoMovesNote(subs: MovedTicket[], i18n: I18n): string {
   if (subs.length === 0) return '';
-  const names = subs.slice(0, 5).map((s) => s.key ?? s.title).join(', ') + (subs.length > 5 ? ` and ${subs.length - 5} more` : '');
-  return `Sending it to the backlog also moves ${subs.length === 1 ? 'its open sub-ticket on this board' : `its ${subs.length} open sub-tickets on this board`}: ${names}.`;
+  const shown = subs.slice(0, 5).map((s) => s.key ?? s.title).join(', '), more = subs.length - 5;
+  const names = more > 0 ? i18n._(msg`${shown} and ${more} more`) : shown;
+  return i18n._(msg`${plural(subs.length, { one: `Sending it to the backlog also moves its open sub-ticket on this board: ${names}.`, other: `Sending it to the backlog also moves its # open sub-tickets on this board: ${names}.` })}`);
 }
 
 // convertLeavesBoard: saving ticket as type takes it off its board: it's becoming an epic (TL-213).
@@ -56,6 +60,7 @@ export const convertLeavesBoard = (ticket: { type?: TicketType; column_id?: stri
 export const TICKET_DIALOG_WIDTH = 'sm:max-w-[66vw]';
 
 export function TicketDialog({ open, onOpenChange, token, projectId, columnId, ticket, onSaved, onDeleted, onSentToBacklog, onWontDo, done, scale = 'none', epic, move }: Props) {
+  const { t, i18n } = useLingui();
   const [title, setTitle] = useState(ticket?.title ?? '');
   const [description, setDescription] = useState(ticket?.description ?? '');
   const [type, setType] = useState<TicketType>(ticket?.type ?? 'task');
@@ -117,7 +122,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
       onWontDo(ticket.id);
       onOpenChange(false);
     } catch {
-      setError('Could not close this ticket. Please try again.');
+      setError(t`Could not close this ticket. Please try again.`);
     } finally {
       setSaving(false);
     }
@@ -129,7 +134,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
     const nextMissing = missingTicketFields(cleanTitle, estimate, estimating);
     setMissing(nextMissing);
     if (nextMissing.title || nextMissing.estimate) {
-      setError('Complete the highlighted required fields before adding this ticket.');
+      setError(t`Complete the highlighted required fields before adding this ticket.`);
       if (nextMissing.title) titleInput.current?.focus();
       else document.getElementById('ticket-estimate')?.focus();
       return;
@@ -154,7 +159,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
       onOpenChange(false);
     } catch (err) {
       // 400/409 say why, e.g. an epic can't go inside another epic
-      setError(err instanceof ApiError && (err.status === 400 || err.status === 409) ? err.message : 'Could not save this ticket. Check your connection and try again.');
+      setError(err instanceof ApiError && (err.status === 400 || err.status === 409) ? err.message : t`Could not save this ticket. Check your connection and try again.`);
     } finally {
       setSaving(false);
     }
@@ -169,7 +174,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
       onDeleted(ticket.id);
       onOpenChange(false);
     } catch {
-      setError('Could not delete this ticket. Try again.');
+      setError(t`Could not delete this ticket. Try again.`);
     } finally {
       setDeleting(false);
       setConfirmDelete(false);
@@ -187,7 +192,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
       onOpenChange(false);
     } catch (err) {
       // 400/409 say why, e.g. which sub-ticket can't go with it
-      setError(err instanceof ApiError && (err.status === 400 || err.status === 409) ? err.message : 'Could not move this ticket to the backlog. Try again.');
+      setError(err instanceof ApiError && (err.status === 400 || err.status === 409) ? err.message : t`Could not move this ticket to the backlog. Try again.`);
     } finally {
       setSaving(false);
     }
@@ -198,24 +203,24 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
       {/* default shadcn width (sm:max-w-sm) is too narrow for this form + 4 footer actions */}
       <DialogContent className={`max-h-[90vh] overflow-y-auto ${TICKET_DIALOG_WIDTH}`}>
         <DialogHeader>
-          <DialogTitle>{editing ? 'Edit ticket' : 'Add a ticket'}</DialogTitle>
-          <DialogDescription className="flex flex-wrap items-center gap-2"><TicketKey value={ticket?.key} copy />Give the work a clear title. Details are optional.</DialogDescription>
+          <DialogTitle>{editing ? t`Edit ticket` : t`Add a ticket`}</DialogTitle>
+          <DialogDescription className="flex flex-wrap items-center gap-2"><TicketKey value={ticket?.key} copy /><Trans>Give the work a clear title. Details are optional.</Trans></DialogDescription>
         </DialogHeader>
         <form onSubmit={save} className="grid gap-4">
           <label className="grid gap-1.5 text-sm font-medium">
-            Title
-            <Input ref={titleInput} autoFocus value={title} maxLength={200} aria-required="true" aria-invalid={missing.title || undefined} aria-describedby={missing.title ? 'ticket-title-error' : undefined} placeholder="What needs to be done?" onChange={(event) => { setTitle(event.target.value); if (event.target.value.trim()) setMissing((current) => ({ ...current, title: false })); }} />
-            {missing.title && <span id="ticket-title-error" className="text-xs font-normal text-destructive">Enter a title.</span>}
+            <Trans>Title</Trans>
+            <Input ref={titleInput} autoFocus value={title} maxLength={200} aria-required="true" aria-invalid={missing.title || undefined} aria-describedby={missing.title ? 'ticket-title-error' : undefined} placeholder={t`What needs to be done?`} onChange={(event) => { setTitle(event.target.value); if (event.target.value.trim()) setMissing((current) => ({ ...current, title: false })); }} />
+            {missing.title && <span id="ticket-title-error" className="text-xs font-normal text-destructive"><Trans>Enter a title.</Trans></span>}
           </label>
           <SimilarTickets suggestions={duplicateSuggestions} description={description} />
           <label className="grid gap-1.5 text-sm font-medium">
-            <span>Details <span className="font-normal text-muted-foreground">(optional, Markdown supported)</span></span>
+            <span><Trans>Details <span className="font-normal text-muted-foreground">(optional, Markdown supported)</span></Trans></span>
             <MarkdownTextarea
               value={description}
               mentions={token}
               maxLength={10000}
               rows={5}
-              placeholder="Add useful context or acceptance notes."
+              placeholder={t`Add useful context or acceptance notes.`}
               onChange={(event) => setDescription(event.target.value)}
             />
           </label>
@@ -223,39 +228,39 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
           <div className="grid gap-4 sm:grid-cols-3">
             <TypePicker value={type} onChange={setType} epic={offerEpic} />
             <label className="grid gap-1.5 text-sm font-medium">
-              <span>Priority <span className="font-normal text-muted-foreground">(optional)</span></span>
+              <span><Trans>Priority <span className="font-normal text-muted-foreground">(optional)</span></Trans></span>
               <PrioritySelect value={priority} onChange={setPriority} />
             </label>
             {estimating && (
               <label className="grid gap-1.5 text-sm font-medium">
-                Estimate
+                <Trans>Estimate</Trans>
                 <EstimateSelect scale={scale} value={estimate} onChange={(value) => { setEstimate(value); if (value) setMissing((current) => ({ ...current, estimate: false })); }} required invalid={missing.estimate} describedBy={missing.estimate ? 'ticket-estimate-error' : undefined} />
-                {missing.estimate && <span id="ticket-estimate-error" className="text-xs font-normal text-destructive">Choose an estimate.</span>}
+                {missing.estimate && <span id="ticket-estimate-error" className="text-xs font-normal text-destructive"><Trans>Choose an estimate.</Trans></span>}
               </label>
             )}
           </div>
           {type === 'spike' && (
             <fieldset className="grid gap-1.5 text-sm font-medium">
-              <legend>Timebox <span className="font-normal text-muted-foreground">(optional)</span></legend>
+              <legend><Trans>Timebox <span className="font-normal text-muted-foreground">(optional)</span></Trans></legend>
               <div className="grid max-w-sm grid-cols-2 gap-3">
                 <label className="grid gap-1 font-normal text-muted-foreground">
-                  Days
+                  <Trans>Days</Trans>
                   <Select value={String(timeboxDays)} onValueChange={(value) => { if (value) setTimeboxDays(Number(value)); }}>
-                    <SelectTrigger aria-label="Timebox days" className="w-full text-foreground"><SelectValue /></SelectTrigger>
+                    <SelectTrigger aria-label={t`Timebox days`} className="w-full text-foreground"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       {Array.from({ length: 61 }, (_, days) => (
-                        <SelectItem key={days} value={String(days)}>{days} {days === 1 ? 'day' : 'days'}</SelectItem>
+                        <SelectItem key={days} value={String(days)}><Plural value={days} one="# day" other="# days" /></SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </label>
                 <label className="grid gap-1 font-normal text-muted-foreground">
-                  Hours
+                  <Trans>Hours</Trans>
                   <Select value={String(timeboxHours)} onValueChange={(value) => { if (value) setTimeboxHours(Number(value)); }}>
-                    <SelectTrigger aria-label="Timebox hours" className="w-full text-foreground"><SelectValue /></SelectTrigger>
+                    <SelectTrigger aria-label={t`Timebox hours`} className="w-full text-foreground"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       {Array.from({ length: 24 }, (_, hours) => (
-                        <SelectItem key={hours} value={String(hours)}>{hours} {hours === 1 ? 'hour' : 'hours'}</SelectItem>
+                        <SelectItem key={hours} value={String(hours)}><Plural value={hours} one="# hour" other="# hours" /></SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -265,15 +270,15 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
           )}
           {leavesBoard && (
             <p role="note" className="rounded-lg border border-violet-500/40 bg-violet-500/5 p-3 text-sm">
-              Making it an epic moves it to the backlog and clears its estimate. Its sub-tickets stay where they are.
+              <Trans>Making it an epic moves it to the backlog and clears its estimate. Its sub-tickets stay where they are.</Trans>
             </p>
           )}
           <LabelDrawer projectId={projectId ?? ticket?.project_id ?? ''} token={token} labels={labels} onChange={setLabels} disabled={saving || deleting} />
           {ticket && (
             // saves straight away (not with the form) — same as claiming
             <label className="grid gap-1.5 text-sm font-medium">
-              Assignee
-              <AssigneeSelect ticketId={ticket.id} value={ticket.assigned_to} token={token} onChange={(t) => onSaved({ ...ticket, assigned_to: t.assigned_to })} />
+              <Trans>Assignee</Trans>
+              <AssigneeSelect ticketId={ticket.id} value={ticket.assigned_to} token={token} onChange={(next) => onSaved({ ...ticket, assigned_to: next.assigned_to })} />
             </label>
           )}
           {ticket && <BugfixesPanel ticket={ticket} token={token} />}
@@ -282,10 +287,10 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           {confirmDelete && (
             <div role="alert" className="grid gap-2 rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm">
-              <p>Delete this ticket? It’s kept for 30 days in case it was a mistake (contact us to get it back), then permanently deleted with its comments and files.</p>
+              <p><Trans>Delete this ticket? It’s kept for 30 days in case it was a mistake (contact us to get it back), then permanently deleted with its comments and files.</Trans></p>
               <div className="flex gap-2">
-                <Button type="button" size="sm" variant="destructive" disabled={deleting} onClick={remove}>{deleting ? 'Deleting…' : 'Delete ticket'}</Button>
-                <Button type="button" size="sm" variant="outline" disabled={deleting} onClick={() => setConfirmDelete(false)}>Keep ticket</Button>
+                <Button type="button" size="sm" variant="destructive" disabled={deleting} onClick={remove}>{deleting ? t`Deleting…` : t`Delete ticket`}</Button>
+                <Button type="button" size="sm" variant="outline" disabled={deleting} onClick={() => setConfirmDelete(false)}><Trans>Keep ticket</Trans></Button>
               </div>
             </div>
           )}
@@ -295,31 +300,31 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
           )}
           {wontDo !== null && (
             <div role="alert" className="grid gap-2 rounded-lg border p-3 text-sm">
-              <p>Close this ticket as <strong>won&apos;t do</strong>? It leaves the backlog but is kept, so whoever raised it can be told.</p>
+              <p><Trans>Close this ticket as <strong>won&apos;t do</strong>? It leaves the backlog but is kept, so whoever raised it can be told.</Trans></p>
               <label className="grid gap-1.5 font-medium">
-                <span>Reason <span className="font-normal text-muted-foreground">(optional, added as a comment)</span></span>
+                <span><Trans>Reason <span className="font-normal text-muted-foreground">(optional, added as a comment)</span></Trans></span>
                 <MarkdownTextarea mentions={token} value={wontDo} maxLength={10000} rows={2} onChange={(e) => setWontDo(e.target.value)} />
               </label>
               <div className="flex gap-2">
-                <Button type="button" size="sm" disabled={saving} onClick={closeWontDo}>{saving ? 'Closing…' : 'Close as won’t do'}</Button>
-                <Button type="button" size="sm" variant="outline" disabled={saving} onClick={() => setWontDo(null)}>Keep it open</Button>
+                <Button type="button" size="sm" disabled={saving} onClick={closeWontDo}>{saving ? t`Closing…` : t`Close as won’t do`}</Button>
+                <Button type="button" size="sm" variant="outline" disabled={saving} onClick={() => setWontDo(null)}><Trans>Keep it open</Trans></Button>
               </div>
             </div>
           )}
           {editing && onSentToBacklog && subs.length > 0 && !confirmDelete && wontDo === null && (
-            <p role="note" className="text-xs text-muted-foreground">{alsoMovesNote(subs)}</p>
+            <p role="note" className="text-xs text-muted-foreground">{alsoMovesNote(subs, i18n)}</p>
           )}
           <DialogFooter className="sm:flex-wrap">
             {editing && !confirmDelete && wontDo === null && !moving && (
               <div className="flex gap-2 sm:mr-auto">
-                {onDeleted && <Button type="button" variant="destructive" disabled={saving} onClick={() => setConfirmDelete(true)}>Delete</Button>}
-                {onWontDo && <Button type="button" variant="outline" disabled={saving} onClick={() => setWontDo('')}>Won&apos;t do</Button>}
-                {onSentToBacklog && <Button type="button" variant="ghost" disabled={saving} onClick={toBacklog}>Send to backlog</Button>}
-                {move && move.boards.length > 0 && <Button type="button" variant="outline" disabled={saving} onClick={() => setMoving(true)}>Move to board…</Button>}
+                {onDeleted && <Button type="button" variant="destructive" disabled={saving} onClick={() => setConfirmDelete(true)}><Trans>Delete</Trans></Button>}
+                {onWontDo && <Button type="button" variant="outline" disabled={saving} onClick={() => setWontDo('')}><Trans>Won&apos;t do</Trans></Button>}
+                {onSentToBacklog && <Button type="button" variant="ghost" disabled={saving} onClick={toBacklog}><Trans>Send to backlog</Trans></Button>}
+                {move && move.boards.length > 0 && <Button type="button" variant="outline" disabled={saving} onClick={() => setMoving(true)}><Trans>Move to board…</Trans></Button>}
               </div>
             )}
-            <Button type="button" variant="outline" disabled={saving || deleting} onClick={() => onOpenChange(false)}>Cancel</Button>
-            <Button type="submit" disabled={saving || deleting}>{saving ? 'Saving…' : editing ? 'Save changes' : 'Add ticket'}</Button>
+            <Button type="button" variant="outline" disabled={saving || deleting} onClick={() => onOpenChange(false)}><Trans>Cancel</Trans></Button>
+            <Button type="submit" disabled={saving || deleting}>{saving ? t`Saving…` : editing ? t`Save changes` : t`Add ticket`}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

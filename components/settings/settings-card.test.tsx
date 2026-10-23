@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 import { HashIcon } from 'lucide-react';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { SettingsCard } from './settings-card';
 
 test('a settings panel: icon, title and description; a link card is wholly the link', () => {

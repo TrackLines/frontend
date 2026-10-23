@@ -1,5 +1,5 @@
-import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { expect, mock, test } from 'bun:test';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import DocsPage, { guides } from './page';
 import EpicsDocs, { differences } from './epics/page';
 import { SiteFooter } from '@/components/site-footer';
@@ -38,7 +38,8 @@ test('the docs are public and linked from every page’s footer', async () => {
 test('the MCP guide: keys, every client’s setup (the same steps as Connect AI), the tools and how agents work', async () => {
   const { default: McpDocs, keys, tools, chain } = await import('./mcp/page');
   const { AGENTS, MCP_URL } = await import('@/components/mcp-connect');
-  const html = renderToStaticMarkup(<McpDocs />);
+  const { render } = await import('@/test/i18n');
+  const html = render(<McpDocs />); // the Connect AI steps are <Trans>
   expect(html).toContain(MCP_URL);
   for (const k of keys) expect(html).toContain(k.kind);
   for (const a of AGENTS) expect(html).toContain(`>${a.name}<`); // one tab per client, from the dialog's own list
@@ -64,13 +65,15 @@ test('the standup and refinement guides explain them from a user’s side, with 
 test('the Google Chat guides: linking your own account, and setting up spaces as an organization', async () => {
   const { default: You } = await import('./google-chat/page');
   const { default: Org } = await import('./google-chat-org/page');
+  mock.module('next/headers', () => ({ cookies: async () => ({ get: () => undefined }) })); // serverI18n outside a request: English
   const { CHAT_KINDS } = await import('@/lib/google-chat');
+  const { i18nFor } = await import('@/lib/i18n');
   const you = renderToStaticMarkup(<You />);
   for (const s of ['Link your TrackLin.es account', 'You’re linked', '30 minutes', 'Your settings', 'Unlink', 'href="/docs/google-chat-org"']) expect(you).toContain(s);
   for (const s of ['Start', 'Add comment', 'Make urgent', 'Reply', 'Approve', 'Send back', 'with your permissions']) expect(you).toContain(s); // the message buttons (TL-455)
-  const org = renderToStaticMarkup(<Org />);
+  const org = renderToStaticMarkup(await Org());
   for (const s of ['Allow users to add and use incoming webhooks', 'Add webhook', 'Avatar URL', 'Send test message', 'Edit project', 'https://chat.googleapis.com/', 'href="/docs/google-chat"']) expect(org).toContain(s);
-  for (const k of CHAT_KINDS) expect(org).toContain(k.label); // every event the settings form offers
+  for (const k of CHAT_KINDS) expect(org).toContain(i18nFor('en')._(k.label)); // every event the settings form offers
   const index = renderToStaticMarkup(<DocsPage />);
   expect(index).toContain('href="/docs/google-chat"');
   expect(index).toContain('href="/docs/google-chat-org"');

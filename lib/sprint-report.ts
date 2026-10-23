@@ -1,3 +1,4 @@
+import { msg } from '@lingui/core/macro';
 import type { ReportTotals } from './api';
 
 // Sprint reports (TL-400): the pure parts, kept apart for tests.
@@ -7,11 +8,12 @@ export type Range = { from: string; to: string }; // YYYY-MM-DD, to inclusive
 
 const ymd = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
+// labels are message descriptors: show them with i18n._(p.label)
 export const PRESETS = [
-  { id: 'last-30', label: 'Last 30 days' },
-  { id: 'last-90', label: 'Last 90 days' },
-  { id: 'this-quarter', label: 'This quarter' },
-  { id: 'last-quarter', label: 'Last quarter' },
+  { id: 'last-30', label: msg`Last 30 days` },
+  { id: 'last-90', label: msg`Last 90 days` },
+  { id: 'this-quarter', label: msg`This quarter` },
+  { id: 'last-quarter', label: msg`Last quarter` },
 ] as const;
 export type Preset = (typeof PRESETS)[number]['id'];
 
@@ -65,4 +67,5 @@ export function trend(now: number | null | undefined, before: number | null | un
 // scopeChange: work added after the start, as a share of what was planned.
 export const scopeChange = (t: ReportTotals) => (t.added == null || t.planned === 0 ? null : t.added / t.planned);
 
-export const TYPE_LABEL: Record<string, string> = { bug: 'Bugs', feature: 'Features', task: 'Tasks', spike: 'Spikes', epic: 'Epics' };
+// TYPE_LABEL: message descriptors, shown with i18n._(TYPE_LABEL.bug)
+export const TYPE_LABEL = { bug: msg`Bugs`, feature: msg`Features`, task: msg`Tasks`, spike: msg`Spikes`, epic: msg`Epics` };

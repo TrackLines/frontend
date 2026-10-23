@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { ElsewhereView } from './other-org';
 
 test('a ticket in another of your organizations says which, and offers to switch (TL-276)', () => {

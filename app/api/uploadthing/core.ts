@@ -3,6 +3,7 @@ import { createUploadthing, type FileRouter } from 'uploadthing/next';
 import { UploadThingError } from 'uploadthing/server';
 import { z } from 'zod';
 import { attachProblem, MAX_FILES_PER_TICKET } from '@/lib/attachment-limits';
+import { serverI18n } from '@/lib/server-i18n';
 
 const f = createUploadthing();
 
@@ -44,7 +45,7 @@ export const uploadRouter = {
           .then((r) => (r.ok ? r.json() : []), () => []) as unknown[];
         existing = list.length;
       }
-      const problem = attachProblem(existing, files);
+      const problem = attachProblem(await serverI18n(), existing, files);
       if (problem) throw new UploadThingError({ code: 'BAD_REQUEST', message: problem });
       return { userId };
     })

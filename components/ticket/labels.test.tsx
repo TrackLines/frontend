@@ -1,5 +1,6 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
+import { i18nFor } from '@/lib/i18n';
 import { LabelDrawer, TicketLabels } from './labels';
 import { addLabels, normalizeLabels, removeLabel } from '@/lib/labels';
 
@@ -21,13 +22,13 @@ test('label editor stays hidden behind the add labels button', () => {
 
 test('label editor helpers trim, dedupe case-insensitively, add and remove labels', () => {
   expect(normalizeLabels([' Frontend ', 'frontend', '', 'backend'])).toEqual(['Frontend', 'backend']);
-  expect(addLabels(['frontend'], ' Backend, frontend, qa ')).toEqual({ labels: ['frontend', 'Backend', 'qa'] });
+  expect(addLabels(i18nFor('en'), ['frontend'], ' Backend, frontend, qa ')).toEqual({ labels: ['frontend', 'Backend', 'qa'] });
   expect(removeLabel(['Frontend', 'backend'], 'frontend')).toEqual(['backend']);
 });
 
 test('label editor helpers enforce backend limits', () => {
-  expect(addLabels([], 'x'.repeat(51)).error).toContain('50 characters');
-  expect(addLabels(Array.from({ length: 20 }, (_, i) => `label-${i}`), 'extra').error).toContain('at most 20');
+  expect(addLabels(i18nFor('en'), [], 'x'.repeat(51)).error).toContain('50 characters');
+  expect(addLabels(i18nFor('en'), Array.from({ length: 20 }, (_, i) => `label-${i}`), 'extra').error).toContain('at most 20');
 });
 
 test('lists show two labels; the rest go behind a +N dropdown', () => {

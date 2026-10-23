@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { BellIcon, SettingsIcon, XIcon } from 'lucide-react';
 import { NotificationIcon } from '@/components/notification-icon';
 import { useRouter } from 'next/navigation';
@@ -19,6 +20,7 @@ const canNotify = () => typeof window !== 'undefined' && 'Notification' in windo
 // NotificationsBell: the header bell with the unread count (polled), an inbox dropdown, and desktop
 // popups for new ones while a Tracklines tab is open (Web Push with the tab closed comes later).
 export function NotificationsBell() {
+  const { t, i18n } = useLingui();
   const token = useToken();
   const router = useRouter();
   const [count, setCount] = useState(0);
@@ -49,7 +51,7 @@ export function NotificationsBell() {
       if (fresh.length) {
         const names = people.length ? people : await tickets.assignees(token).catch(() => []);
         for (const x of fresh) {
-          const popup = new Notification('TrackLin.es', { body: notificationLine(x, names), tag: x.id });
+          const popup = new Notification('TrackLin.es', { body: notificationLine(i18n, x, names), tag: x.id });
           popup.onclick = () => { window.focus(); void open(x); };
         }
       }
@@ -67,7 +69,7 @@ export function NotificationsBell() {
     try {
       setPushOn(await (pushOn === 'on' ? disablePush(token) : enablePush(token)));
     } catch (err) {
-      setPushError(pushFailure(err));
+      setPushError(pushFailure(i18n, err));
       setPushOn(await pushState(token).catch(() => 'off' as PushState));
     } finally {
       setPushBusy(false);
@@ -129,7 +131,7 @@ export function NotificationsBell() {
   if (!token) return null;
   return (
     <DropdownMenu onOpenChange={(o) => { if (o) { setShowRead(false); void load(); } }}>
-      <DropdownMenuTrigger render={<Button type="button" variant="ghost" size="icon" className="relative" aria-label={count ? `Notifications, ${count} unread` : 'Notifications'} />}>
+      <DropdownMenuTrigger render={<Button type="button" variant="ghost" size="icon" className="relative" aria-label={count ? t`Notifications, ${count} unread` : t`Notifications`} />}>
         <BellIcon aria-hidden />
         {count > 0 && (
           <span className="absolute -top-0.5 -right-0.5 min-w-4 rounded-full bg-destructive px-1 text-center text-[10px] leading-4 font-medium text-white">
@@ -146,8 +148,8 @@ export function NotificationsBell() {
           <PushControl state={pushOn} busy={pushBusy} error={pushError} onToggle={() => void togglePush()} />
         ) : pushOn !== 'blocked' && pushOn !== 'tabonly' && permission === 'default' && (
           <div className="border-t px-3 py-2 text-xs">
-            <button type="button" className="font-medium hover:underline" onClick={() => void enableDesktop()}>Turn on desktop notifications</button>
-            <span className="text-muted-foreground"> while TrackLin.es is open</span>
+            <Trans><button type="button" className="font-medium hover:underline" onClick={() => void enableDesktop()}>Turn on desktop notifications</button>
+            <span className="text-muted-foreground"> while TrackLin.es is open</span></Trans>
           </div>
         )}
       </DropdownMenuContent>
@@ -162,39 +164,40 @@ export function NotificationsList({ items, people, failed, unread, showRead = fa
   onOpen: (n: AppNotification) => void; onDismiss?: (n: AppNotification) => void; onReadAll: () => void;
   onShowRead?: (show: boolean) => void; onClearRead?: () => void;
 }) {
+  const { t, i18n } = useLingui();
   const shown = items?.filter((n) => showRead || !n.read_at) ?? null;
   const readCount = items?.filter((n) => n.read_at).length ?? 0;
   return (
     <div className="grid">
       <div className="flex items-center justify-between border-b px-3 py-2">
-        <span className="text-sm font-semibold">Notifications</span>
+        <span className="text-sm font-semibold"><Trans>Notifications</Trans></span>
         <span className="flex items-center gap-2">
-          {unread > 0 && <button type="button" className="text-xs font-medium text-muted-foreground hover:text-foreground hover:underline" onClick={onReadAll}>Mark all read</button>}
+          {unread > 0 && <button type="button" className="text-xs font-medium text-muted-foreground hover:text-foreground hover:underline" onClick={onReadAll}><Trans>Mark all read</Trans></button>}
           {/* this device, Google Chat: Your settings */}
           {settings && (
-            <Link href="/account" aria-label="Notification settings" title="Notification settings" className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground">
+            <Link href="/account" aria-label={t`Notification settings`} title={t`Notification settings`} className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground">
               <SettingsIcon className="size-4" aria-hidden />
             </Link>
           )}
         </span>
       </div>
-      {failed ? <p role="alert" className="px-3 py-6 text-center text-sm text-destructive">Couldn&apos;t load notifications.</p>
-        : shown === null ? <p role="status" className="px-3 py-6 text-center text-sm text-muted-foreground">Loading…</p>
-        : shown.length === 0 ? <p className="px-3 py-6 text-center text-sm text-muted-foreground">You&apos;re all caught up.</p>
+      {failed ? <p role="alert" className="px-3 py-6 text-center text-sm text-destructive"><Trans>Couldn&apos;t load notifications.</Trans></p>
+        : shown === null ? <p role="status" className="px-3 py-6 text-center text-sm text-muted-foreground"><Trans>Loading…</Trans></p>
+        : shown.length === 0 ? <p className="px-3 py-6 text-center text-sm text-muted-foreground"><Trans>You&apos;re all caught up.</Trans></p>
         : (
           <ul className="max-h-96 divide-y overflow-y-auto">
             {shown.map((n) => (
               <li key={n.id} className="group flex items-start hover:bg-muted">
                 <button type="button" onClick={() => onOpen(n)} className={`flex min-w-0 flex-1 gap-2 py-2.5 pl-3 text-left text-sm ${n.read_at ? 'text-muted-foreground' : ''}`}>
-                  <span aria-label={n.read_at ? undefined : 'Unread'} className={`mt-1.5 size-2 shrink-0 rounded-full ${n.read_at ? '' : 'bg-primary'}`} />
+                  <span aria-label={n.read_at ? undefined : t`Unread`} className={`mt-1.5 size-2 shrink-0 rounded-full ${n.read_at ? '' : 'bg-primary'}`} />
                   <NotificationIcon kind={n.kind} />
                   <span className="grid min-w-0 gap-0.5">
-                    <span className="break-words">{notificationLine(n, people)}</span>
+                    <span className="break-words">{notificationLine(i18n, n, people)}</span>
                     <span className="text-xs text-muted-foreground"><When iso={n.created_at} /></span>
                   </span>
                 </button>
                 {onDismiss && (
-                  <button type="button" aria-label={`Clear: ${notificationLine(n, people)}`} title="Clear"
+                  <button type="button" aria-label={t`Clear: ${notificationLine(i18n, n, people)}`} title={t`Clear`}
                     className="m-1.5 rounded p-1 text-muted-foreground hover:bg-background hover:text-foreground" onClick={() => onDismiss(n)}>
                     <XIcon className="size-3.5" aria-hidden />
                   </button>
@@ -206,9 +209,9 @@ export function NotificationsList({ items, people, failed, unread, showRead = fa
       {onShowRead && readCount > 0 && (
         <div className="flex items-center justify-between border-t px-3 py-2 text-xs text-muted-foreground">
           <button type="button" className="font-medium hover:text-foreground hover:underline" onClick={() => onShowRead(!showRead)}>
-            {showRead ? 'Hide read' : `Show read (${readCount})`}
+            {showRead ? <Trans>Hide read</Trans> : <Trans>Show read ({readCount})</Trans>}
           </button>
-          {showRead && onClearRead && <button type="button" className="font-medium hover:text-foreground hover:underline" onClick={onClearRead}>Clear read</button>}
+          {showRead && onClearRead && <button type="button" className="font-medium hover:text-foreground hover:underline" onClick={onClearRead}><Trans>Clear read</Trans></button>}
         </div>
       )}
     </div>
@@ -217,21 +220,22 @@ export function NotificationsList({ items, people, failed, unread, showRead = fa
 
 // PushControl: "Notify me on this device" (Web Push: arrives even with Tracklines closed). Pure, for tests.
 export function PushControl({ state, busy, error = '', onToggle }: { state: PushState; busy: boolean; error?: string; onToggle: () => void }) {
+  const { t } = useLingui();
   if (state === 'blocked') {
-    return <p className="border-t px-3 py-2 text-xs text-muted-foreground">Notifications are blocked for this site in your browser settings.</p>;
+    return <p className="border-t px-3 py-2 text-xs text-muted-foreground"><Trans>Notifications are blocked for this site in your browser settings.</Trans></p>;
   }
   if (state === 'tabonly') {
-    return <p className="border-t px-3 py-2 text-xs text-muted-foreground">Notifications are on while TrackLin.es is open (this browser can’t get them when it’s closed).</p>;
+    return <p className="border-t px-3 py-2 text-xs text-muted-foreground"><Trans>Notifications are on while TrackLin.es is open (this browser can’t get them when it’s closed).</Trans></p>;
   }
   if (state !== 'on' && state !== 'off') return null;
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 border-t px-3 py-2 text-xs">
       <span>
-        <span className="font-medium">Notify me on this device</span>
-        <span className="block text-muted-foreground">{state === 'on' ? 'On, even when TrackLin.es is closed' : 'Get notifications even when TrackLin.es is closed'}</span>
+        <span className="font-medium"><Trans>Notify me on this device</Trans></span>
+        <span className="block text-muted-foreground">{state === 'on' ? t`On, even when TrackLin.es is closed` : t`Get notifications even when TrackLin.es is closed`}</span>
       </span>
       <Button type="button" size="sm" variant={state === 'on' ? 'outline' : 'default'} disabled={busy} aria-pressed={state === 'on'} onClick={onToggle}>
-        {busy ? '…' : state === 'on' ? 'Turn off' : 'Turn on'}
+        {busy ? '…' : state === 'on' ? t`Turn off` : t`Turn on`}
       </Button>
       {error && <p role="alert" className="basis-full text-destructive">{error}</p>}
     </div>

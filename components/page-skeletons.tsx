@@ -1,3 +1,6 @@
+'use client';
+
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Skeleton } from '@/components/ui/skeleton';
 
 // Page-shaped placeholders: shown by each route's loading.tsx on navigation and by the page
@@ -13,8 +16,9 @@ export function Loading({ label, children, className }: { label: string; childre
 }
 
 export function BoardSkeleton() {
+  const { t } = useLingui();
   return (
-    <Loading label="Loading board…" className="mx-auto flex min-h-screen w-full max-w-6xl flex-col">
+    <Loading label={t`Loading board…`} className="mx-auto flex min-h-screen w-full max-w-6xl flex-col">
       <div className="flex items-center gap-4 border-b px-6 py-4">
         <Skeleton className="h-4 w-16" />
         <Skeleton className="h-7 w-48" />
@@ -38,8 +42,9 @@ export function BoardSkeleton() {
 }
 
 export function TicketSkeleton() {
+  const { t } = useLingui();
   return (
-    <Loading label="Loading ticket…" className="mx-auto grid max-w-6xl gap-6 px-6 py-10">
+    <Loading label={t`Loading ticket…`} className="mx-auto grid max-w-6xl gap-6 px-6 py-10">
       <Skeleton className="h-4 w-56" />
       <div className="grid gap-3">
         <div className="flex gap-2">
@@ -65,8 +70,9 @@ export function TicketSkeleton() {
 }
 
 export function ProjectSkeleton() {
+  const { t } = useLingui();
   return (
-    <Loading label="Loading project…" className="mx-auto max-w-6xl px-6 py-10">
+    <Loading label={t`Loading project…`} className="mx-auto max-w-6xl px-6 py-10">
       <Skeleton className="h-4 w-20" />
       <Skeleton className="mt-3 h-9 w-64" />
       <Skeleton className="mt-10 h-6 w-24" />
@@ -83,7 +89,7 @@ export function ProjectSkeleton() {
 export function ListSkeleton({ rows = 3, className = '' }: { rows?: number; className?: string }) {
   return (
     <div role="status" aria-busy="true" className={`divide-y rounded-xl border ${className}`}>
-      <span className="sr-only">Loading…</span>
+      <span className="sr-only"><Trans>Loading…</Trans></span>
       {Array.from({ length: rows }, (_, i) => (
         <div key={i} aria-hidden className="flex items-center gap-3 p-4">
           <Skeleton className="h-5 w-14 rounded-full" />

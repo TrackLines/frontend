@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { LoadError } from '@/components/load-error';
@@ -20,6 +21,7 @@ export default function ReportsPage() {
 }
 
 function Reports() {
+  const { t, i18n } = useLingui();
   const token = useToken();
   const router = useRouter();
   const q = useSearchParams();
@@ -43,41 +45,41 @@ function Reports() {
     return () => { live = false; };
   }, [key, loaded]); // token refreshes must not refetch
 
-  if (!scope) return <Message>Open a report from a board’s past sprints, a project, or organization settings.</Message>;
-  if (error === 403) return <Message>Only organization admins can see the organization’s report.</Message>;
+  if (!scope) return <Message><Trans>Open a report from a board’s past sprints, a project, or organization settings.</Trans></Message>;
+  if (error === 403) return <Message><Trans>Only organization admins can see the organization’s report.</Trans></Message>;
   if (error) return <LoadError status={error} thing={scope.kind === 'project' ? 'project' : 'board'} />;
 
   const go = (r: Range) => router.replace(writeQuery(scope, r), { scroll: false });
   const preset = presetOf(range);
   return (
     <main className="report-print mx-auto max-w-6xl px-6 py-10 print:max-w-none print:px-0 print:py-0">
-      {(report || rollup) && <PrintCover title={report?.board_name ?? rollup!.name} kind={scope.kind === 'board' ? 'board' : scope.kind === 'project' ? 'project' : 'organization'} range={range} />}
+      {(report || rollup) && <PrintCover title={report?.board_name ?? rollup!.name} kind={scope.kind === 'board' ? t`board` : scope.kind === 'project' ? t`project` : t`organization`} range={range} />}
       {report && <Link href={`/boards/${report.board_id}`} className="text-sm text-muted-foreground hover:underline print:hidden">← {report.board_name}</Link>}
       {rollup && scope.kind === 'project' && <Link href={`/projects/${scope.id}`} className="text-sm text-muted-foreground hover:underline print:hidden">← {rollup.name}</Link>}
-      {rollup && scope.kind === 'org' && <Link href="/settings" className="text-sm text-muted-foreground hover:underline print:hidden">← Settings</Link>}
+      {rollup && scope.kind === 'org' && <Link href="/settings" className="text-sm text-muted-foreground hover:underline print:hidden"><Trans>← Settings</Trans></Link>}
       <header className="mt-2 mb-8 grid gap-4 print:hidden">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-          <p className="text-sm font-bold tracking-[.14em] text-primary uppercase">Sprint report</p>
+          <p className="text-sm font-bold tracking-[.14em] text-primary uppercase"><Trans>Sprint report</Trans></p>
           <h1 className="mt-1 text-3xl font-bold tracking-tight">{report?.board_name ?? rollup?.name ?? '…'}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">{range.from} to {range.to}</p>
+          <p className="mt-1 text-sm text-muted-foreground"><Trans>{range.from} to {range.to}</Trans></p>
           </div>
           {(report || rollup) && token && <ExportMenu scope={scope} range={range} name={report?.board_name ?? rollup!.name} token={token} />}
         </div>
         <div className="flex flex-wrap items-end gap-3 print:hidden">
-          <ToggleGroup size="sm" variant="outline" aria-label="Period" value={preset ? [preset] : []}
+          <ToggleGroup size="sm" variant="outline" aria-label={t`Period`} value={preset ? [preset] : []}
             onValueChange={(v) => { if (v[0]) go(presetRange(v[0] as Preset)); }}>
-            {PRESETS.map((p) => <ToggleGroupItem key={p.id} value={p.id}>{p.label}</ToggleGroupItem>)}
+            {PRESETS.map((p) => <ToggleGroupItem key={p.id} value={p.id}>{i18n._(p.label)}</ToggleGroupItem>)}
           </ToggleGroup>
-          <label className="grid gap-1 text-xs text-muted-foreground">From
+          <label className="grid gap-1 text-xs text-muted-foreground"><Trans>From</Trans>
             <Input type="date" value={range.from} max={range.to} onChange={(e) => e.target.value && go({ ...range, from: e.target.value })} className="h-8" />
           </label>
-          <label className="grid gap-1 text-xs text-muted-foreground">To
+          <label className="grid gap-1 text-xs text-muted-foreground"><Trans>To</Trans>
             <Input type="date" value={range.to} min={range.from} onChange={(e) => e.target.value && go({ ...range, to: e.target.value })} className="h-8" />
           </label>
         </div>
       </header>
-      {report ? <ReportView report={report} /> : rollup ? <RollupView report={rollup} range={range} /> : <Skeleton role="status" aria-label="Loading the report…" className="h-96 w-full" />}
+      {report ? <ReportView report={report} /> : rollup ? <RollupView report={rollup} range={range} /> : <Skeleton role="status" aria-label={t`Loading the report…`} className="h-96 w-full" />}
     </main>
   );
 }

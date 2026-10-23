@@ -1,5 +1,6 @@
 'use client';
 
+import { Trans, useLingui } from '@lingui/react/macro';
 import { NeedsReviewBadge, ReviewActions } from './review';
 import { Markdown } from '@/components/markdown';
 import { When } from '@/components/when';
@@ -38,6 +39,7 @@ type Props = {
 };
 
 export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, token, done, onReviewed, sample, onDescription }: Props) {
+  const { t, i18n } = useLingui();
   const people = usePeople(token);
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -48,39 +50,39 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
         <DialogHeader>
           <DialogTitle className="pr-8 flex flex-wrap items-center gap-2"><TicketKey value={ticket.key} copy />{ticket.title}</DialogTitle>
           <DialogDescription className="flex items-center gap-2">
-            Status <Badge variant="secondary">{columnName}</Badge>
-            {ticket.duplicate_of_key && <Badge variant="outline">Duplicate of {ticket.duplicate_of_key}</Badge>}
+            <Trans>Status</Trans> <Badge variant="secondary">{columnName}</Badge>
+            {ticket.duplicate_of_key && <Badge variant="outline"><Trans>Duplicate of {ticket.duplicate_of_key}</Trans></Badge>}
             <EstimateBadge estimate={ticket.estimate} />
             <NeedsReviewBadge ticket={ticket} />
           </DialogDescription>
         </DialogHeader>
-        {ticket.duplicate_of_id && ticket.duplicate_of_title && <p className="text-sm text-muted-foreground">Original: <Link href={`/tickets/${ticket.duplicate_of_id}`} className="font-medium text-foreground hover:underline"><TicketKey value={ticket.duplicate_of_key} /> {ticket.duplicate_of_title}</Link></p>}
+        {ticket.duplicate_of_id && ticket.duplicate_of_title && <p className="text-sm text-muted-foreground"><Trans>Original:</Trans> <Link href={`/tickets/${ticket.duplicate_of_id}`} className="font-medium text-foreground hover:underline"><TicketKey value={ticket.duplicate_of_key} /> {ticket.duplicate_of_title}</Link></p>}
         <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
-          <dt className="text-muted-foreground">Created by</dt>
-          <dd>{personLabel(ticket.created_by, people)}{ticket.created_at && <span className="text-muted-foreground">, <When iso={ticket.created_at} /></span>}</dd>
+          <dt className="text-muted-foreground"><Trans>Created by</Trans></dt>
+          <dd>{personLabel(i18n, ticket.created_by, people)}{ticket.created_at && <span className="text-muted-foreground">, <When iso={ticket.created_at} /></span>}</dd>
           {ticket.updated_at && ticket.updated_at !== ticket.created_at && (
             <>
-              <dt className="text-muted-foreground">Updated</dt>
+              <dt className="text-muted-foreground"><Trans>Updated</Trans></dt>
               <dd><When iso={ticket.updated_at} /></dd>
             </>
           )}
           {ticket.done_at && (
             <>
-              <dt className="text-muted-foreground">{ticket.resolution === 'duplicate' ? 'Duplicate' : 'Done'}</dt>
+              <dt className="text-muted-foreground">{ticket.resolution === 'duplicate' ? t`Duplicate` : t`Done`}</dt>
               <dd><When iso={ticket.done_at} /></dd>
             </>
           )}
-          <dt className="text-muted-foreground">Assigned to</dt>
-          <dd>{ticket.assigned_to ? <Assignee id={ticket.assigned_to} people={people} /> : <span className="text-muted-foreground italic">Unassigned</span>}</dd>
+          <dt className="text-muted-foreground"><Trans>Assigned to</Trans></dt>
+          <dd>{ticket.assigned_to ? <Assignee id={ticket.assigned_to} people={people} /> : <span className="text-muted-foreground italic"><Trans>Unassigned</Trans></span>}</dd>
         </dl>
         {token && onReviewed && <ReviewActions ticket={ticket} token={token} onReviewed={onReviewed} />}
         <TicketLabels labels={ticket.labels} />
-        <section aria-label="Ticket details" className="min-h-20 rounded-md bg-muted/50 p-3 text-sm">
+        <section aria-label={t`Ticket details`} className="min-h-20 rounded-md bg-muted/50 p-3 text-sm">
           <ChecklistCount markdown={ticket.description} className="mb-2" />
           {ticket.description ? (
             <Markdown onToggleTask={onDescription && ((line) => onDescription(toggleTask(ticket.description, line)))}>{ticket.description}</Markdown>
           ) : (
-            <p className="text-muted-foreground">No details provided.</p>
+            <p className="text-muted-foreground"><Trans>No details provided.</Trans></p>
           )}
         </section>
         {open && token && <BugfixesPanel ticket={ticket} token={token} />}
@@ -93,11 +95,11 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
             <div className="flex flex-wrap gap-2 sm:mr-auto">
               <CopyLink path={ticketPath(ticket)} token={token} title={linkTitle(ticket)} />
               {/* history is on the full page only (TL-373): this opens it there, no copy and paste */}
-              <Link href={`${ticketPath(ticket)}#history`} className={buttonVariants({ variant: 'ghost' })}>History</Link>
+              <Link href={`${ticketPath(ticket)}#history`} className={buttonVariants({ variant: 'ghost' })}><Trans>History</Trans></Link>
             </div>
           )}
-          <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Close</Button>
-          {onEdit && <Button type="button" onClick={onEdit}>Edit</Button>}
+          <Button type="button" variant="outline" onClick={() => onOpenChange(false)}><Trans>Close</Trans></Button>
+          {onEdit && <Button type="button" onClick={onEdit}><Trans>Edit</Trans></Button>}
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -105,11 +107,12 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
 }
 
 // Assignee: who has it, and whether they're on holiday, as the ticket page's picker says (TL-436).
-export function Assignee({ id, people }: { id: string; people: Parameters<typeof personLabel>[1] }) {
-  const away = awayText(people?.find((p) => p.id === id));
+export function Assignee({ id, people }: { id: string; people: Parameters<typeof personLabel>[2] }) {
+  const { i18n } = useLingui();
+  const away = awayText(people?.find((p) => p.id === id), i18n);
   return (
     <>
-      {personLabel(id, people)}
+      {personLabel(i18n, id, people)}
       {away && <span className="text-amber-700 dark:text-amber-400"> · {away.charAt(0).toLowerCase()}{away.slice(1)}</span>}
     </>
   );

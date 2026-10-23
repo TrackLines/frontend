@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { Plural, Trans, useLingui } from '@lingui/react/macro';
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -35,6 +36,7 @@ type Props = {
 // against the team's velocity, and an over-full one needs approving.
 // ponytail: buttons, not drag and drop; add DnD if planning lots of tickets gets tedious.
 export function RefinementMode({ projectId, boards, token, onClose, version = 0, onOpen, ticketActions, priorities = [], onPrioritiesChange = () => {} }: Props) {
+  const { t } = useLingui();
   const sprintBoards = boards.filter((b) => b.style !== 'kanban');
   const [plans, setPlans] = useState<Record<string, PlannedSprint[]> | null>(null); // by board id
   const [tickets, setTickets] = useState<BacklogTicket[]>([]);
@@ -49,22 +51,22 @@ export function RefinementMode({ projectId, boards, token, onClose, version = 0,
   tokenRef.current = token; // token refreshes (every ~45s) must not reload the view
   const load = useCallback(async () => {
     const request = ++latestLoad.current;
-    const t = tokenRef.current;
+    const tok = tokenRef.current;
     const [lists, page] = await Promise.all([
-      Promise.all(sprintBoards.map((b) => plannedSprints.list(b.id, t))),
-      backlog.page(projectId, { page: 1, perPage: 100, priorities }, t),
+      Promise.all(sprintBoards.map((b) => plannedSprints.list(b.id, tok))),
+      backlog.page(projectId, { page: 1, perPage: 100, priorities }, tok),
     ]);
     if (request !== latestLoad.current) return;
     // identical refreshes keep what's on screen, so nothing redraws
     setPlans((current) => unchanged(current, Object.fromEntries(sprintBoards.map((b, i) => [b.id, lists[i]]))));
     // planned ones show in their sprint; epics aren't planned (their sub-tickets are, TL-213)
-    setTickets((current) => unchanged(current, page.tickets.filter((t) => !t.planned_sprint_id && t.type !== 'epic')));
+    setTickets((current) => unchanged(current, page.tickets.filter((tk) => !tk.planned_sprint_id && tk.type !== 'epic')));
   }, [boardIds, projectId, priorities.join(',')]);
   const loadRef = useRef(load);
   loadRef.current = load;
 
   useEffect(() => {
-    load().catch(() => setError('Couldn’t load the backlog and planned sprints. Please try again.'));
+    load().catch(() => setError(t`Couldn’t load the backlog and planned sprints. Please try again.`));
   }, [load, version]);
   useEffect(() => {
     organization.me(tokenRef.current).then(setRole, () => setRole({ user_id: '', org_id: '', admin: false, leads: [] })); // fail closed
@@ -76,7 +78,7 @@ export function RefinementMode({ projectId, boards, token, onClose, version = 0,
     const ids = boardIds.split(',');
     for (const boardId of ids) {
       void keepStreaming(() => streamBoardLive(boardId, tokenRef.current, controller.signal, (event) => {
-        if (event.type === 'refinement') loadRef.current().catch(() => setError('Couldn’t refresh the live refinement view.'));
+        if (event.type === 'refinement') loadRef.current().catch(() => setError(t`Couldn’t refresh the live refinement view.`));
       }, () => setLiveStates((current) => ({ ...current, [boardId]: 'live' }))), controller.signal,
       (err) => setLiveStates((current) => ({ ...current, [boardId]: dropped(current[boardId] ?? 'connecting', err) })));
     }
@@ -91,7 +93,7 @@ export function RefinementMode({ projectId, boards, token, onClose, version = 0,
       await change();
       await load();
     } catch (err) {
-      setError(err instanceof ApiError && err.status === 403 ? 'Only organization admins and that board’s team leaders can do that.'
+      setError(err instanceof ApiError && err.status === 403 ? t`Only organization admins and that board’s team leaders can do that.`
         : err instanceof ApiError && err.status < 500 ? err.message : failed);
     } finally {
       setBusy(false);
@@ -101,38 +103,38 @@ export function RefinementMode({ projectId, boards, token, onClose, version = 0,
   const targets = sprintBoards.flatMap((b) => (plans?.[b.id] ?? []).map((p) => ({ board: b, plan: p })));
 
   return (
-    <section aria-label="Refinement" className="grid gap-4">
+    <section aria-label={t`Refinement`} className="grid gap-4">
       <div className="flex flex-wrap items-center gap-3">
-        <p className="text-sm text-muted-foreground">Plan backlog tickets into each team’s next sprints and size them. A sprint holds the team’s velocity + 10%.</p>
+        <p className="text-sm text-muted-foreground"><Trans>Plan backlog tickets into each team’s next sprints and size them. A sprint holds the team’s velocity + 10%.</Trans></p>
         {sprintBoards.length > 0 && <LiveToast state={combined(sprintBoards.map((board) => liveStates[board.id] ?? 'connecting'))} />}
-        <Button size="sm" variant="outline" className="ml-auto" onClick={onClose}>Done refining</Button>
+        <Button size="sm" variant="outline" className="ml-auto" onClick={onClose}><Trans>Done refining</Trans></Button>
       </div>
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-      {sprintBoards.length === 0 ? <p className="text-sm text-muted-foreground">No sprint boards to plan for yet.</p>
-        : plans === null ? <p className="text-sm text-muted-foreground">Loading…</p> : (
+      {sprintBoards.length === 0 ? <p className="text-sm text-muted-foreground"><Trans>No sprint boards to plan for yet.</Trans></p>
+        : plans === null ? <p className="text-sm text-muted-foreground"><Trans>Loading…</Trans></p> : (
         <div className="grid gap-6 md:grid-cols-2">
           <div className="grid content-start gap-2">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <h3 className="font-medium">To plan</h3>
+              <h3 className="font-medium"><Trans>To plan</Trans></h3>
               <PriorityFilter priorities={priorities} onPrioritiesChange={onPrioritiesChange} />
             </div>
             {tickets.length === 0 && (priorities.length > 0
-              ? <p className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">No tickets match these priorities.<Button type="button" size="sm" variant="link" className="h-auto p-0" onClick={() => onPrioritiesChange([])}>Clear filters</Button></p>
-              : <p className="text-sm text-muted-foreground">Nothing left to plan.</p>)}
-            {tickets.length > 0 && targets.length === 0 && <p className="text-sm text-muted-foreground">Plan a sprint on a board to start adding tickets.</p>}
+              ? <p className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground"><Trans>No tickets match these priorities.</Trans><Button type="button" size="sm" variant="link" className="h-auto p-0" onClick={() => onPrioritiesChange([])}><Trans>Clear filters</Trans></Button></p>
+              : <p className="text-sm text-muted-foreground"><Trans>Nothing left to plan.</Trans></p>)}
+            {tickets.length > 0 && targets.length === 0 && <p className="text-sm text-muted-foreground"><Trans>Plan a sprint on a board to start adding tickets.</Trans></p>}
             <ul className="grid gap-2">
-              {tickets.map((t) => (
-                <li key={t.id} className="flex flex-wrap items-center gap-2 rounded-lg border p-3 text-sm">
-                  <TypeBadge type={t.type} />
-                  <TicketKey value={t.key} copy />
-                  <TicketTitle ticket={t} onOpen={onOpen && (() => onOpen(t as unknown as Ticket, 'none'))} className="font-medium" />
+              {tickets.map((tk) => (
+                <li key={tk.id} className="flex flex-wrap items-center gap-2 rounded-lg border p-3 text-sm">
+                  <TypeBadge type={tk.type} />
+                  <TicketKey value={tk.key} copy />
+                  <TicketTitle ticket={tk} onOpen={onOpen && (() => onOpen(tk as unknown as Ticket, 'none'))} className="font-medium" />
                   {targets.map(({ board, plan }) => (
                     <Button key={plan.id} size="sm" variant="outline" disabled={busy}
-                      onClick={() => act(() => plannedSprints.planTicket(t.id, plan.id, token), `Couldn’t plan “${t.title}”. Please try again.`)}>
-                      {board.name} · Sprint {plan.number}
+                      onClick={() => act(() => plannedSprints.planTicket(tk.id, plan.id, token), t`Couldn’t plan “${tk.title}”. Please try again.`)}>
+                      {board.name} · <Trans>Sprint {plan.number}</Trans>
                     </Button>
                   ))}
-                  {ticketActions?.(t)}
+                  {ticketActions?.(tk)}
                 </li>
               ))}
             </ul>
@@ -147,17 +149,17 @@ export function RefinementMode({ projectId, boards, token, onClose, version = 0,
                   <h3 className="font-medium"><Link href={`/boards/${b.id}`} className="hover:underline">{b.name}</Link></h3>
                   {boardPlans.length === 0 && (
                     <p className="text-sm text-muted-foreground">
-                      No sprints planned yet.{canManage ? '' : ' An organization admin or this board’s team leader can plan one.'}
+                      {canManage ? <Trans>No sprints planned yet.</Trans> : <Trans>No sprints planned yet. An organization admin or this board’s team leader can plan one.</Trans>}
                     </p>
                   )}
                   {boardPlans.map((p) => (
                     <PlannedSprintCard key={p.id} plan={p} scale={b.estimate_scale ?? 'none'} canManage={canManage} busy={busy} token={token} act={act}
-                      onOpen={onOpen && ((t) => onOpen(t, b.estimate_scale ?? 'none'))} />
+                      onOpen={onOpen && ((tk) => onOpen(tk, b.estimate_scale ?? 'none'))} />
                   ))}
                   {canManage && boardPlans.length < MAX_PLANNED && (
                     <Button size="sm" variant="outline" className="justify-self-start" disabled={busy}
-                      onClick={() => act(() => plannedSprints.plan(b.id, 14, token), 'Couldn’t plan a sprint. Please try again.')}>
-                      Plan sprint {nextNumber}
+                      onClick={() => act(() => plannedSprints.plan(b.id, 14, token), t`Couldn’t plan a sprint. Please try again.`)}>
+                      <Trans>Plan sprint {nextNumber}</Trans>
                     </Button>
                   )}
                 </div>
@@ -175,54 +177,55 @@ export function PlannedSprintCard({ plan, scale, canManage, busy, token, act, on
   act: (change: () => Promise<unknown>, failed: string) => Promise<void>;
   onOpen?: (ticket: Ticket) => void;
 }) {
-  const view = capacityView(plan.capacity);
+  const { t, i18n } = useLingui();
+  const view = capacityView(plan.capacity, i18n);
   return (
     <div className="grid gap-3 rounded-lg border p-4 text-sm">
       <div className="flex flex-wrap items-center gap-2">
-        <h3 className="font-medium">Sprint {plan.number}</h3>
-        <span className="text-muted-foreground">{plan.length_days} days</span>
-        {view.state === 'over' && <Badge variant="destructive">Needs approval</Badge>}
-        {view.state === 'approved' && <Badge variant="secondary">Approved</Badge>}
+        <h3 className="font-medium"><Trans>Sprint {plan.number}</Trans></h3>
+        <span className="text-muted-foreground"><Plural value={plan.length_days} one="# day" other="# days" /></span>
+        {view.state === 'over' && <Badge variant="destructive"><Trans>Needs approval</Trans></Badge>}
+        {view.state === 'approved' && <Badge variant="secondary"><Trans>Approved</Trans></Badge>}
         {canManage && (
           <Button size="sm" variant="ghost" className="ml-auto text-muted-foreground" disabled={busy}
-            onClick={() => confirm(`Remove planned sprint ${plan.number}? Its tickets go back to the backlog, unestimated.`) &&
-              act(() => plannedSprints.remove(plan.id, token), 'Couldn’t remove the planned sprint. Please try again.')}>
-            Remove
+            onClick={() => confirm(t`Remove planned sprint ${plan.number}? Its tickets go back to the backlog, unestimated.`) &&
+              act(() => plannedSprints.remove(plan.id, token), t`Couldn’t remove the planned sprint. Please try again.`)}>
+            <Trans>Remove</Trans>
           </Button>
         )}
       </div>
       {canManage
-        ? <PlannedGoal key={plan.goal ?? ''} plan={plan} busy={busy} save={(goal) => act(() => plannedSprints.update(plan.id, { goal }, token), 'Couldn’t save the goal. Please try again.')} />
-        : plan.goal && <p><span className="text-muted-foreground">Goal:</span> <span className="font-medium">{plan.goal}</span></p>}
+        ? <PlannedGoal key={plan.goal ?? ''} plan={plan} busy={busy} save={(goal) => act(() => plannedSprints.update(plan.id, { goal }, token), t`Couldn’t save the goal. Please try again.`)} />
+        : plan.goal && <p><span className="text-muted-foreground"><Trans>Goal:</Trans></span> <span className="font-medium">{plan.goal}</span></p>}
       <div className="grid gap-1">
-        {view.percent !== null && <Progress value={view.percent} aria-label={`Sprint ${plan.number} capacity`} />}
+        {view.percent !== null && <Progress value={view.percent} aria-label={t`Sprint ${plan.number} capacity`} />}
         <p className={view.state === 'over' ? 'font-medium text-destructive' : 'text-muted-foreground'}>{view.label}</p>
         {view.availability && <p className="text-muted-foreground">{view.availability}</p>}
         {view.note && <p className="text-muted-foreground">{view.note}</p>}
         {view.state === 'over' && canManage && (
           <Button size="sm" className="justify-self-start" disabled={busy}
-            onClick={() => act(() => plannedSprints.approve(plan.id, token), 'Couldn’t approve. Please try again.')}>
-            Approve {plan.capacity.used} {plan.capacity.unit}
+            onClick={() => act(() => plannedSprints.approve(plan.id, token), t`Couldn’t approve. Please try again.`)}>
+            {plan.capacity.unit === 'points' ? <Trans>Approve {plan.capacity.used} points</Trans> : <Trans>Approve {plan.capacity.used} tickets</Trans>}
           </Button>
         )}
       </div>
       {plan.tickets.length === 0
-        ? <p className="text-muted-foreground">No tickets planned yet. Add some from the backlog.</p>
+        ? <p className="text-muted-foreground"><Trans>No tickets planned yet. Add some from the backlog.</Trans></p>
         : (
           <ul className="grid gap-2">
-            {plan.tickets.map((t) => (
-              <li key={t.id} className="flex flex-wrap items-center gap-2">
-                <TicketKey value={t.key} copy />
-                <TicketTitle ticket={t} onOpen={onOpen && (() => onOpen(t))} />
+            {plan.tickets.map((tk) => (
+              <li key={tk.id} className="flex flex-wrap items-center gap-2">
+                <TicketKey value={tk.key} copy />
+                <TicketTitle ticket={tk} onOpen={onOpen && (() => onOpen(tk))} />
                 {scale !== 'none' && (
                   <div className="w-36">
-                    <EstimateSelect scale={scale} value={t.estimate ?? ''}
-                      onChange={(e) => void act(() => plannedSprints.planTicket(t.id, plan.id, token, e), `Couldn’t size “${t.title}”. Please try again.`)} />
+                    <EstimateSelect scale={scale} value={tk.estimate ?? ''}
+                      onChange={(e) => void act(() => plannedSprints.planTicket(tk.id, plan.id, token, e), t`Couldn’t size “${tk.title}”. Please try again.`)} />
                   </div>
                 )}
                 <Button size="sm" variant="ghost" disabled={busy}
-                  onClick={() => act(() => plannedSprints.planTicket(t.id, null, token), `Couldn’t move “${t.title}” out. Please try again.`)}>
-                  Move out
+                  onClick={() => act(() => plannedSprints.planTicket(tk.id, null, token), t`Couldn’t move “${tk.title}” out. Please try again.`)}>
+                  <Trans>Move out</Trans>
                 </Button>
               </li>
             ))}
@@ -241,11 +244,12 @@ function TicketTitle({ ticket, onOpen, className = '' }: { ticket: { id: string;
 
 // PlannedGoal edits a planned sprint's goal in place: saved when the field loses focus or on Enter.
 function PlannedGoal({ plan, busy, save }: { plan: PlannedSprint; busy: boolean; save: (goal: string) => Promise<void> }) {
+  const { t } = useLingui();
   const [goal, setGoal] = useState(plan.goal ?? '');
   const commit = () => { if (goal.trim() !== (plan.goal ?? '')) void save(goal.trim()); };
   return (
     <Input
-      value={goal} maxLength={GOAL_MAX} disabled={busy} aria-label={`Sprint ${plan.number} goal`} placeholder="Goal for this sprint (optional)"
+      value={goal} maxLength={GOAL_MAX} disabled={busy} aria-label={t`Sprint ${plan.number} goal`} placeholder={t`Goal for this sprint (optional)`}
       onChange={(e) => setGoal(e.target.value)} onBlur={commit}
       onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); commit(); } }}
     />

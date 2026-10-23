@@ -1,5 +1,7 @@
 'use client';
 
+import { msg } from '@lingui/core/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { SearchIcon } from 'lucide-react';
@@ -10,14 +12,17 @@ import { PriorityBadge } from '@/components/board/priority-badge';
 import { TypeBadge } from '@/components/ticket-type';
 import { TicketKey, ticketPath } from '@/components/ticket/ticket-key';
 import { CopyButton } from '@/components/copy-link';
+import { shownLabel } from '@/lib/people';
 import { useToken } from '@/lib/use-token';
+import type { MessageDescriptor } from '@lingui/core';
 import { organization, projects, tickets, type Assignee, type Project, type TicketSearchResult, type TicketType } from '@/lib/api';
 
-const TYPES: { value: TicketType; label: string }[] = [
-  { value: 'bug', label: 'Bugs' }, { value: 'feature', label: 'Features' }, { value: 'task', label: 'Tasks' },
+const TYPES: { value: TicketType; label: MessageDescriptor }[] = [
+  { value: 'bug', label: msg`Bugs` }, { value: 'feature', label: msg`Features` }, { value: 'task', label: msg`Tasks` },
 ];
 
 export function TicketSearch() {
+  const { t, i18n } = useLingui();
   const token = useToken();
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -47,7 +52,7 @@ export function TicketSearch() {
         setActive(0);
       }
     } catch {
-      if (request === requestId.current) setError('Couldn’t search tickets. Please try again.');
+      if (request === requestId.current) setError(t`Couldn’t search tickets. Please try again.`);
     } finally {
       if (request === requestId.current) setLoading(false);
     }
@@ -102,40 +107,40 @@ export function TicketSearch() {
 
   return (
     <>
-      <Button type="button" size="sm" variant="outline" aria-label="Search tickets (Ctrl+K)" onClick={() => setOpen(true)}>
-        <SearchIcon aria-hidden className="sm:hidden" /><span className="hidden sm:inline">Search</span> <kbd className="ml-1 hidden text-xs text-muted-foreground sm:inline">⌘K</kbd>
+      <Button type="button" size="sm" variant="outline" aria-label={t`Search tickets (Ctrl+K)`} onClick={() => setOpen(true)}>
+        <SearchIcon aria-hidden className="sm:hidden" /><span className="hidden sm:inline"><Trans>Search</Trans></span> <kbd className="ml-1 hidden text-xs text-muted-foreground sm:inline">⌘K</kbd>
       </Button>
       <Dialog open={open} onOpenChange={(next) => { setOpen(next); if (!next) setQuery(''); }}>
         <DialogContent className="top-[12%] max-h-[76vh] translate-y-0 overflow-hidden p-0 sm:max-w-2xl">
           <DialogHeader className="px-4 pt-4">
-            <DialogTitle>Search tickets</DialogTitle>
-            <DialogDescription>Search titles, details, comments, or enter a ticket key or number, such as TL-123 or 123.</DialogDescription>
+            <DialogTitle><Trans>Search tickets</Trans></DialogTitle>
+            <DialogDescription><Trans>Search titles, details, comments, or enter a ticket key or number, such as TL-123 or 123.</Trans></DialogDescription>
           </DialogHeader>
           <div className="grid gap-3 px-4">
-            <Input autoFocus role="combobox" aria-expanded="true" aria-autocomplete="list" value={query} onChange={(event) => setQuery(event.target.value)} onKeyDown={onInputKeyDown} placeholder="Search tickets…" aria-label="Search tickets" aria-controls="ticket-search-results" aria-activedescendant={results[active] ? `search-result-${results[active].id}` : undefined} />
+            <Input autoFocus role="combobox" aria-expanded="true" aria-autocomplete="list" value={query} onChange={(event) => setQuery(event.target.value)} onKeyDown={onInputKeyDown} placeholder={t`Search tickets…`} aria-label={t`Search tickets`} aria-controls="ticket-search-results" aria-activedescendant={results[active] ? `search-result-${results[active].id}` : undefined} />
             <div className="flex flex-wrap items-center gap-2">
-              <select aria-label="Filter by project" className="h-8 rounded-lg border border-input bg-background px-2 text-sm" value={project} onChange={(event) => setProject(event.target.value)}>
-                <option value="">All projects</option>
+              <select aria-label={t`Filter by project`} className="h-8 rounded-lg border border-input bg-background px-2 text-sm" value={project} onChange={(event) => setProject(event.target.value)}>
+                <option value="">{t`All projects`}</option>
                 {projectOptions.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
               </select>
-              <div role="group" aria-label="Filter by ticket type" className="flex gap-1">
+              <div role="group" aria-label={t`Filter by ticket type`} className="flex gap-1">
                 {TYPES.map(({ value, label }) => (
-                  <Button key={value} type="button" size="sm" variant={types.includes(value) ? 'secondary' : 'ghost'} aria-pressed={types.includes(value)} onClick={() => setTypes((current) => current.includes(value) ? current.filter((item) => item !== value) : [...current, value])}>{label}</Button>
+                  <Button key={value} type="button" size="sm" variant={types.includes(value) ? 'secondary' : 'ghost'} aria-pressed={types.includes(value)} onClick={() => setTypes((current) => current.includes(value) ? current.filter((item) => item !== value) : [...current, value])}>{i18n._(label)}</Button>
                 ))}
               </div>
-              <select aria-label="Filter by assignee" className="h-8 rounded-lg border border-input bg-background px-2 text-sm" value={assignee} onChange={(event) => setAssignee(event.target.value)}>
-                <option value="">Any assignee</option>
-                <option value="me">Assigned to me</option>
-                <option value="unassigned">Unassigned</option>
-                {assigneeChoices(assigneeOptions, me).map((person) => <option key={person.id} value={person.id}>{person.label}</option>)}
+              <select aria-label={t`Filter by assignee`} className="h-8 rounded-lg border border-input bg-background px-2 text-sm" value={assignee} onChange={(event) => setAssignee(event.target.value)}>
+                <option value="">{t`Any assignee`}</option>
+                <option value="me">{t`Assigned to me`}</option>
+                <option value="unassigned">{t`Unassigned`}</option>
+                {assigneeChoices(assigneeOptions, me).map((person) => <option key={person.id} value={person.id}>{shownLabel(i18n, person)}</option>)}
               </select>
-              {(project || types.length || assignee) ? <Button type="button" size="sm" variant="link" onClick={() => { setProject(''); setTypes([]); setAssignee(''); }}>Clear filters</Button> : null}
+              {(project || types.length || assignee) ? <Button type="button" size="sm" variant="link" onClick={() => { setProject(''); setTypes([]); setAssignee(''); }}><Trans>Clear filters</Trans></Button> : null}
             </div>
           </div>
-          <div id="ticket-search-results" role="listbox" aria-label="Ticket search results" className="max-h-[45vh] overflow-y-auto border-t px-2 py-2">
+          <div id="ticket-search-results" role="listbox" aria-label={t`Ticket search results`} className="max-h-[45vh] overflow-y-auto border-t px-2 py-2">
             <SearchResults results={results} loading={loading} error={error} active={active} onChoose={choose} onActive={setActive} />
           </div>
-          <p className="border-t px-4 py-2 text-xs text-muted-foreground">↑↓ to move · Enter to open · Esc to close</p>
+          <p className="border-t px-4 py-2 text-xs text-muted-foreground"><Trans>↑↓ to move · Enter to open · Esc to close</Trans></p>
         </DialogContent>
       </Dialog>
     </>
@@ -151,11 +156,12 @@ export function SearchResults({ results, loading, error, active, onChoose, onAct
   results: TicketSearchResult[]; loading: boolean; error: string; active: number;
   onChoose: (ticket: TicketSearchResult) => void; onActive: (index: number) => void;
 }) {
+  const { t } = useLingui();
   return (
     <>
       {error ? <p role="alert" className="p-3 text-sm text-destructive">{error}</p>
-        : loading && results.length === 0 ? <p role="status" className="p-3 text-sm text-muted-foreground">Searching…</p>
-        : results.length === 0 ? <p className="p-3 text-sm text-muted-foreground">No tickets match this search.</p>
+        : loading && results.length === 0 ? <p role="status" className="p-3 text-sm text-muted-foreground"><Trans>Searching…</Trans></p>
+        : results.length === 0 ? <p className="p-3 text-sm text-muted-foreground"><Trans>No tickets match this search.</Trans></p>
         : results.map((ticket, index) => (
           <div key={ticket.id} className={`flex items-center gap-2 rounded-md px-2 py-1 ${active === index ? 'bg-accent' : ''}`}>
             <button id={`search-result-${ticket.id}`} type="button" role="option" aria-selected={active === index} className="flex min-w-0 flex-1 items-start gap-2 rounded-sm py-2 text-left" onMouseEnter={() => onActive(index)} onClick={() => onChoose(ticket)}>
@@ -163,12 +169,12 @@ export function SearchResults({ results, loading, error, active, onChoose, onAct
               <span className="min-w-0 flex-1">
                 <span className="block truncate font-medium">{ticket.title}</span>
                 {ticket.snippet && <span className="block truncate text-xs text-muted-foreground">{ticket.snippet}</span>}
-                <span className="block truncate text-xs text-muted-foreground">{ticket.project_name} · {ticket.board_name ? `${ticket.board_name}${ticket.column_name ? ` · ${ticket.column_name}` : ''}` : 'Backlog'}</span>
+                <span className="block truncate text-xs text-muted-foreground">{ticket.project_name} · {ticket.board_name ? `${ticket.board_name}${ticket.column_name ? ` · ${ticket.column_name}` : ''}` : t`Backlog`}</span>
               </span>
               {ticket.type && <TypeBadge type={ticket.type} />}
               <PriorityBadge priority={ticket.priority} hideDefault />
             </button>
-            {ticket.key && <CopyButton value={ticket.key} label="Copy key" size="sm" ariaLabel={`Copy ticket key ${ticket.key}`} />}
+            {ticket.key && <CopyButton value={ticket.key} label={t`Copy key`} size="sm" ariaLabel={t`Copy ticket key ${ticket.key}`} />}
           </div>
         ))}
     </>

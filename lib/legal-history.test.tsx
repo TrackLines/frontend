@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { changes, current, HISTORY, longDate, previousOf, versionOf, type LegalDoc } from './legal-history';
 import { TERMS } from './terms';
 import { PRIVACY } from './privacy';
@@ -7,6 +7,7 @@ import { HistoryList, VersionPage } from '@/components/legal-history';
 import { LegalPage } from '@/components/legal-page';
 import { GET } from '@/app/legal-versions.json/route';
 import { notificationHref, notificationLine } from './notifications';
+import { i18nFor } from './i18n';
 
 // PUBLISHED pins every published version's text. Published versions are never edited: a change is a
 // new version (lib/legal-history.ts), whose fingerprint is added here when it's published.
@@ -68,7 +69,7 @@ test('the backend’s list of versions, and the bell’s notice', async () => {
   const list = await GET().json();
   expect(list).toEqual([{ doc: 'terms', version: '2026-10-17', summary: 'First published version.' }, { doc: 'privacy', version: '2026-10-17', summary: 'First published version.' }]);
   const notice = { kind: 'legal', actor: '', text: 'We’ve updated our Terms of service (from 2026-11-20): Downtime credit now counts short outages.', ticket_id: null, ticket_key: null, board_id: null, link: '/terms/2026-11-20' };
-  expect(notificationLine(notice, [])).toBe(notice.text); // not "Someone We've updated…"
+  expect(notificationLine(i18nFor('en'), notice, [])).toBe(notice.text); // not "Someone We've updated…"
   expect(notificationHref(notice)).toBe('/terms/2026-11-20');
   expect(notificationHref({ ...notice, link: '//evil.example/x' })).toBeNull(); // only pages on this site
   expect(notificationHref({ ...notice, link: '/\\evil.example/x' })).toBeNull(); // browsers read /\ as // (audit)

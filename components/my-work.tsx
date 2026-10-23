@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useRef, useState } from 'react';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
 import { PriorityBadge } from '@/components/board/priority-badge';
@@ -21,6 +22,7 @@ const ALL = '__all';
 // MyWork: my tickets across every board and project in the org, most recently changed first — those
 // assigned to me, or (Created by me tab) those I raised. Open by default; done work on request.
 export function MyWork({ token, initialMode = 'assigned' }: { token: string; initialMode?: WorkMode }) {
+  const { t, i18n } = useLingui();
   const [mode, setMode] = useState<WorkMode>(initialMode);
   const [items, setItems] = useState<TicketSearchResult[] | null>(null);
   const [total, setTotal] = useState(0);
@@ -57,38 +59,38 @@ export function MyWork({ token, initialMode = 'assigned' }: { token: string; ini
     <div className="grid gap-4">
       <Tabs value={mode} onValueChange={(v) => setMode(v as WorkMode)}>
         <TabsList>
-          <TabsTrigger value="assigned">Assigned to me</TabsTrigger>
-          <TabsTrigger value="created">Created by me</TabsTrigger>
+          <TabsTrigger value="assigned"><Trans>Assigned to me</Trans></TabsTrigger>
+          <TabsTrigger value="created"><Trans>Created by me</Trans></TabsTrigger>
         </TabsList>
       </Tabs>
       <div className="flex flex-wrap items-center gap-2">
-        <Select items={{ [ALL]: 'All projects', ...Object.fromEntries(projectList.map((p) => [p.id, p.name])) }} value={project || ALL}
+        <Select items={{ [ALL]: t`All projects`, ...Object.fromEntries(projectList.map((p) => [p.id, p.name])) }} value={project || ALL}
           onValueChange={(v) => { setProject(!v || v === ALL ? '' : String(v)); setBoard(''); }}>
-          <SelectTrigger size="sm" aria-label="Filter by project"><SelectValue /></SelectTrigger>
+          <SelectTrigger size="sm" aria-label={t`Filter by project`}><SelectValue /></SelectTrigger>
           <SelectContent>
-            <SelectItem value={ALL}>All projects</SelectItem>
+            <SelectItem value={ALL}><Trans>All projects</Trans></SelectItem>
             {projectList.map((p) => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}
           </SelectContent>
         </Select>
-        <Select items={{ [ALL]: 'All boards', ...Object.fromEntries(boards.map((b) => [b.id, b.name])) }} value={board || ALL}
+        <Select items={{ [ALL]: t`All boards`, ...Object.fromEntries(boards.map((b) => [b.id, b.name])) }} value={board || ALL}
           onValueChange={(v) => setBoard(!v || v === ALL ? '' : String(v))}>
-          <SelectTrigger size="sm" aria-label="Filter by board"><SelectValue /></SelectTrigger>
+          <SelectTrigger size="sm" aria-label={t`Filter by board`}><SelectValue /></SelectTrigger>
           <SelectContent>
-            <SelectItem value={ALL}>All boards</SelectItem>
+            <SelectItem value={ALL}><Trans>All boards</Trans></SelectItem>
             {boards.map((b) => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
           </SelectContent>
         </Select>
         <PriorityFilter priorities={priorities} onPrioritiesChange={setPriorities} />
         <Button size="sm" variant={includeDone ? 'secondary' : 'ghost'} aria-pressed={includeDone} onClick={() => setIncludeDone((d) => !d)}>
-          Include done
+          <Trans>Include done</Trans>
         </Button>
       </div>
       <MyWorkView items={items} failed={failed} filtered={!!project || !!board || priorities.length > 0}
-        empty={mode === 'created' ? 'You haven’t created any tickets yet.' : 'Nothing assigned to you right now.'} />
-      {items && countLabel(items.length, total) && (
+        empty={mode === 'created' ? t`You haven’t created any tickets yet.` : t`Nothing assigned to you right now.`} />
+      {items && countLabel(i18n, items.length, total) && (
         <div className="flex items-center gap-3">
-          <Button variant="outline" onClick={() => void load(page + 1)}>Load more</Button>
-          <span className="text-sm text-muted-foreground">Showing {countLabel(items.length, total)}</span>
+          <Button variant="outline" onClick={() => void load(page + 1)}><Trans>Load more</Trans></Button>
+          <span className="text-sm text-muted-foreground">{countLabel(i18n, items.length, total)}</span>
         </div>
       )}
     </div>
@@ -96,36 +98,37 @@ export function MyWork({ token, initialMode = 'assigned' }: { token: string; ini
 }
 
 // MyWorkView: my tickets grouped by project and board (pure, for tests).
-export function MyWorkView({ items, failed, filtered, empty = 'Nothing assigned to you right now.' }: {
+export function MyWorkView({ items, failed, filtered, empty }: {
   items: TicketSearchResult[] | null; failed: boolean; filtered: boolean; empty?: string;
 }) {
-  if (failed) return <p role="alert" className="text-sm text-destructive">Couldn&apos;t load your work. Please try again.</p>;
-  if (items === null) return <p role="status" className="text-sm text-muted-foreground">Loading your work…</p>;
+  const { t, i18n } = useLingui();
+  if (failed) return <p role="alert" className="text-sm text-destructive"><Trans>Couldn&apos;t load your work. Please try again.</Trans></p>;
+  if (items === null) return <p role="status" className="text-sm text-muted-foreground"><Trans>Loading your work…</Trans></p>;
   if (items.length === 0) {
     return (
       <p className="rounded-xl border border-dashed p-8 text-center text-muted-foreground">
-        {filtered ? 'Nothing of yours matches these filters.' : empty}
+        {filtered ? t`Nothing of yours matches these filters.` : empty ?? t`Nothing assigned to you right now.`}
       </p>
     );
   }
   return (
     <div className="grid gap-6">
-      {groupWork(items).map((g) => (
+      {groupWork(i18n, items).map((g) => (
         <section key={g.project} aria-label={g.project} className="grid gap-3">
           <h2 className="text-lg font-semibold">{g.project}</h2>
           {g.boards.map((b) => (
             <div key={b.name} className="grid gap-1">
               <h3 className="text-sm font-medium text-muted-foreground">{b.name}</h3>
               <ul className="divide-y rounded-xl border">
-                {b.tickets.map((t) => (
-                  <li key={t.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2.5 text-sm">
-                    <TicketKey value={t.key} />
-                    <Link href={ticketPath(t)} className="min-w-0 flex-1 font-medium hover:underline">{t.title}</Link>
-                    {t.type && t.type !== 'task' && <TypeBadge type={t.type} />}
-                    <PriorityBadge priority={t.priority} hideDefault />
-                    {t.blocked && <BlockedBadge />}
-                    {t.done ? <Badge variant="outline">Done</Badge> : <Badge variant="secondary">{t.column_name ?? 'Backlog'}</Badge>}
-                    {t.updated_at && <span className="text-xs text-muted-foreground"><When iso={t.updated_at} /></span>}
+                {b.tickets.map((tk) => (
+                  <li key={tk.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2.5 text-sm">
+                    <TicketKey value={tk.key} />
+                    <Link href={ticketPath(tk)} className="min-w-0 flex-1 font-medium hover:underline">{tk.title}</Link>
+                    {tk.type && tk.type !== 'task' && <TypeBadge type={tk.type} />}
+                    <PriorityBadge priority={tk.priority} hideDefault />
+                    {tk.blocked && <BlockedBadge />}
+                    {tk.done ? <Badge variant="outline"><Trans>Done</Trans></Badge> : <Badge variant="secondary">{tk.column_name ?? t`Backlog`}</Badge>}
+                    {tk.updated_at && <span className="text-xs text-muted-foreground"><When iso={tk.updated_at} /></span>}
                   </li>
                 ))}
               </ul>

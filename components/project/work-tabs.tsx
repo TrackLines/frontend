@@ -1,5 +1,6 @@
 'use client';
 
+import { Trans } from '@lingui/react/macro';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Backlog } from '@/components/project/backlog';
 import { Epics } from '@/components/project/epics';
@@ -20,9 +21,9 @@ export function WorkTabs({ projectId, boards, token, roadmaps }: { projectId: st
   return (
     <Tabs value={tab} onValueChange={(v) => setTab(v as WorkTab)} className="mt-10 gap-4">
       <TabsList>
-        <TabsTrigger value="backlog">Backlog</TabsTrigger>
-        <TabsTrigger value="epics">Epics</TabsTrigger>
-        <TabsTrigger value="roadmaps">Roadmaps</TabsTrigger>
+        <TabsTrigger value="backlog"><Trans>Backlog</Trans></TabsTrigger>
+        <TabsTrigger value="epics"><Trans>Epics</Trans></TabsTrigger>
+        <TabsTrigger value="roadmaps"><Trans>Roadmaps</Trans></TabsTrigger>
       </TabsList>
       <TabsContent value="backlog" keepMounted>
         <Backlog projectId={projectId} boards={boards} token={token} />

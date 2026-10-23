@@ -1,3 +1,5 @@
+import type { I18n } from '@lingui/core';
+import { msg, plural } from '@lingui/core/macro';
 import type { TicketSearchResult } from './api';
 
 export type WorkMode = 'assigned' | 'created';
@@ -10,12 +12,12 @@ export type WorkGroup = { project: string; boards: { name: string; tickets: Tick
 
 // groupWork puts my tickets under their project, then their board (or the backlog), keeping the
 // order they came in (most recently changed first) for both the groups and the tickets.
-export function groupWork(tickets: TicketSearchResult[]): WorkGroup[] {
+export function groupWork(i18n: I18n, tickets: TicketSearchResult[]): WorkGroup[] {
   const groups: WorkGroup[] = [];
   for (const t of tickets) {
     let g = groups.find((x) => x.project === t.project_name);
     if (!g) groups.push((g = { project: t.project_name, boards: [] }));
-    const board = t.board_name ?? 'Backlog';
+    const board = t.board_name ?? i18n._(msg`Backlog`);
     let b = g.boards.find((x) => x.name === board);
     if (!b) g.boards.push((b = { name: board, tickets: [] }));
     b.tickets.push(t);
@@ -30,7 +32,7 @@ export function boardOptions(tickets: TicketSearchResult[]): { id: string; name:
   return [...seen].map(([id, name]) => ({ id, name })).sort((a, b) => a.name.localeCompare(b.name));
 }
 
-// countLabel: "5 of 9 tickets" when a list shows only part of what matches; null when it shows it all.
-export function countLabel(shown: number, total: number): string | null {
-  return total > shown ? `${shown} of ${total} tickets` : null;
+// countLabel: "Showing 5 of 9 tickets" when a list shows only part of what matches; null when it shows it all.
+export function countLabel(i18n: I18n, shown: number, total: number): string | null {
+  return total > shown ? i18n._(msg`Showing ${shown} of ${plural(total, { one: '# ticket', other: '# tickets' })}`) : null;
 }

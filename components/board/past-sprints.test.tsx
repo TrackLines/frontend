@@ -1,5 +1,6 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { i18nFor } from '@/lib/i18n';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { PastSprintList, SprintDetailBody, sprintResult } from './past-sprints';
 import { CLOSE_NEXT, SprintBar, closeSummary } from './sprint-bar';
 
@@ -41,17 +42,17 @@ test('the past sprints list shows what each sprint finished of what it held', ()
 });
 
 test('sprint results read naturally in points or tickets', () => {
-  expect(sprintResult('tickets', 3, 4)).toBe('3 of 4 tickets done');
-  expect(sprintResult('tickets', 1, 1)).toBe('1 of 1 ticket done');
-  expect(sprintResult('points', 1, null)).toBe('1 point done');
-  expect(sprintResult('points', 2.5, 7.25)).toBe('2.5 of 7.3 points done');
+  expect(sprintResult('tickets', 3, 4, i18nFor('en'))).toBe('3 of 4 tickets done');
+  expect(sprintResult('tickets', 1, 1, i18nFor('en'))).toBe('1 of 1 ticket done');
+  expect(sprintResult('points', 1, null, i18nFor('en'))).toBe('1 point done');
+  expect(sprintResult('points', 2.5, 7.25, i18nFor('en'))).toBe('2.5 of 7.3 points done');
 });
 
 test('closing by hand says the next sprint waits, so its length can be chosen', () => {
-  expect(closeSummary(3, 2, 1, 'Done')).toEqual([
+  expect(closeSummary(3, 2, 1, 'Done', i18nFor('en'))).toEqual([
     { count: 2, text: 'unfinished tickets stay on the board' },
     { count: 1, text: 'in “Done” stays with sprint 3' },
   ]);
-  expect(closeSummary(3, 1, 0, 'Shipped')[0].text).toBe('unfinished ticket stays on the board');
-  expect(CLOSE_NEXT).toContain('won’t start until you start it');
+  expect(closeSummary(3, 1, 0, 'Shipped', i18nFor('en'))[0].text).toBe('unfinished ticket stays on the board');
+  expect(i18nFor('en')._(CLOSE_NEXT)).toContain('won’t start until you start it');
 });

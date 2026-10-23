@@ -1,3 +1,5 @@
+import type { I18n } from '@lingui/core';
+import { msg } from '@lingui/core/macro';
 import type { TicketDetail } from '@/lib/api';
 
 type Where = Pick<TicketDetail, 'board_id' | 'project_id' | 'done'>;
@@ -10,9 +12,9 @@ export const ticketActions = (t: Where) => ({ sendToBacklog: Boolean(t.board_id)
 export const afterDelete = (t: Where) => (t.board_id ? `/boards/${t.board_id}` : `/projects/${t.project_id}#backlog`);
 
 // closedAs: how a finished ticket's line reads, or null while it's open.
-export function closedAs(t: Pick<TicketDetail, 'done_at' | 'resolution' | 'resolved_at'>): string | null {
+export function closedAs(i18n: I18n, t: Pick<TicketDetail, 'done_at' | 'resolution' | 'resolved_at'>): string | null {
   if (!t.done_at) return null;
-  if (t.resolution === 'duplicate') return 'marked duplicate';
-  if (t.resolution === 'wont_do') return 'closed as won’t do';
-  return t.resolved_at ? 'resolved' : 'done';
+  if (t.resolution === 'duplicate') return i18n._(msg`marked duplicate`);
+  if (t.resolution === 'wont_do') return i18n._(msg`closed as won’t do`);
+  return t.resolved_at ? i18n._(msg`resolved`) : i18n._(msg`done`);
 }

@@ -1,4 +1,5 @@
 import { expect, test } from 'bun:test';
+import { i18nFor } from '@/lib/i18n';
 import { assigneeItems } from './assignee-select';
 
 const list = [
@@ -8,11 +9,11 @@ const list = [
 ];
 
 test('choices: unassigned, people and explicitly labelled AI keys, never service keys', () => {
-  expect(assigneeItems(list, null)).toEqual({ __unassigned: 'Unassigned', user_1: 'You', codex: 'codex · AI' });
+  expect(assigneeItems(i18nFor('en'), list, null)).toEqual({ __unassigned: 'Unassigned', user_1: 'You', codex: 'codex · AI' });
 });
 
 test('keeps a current assignee that is no longer a choice', () => {
-  expect(assigneeItems(list, 'hermes').hermes).toBe('hermes');
-  expect(assigneeItems(list, 'legacy').legacy).toBe('Imported');
-  expect(Object.keys(assigneeItems(list, 'codex'))).toHaveLength(3);
+  expect(assigneeItems(i18nFor('en'), list, 'hermes').hermes).toBe('hermes');
+  expect(assigneeItems(i18nFor('en'), list, 'legacy').legacy).toBe('Imported');
+  expect(Object.keys(assigneeItems(i18nFor('en'), list, 'codex'))).toHaveLength(3);
 });

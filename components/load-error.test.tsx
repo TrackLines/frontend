@@ -3,7 +3,7 @@ import { mockDialog } from '@/test/mock-dialog';
 import type { Roadmap } from '@/lib/api';
 
 mockDialog();
-const { renderToStaticMarkup } = await import('react-dom/server');
+const { render: renderToStaticMarkup } = await import('@/test/i18n');
 const { LoadError } = await import('./load-error');
 const { RoadmapRow } = await import('./project/roadmap-row');
 const { atProjectLimit, UpgradeDialog } = await import('./billing/upgrade-dialog');
@@ -25,11 +25,12 @@ test('a roadmap row: visibility, edit (for those who can manage it, TL-413), vie
   for (const s of ['Q4', 'href="/roadmaps/r1/edit"', 'href="/r/r1"', 'Copy link']) expect(html).toContain(s);
 });
 
-test('the plan’s project limit (402) opens the upgrade offer; other errors don’t', () => {
+test('the plan’s project limit (402) opens the upgrade offer; other errors don’t', async () => {
   expect(atProjectLimit(new ApiError(402, 'limit'))).toBe(true);
   expect(atProjectLimit(new ApiError(500, 'oops'))).toBe(false);
   expect(atProjectLimit(new Error('network'))).toBe(false);
-  const html = renderToStaticMarkup(<UpgradeDialog open onOpenChange={() => {}} token="tok" plan={{ plan: 'free', paid: false, project_limit: 1 }} />);
+  const { render } = await import('@/test/i18n');
+  const html = render(<UpgradeDialog open onOpenChange={() => {}} token="tok" plan={{ plan: 'free', paid: false, project_limit: 1 }} />);
   for (const s of ['Your organization’s Free plan includes 1 project', '>Upgrade to Pro<', 'Not now']) expect(html).toContain(s);
 });
 

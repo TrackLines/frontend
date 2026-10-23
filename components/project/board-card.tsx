@@ -1,12 +1,15 @@
 import Link from 'next/link';
 import { sprintStatus } from '@/components/board/sprint-status';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useLingui } from '@lingui/react';
+import { Trans } from '@lingui/react/macro';
 import { ago } from '@/lib/ago';
 import type { Board } from '@/lib/api';
 import { DoneBar, UrgentBadge } from './project-card';
 
 // BoardCard is one team board on a project page: urgent count, sprint, where the work is, progress.
 export function BoardCard({ board: b }: { board: Board }) {
+  const { i18n } = useLingui();
   const st = b.stats;
   return (
     <li>
@@ -22,18 +25,18 @@ export function BoardCard({ board: b }: { board: Board }) {
           {st && (
             <CardContent className="mt-auto grid gap-3 text-sm">
               {st.sprint_number !== null && (
-                <p className="font-medium">Sprint {st.sprint_number}{st.sprint_ends_at && <span className="font-normal text-muted-foreground"> · {sprintStatus(st.sprint_ends_at).label}</span>}</p>
+                <p className="font-medium"><Trans>Sprint {st.sprint_number}</Trans>{st.sprint_ends_at && <span className="font-normal text-muted-foreground"> · {sprintStatus(st.sprint_ends_at, i18n).label}</span>}</p>
               )}
               {st.open + st.done === 0 ? (
-                <p className="text-muted-foreground">No tickets yet.</p>
+                <p className="text-muted-foreground"><Trans>No tickets yet.</Trans></p>
               ) : (
                 <div className="flex flex-wrap gap-x-4 gap-y-1 text-muted-foreground">
-                  <span>{st.open - st.in_progress} to do</span>
-                  <span>{st.in_progress} in progress</span>
+                  <span><Trans>{st.open - st.in_progress} to do</Trans></span>
+                  <span><Trans>{st.in_progress} in progress</Trans></span>
                 </div>
               )}
               <DoneBar done={st.done} total={st.open + st.done} />
-              <p className="text-xs text-muted-foreground">Active {ago(st.active)}</p>
+              <p className="text-xs text-muted-foreground"><Trans>Active {ago(i18n, st.active)}</Trans></p>
             </CardContent>
           )}
         </Card>

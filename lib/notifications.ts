@@ -1,3 +1,5 @@
+import type { I18n } from '@lingui/core';
+import { msg } from '@lingui/core/macro';
 import type { AppNotification, Assignee } from './api';
 import { generatedAgent } from './people';
 
@@ -11,17 +13,17 @@ export function notificationHref(n: Pick<AppNotification, 'ticket_id' | 'ticket_
 }
 
 // Who did it, by name: people from the org's member list, agents by their key name.
-export function actorName(actor: string, people: Assignee[]): string {
-  if (!actor) return 'Someone';
+export function actorName(i18n: I18n, actor: string, people: Assignee[]): string {
+  if (!actor) return i18n._(msg`Someone`);
   const p = people.find((x) => x.id === actor);
-  if (p) return p.label === 'You' ? 'You' : p.label;
-  return actor.startsWith('user_') ? 'Someone' : generatedAgent(actor) ?? actor;
+  if (p) return p.label === 'You' ? i18n._(msg`You`) : p.label;
+  return actor.startsWith('user_') ? i18n._(msg`Someone`) : generatedAgent(i18n, actor) ?? actor;
 }
 
 // The line a notification reads as: "Ava assigned you TL-12: Fix login".
-export function notificationLine(n: Pick<AppNotification, 'actor' | 'text'> & { kind?: string }, people: Assignee[]): string {
+export function notificationLine(i18n: I18n, n: Pick<AppNotification, 'actor' | 'text'> & { kind?: string }, people: Assignee[]): string {
   if (n.kind === 'legal') return n.text; // from TrackLin.es itself: "We've updated our Terms of service…" (TL-424)
-  return `${actorName(n.actor, people)} ${n.text}`;
+  return `${actorName(i18n, n.actor, people)} ${n.text}`; // text comes from the backend, in English
 }
 
 // newSince: unread notifications created after `since` (to pop up on the desktop), oldest first.

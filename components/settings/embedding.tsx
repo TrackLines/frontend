@@ -1,5 +1,7 @@
 'use client';
 
+import { plural } from '@lingui/core/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
 import { CopyButton } from '@/components/copy-link';
 import { Button } from '@/components/ui/button';
@@ -27,22 +29,23 @@ type Data = { origins: EmbedOrigin[]; can_manage: boolean };
 // the opt-in — a widget only works from an origin that's on it (TL-494).
 export function EmbeddingSettings() {
   const token = useToken();
+  const { t } = useLingui();
   const [data, setData] = useState<Data | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const signedIn = token !== null;
   useEffect(() => {
-    if (token) embed.origins(token).then(setData, () => setError('Couldn’t load embedding settings.'));
+    if (token) embed.origins(token).then(setData, () => setError(t`Couldn’t load embedding settings.`));
   }, [signedIn]);
 
   async function add(raw: string) {
     const origin = normalizeOrigin(raw);
     if (!origin) {
-      setError('Enter an origin like https://example.com.');
+      setError(t`Enter an origin like https://example.com.`);
       return false;
     }
     if (data?.origins.some((o) => o.origin === origin)) {
-      setError('That origin is already allowed.');
+      setError(t`That origin is already allowed.`);
       return false;
     }
     setBusy(true);
@@ -52,7 +55,7 @@ export function EmbeddingSettings() {
       setData((d) => (d ? { ...d, origins: [...d.origins, created].sort((a, b) => a.origin.localeCompare(b.origin)) } : d));
       return true;
     } catch {
-      setError('Couldn’t add that origin. Please try again.');
+      setError(t`Couldn’t add that origin. Please try again.`);
       return false;
     } finally {
       setBusy(false);
@@ -66,7 +69,7 @@ export function EmbeddingSettings() {
       await embed.removeOrigin(id, token!);
       setData((d) => (d ? { ...d, origins: d.origins.filter((o) => o.id !== id) } : d));
     } catch {
-      setError('Couldn’t remove that origin. Please try again.');
+      setError(t`Couldn’t remove that origin. Please try again.`);
     } finally {
       setBusy(false);
     }
@@ -78,7 +81,7 @@ export function EmbeddingSettings() {
   const [keyBusy, setKeyBusy] = useState(false);
   const [keyError, setKeyError] = useState('');
   useEffect(() => {
-    if (token) embed.keys(token).then(setKeys, () => setKeyError('Couldn’t load embed keys.'));
+    if (token) embed.keys(token).then(setKeys, () => setKeyError(t`Couldn’t load embed keys.`));
   }, [signedIn]);
 
   async function createKey(label: string) {
@@ -89,7 +92,7 @@ export function EmbeddingSettings() {
       setKeys((k) => (k ? { ...k, keys: [created, ...k.keys] } : k));
       return true;
     } catch {
-      setKeyError('Couldn’t create that key. Please try again.');
+      setKeyError(t`Couldn’t create that key. Please try again.`);
       return false;
     } finally {
       setKeyBusy(false);
@@ -104,7 +107,7 @@ export function EmbeddingSettings() {
       setKeys((k) => (k ? { ...k, keys: k.keys.filter((x) => x.id !== id) } : k));
       setUsage((u) => { const { [id]: _drop, ...rest } = u; return rest; });
     } catch {
-      setKeyError('Couldn’t delete that key. Please try again.');
+      setKeyError(t`Couldn’t delete that key. Please try again.`);
     } finally {
       setKeyBusy(false);
     }
@@ -140,6 +143,7 @@ export function EmbeddingView({ data, busy, error, onAdd, onRemove, origin }: {
   onRemove: (id: string) => void;
   origin?: string;
 }) {
+  const { t } = useLingui();
   const [value, setValue] = useState('');
   const site = origin ?? (typeof window === 'undefined' ? 'https://tracklin.es' : window.location.origin);
   const roadmapSnippet = `<script src="${site}/embed.js" data-roadmap="YOUR_ROADMAP_ID"></script>`;
@@ -154,24 +158,24 @@ export function EmbeddingView({ data, busy, error, onAdd, onRemove, origin }: {
   return (
     <div className="grid gap-5 text-sm">
       <p className="text-muted-foreground">
-        Put a public roadmap or your request form on your own site. A widget runs on your page and calls TrackLin.es, so
+        <Trans>Put a public roadmap or your request form on your own site. A widget runs on your page and calls TrackLin.es, so
         every site it runs on must be listed here first — otherwise the browser blocks it. Adding a site is what turns
-        embedding on.
+        embedding on.</Trans>
       </p>
 
       <section className="grid gap-2">
-        <h2 className="font-semibold">Allowed sites</h2>
+        <h2 className="font-semibold"><Trans>Allowed sites</Trans></h2>
         {data === null ? (
-          !error && <p role="status" className="text-muted-foreground">Loading…</p>
+          !error && <p role="status" className="text-muted-foreground"><Trans>Loading…</Trans></p>
         ) : data.origins.length === 0 ? (
-          <p className="text-muted-foreground">No sites yet{canManage ? '. Add one below to start embedding.' : '.'}</p>
+          <p className="text-muted-foreground">{canManage ? <Trans>No sites yet. Add one below to start embedding.</Trans> : <Trans>No sites yet.</Trans>}</p>
         ) : (
           <ul className="divide-y rounded-lg border">
             {data.origins.map((o) => (
               <li key={o.id} className="flex items-center justify-between gap-3 px-3 py-2">
                 <code className="min-w-0 break-all font-mono text-xs">{o.origin}</code>
                 {canManage && (
-                  <Button type="button" size="xs" variant="ghost" className="text-destructive" disabled={busy} onClick={() => onRemove(o.id)}>Remove</Button>
+                  <Button type="button" size="xs" variant="ghost" className="text-destructive" disabled={busy} onClick={() => onRemove(o.id)}><Trans>Remove</Trans></Button>
                 )}
               </li>
             ))}
@@ -179,19 +183,19 @@ export function EmbeddingView({ data, busy, error, onAdd, onRemove, origin }: {
         )}
         {canManage ? (
           <form className="flex flex-wrap gap-2" onSubmit={(e) => { e.preventDefault(); void submit(); }}>
-            <Input value={value} onChange={(e) => setValue(e.target.value)} placeholder="https://example.com" aria-label="Site origin" className="max-w-xs" />
-            <Button type="submit" size="sm" disabled={busy || !value.trim()}>Add site</Button>
+            <Input value={value} onChange={(e) => setValue(e.target.value)} placeholder="https://example.com" aria-label={t`Site origin`} className="max-w-xs" />
+            <Button type="submit" size="sm" disabled={busy || !value.trim()}><Trans>Add site</Trans></Button>
           </form>
         ) : (
-          data !== null && <p className="text-muted-foreground">Only organization admins can add or remove sites.</p>
+          data !== null && <p className="text-muted-foreground"><Trans>Only organization admins can add or remove sites.</Trans></p>
         )}
         {error && <p role="alert" className="text-destructive">{error}</p>}
       </section>
 
       <section className="grid gap-3">
-        <h2 className="font-semibold">Paste on your site</h2>
-        <Snippet label="Roadmap" hint="Replace YOUR_ROADMAP_ID with the roadmap’s id (it’s in the roadmap’s share link, /r/<id>)." code={roadmapSnippet} />
-        <Snippet label="Request form" hint="Replace YOUR_REQUEST_TOKEN with your form’s token (Settings → project → request form)." code={requestSnippet} />
+        <h2 className="font-semibold"><Trans>Paste on your site</Trans></h2>
+        <Snippet label={t`Roadmap`} hint={t`Replace YOUR_ROADMAP_ID with the roadmap’s id (it’s in the roadmap’s share link, /r/<id>).`} code={roadmapSnippet} />
+        <Snippet label={t`Request form`} hint={t`Replace YOUR_REQUEST_TOKEN with your form’s token (Settings → project → request form).`} code={requestSnippet} />
       </section>
     </div>
   );
@@ -208,6 +212,7 @@ export function EmbedsView({ data, usage, busy, error, onCreate, onDelete, onSho
   onShowUsage: (id: string) => void;
   origin?: string;
 }) {
+  const { t } = useLingui();
   const [label, setLabel] = useState('');
   const site = origin ?? (typeof window === 'undefined' ? 'https://tracklin.es' : window.location.origin);
   const canManage = !!data?.can_manage;
@@ -220,54 +225,56 @@ export function EmbedsView({ data, usage, busy, error, onCreate, onDelete, onSho
   return (
     <div className="grid gap-3 text-sm">
       <div>
-        <h2 className="font-semibold">Embeds &amp; usage</h2>
+        <h2 className="font-semibold"><Trans>Embeds &amp; usage</Trans></h2>
         <p className="text-muted-foreground">
-          A key labels an embed so you can see how often it’s used and on which sites. Add it to the snippet as
+          <Trans>A key labels an embed so you can see how often it’s used and on which sites. Add it to the snippet as
           <code className="mx-1 font-mono text-xs">data-key</code>. It isn’t a secret and doesn’t grant access — a site still
-          has to be in the allowed list above.
+          has to be in the allowed list above.</Trans>
         </p>
       </div>
 
       {canManage && (
         <form className="flex flex-wrap gap-2" onSubmit={(e) => { e.preventDefault(); void create(); }}>
-          <Input value={label} onChange={(e) => setLabel(e.target.value)} placeholder="Name this embed, e.g. Marketing site" aria-label="Embed name" maxLength={100} className="max-w-xs" />
-          <Button type="submit" size="sm" disabled={busy || !label.trim()}>Create key</Button>
+          <Input value={label} onChange={(e) => setLabel(e.target.value)} placeholder={t`Name this embed, e.g. Marketing site`} aria-label={t`Embed name`} maxLength={100} className="max-w-xs" />
+          <Button type="submit" size="sm" disabled={busy || !label.trim()}><Trans>Create key</Trans></Button>
         </form>
       )}
       {error && <p role="alert" className="text-destructive">{error}</p>}
 
       {data === null ? (
-        !error && <p role="status" className="text-muted-foreground">Loading…</p>
+        !error && <p role="status" className="text-muted-foreground"><Trans>Loading…</Trans></p>
       ) : data.keys.length === 0 ? (
-        <p className="text-muted-foreground">No embed keys yet{canManage ? '. Create one to track usage.' : '.'}</p>
+        <p className="text-muted-foreground">{canManage ? <Trans>No embed keys yet. Create one to track usage.</Trans> : <Trans>No embed keys yet.</Trans>}</p>
       ) : (
         <ul className="grid gap-4">
           {data.keys.map((k) => (
             <li key={k.id} className="grid gap-2 rounded-lg border p-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <span className="font-medium">{k.label || 'Untitled embed'}</span>
-                {canManage && <Button type="button" size="xs" variant="ghost" className="text-destructive" disabled={busy} onClick={() => onDelete(k.id)}>Delete</Button>}
+                <span className="font-medium">{k.label || t`Untitled embed`}</span>
+                {canManage && <Button type="button" size="xs" variant="ghost" className="text-destructive" disabled={busy} onClick={() => onDelete(k.id)}><Trans>Delete</Trans></Button>}
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <code className="min-w-0 break-all rounded bg-muted px-2 py-1 font-mono text-xs select-all">{k.key}</code>
-                <CopyButton value={k.key} label="Copy key" size="sm" ariaLabel={`Copy ${k.label || 'embed'} key`} />
+                <CopyButton value={k.key} label={t`Copy key`} size="sm" ariaLabel={k.label ? t`Copy ${k.label} key` : t`Copy embed key`} />
               </div>
               <p className="text-xs text-muted-foreground">
-                {k.hits > 0 ? `${k.hits.toLocaleString()} hit${k.hits === 1 ? '' : 's'} · ${k.origins} site${k.origins === 1 ? '' : 's'}${k.last_used ? ` · last ${k.last_used}` : ''}` : 'No hits yet.'}
+                {k.hits === 0 ? t`No hits yet.` : k.last_used
+                  ? t`${plural(k.hits, { one: '# hit', other: '# hits' })} · ${plural(k.origins, { one: '# site', other: '# sites' })} · last ${k.last_used}`
+                  : t`${plural(k.hits, { one: '# hit', other: '# hits' })} · ${plural(k.origins, { one: '# site', other: '# sites' })}`}
               </p>
               {k.hits > 0 && (
                 usage[k.id] ? (
                   <ul className="grid gap-0.5 text-xs text-muted-foreground">
-                    {usage[k.id].length === 0 ? <li>No sites recorded.</li> : usage[k.id].map((u, i) => (
+                    {usage[k.id].length === 0 ? <li><Trans>No sites recorded.</Trans></li> : usage[k.id].map((u, i) => (
                       <li key={i}><span className="font-mono">{u.origin}</span> · {u.resource} · {u.hits.toLocaleString()}</li>
                     ))}
                   </ul>
                 ) : (
-                  <Button type="button" size="xs" variant="ghost" className="justify-self-start" onClick={() => onShowUsage(k.id)}>View sites</Button>
+                  <Button type="button" size="xs" variant="ghost" className="justify-self-start" onClick={() => onShowUsage(k.id)}><Trans>View sites</Trans></Button>
                 )
               )}
-              <Snippet label="Roadmap" hint="Replace YOUR_ROADMAP_ID with the roadmap’s id (its share link, /r/<id>)." code={`<script src="${site}/embed.js" data-roadmap="YOUR_ROADMAP_ID" data-key="${k.key}"></script>`} />
-              <Snippet label="Request form" hint="Replace YOUR_REQUEST_TOKEN with your form’s token (Settings → project → request form)." code={`<script src="${site}/embed.js" data-request="YOUR_REQUEST_TOKEN" data-key="${k.key}"></script>`} />
+              <Snippet label={t`Roadmap`} hint={t`Replace YOUR_ROADMAP_ID with the roadmap’s id (its share link, /r/<id>).`} code={`<script src="${site}/embed.js" data-roadmap="YOUR_ROADMAP_ID" data-key="${k.key}"></script>`} />
+              <Snippet label={t`Request form`} hint={t`Replace YOUR_REQUEST_TOKEN with your form’s token (Settings → project → request form).`} code={`<script src="${site}/embed.js" data-request="YOUR_REQUEST_TOKEN" data-key="${k.key}"></script>`} />
             </li>
           ))}
         </ul>
@@ -277,11 +284,12 @@ export function EmbedsView({ data, usage, busy, error, onCreate, onDelete, onSho
 }
 
 function Snippet({ label, hint, code }: { label: string; hint: string; code: string }) {
+  const { t } = useLingui();
   return (
     <div className="grid gap-1.5">
       <div className="flex items-center gap-2">
         <span className="font-medium">{label}</span>
-        <CopyButton value={code} label="Copy" size="sm" ariaLabel={`Copy ${label} embed snippet`} />
+        <CopyButton value={code} label={t`Copy`} size="sm" ariaLabel={t`Copy ${label} embed snippet`} />
       </div>
       <code className="block break-all rounded bg-muted px-2 py-1 font-mono text-xs select-all">{code}</code>
       <p className="text-xs text-muted-foreground">{hint}</p>

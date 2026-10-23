@@ -10,12 +10,14 @@ import { Card } from '@/components/ui/card';
 import { OUR_REQUEST_FORM, OUR_ROADMAP } from '@/lib/our-links';
 import { billing, type PlanInfo } from '@/lib/api';
 import { formatPrice } from '@/lib/plans';
+import { serverI18n } from '@/lib/server-i18n';
 
 export default async function Home() {
   const { userId } = await auth();
   if (userId) redirect('/dashboard');
   // prices come from Stripe via the backend (TL-290); without them the plans still show their limits
-  const prices = Object.fromEntries((await billing.plans().catch(() => [] as PlanInfo[])).map((p) => [p.id, formatPrice(p.price)]));
+  const i18n = await serverI18n();
+  const prices = Object.fromEntries((await billing.plans().catch(() => [] as PlanInfo[])).map((p) => [p.id, formatPrice(i18n, p.price)]));
 
   return (
     <main>

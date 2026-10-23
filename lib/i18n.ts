@@ -20,3 +20,13 @@ export function i18nFor(locale: Locale = 'en'): I18n {
   }
   return i;
 }
+
+// dates: an Intl.DateTimeFormat in i18n's language (TL-553), cached. English keeps en-GB's day-month order.
+const formats = new Map<string, Intl.DateTimeFormat>();
+export function dates(i18n: I18n, options: Intl.DateTimeFormatOptions): Intl.DateTimeFormat {
+  const tag = i18n.locale === 'en' ? 'en-GB' : i18n.locale;
+  const key = tag + JSON.stringify(options);
+  let f = formats.get(key);
+  if (!f) formats.set(key, (f = new Intl.DateTimeFormat(tag, options)));
+  return f;
+}

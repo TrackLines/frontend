@@ -1,5 +1,6 @@
 'use client';
 
+import { Trans } from '@lingui/react/macro';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { shortLinks } from '@/lib/api';
@@ -18,7 +19,7 @@ export function CopyButton({ value, label, className, size, ariaLabel }: {
       aria-label={ariaLabel}
       onClick={() => navigator.clipboard.writeText(value).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); })}
     >
-      <span aria-live="polite">{copied ? 'Copied' : label}</span>
+      <span aria-live="polite">{copied ? <Trans>Copied</Trans> : label}</span>
     </Button>
   );
 }
@@ -57,7 +58,7 @@ export function CopyLink({ path, token, title = 'TrackLin.es', className }: { pa
   }
   return (
     <Button type="button" variant="ghost" className={className} onClick={() => void copy()}>
-      <span aria-live="polite">{copied ? 'Copied' : 'Copy link'}</span>
+      <span aria-live="polite">{copied ? <Trans>Copied</Trans> : <Trans>Copy link</Trans>}</span>
     </Button>
   );
 }

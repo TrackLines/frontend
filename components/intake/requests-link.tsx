@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { Trans } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
 import { buttonVariants } from '@/components/ui/button';
 import { intake } from '@/lib/api';
@@ -20,7 +21,7 @@ export function RequestsLinkView({ projectId, state }: { projectId: string; stat
   if (!state || (!state.open && state.waiting === 0)) return null;
   return (
     <Link href={`/projects/${projectId}/requests`} className={buttonVariants({ variant: 'outline', size: 'sm' })}>
-      Requests{state.waiting > 0 && <span className="ml-1 rounded-full bg-primary px-1.5 text-xs text-primary-foreground">{state.waiting}</span>}
+      <Trans>Requests</Trans>{state.waiting > 0 && <span className="ml-1 rounded-full bg-primary px-1.5 text-xs text-primary-foreground">{state.waiting}</span>}
     </Link>
   );
 }

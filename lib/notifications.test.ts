@@ -1,7 +1,9 @@
 import { expect, test } from 'bun:test';
 import type { AppNotification } from './api';
+import { i18nFor } from './i18n';
 import { actorName, newSince, newest, notificationHref, notificationLine } from './notifications';
 
+const en = i18nFor('en');
 const n = (over: Partial<AppNotification>): AppNotification => ({
   id: 'n', kind: 'assigned', text: 'assigned you TL-1: Fix', actor: 'user_ava', ticket_id: 't', ticket_key: 'TL-1', board_id: null,
   created_at: '2026-10-11T10:00:00Z', read_at: null, ...over,
@@ -16,9 +18,9 @@ test('links go to the ticket (by id: keys repeat across orgs, TL-276), else the 
 });
 
 test('actors read as names; agents by key name; unknown people as Someone', () => {
-  expect(notificationLine(n({}), people)).toBe('Ava Smith assigned you TL-1: Fix');
-  expect(actorName('Claude', people)).toBe('Claude');
-  expect(actorName('user_gone', people)).toBe('Someone');
+  expect(notificationLine(en, n({}), people)).toBe('Ava Smith assigned you TL-1: Fix');
+  expect(actorName(en, 'Claude', people)).toBe('Claude');
+  expect(actorName(en, 'user_gone', people)).toBe('Someone');
 });
 
 test('desktop popups: only unread ones newer than the last seen, oldest first', () => {
@@ -32,6 +34,6 @@ test('desktop popups: only unread ones newer than the last seen, oldest first', 
 test('a sprint that started over capacity reads as from Tracklines and opens its board (TL-149)', () => {
   const over = n({ kind: 'over_capacity', actor: 'Tracklines', ticket_id: null, ticket_key: null, board_id: 'b1',
     text: 'started sprint 2 on Backend over capacity: 8 points against a limit of 5.5 (velocity + 10%), from unfinished work carried over' });
-  expect(notificationLine(over, people)).toBe('Tracklines started sprint 2 on Backend over capacity: 8 points against a limit of 5.5 (velocity + 10%), from unfinished work carried over');
+  expect(notificationLine(en, over, people)).toBe('Tracklines started sprint 2 on Backend over capacity: 8 points against a limit of 5.5 (velocity + 10%), from unfinished work carried over');
   expect(notificationHref(over)).toBe('/boards/b1');
 });

@@ -1,5 +1,5 @@
 import { afterEach, expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { attachAll, PendingAttachments, type PendingFile } from './pending-attachments';
 
 const f = (key: string, name: string): PendingFile => ({ key, url: `https://x.ufs.sh/f/${key}`, name, size: 3 * 1024 * 1024, content_type: 'image/png' });

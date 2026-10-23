@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { HEALTH, MAX_NOTE, newestFirst, RoadmapUpdates, UpdateComposer, UpdatesTimeline } from './updates';
 import { NotAManager } from '@/app/roadmaps/[id]/edit/page';
 import { RoadmapRow } from '@/components/project/roadmap-row';
@@ -46,5 +46,5 @@ test('people who can’t change roadmaps see why, and no Edit links (TL-413)', a
   expect(page).toContain('{r.can_manage && <Link href={`/roadmaps/${r.id}/edit`}'); // the public view offers Edit only to managers
   expect(page).toContain('<UpdatesTimeline updates={updates} />'); // and shows the updates to every reader
   const project = await Bun.file(new URL('../../app/projects/[id]/page.tsx', import.meta.url)).text();
-  expect(project).toContain("{manageRoadmaps && <Button variant=\"outline\" onClick={() => setDialog('roadmap')}>New roadmap</Button>}");
+  expect(project).toContain("{manageRoadmaps && <Button variant=\"outline\" onClick={() => setDialog('roadmap')}><Trans>New roadmap</Trans></Button>}");
 });

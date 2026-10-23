@@ -1,6 +1,7 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { delivered, RollupView } from './rollup-view';
+import { i18nFor } from '@/lib/i18n';
 import { OrgReportCard, ProjectReportLink } from './report-links';
 import type { BoardReport, ReportTotals, RollupReport } from '@/lib/api';
 
@@ -26,7 +27,7 @@ test('a project report: boards side by side, by month, points and tickets apart,
   for (const chart of ['Boards side by side', 'Predictability by month', 'Delivered by month']) expect(html).toContain(`aria-label="${chart}"`);
   expect(html).toContain('href="/reports?board=b1&amp;from=2026-08-01&amp;to=2026-09-30"'); // drill into a board, same period
   expect(html).toContain('8 points');
-  expect(html).toContain('1 tickets');
+  expect(html).toContain('1 ticket<');
   for (const banned of ['assign', 'user_']) expect(html).not.toContain(banned);
 });
 
@@ -35,8 +36,8 @@ test('the organization report is by project, each linking to its project report'
   const html = renderToStaticMarkup(<RollupView report={org} range={range} />);
   expect(html).toContain('aria-label="Projects side by side"');
   expect(html).toContain('href="/reports?project=p1&amp;from=2026-08-01&amp;to=2026-09-30"');
-  expect(delivered(totals({ done: 13 }), totals({ done: 4 }))).toBe('13 points · 4 tickets');
-  expect(delivered(null, null)).toBe('–');
+  expect(delivered(i18nFor('en'), totals({ done: 13 }), totals({ done: 4 }))).toBe('13 points · 4 tickets');
+  expect(delivered(i18nFor('en'), null, null)).toBe('–');
 });
 
 test('nothing finished: says so', () => {

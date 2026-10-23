@@ -1,12 +1,13 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
+import { i18nFor } from '@/lib/i18n';
 import type { TicketDetail } from '@/lib/api';
 import { PartOf, SubTickets, subTicketSummary } from './sub-tickets';
 
 const base = { id: 't', project_id: 'p', blocked_by: [], blocks: [] } as unknown as TicketDetail;
 
 test('summary counts done children', () => {
-  expect(subTicketSummary([{ done: true }, { done: false }, { done: true }])).toBe('2 of 3 done');
+  expect(subTicketSummary(i18nFor('en'), [{ done: true }, { done: false }, { done: true }])).toBe('2 of 3 done');
 });
 
 test('parent shows children with progress and detach buttons', () => {

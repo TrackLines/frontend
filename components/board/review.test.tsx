@@ -1,5 +1,5 @@
 import { afterEach, expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { tickets } from '@/lib/api';
 import { NeedsReviewBadge, ReviewActions } from './review';
 import { TicketCard } from './ticket-card';

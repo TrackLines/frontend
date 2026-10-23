@@ -1,6 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import { plural } from '@lingui/core/macro';
+import { Plural, Trans, useLingui } from '@lingui/react/macro';
 import { useFlags } from '@flags-gg/react-library';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -27,6 +29,7 @@ export default function EditBoardPage() {
   const router = useRouter();
   const token = useToken();
   const { is } = useFlags();
+  const { t, i18n } = useLingui();
   const [board, setBoard] = useState<Board | null>(null);
   const [was, setWas] = useState<Draft | null>(null);
   const [draft, setDraft] = useState<Draft | null>(null);
@@ -58,25 +61,25 @@ export default function EditBoardPage() {
     return () => window.removeEventListener('beforeunload', warn);
   }, [changed]);
 
-  if (loadError) return <p className="p-8 text-destructive" role="alert">Couldn&apos;t load this board. Please refresh to try again.</p>;
+  if (loadError) return <p className="p-8 text-destructive" role="alert"><Trans>Couldn&apos;t load this board. Please refresh to try again.</Trans></p>;
   if (!board || !draft || !was || !token || !role) return <BoardSkeleton />;
   const back = `/boards/${board.id}`;
   if (!canManageBoard(role, board.team_id) || board.archived_at) {
     return (
       <main className="mx-auto max-w-3xl px-6 py-10">
-        <p className="text-muted-foreground">{board.archived_at ? 'This board is archived: restore it to change it.' : 'Only organization admins and this board’s team leaders can edit it.'}</p>
-        <Link href={back} className="mt-4 inline-block text-sm hover:underline">← Back to the board</Link>
+        <p className="text-muted-foreground">{board.archived_at ? t`This board is archived: restore it to change it.` : t`Only organization admins and this board’s team leaders can edit it.`}</p>
+        <Link href={back} className="mt-4 inline-block text-sm hover:underline">← <Trans>Back to the board</Trans></Link>
       </main>
     );
   }
-  const estimated = (board.columns ?? []).flatMap((c) => c.tickets).filter((t) => t.estimate).length;
+  const estimated = (board.columns ?? []).flatMap((c) => c.tickets).filter((tk) => tk.estimate).length;
   const clearsEstimates = draft.scale !== was.scale && estimated > 0;
 
   async function save() {
     if (!draft || !was || !board) return;
-    const why = problem(draft);
+    const why = problem(draft, i18n);
     if (why) return setError(why);
-    if (clearsEstimates && !confirm(`Changing the estimate scale clears ${estimated} ${estimated === 1 ? 'estimate' : 'estimates'} on open tickets. Save anyway?`)) return;
+    if (clearsEstimates && !confirm(t`Changing the estimate scale clears ${plural(estimated, { one: '# estimate', other: '# estimates' })} on open tickets. Save anyway?`)) return;
     setSaving(true);
     setError('');
     try {
@@ -85,81 +88,81 @@ export default function EditBoardPage() {
       if (layoutChanged(draft, was)) await columns.layout(board.id, layout(draft), token!);
       router.push(back);
     } catch (err) {
-      setError(err instanceof ApiError && err.status < 500 && err.message ? err.message : 'Couldn’t save the board. Please try again.');
+      setError(err instanceof ApiError && err.status < 500 && err.message ? err.message : t`Couldn’t save the board. Please try again.`);
       void load(); // what did save is now the starting point; the rest is still in the draft
     } finally {
       setSaving(false);
     }
   }
-  const leave = () => { if (!changed || confirm('Leave without saving your changes?')) router.push(back); };
+  const leave = () => { if (!changed || confirm(t`Leave without saving your changes?`)) router.push(back); };
 
   return (
     <main className="mx-auto grid max-w-3xl gap-8 px-6 py-10">
       <header className="grid gap-2">
-        <button type="button" onClick={leave} className="w-fit text-sm text-muted-foreground hover:underline">← Back to the board</button>
+        <button type="button" onClick={leave} className="w-fit text-sm text-muted-foreground hover:underline">← <Trans>Back to the board</Trans></button>
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h1 className="text-3xl font-bold tracking-tight">Edit {was.name}</h1>
+          <h1 className="text-3xl font-bold tracking-tight"><Trans>Edit {was.name}</Trans></h1>
           <div className="flex gap-2">
-            <Button type="button" variant="outline" disabled={saving} onClick={leave}>Cancel</Button>
-            <Button type="button" disabled={saving || !changed} onClick={() => void save()}>{saving ? 'Saving…' : 'Save'}</Button>
+            <Button type="button" variant="outline" disabled={saving} onClick={leave}><Trans>Cancel</Trans></Button>
+            <Button type="button" disabled={saving || !changed} onClick={() => void save()}>{saving ? t`Saving…` : t`Save`}</Button>
           </div>
         </div>
         {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       </header>
 
       <section aria-labelledby="settings" className="grid gap-4">
-        <h2 id="settings" className="text-lg font-semibold">Settings</h2>
+        <h2 id="settings" className="text-lg font-semibold"><Trans>Settings</Trans></h2>
         <label className="grid gap-1.5 text-sm font-medium">
-          Name
+          <Trans>Name</Trans>
           <Input value={draft.name} maxLength={120} onChange={(e) => setDraft({ ...draft, name: e.target.value })} className="max-w-sm" />
         </label>
-        <Choice label="Style" hint="Sprints: time boxes. Kanban: continuous flow." value={draft.style}
-          options={[['sprints', 'Sprints'], ['kanban', 'Kanban']]} onChange={(v) => setDraft({ ...draft, style: v as BoardStyle })} />
+        <Choice label={t`Style`} hint={t`Sprints: time boxes. Kanban: continuous flow.`} value={draft.style}
+          options={[['sprints', t`Sprints`], ['kanban', t`Kanban`]]} onChange={(v) => setDraft({ ...draft, style: v as BoardStyle })} />
         <div className="grid gap-1.5 text-sm">
-          <span className="font-medium">Estimates</span>
-          <Select items={Object.fromEntries(SCALES.map((s) => [s.value, s.label]))} value={draft.scale} onValueChange={(v) => v && setDraft({ ...draft, scale: v as EstimateScale })}>
-            <SelectTrigger aria-label="Estimate scale" className="w-48"><SelectValue /></SelectTrigger>
-            <SelectContent>{SCALES.map((s) => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}</SelectContent>
+          <span className="font-medium"><Trans>Estimates</Trans></span>
+          <Select items={Object.fromEntries(SCALES.map((s) => [s.value, i18n._(s.label)]))} value={draft.scale} onValueChange={(v) => v && setDraft({ ...draft, scale: v as EstimateScale })}>
+            <SelectTrigger aria-label={t`Estimate scale`} className="w-48"><SelectValue /></SelectTrigger>
+            <SelectContent>{SCALES.map((s) => <SelectItem key={s.value} value={s.value}>{i18n._(s.label)}</SelectItem>)}</SelectContent>
           </Select>
-          {clearsEstimates && <span role="status" className="text-destructive">Saving clears {estimated} {estimated === 1 ? 'estimate' : 'estimates'} on open tickets.</span>}
+          {clearsEstimates && <span role="status" className="text-destructive"><Trans>Saving clears <Plural value={estimated} one="# estimate" other="# estimates" /> on open tickets.</Trans></span>}
         </div>
-        <Choice label="Agent work needs review" hint="An AI agent's ticket moved to Done waits for a person to approve it." value={draft.agentReview ? 'on' : 'off'}
-          options={[['off', 'Off'], ['on', 'On']]} onChange={(v) => setDraft({ ...draft, agentReview: v === 'on' })} />
+        <Choice label={t`Agent work needs review`} hint={t`An AI agent's ticket moved to Done waits for a person to approve it.`} value={draft.agentReview ? 'on' : 'off'}
+          options={[['off', t`Off`], ['on', t`On`]]} onChange={(v) => setDraft({ ...draft, agentReview: v === 'on' })} />
         {is('release-done').enabled() && (
           <div className="grid gap-1.5 text-sm">
-            <span className="font-medium">Finish tickets on release</span>
-            <Select items={{ merge: 'On merge', ...Object.fromEntries(devCompleteOptions(draft).map((c) => [c.id!, c.name])) }} value={devComplete(draft) || 'merge'}
+            <span className="font-medium"><Trans>Finish tickets on release</Trans></span>
+            <Select items={{ merge: t`On merge`, ...Object.fromEntries(devCompleteOptions(draft).map((c) => [c.id!, c.name])) }} value={devComplete(draft) || 'merge'}
               onValueChange={(v) => setDraft({ ...draft, devComplete: !v || v === 'merge' ? '' : v })}>
-              <SelectTrigger aria-label="Finish tickets on release" className="w-48"><SelectValue /></SelectTrigger>
+              <SelectTrigger aria-label={t`Finish tickets on release`} className="w-48"><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="merge">On merge</SelectItem>
+                <SelectItem value="merge"><Trans>On merge</Trans></SelectItem>
                 {devCompleteOptions(draft).map((c) => <SelectItem key={c.id} value={c.id!}>{c.name}</SelectItem>)}
               </SelectContent>
             </Select>
-            <span className="text-xs text-muted-foreground">On merge: a merged pull request moves its tickets to Done. Pick a column and they go there instead, then to Done once a GitHub release ships them.</span>
+            <span className="text-xs text-muted-foreground"><Trans>On merge: a merged pull request moves its tickets to Done. Pick a column and they go there instead, then to Done once a GitHub release ships them.</Trans></span>
           </div>
         )}
       </section>
 
       <section aria-labelledby="columns" className="grid gap-3">
-        <h2 id="columns" className="text-lg font-semibold">Columns</h2>
-        <p className="text-sm text-muted-foreground">Drag to reorder. WIP limits are for the columns in between: the first is waiting work, and the last is Done.</p>
+        <h2 id="columns" className="text-lg font-semibold"><Trans>Columns</Trans></h2>
+        <p className="text-sm text-muted-foreground"><Trans>Drag to reorder. WIP limits are for the columns in between: the first is waiting work, and the last is Done.</Trans></p>
         <ColumnList draft={draft} onChange={setDraft} />
       </section>
 
       {(draft.style === 'sprints' && board.style === 'sprints') && (
         <section aria-labelledby="sprint" className="grid gap-2">
-          <h2 id="sprint" className="text-lg font-semibold">Current sprint</h2>
-          <p className="text-sm text-muted-foreground">Changing the length or goal applies straight away.</p>
+          <h2 id="sprint" className="text-lg font-semibold"><Trans>Current sprint</Trans></h2>
+          <p className="text-sm text-muted-foreground"><Trans>Changing the length or goal applies straight away.</Trans></p>
           <div className="rounded-xl border"><SprintBar board={board} token={token} canManage editMode onChanged={() => void load()} /></div>
         </section>
       )}
 
       <section aria-labelledby="more" className="grid gap-2">
-        <h2 id="more" className="text-lg font-semibold">More</h2>
-        <p className="text-sm text-muted-foreground">These act straight away.</p>
+        <h2 id="more" className="text-lg font-semibold"><Trans>More</Trans></h2>
+        <p className="text-sm text-muted-foreground"><Trans>These act straight away.</Trans></p>
         <div className="flex flex-wrap gap-2">
-          {role.admin && <Button type="button" variant="outline" size="sm" onClick={() => setSavingTemplate(true)}>Save as template</Button>}
+          {role.admin && <Button type="button" variant="outline" size="sm" onClick={() => setSavingTemplate(true)}><Trans>Save as template</Trans></Button>}
           <BoardLifecycle board={board} isAdmin={role.admin} canManage token={token} />
         </div>
       </section>
@@ -167,14 +170,14 @@ export default function EditBoardPage() {
       <NameDialog
         open={savingTemplate}
         onOpenChange={setSavingTemplate}
-        title="Save as template"
-        description="New boards can start with this board's columns, WIP limits, style and estimate scale, as last saved. Tickets aren't copied."
-        placeholder="e.g. Our delivery flow"
+        title={t`Save as template`}
+        description={t`New boards can start with this board's columns, WIP limits, style and estimate scale, as last saved. Tickets aren't copied.`}
+        placeholder={t`e.g. Our delivery flow`}
         initialValue={board.name}
-        submitLabel="Save template"
+        submitLabel={t`Save template`}
         onSubmit={async (name) => {
           await boardTemplates.saveBoard(name, board.id, token).catch((err) => {
-            throw new Error(err instanceof ApiError && err.status === 403 ? 'Only organization admins can save templates.' : 'Couldn’t save the template. Please try again.');
+            throw new Error(err instanceof ApiError && err.status === 403 ? t`Only organization admins can save templates.` : t`Couldn’t save the template. Please try again.`);
           });
         }}
       />

@@ -1,9 +1,12 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { ApiError, type CalendarStatus } from '@/lib/api';
+import { i18nFor } from '@/lib/i18n';
 import { calendarError, DELEGATION_URL, GoogleCalendarView, UK_HOLIDAYS } from './google-calendar';
 import { IntegrationsSettings } from './integrations';
 import { FeatureFlags } from '@/components/feature-flags';
+
+const i18n = i18nFor('en');
 
 const noop = () => {};
 const view = (status: CalendarStatus | null, canManage = true, extra: Partial<Parameters<typeof GoogleCalendarView>[0]> = {}) =>
@@ -45,12 +48,12 @@ test('no service account: admins are told; checking; busy', () => {
 });
 
 test('Google’s reasons come through in words; other failures fall back', () => {
-  expect(calendarError(new ApiError(400, 'Google doesn’t know that user.'), 'x')).toBe('Google doesn’t know that user.');
-  expect(calendarError(new ApiError(403, 'forbidden'), 'x')).toBe('Only organization admins can change this.');
+  expect(calendarError(i18n, new ApiError(400, 'Google doesn’t know that user.'), 'x')).toBe('Google doesn’t know that user.');
+  expect(calendarError(i18n, new ApiError(403, 'forbidden'), 'x')).toBe('Only organization admins can change this.');
   const own = 'to connect acme.test, add and verify your own acme.test email address on your TrackLin.es account first';
-  expect(calendarError(new ApiError(403, own), 'x')).toBe(own); // audit: says what to do
-  expect(calendarError(new ApiError(409, 'acme.test is already connected to another organization'), 'x')).toContain('another organization');
-  expect(calendarError(new Error('boom'), 'Couldn’t connect.')).toBe('Couldn’t connect.');
+  expect(calendarError(i18n, new ApiError(403, own), 'x')).toBe(own); // audit: says what to do
+  expect(calendarError(i18n, new ApiError(409, 'acme.test is already connected to another organization'), 'x')).toContain('another organization');
+  expect(calendarError(i18n, new Error('boom'), 'Couldn’t connect.')).toBe('Couldn’t connect.');
 });
 
 test('the Calendars tab is always there (no flag)', () => {

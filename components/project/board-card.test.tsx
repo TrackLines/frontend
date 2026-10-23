@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { BoardCard } from './board-card';
 
 const board = { id: 'b1', project_id: 'p1', owner_clerk_id: 'o', name: 'Backend', description: '', created_at: '', updated_at: '' };

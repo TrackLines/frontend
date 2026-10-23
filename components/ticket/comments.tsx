@@ -3,6 +3,7 @@
 import { Markdown, MarkdownTextarea } from '@/components/markdown';
 import { ListSkeleton } from '@/components/page-skeletons';
 import { When } from '@/components/when';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import type { Assignee, TicketComment } from '@/lib/api';
@@ -14,6 +15,7 @@ import { commentThread, type CommentNode } from './comment-thread';
 const maxLength = 10000;
 
 export function TicketComments({ ticketId, token }: { ticketId: string; token: string }) {
+  const { t, i18n } = useLingui();
   const [comments, setComments] = useState<TicketComment[] | null>(null);
   const [loadFailed, setLoadFailed] = useState(false);
   const [retry, setRetry] = useState(0);
@@ -47,53 +49,53 @@ export function TicketComments({ ticketId, token }: { ticketId: string; token: s
       setReplyTo(null);
     } catch {
       // Keep the draft and selected parent so a failed request can be retried.
-      setPostError('Could not post your comment. Your draft is still here; please try again.');
+      setPostError(t`Could not post your comment. Your draft is still here; please try again.`);
     } finally {
       setPosting(false);
     }
   }
 
   return (
-    <section aria-label="Ticket conversation" className="grid min-w-0 gap-4 border-t pt-4">
+    <section aria-label={t`Ticket conversation`} className="grid min-w-0 gap-4 border-t pt-4">
       <div>
-        <h2 className="font-semibold">Conversation</h2>
-        <p className="text-xs text-muted-foreground">Updates and discussion stay separate from the ticket details.</p>
+        <h2 className="font-semibold"><Trans>Conversation</Trans></h2>
+        <p className="text-xs text-muted-foreground"><Trans>Updates and discussion stay separate from the ticket details.</Trans></p>
       </div>
 
       {comments === null ? (
         loadFailed ? (
           <div role="alert" className="flex flex-wrap items-center gap-2 text-sm text-destructive">
-            <span>Couldn&apos;t load the conversation.</span>
-            <Button type="button" size="sm" variant="outline" onClick={() => setRetry((n) => n + 1)}>Try again</Button>
+            <span><Trans>Couldn&apos;t load the conversation.</Trans></span>
+            <Button type="button" size="sm" variant="outline" onClick={() => setRetry((n) => n + 1)}><Trans>Try again</Trans></Button>
           </div>
         ) : <ListSkeleton rows={2} />
       ) : comments.length === 0 ? (
-        <p className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">No comments yet. Add the first update.</p>
+        <p className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground"><Trans>No comments yet. Add the first update.</Trans></p>
       ) : (
         <CommentList comments={comments} onReply={setReplyTo} people={people} />
       )}
 
       {replyTo && (
         <div className="flex items-center justify-between gap-2 rounded-md bg-muted/50 px-3 py-2 text-sm">
-          <span>Replying to <strong>{personLabel(replyTo.author, people)}</strong></span>
-          <Button type="button" variant="ghost" size="sm" onClick={() => setReplyTo(null)}>Cancel reply</Button>
+          <span><Trans>Replying to <strong>{personLabel(i18n, replyTo.author, people)}</strong></Trans></span>
+          <Button type="button" variant="ghost" size="sm" onClick={() => setReplyTo(null)}><Trans>Cancel reply</Trans></Button>
         </div>
       )}
       <form onSubmit={post} className="grid min-w-0 gap-2">
-        <label htmlFor={`comment-${ticketId}`} className="text-sm font-medium">{replyTo ? 'Your reply' : 'Add a comment'}</label>
+        <label htmlFor={`comment-${ticketId}`} className="text-sm font-medium">{replyTo ? <Trans>Your reply</Trans> : <Trans>Add a comment</Trans>}</label>
         <MarkdownTextarea
           id={`comment-${ticketId}`}
           value={body}
           mentions={token}
           maxLength={maxLength}
           rows={3}
-          placeholder={replyTo ? 'Write a reply…' : 'Share an update or ask a question…'}
+          placeholder={replyTo ? t`Write a reply…` : t`Share an update or ask a question…`}
           onChange={(event) => setBody(event.target.value)}
         />
         {postError && <p role="alert" className="text-sm text-destructive">{postError}</p>}
         <div className="flex flex-wrap items-center justify-between gap-2">
           <span className="text-xs text-muted-foreground">{body.length}/{maxLength}</span>
-          <Button type="submit" size="sm" disabled={posting || comments === null || !body.trim()}>{posting ? 'Posting…' : replyTo ? 'Post reply' : 'Post comment'}</Button>
+          <Button type="submit" size="sm" disabled={posting || comments === null || !body.trim()}>{posting ? <Trans>Posting…</Trans> : replyTo ? <Trans>Post reply</Trans> : <Trans>Post comment</Trans>}</Button>
         </div>
       </form>
     </section>
@@ -110,15 +112,16 @@ export function CommentList({ comments, onReply, people = null }: { comments: Ti
 }
 
 function Comment({ node, depth, onReply, people }: { node: CommentNode; depth: number; onReply?: (comment: TicketComment) => void; people: Assignee[] | null }) {
+  const { i18n } = useLingui();
   const comment = node.comment;
   return (
     <article className={`min-w-0 rounded-lg border p-3 ${depth > 0 ? 'ml-3 border-l-2 bg-muted/20 sm:ml-6' : ''}`}>
       <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-        <span className="text-sm font-medium">{personLabel(comment.author, people)}</span>
+        <span className="text-sm font-medium">{personLabel(i18n, comment.author, people)}</span>
         <When iso={comment.created_at} className="text-xs text-muted-foreground" />
       </div>
       <Markdown className="mt-2 text-sm">{comment.body}</Markdown>
-      {onReply && <Button type="button" variant="ghost" size="sm" className="mt-1 -ml-2" onClick={() => onReply(comment)}>Reply</Button>}
+      {onReply && <Button type="button" variant="ghost" size="sm" className="mt-1 -ml-2" onClick={() => onReply(comment)}><Trans>Reply</Trans></Button>}
       {node.replies.length > 0 && (
         <div className="mt-2 grid gap-2 border-l pl-3 sm:pl-4">
           {node.replies.map((reply) => <Comment key={reply.comment.id} node={reply} depth={depth + 1} onReply={onReply} people={people} />)}

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { DashboardWork } from '@/components/dashboard-work';
@@ -17,6 +18,7 @@ import { useCachedState } from '@/lib/page-cache';
 
 // Signed-in home: your projects. A project holds a board per team plus its roadmaps.
 export default function Dashboard() {
+  const { t } = useLingui();
   const router = useRouter();
   const token = useToken();
   const [list, setList] = useCachedState<Project[]>('projects'); // last-seen list shows instantly, then refreshes
@@ -34,38 +36,38 @@ export default function Dashboard() {
       const p = await projects.create({ name }, token);
       router.push(`/projects/${p.id}`);
     } catch (err) {
-      if (!atProjectLimit(err)) throw new Error('Couldn’t create the project. Please try again.');
+      if (!atProjectLimit(err)) throw new Error(t`Couldn’t create the project. Please try again.`);
       setCreating(false);
       setAtLimit(true);
     }
   }
 
-  if (failed) return <p className="p-8 text-destructive" role="alert">Couldn&apos;t load your projects. Please refresh to try again.</p>;
+  if (failed) return <p className="p-8 text-destructive" role="alert"><Trans>Couldn&apos;t load your projects. Please refresh to try again.</Trans></p>;
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
       <header className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Projects</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Everyone in your organization sees these.</p>
+          <h1 className="text-3xl font-bold tracking-tight"><Trans>Projects</Trans></h1>
+          <p className="mt-1 text-sm text-muted-foreground"><Trans>Everyone in your organization sees these.</Trans></p>
         </div>
         <div className="flex items-center gap-2">
-          <Link href="/roadmaps" className={buttonVariants({ variant: 'ghost' })}>Roadmaps</Link>
-          <Link href="/settings" className={buttonVariants({ variant: 'ghost' })}>Settings</Link>
-          <Button onClick={() => setCreating(true)} disabled={!token}><PlusIcon />New project</Button>
+          <Link href="/roadmaps" className={buttonVariants({ variant: 'ghost' })}><Trans>Roadmaps</Trans></Link>
+          <Link href="/settings" className={buttonVariants({ variant: 'ghost' })}><Trans>Settings</Trans></Link>
+          <Button onClick={() => setCreating(true)} disabled={!token}><PlusIcon /><Trans>New project</Trans></Button>
         </div>
       </header>
       {token && <DashboardWork token={token} />}
       {!list ? (
-        <Loading label="Loading projects…" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <Loading label={t`Loading projects…`} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {[0, 1, 2].map((i) => <Skeleton key={i} className="h-44 rounded-xl" />)}
         </Loading>
       ) : list.length === 0 ? (
         <div className="rounded-xl border border-dashed p-10 text-center">
           <FolderKanbanIcon className="mx-auto size-10 text-muted-foreground" aria-hidden />
-          <h2 className="mt-4 text-lg font-semibold">Start your first project</h2>
-          <p className="mx-auto mt-1 mb-6 max-w-md text-sm text-muted-foreground">A project holds a board for each team, a shared backlog, and the roadmaps you send to customers.</p>
-          <Button onClick={() => setCreating(true)} disabled={!token}>Create a project</Button>
+          <h2 className="mt-4 text-lg font-semibold"><Trans>Start your first project</Trans></h2>
+          <p className="mx-auto mt-1 mb-6 max-w-md text-sm text-muted-foreground"><Trans>A project holds a board for each team, a shared backlog, and the roadmaps you send to customers.</Trans></p>
+          <Button onClick={() => setCreating(true)} disabled={!token}><Trans>Create a project</Trans></Button>
         </div>
       ) : (
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -77,10 +79,10 @@ export default function Dashboard() {
           <NameDialog
             open={creating}
             onOpenChange={setCreating}
-            title="New project"
-            description="You can add a board for each team inside it."
-            placeholder="e.g. Website relaunch"
-            submitLabel="Create project"
+            title={t`New project`}
+            description={t`You can add a board for each team inside it.`}
+            placeholder={t`e.g. Website relaunch`}
+            submitLabel={t`Create project`}
             onSubmit={create}
           />
           <UpgradeDialog open={atLimit} onOpenChange={setAtLimit} token={token} />

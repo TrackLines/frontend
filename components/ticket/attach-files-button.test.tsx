@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { AttachFilesButton } from './attach-files-button';
 
 // T-029A: the app's own Button (not UploadThing's bright blue prebuilt one) over a hidden file input

@@ -1,3 +1,5 @@
+import type { I18n } from '@lingui/core';
+import { msg } from '@lingui/core/macro';
 import { push } from './api';
 import { reportClient } from './report';
 
@@ -85,15 +87,15 @@ export async function enablePush(token: string): Promise<PushState> {
 // pushFailure: why turning notifications on or off failed, in words someone can act on, reported to
 // Bugfixes so it isn't silent (TL-393). Chromium builds without Google's push service (e.g. plain
 // Chromium on Linux) refuse to subscribe with an AbortError: "Registration failed - push service error".
-export function pushFailure(err: unknown): string {
+export function pushFailure(i18n: I18n, err: unknown): string {
   const e = err instanceof Error ? err : new Error(String(err));
   reportClient('error', Object.assign(new Error(`web push: ${e.name}: ${e.message}`), { stack: e.stack }));
   if (e.name === 'AbortError' || /push service/i.test(e.message)) {
     // permission is granted by now: what's missing is the browser maker's delivery service, not the user's say-so
-    return 'Notifications are allowed, but this browser has no push service to deliver them when TrackLin.es is closed (plain Chromium builds don’t include one). Chrome, Edge, Firefox and Safari do.';
+    return i18n._(msg`Notifications are allowed, but this browser has no push service to deliver them when TrackLin.es is closed (plain Chromium builds don’t include one). Chrome, Edge, Firefox and Safari do.`);
   }
-  if (e.name === 'NotAllowedError') return 'Notifications are blocked for this site in your browser settings.';
-  return 'Couldn’t change notifications on this device. Please try again.';
+  if (e.name === 'NotAllowedError') return i18n._(msg`Notifications are blocked for this site in your browser settings.`);
+  return i18n._(msg`Couldn’t change notifications on this device. Please try again.`);
 }
 
 // disablePush stops pushes to this browser (server first, so nothing is left pointing at it).

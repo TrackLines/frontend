@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { TicketCard } from './ticket-card';
 
 const base = { id: 't', column_id: 'c', title: 'Integrate uploadthing', description: 'long details', position: 0, created_by: 'user_3KHx3OAKtUhUZu3lJ0VyM6725bk' };

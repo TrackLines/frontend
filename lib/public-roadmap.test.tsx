@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { ApiError } from '@/lib/api';
 import { ownerOnly, readRoadmap } from './public-roadmap';
 import { Locked } from '@/app/r/[id]/locked';

@@ -1,6 +1,7 @@
 'use client';
 
 import { UserButton } from '@clerk/nextjs';
+import { useLingui } from '@lingui/react/macro';
 import { BellRingIcon, SettingsIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -8,11 +9,12 @@ import { useRouter } from 'next/navigation';
 // (same pattern as ../flags/dashboard HeaderBar/userNav.tsx).
 export function UserMenu() {
   const router = useRouter();
+  const { t } = useLingui();
   return (
     <UserButton>
       <UserButton.MenuItems>
-        <UserButton.Action label="Your settings" labelIcon={<BellRingIcon className="size-4" />} onClick={() => router.push('/account')} />
-        <UserButton.Action label="Organization settings" labelIcon={<SettingsIcon className="size-4" />} onClick={() => router.push('/settings')} />
+        <UserButton.Action label={t`Your settings`} labelIcon={<BellRingIcon className="size-4" />} onClick={() => router.push('/account')} />
+        <UserButton.Action label={t`Organization settings`} labelIcon={<SettingsIcon className="size-4" />} onClick={() => router.push('/settings')} />
       </UserButton.MenuItems>
     </UserButton>
   );

@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { ProjectCard } from './project-card';
 
 const project = { id: 'p1', name: 'Web', description: '', created_at: '', updated_at: '' };

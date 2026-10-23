@@ -1,3 +1,5 @@
+import type { I18n } from '@lingui/core';
+import { msg } from '@lingui/core/macro';
 import type { Board, BoardStyle } from './api';
 import type { EstimateScale } from './estimates';
 
@@ -63,12 +65,13 @@ export function changeColumn(d: Draft, key: string, change: Partial<Pick<DraftCo
 }
 
 // problem is why the draft can't be saved yet, or null.
-export function problem(d: Draft): string | null {
-  if (!d.name.trim()) return 'The board needs a name.';
+export function problem(d: Draft, i18n: I18n): string | null {
+  if (!d.name.trim()) return i18n._(msg`The board needs a name.`);
   for (const c of d.columns) {
-    if (!c.name.trim()) return 'Every column needs a name.';
-    if (c.name.trim().length > MAX_COLUMN_NAME) return `Column names can be up to ${MAX_COLUMN_NAME} characters.`;
-    if (c.wip !== null && (!Number.isInteger(c.wip) || c.wip < 1 || c.wip > 999)) return `“${c.name}”: a WIP limit is a whole number from 1 to 999, or none.`;
+    if (!c.name.trim()) return i18n._(msg`Every column needs a name.`);
+    if (c.name.trim().length > MAX_COLUMN_NAME) return i18n._(msg`Column names can be up to ${MAX_COLUMN_NAME} characters.`);
+    const name = c.name;
+    if (c.wip !== null && (!Number.isInteger(c.wip) || c.wip < 1 || c.wip > 999)) return i18n._(msg`“${name}”: a WIP limit is a whole number from 1 to 999, or none.`);
   }
   return null;
 }

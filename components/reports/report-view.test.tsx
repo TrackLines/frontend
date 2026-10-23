@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { ReportView, SpikeLine } from './report-view';
 import { ReportLink } from '@/components/board/past-sprints';
 import type { BoardReport } from '@/lib/api';

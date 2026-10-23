@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { PrioritySelect } from './priority-select';
 
 test('trigger shows the label, not the raw value', () => {

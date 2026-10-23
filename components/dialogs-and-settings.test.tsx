@@ -4,7 +4,7 @@ import type { Project } from '@/lib/api';
 
 mockDialog();
 mock.module('next/navigation', () => ({ useRouter: () => ({ push() {}, replace() {}, refresh() {} }), usePathname: () => '/', useSearchParams: () => new URLSearchParams() }));
-const { renderToStaticMarkup } = await import('react-dom/server');
+const { render: renderToStaticMarkup } = await import('@/test/i18n');
 const { NameDialog } = await import('./name-dialog');
 const { RoadmapEditorForm } = await import('./roadmap-editor-form');
 const { ProjectKeyPrefix } = await import('./project/key-prefix');

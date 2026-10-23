@@ -1,6 +1,8 @@
 'use client';
 
+import { Trans } from '@lingui/react/macro';
 import { useEffect } from 'react';
+import { I18n } from '@/components/i18n-provider';
 import { reportClient } from '@/lib/report';
 
 // The root layout itself crashed: reported to Bugfixes (TL-292). It replaces the whole page, so it
@@ -10,9 +12,11 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
   return (
     <html lang="en">
       <body style={{ fontFamily: 'system-ui, sans-serif', maxWidth: 560, margin: '64px auto', padding: '0 24px' }}>
-        <h1>Something went wrong</h1>
-        <p>We’ve been told about it.</p>
-        <button type="button" onClick={reset}>Try again</button>
+        <I18n>
+          <h1><Trans>Something went wrong</Trans></h1>
+          <p><Trans>We’ve been told about it.</Trans></p>
+          <button type="button" onClick={reset}><Trans>Try again</Trans></button>
+        </I18n>
       </body>
     </html>
   );

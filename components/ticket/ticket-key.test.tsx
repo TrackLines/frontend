@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { isTicketKey, TicketKey, ticketPath, linkTitle } from './ticket-key';
 
 test('ticket key is readable and has an accessible copy action when requested', () => {

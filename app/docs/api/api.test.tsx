@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { ApiReference, groups, SPEC_URL, typeOf, type Spec } from './page';
 import TuiDocs, { downloads, keys, TUI_REPO } from '../tui/page';
 

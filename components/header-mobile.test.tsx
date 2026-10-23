@@ -1,5 +1,5 @@
 import { expect, mock, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 
 // module mocks reach every test file: keep the rest of each module real
 const nav = await import('next/navigation');

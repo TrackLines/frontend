@@ -1,7 +1,10 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { ApiError } from '@/lib/api';
+import { i18nFor } from '@/lib/i18n';
 import { ChatDmView, ChatLinkView, linkError } from './chat-dm';
+
+const i18n = i18nFor('en');
 
 const card = (link: Parameters<typeof ChatDmView>[0]['link']) => renderToStaticMarkup(<ChatDmView link={link} busy={false} error="" onUnlink={() => {}} />);
 
@@ -20,9 +23,9 @@ test('Google Chat card (TL-289): hidden without the app; says how to link; linke
 test('the link page says what happened, and what to do when the link is spent', () => {
   expect(renderToStaticMarkup(<ChatLinkView result="linking" />)).toContain('Linking your Google Chat…');
   expect(renderToStaticMarkup(<ChatLinkView result="linked" />)).toContain('You’re linked');
-  expect(linkError(new ApiError(400, 'x'))).toContain('Send the TrackLin.es app a message');
-  expect(linkError(new ApiError(503, 'x'))).toContain('isn’t set up');
-  expect(linkError(new Error('network'))).toBe('Couldn’t link Google Chat. Please try again.');
+  expect(linkError(i18n, new ApiError(400, 'x'))).toContain('Send the TrackLin.es app a message');
+  expect(linkError(i18n, new ApiError(503, 'x'))).toContain('isn’t set up');
+  expect(linkError(i18n, new Error('network'))).toBe('Couldn’t link Google Chat. Please try again.');
   expect(renderToStaticMarkup(<ChatLinkView result={{ error: 'expired' }} />)).toContain('role="alert"');
 });
 

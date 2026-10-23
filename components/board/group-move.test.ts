@@ -1,14 +1,15 @@
 import { expect, test } from 'bun:test';
+import { i18nFor } from '@/lib/i18n';
 import { alsoMovesNote } from './ticket-dialog';
 import { backlog, tickets } from '@/lib/api';
 
 test('before sending a parent to the backlog, the dialog says which sub-tickets go too (TL-218)', () => {
-  expect(alsoMovesNote([])).toBe('');
-  expect(alsoMovesNote([{ id: 'a', key: 'TL-5', title: 'a' }])).toBe('Sending it to the backlog also moves its open sub-ticket on this board: TL-5.');
-  expect(alsoMovesNote([{ id: 'a', key: 'TL-5', title: 'a' }, { id: 'b', key: null, title: 'untitled key' }]))
+  expect(alsoMovesNote([], i18nFor('en'))).toBe('');
+  expect(alsoMovesNote([{ id: 'a', key: 'TL-5', title: 'a' }], i18nFor('en'))).toBe('Sending it to the backlog also moves its open sub-ticket on this board: TL-5.');
+  expect(alsoMovesNote([{ id: 'a', key: 'TL-5', title: 'a' }, { id: 'b', key: null, title: 'untitled key' }], i18nFor('en')))
     .toBe('Sending it to the backlog also moves its 2 open sub-tickets on this board: TL-5, untitled key.');
   const many = Array.from({ length: 7 }, (_, i) => ({ id: `t${i}`, key: `TL-${i}`, title: '' }));
-  expect(alsoMovesNote(many)).toContain('TL-0, TL-1, TL-2, TL-3, TL-4 and 2 more.');
+  expect(alsoMovesNote(many, i18nFor('en'))).toContain('TL-0, TL-1, TL-2, TL-3, TL-4 and 2 more.');
 });
 
 test('the preview and the send say what moved', async () => {

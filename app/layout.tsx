@@ -18,6 +18,10 @@ import { FeatureFlags } from '@/components/feature-flags';
 import { I18n } from '@/components/i18n-provider';
 import { Toaster } from '@/components/ui/sonner';
 import { ErrorReporter } from '@/components/error-reporter';
+import { msg } from '@lingui/core/macro';
+import { serverI18n, serverLocale } from '@/lib/server-i18n';
+import { LanguageSync } from '@/components/language-sync';
+import { nlNL } from '@clerk/localizations';
 import './globals.css';
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
@@ -33,14 +37,17 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   // the strict CSP (Clerk middleware, TL-255) allows only inline scripts carrying this request's nonce:
   // next-themes' script (theme before first paint) needs it, or the browser blocks it on every page
   const nonce = (await headers()).get('x-nonce') ?? undefined;
+  const locale = await serverLocale();
+  const i18n = await serverI18n();
   return (
     // suppressHydrationWarning: next-themes sets the theme class on <html> before React hydrates
-    <html lang="en" className={cn("font-sans", geist.variable)} suppressHydrationWarning>
+    <html lang={locale} className={cn("font-sans", geist.variable)} suppressHydrationWarning>
       <body>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange storageKey="tracklines-theme" nonce={nonce}>
-        <ClerkProvider dynamic appearance={{ theme: shadcn }}>
+        <ClerkProvider dynamic appearance={{ theme: shadcn }} localization={locale === 'nl' ? nlNL : undefined}>
         <FeatureFlags>
-        <I18n>
+        <I18n locale={locale}>
+          <LanguageSync current={locale} />
           <CacheGuard />
           {/* on phones: 16px gutters, tighter gaps, and the name and buttons' words drop to icons (TL-471) */}
           <header className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 sm:px-6 py-4 print:hidden">
@@ -52,15 +59,15 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
               </Link>
               <Show when="signed-in"><OrgSwitcher /></Show>
             </div>
-            <nav className="flex shrink-0 items-center gap-1.5 sm:gap-4" aria-label="Account">
+            <nav className="flex shrink-0 items-center gap-1.5 sm:gap-4" aria-label={i18n._(msg`Account`)}>
               {/* QuickAddTicket only renders on some pages, so it goes first: the toggle and avatar never move */}
               <Show when="signed-in"><QuickAddTicket /></Show>
               <Show when="signed-in"><TicketSearch /></Show>
               <Show when="signed-in"><NotificationsBell /></Show>
               <ThemeChooser />
               <Show when="signed-out">
-                <Link href="/sign-in" className="text-sm text-muted-foreground hover:text-foreground">Sign in</Link>
-                <Link href="/sign-up" className="text-sm font-medium hover:underline">Create account</Link>
+                <Link href="/sign-in" className="text-sm text-muted-foreground hover:text-foreground">{i18n._(msg`Sign in`)}</Link>
+                <Link href="/sign-up" className="text-sm font-medium hover:underline">{i18n._(msg`Create account`)}</Link>
               </Show>
               <Show when="signed-in"><UserMenu /></Show>
             </nav>
