@@ -42,3 +42,12 @@ test('loading and failed keep the cards', () => {
   expect(loading).toContain('Loading…');
   expect(renderToStaticMarkup(<DashboardWorkView assigned="failed" created={[]} mentioned={[]} people={[]} />)).toContain('role="alert"');
 });
+
+test('a tab that shows only some of my tickets says how many there are, and links to them all (TL-548)', () => {
+  const html = renderToStaticMarkup(<DashboardWorkView assigned={[mine]} created={[raised]} mentioned={[]} people={[]} totals={{ assigned: 1, created: 9 }} />);
+  expect(html).toContain('1 of 9 tickets');
+  expect(html).toContain('href="/my-work?tab=created"');
+  expect(html).not.toContain('1 of 1'); // assigned shows everything: no count
+  const only = renderToStaticMarkup(<DashboardWorkView assigned={[mine]} created={[]} mentioned={[]} people={[]} totals={{ assigned: 7 }} />);
+  expect(only).toContain('1 of 7 tickets');
+});

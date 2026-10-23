@@ -1,6 +1,8 @@
 'use client';
 
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import { ListPageSkeleton } from '@/components/page-skeletons';
 import { MyWork } from '@/components/my-work';
 import { useToken } from '@/lib/use-token';
@@ -13,7 +15,13 @@ export default function MyWorkPage() {
       <Link href="/dashboard" className="text-sm text-muted-foreground hover:underline">← Projects</Link>
       <h1 className="mt-2 mb-2 text-3xl font-bold tracking-tight">My work</h1>
       <p className="mb-6 text-muted-foreground">Your tickets across every board and project, most recently changed first — assigned to you, or raised by you.</p>
-      <MyWork token={token} />
+      {/* useSearchParams needs a Suspense boundary for static rendering */}
+      <Suspense><MyWorkTab token={token} /></Suspense>
     </main>
   );
+}
+
+// MyWorkTab opens on the tab the link asked for (?tab=created from the dashboard's "See all").
+function MyWorkTab({ token }: { token: string }) {
+  return <MyWork token={token} initialMode={useSearchParams().get('tab') === 'created' ? 'created' : 'assigned'} />;
 }

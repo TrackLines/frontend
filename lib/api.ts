@@ -166,6 +166,25 @@ export class ApiError extends Error {
   }
 }
 
+export type SearchQuery = { text?: string; project?: string; board?: string; types?: TicketType[]; priorities?: string[]; assignee?: string;
+  creator?: string; status?: 'open' | 'done'; limit?: number; page?: number; match?: 'any' };
+
+function searchParams(q: SearchQuery): URLSearchParams {
+  const params = new URLSearchParams();
+  if (q.text?.trim()) params.set('q', q.text.trim());
+  if (q.project) params.set('project', q.project);
+  if (q.board) params.set('board', q.board);
+  if (q.match) params.set('match', q.match); // any: one word will do, best matches first (TL-275)
+  for (const type of q.types ?? []) params.append('type', type);
+  for (const p of q.priorities ?? []) params.append('priority', p);
+  if (q.assignee) params.set('assignee', q.assignee);
+  if (q.creator) params.set('creator', q.creator); // "created by me" (TL-490)
+  if (q.status) params.set('status', q.status);
+  if (q.page && q.page > 1) params.set('page', String(q.page));
+  params.set('limit', String(q.limit ?? 20));
+  return params;
+}
+
 function base(): string {
   if (typeof window === 'undefined') return `${process.env.BACKEND_URL ?? 'http://localhost:8080'}/api`;
   return process.env.NEXT_PUBLIC_API_URL ?? '/api';
@@ -422,22 +441,9 @@ export const tickets = {
   epics: (projectId: string, token: T) => api<EpicSummary[]>(`/projects/${projectId}/epics`, { token }), // with progress and size (TL-213)
   group: (id: string, token: T) => api<MovedTicket[]>(`/tickets/${id}/group`, { token }), // open sub-tickets that would leave the board with it (TL-218)
   // also "My work": assignee 'me', status 'open', newest change first, paged
-  search: (q: { text?: string; project?: string; board?: string; types?: TicketType[]; priorities?: string[]; assignee?: string;
-    creator?: string; status?: 'open' | 'done'; limit?: number; page?: number; match?: 'any' }, token: T) => {
-    const params = new URLSearchParams();
-    if (q.text?.trim()) params.set('q', q.text.trim());
-    if (q.project) params.set('project', q.project);
-    if (q.board) params.set('board', q.board);
-    if (q.match) params.set('match', q.match); // any: one word will do, best matches first (TL-275)
-    for (const type of q.types ?? []) params.append('type', type);
-    for (const p of q.priorities ?? []) params.append('priority', p);
-    if (q.assignee) params.set('assignee', q.assignee);
-    if (q.creator) params.set('creator', q.creator); // "created by me" (TL-490)
-    if (q.status) params.set('status', q.status);
-    if (q.page && q.page > 1) params.set('page', String(q.page));
-    params.set('limit', String(q.limit ?? 20));
-    return api<TicketSearchResult[]>(`/search?${params}`, { token });
-  },
+  search: (q: SearchQuery, token: T) => api<TicketSearchResult[]>(`/search?${searchParams(q)}`, { token }),
+  // searchPage: one page plus how many tickets match in all, for "5 of 9" (TL-548)
+  searchPage: (q: SearchQuery, token: T) => api<{ tickets: TicketSearchResult[]; total: number }>(`/search?${searchParams(q)}&total=1`, { token }),
   // review settles an agent's finished ticket: approve → Done, else back to the first column (comment added)
   review: (id: string, approve: boolean, comment: string, token: T) =>
     api<void>(`/tickets/${id}/review`, { method: 'POST', body: { approve, ...(comment.trim() && { comment: comment.trim() }) }, token }),
