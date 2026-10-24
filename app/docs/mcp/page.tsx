@@ -27,6 +27,7 @@ export const tools = [
   { name: 'search_tickets, list_backlog, get_board', body: 'Find tickets, read the backlog, and see a board’s columns and sprint.' },
   { name: 'get_ticket_history, get_ticket_prs, get_ticket_bugfixes', body: 'A ticket’s lifecycle, the pull requests that mention it, and its Bugfixes crash report.' },
   { name: 'list_epics, set_roadmap_item_tickets', body: 'Epics with their progress, and linking work to roadmap milestones.' },
+  { name: 'plan_ticket, unplan_ticket', body: 'Put a backlog ticket in a planned sprint, or take one ticket out without removing the whole sprint.' },
 ];
 
 // chain: how agents are asked to work a ticket (the server's own instructions say the same).
