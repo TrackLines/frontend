@@ -25,6 +25,7 @@ import { Button } from '@/components/ui/button';
 import { PriorityBadge } from '@/components/board/priority-badge';
 import { EstimateBadge } from '@/components/board/estimate';
 import { TypeBadge } from '@/components/ticket-type';
+import { PlannedBadge } from '@/components/ticket/planned-badge';
 import { TimeboxCountdown } from '@/components/timebox-countdown';
 import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
@@ -118,6 +119,7 @@ export default function TicketPage() {
           <PriorityBadge priority={tk.priority} />
           <EstimateBadge estimate={tk.estimate} />
           {tk.sprint_number != null && <Badge variant="secondary"><Trans>Sprint {tk.sprint_number}</Trans></Badge>}
+          <PlannedBadge ticket={tk} />
           {tk.blocked && <BlockedBadge />}
           <NeedsReviewBadge ticket={tk} />
           {tk.resolution === 'wont_do' && <Badge variant="outline" title={t`Closed as decided against`}><Trans>Won&apos;t do</Trans></Badge>}

@@ -22,6 +22,8 @@ export type Ticket = {
   done_at?: string | null; resolved_at?: string | null; // set once it reached Done / was resolved
   started_at?: string | null; // first move out of the board's first column; null for historical tickets
   planned_sprint_id?: string | null; // a backlog ticket planned into a board's upcoming sprint (refinement)
+  planned_sprint_number?: number | null; // that sprint's number-to-be and board, for "Sprint 6 · Backend" (TL-582)
+  planned_board_name?: string | null;
   external_source?: string | null; external_url?: string | null; // made by an integration, e.g. a Bugfixes report
   resolution?: 'done' | 'wont_do' | 'duplicate' | null; // how a backlog ticket was closed
   duplicate_of_id?: string | null; duplicate_of_key?: string | null; duplicate_of_title?: string | null;
