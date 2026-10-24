@@ -29,6 +29,8 @@ test('nothing connected: admins are pointed at Settings → Integrations', () =>
 test('picking a provider offers repos not already linked', () => {
   expect(view({})).toContain('Link from GitHub');
   expect(view({ provider: 'github', choices: null })).toContain('Loading repositories');
+  expect(view({ provider: 'github', choices: null })).toContain('animate-spin'); // TL-564
+  expect(view({ provider: 'github', choices: [] })).not.toContain('animate-spin');
   expect(view({ provider: 'github', choices: [{ full_name: 'acme/shop', default_branch: 'trunk', private: true }], linked: [shop] })).toContain('No other repositories to link');
   expect(view({ provider: 'github', choices: [{ full_name: 'acme/docs', default_branch: 'main', private: false }] })).toContain('Search repositories');
 });
