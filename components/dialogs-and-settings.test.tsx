@@ -58,7 +58,9 @@ test('kanban charts open from a button; the appearance menu is labelled; flags w
 
 test('New board opens a dialog (closed until clicked)', async () => {
   const { NewBoardButton } = await import('./project/new-board');
-  const html = renderToStaticMarkup(<NewBoardButton projectId="p" token="tok" variant="outline" />);
+  const html = renderToStaticMarkup(<NewBoardButton projectId="p" token="tok" admin variant="outline" />);
   expect(html).toContain('>New board<');
   expect(html).not.toContain('Create board');
+  // only admins can make boards, so nobody else gets a button that can only fail (TL-567)
+  expect(renderToStaticMarkup(<NewBoardButton projectId="p" token="tok" admin={false} />)).toBe('');
 });

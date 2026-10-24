@@ -64,7 +64,7 @@ export default function EditProjectPage() {
         </SettingsCard>
         <SettingsCard icon={KanbanIcon} title={t`Boards`}
           description={<Trans><Plural value={project.boards?.length ?? 0} one="# board" other="# boards" />, one per team. To archive or delete one, open it and use Edit board.</Trans>}>
-          <NewBoardButton projectId={project.id} token={token} variant="outline" />
+          <NewBoardButton projectId={project.id} token={token} admin={admin} variant="outline" />
           <Link href={`/projects/${project.id}/archived`} className="text-sm font-medium text-muted-foreground hover:text-foreground hover:underline"><Trans>Archived boards →</Trans></Link>
         </SettingsCard>
         <SettingsCard wide icon={InboxIcon} title={t`Request form`} description={t`A public form for customers to suggest features and report bugs; you choose what reaches the backlog.`}>

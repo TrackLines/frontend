@@ -69,7 +69,7 @@ export default function ProjectPage() {
       {project.description && <p className="mt-2 text-muted-foreground">{project.description}</p>}
 
       {/* past one board, adding more is setup: it moves to Edit project */}
-      <Section title={t`Boards`} hint={t`One board per team.`} action={boardList.length <= 1 && <NewBoardButton projectId={project.id} token={token} />}>
+      <Section title={t`Boards`} hint={t`One board per team.`} action={boardList.length <= 1 && <NewBoardButton projectId={project.id} token={token} admin={role?.admin ?? false} />}>
         {boardList.length === 0 ? (
           <Empty><Trans>No boards yet. Add one for each team, e.g. Backend, Design.</Trans></Empty>
         ) : (
