@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { SiteFooter } from '@/components/site-footer';
+import { HelpBot } from '@/components/help-bot';
 import { ScrollToTop } from '@/components/scroll-to-top';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -75,6 +76,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           {children}
           <SiteFooter />
           <ScrollToTop />
+          <Show when="signed-in"><HelpBot /></Show>
           {/* bottom left: the hosted drawer and its buttons are on the right */}
           <Toaster position="bottom-left" offset={8} mobileOffset={8} />
           <ErrorReporter />
