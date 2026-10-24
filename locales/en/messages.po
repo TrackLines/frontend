@@ -5450,6 +5450,14 @@ msgstr "Plan sprint {nextNumber}"
 msgid "Planned"
 msgstr "Planned"
 
+#: components/ticket/planned-badge.tsx
+msgid "Planned into sprint {n}"
+msgstr "Planned into sprint {n}"
+
+#: components/ticket/planned-badge.tsx
+msgid "Planned into sprint {n} on {board}"
+msgstr "Planned into sprint {n} on {board}"
+
 #: lib/google-chat.ts
 msgid "Planned sprint needs approval"
 msgstr "Planned sprint needs approval"
@@ -6410,8 +6418,13 @@ msgid "Sprint {0} goal"
 msgstr "Sprint {0} goal"
 
 #: components/reports/report-view.tsx
+#: components/ticket/planned-badge.tsx
 msgid "Sprint {n}"
 msgstr "Sprint {n}"
+
+#: components/ticket/planned-badge.tsx
+msgid "Sprint {n} · {board}"
+msgstr "Sprint {n} · {board}"
 
 #: components/reports/report-view.tsx
 msgid "Sprint {n} (so far)"

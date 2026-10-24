@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { PlannedBadge } from '@/components/ticket/planned-badge';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useRef, useState } from 'react';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
@@ -127,7 +128,7 @@ export function MyWorkView({ items, failed, filtered, empty }: {
                     {tk.type && tk.type !== 'task' && <TypeBadge type={tk.type} />}
                     <PriorityBadge priority={tk.priority} hideDefault />
                     {tk.blocked && <BlockedBadge />}
-                    {tk.done ? <Badge variant="outline"><Trans>Done</Trans></Badge> : <Badge variant="secondary">{tk.column_name ?? t`Backlog`}</Badge>}
+                    {tk.done ? <Badge variant="outline"><Trans>Done</Trans></Badge> : <><Badge variant="secondary">{tk.column_name ?? t`Backlog`}</Badge><PlannedBadge ticket={tk} /></>}
                     {tk.updated_at && <span className="text-xs text-muted-foreground"><When iso={tk.updated_at} /></span>}
                   </li>
                 ))}

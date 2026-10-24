@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TimeboxCountdown } from '@/components/timebox-countdown';
+import { PlannedBadge } from '@/components/ticket/planned-badge';
 import { mentions, tickets, type Assignee, type Mention, type TicketSearchResult } from '@/lib/api';
 import { actorName } from '@/lib/notifications';
 
@@ -58,6 +59,7 @@ export function DashboardWorkView({ assigned, created, mentioned, people, totals
       {tk.blocked && <BlockedBadge />}
       {tk.type === 'spike' && <TimeboxCountdown startedAt={tk.started_at} doneAt={tk.done_at} days={tk.timebox_days} hours={tk.timebox_hours} />}
       <Badge variant="secondary">{tk.column_name ?? t`Backlog`}</Badge>
+      <PlannedBadge ticket={tk} />
       <span className="truncate">{tk.project_name}</span>
     </Row>
   );
