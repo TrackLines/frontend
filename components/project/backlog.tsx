@@ -28,10 +28,10 @@ import { Badge } from '@/components/ui/badge';
 import { LabelDrawer, MoreLabels, splitLabels, TicketLabels } from '@/components/ticket/labels';
 import { attachAll, PendingAttachments, type PendingFile } from '@/components/ticket/pending-attachments';
 import { BACKLOG_CHANGED } from '@/components/quick-add-ticket';
-import { ApiError, backlog, BacklogTicket, type BacklogPage, type BacklogSort, type BacklogStatus, type EpicSummary, boards as boardsApi, organization, tickets, type Board, type OrganizationRole, type Ticket, type TicketType, hostedPaths } from '@/lib/api';
+import { ApiError, backlog, BacklogTicket, type BacklogPage, type BacklogPlanned, type BacklogSort, type BacklogStatus, type EpicSummary, boards as boardsApi, organization, tickets, type Board, type OrganizationRole, type Ticket, type TicketType, hostedPaths } from '@/lib/api';
 import { canMoveToBoard, canRefine } from '@/lib/board-access';
 import { PlannedBadge } from '@/components/ticket/planned-badge';
-import { BacklogSortSelect } from './backlog-sort';
+import { BacklogSortSelect, PlannedSelect } from './backlog-sort';
 import { useAutoRefresh } from '@/lib/use-auto-refresh';
 import { useCachedState } from '@/lib/page-cache';
 import { ListSkeleton } from '@/components/page-skeletons';
@@ -61,6 +61,7 @@ export function Backlog({ projectId, boards, token }: Props) {
   useEffect(() => { void loadEpics(); }, [projectId]); // token refreshes must not refetch
   const [sort, setSort] = useState<BacklogSort>('manual');
   const [status, setStatus] = useState<BacklogStatus>('open'); // closed tickets stay findable (owner, 2026-10-17)
+  const [planned, setPlanned] = useState<BacklogPlanned>('exclude'); // planned tickets show on their board's Next sprints (TL-584)
   const [page, setPage] = useState(1);
   const [adding, setAdding] = useState(false);
   const [busy, setBusy] = useState<string | null>(null); // ticket id being moved/deleted
@@ -103,7 +104,7 @@ export function Backlog({ projectId, boards, token }: Props) {
   const load = async (quiet = false) => {
     const req = ++latest.current;
     try {
-      const d = await backlog.page(projectId, { type: filter === 'all' ? undefined : filter, labels: labelFilter, priorities: priorityFilter, sort, status, page, perPage: PER_PAGE, epic: epicFilter }, token);
+      const d = await backlog.page(projectId, { type: filter === 'all' ? undefined : filter, labels: labelFilter, priorities: priorityFilter, sort, status, planned: status === 'open' ? planned : 'all', page, perPage: PER_PAGE, epic: epicFilter }, token);
       if (req !== latest.current) return;
       const last = Math.max(1, Math.ceil(d.counts[filter] / PER_PAGE));
       if (page > last) return setPage(last); // e.g. the last ticket on the last page moved away
@@ -127,7 +128,7 @@ export function Backlog({ projectId, boards, token }: Props) {
     setPriorityFilter(parsePriorities(searchParams));
     setEpicFilter(parseEpic(searchParams));
   }, [searchParams]);
-  useEffect(() => { void loadRef.current(); }, [projectId, filter, labelFilter, priorityFilter, epicFilter, sort, status, page]); // token refreshes must not refetch
+  useEffect(() => { void loadRef.current(); }, [projectId, filter, labelFilter, priorityFilter, epicFilter, sort, status, planned, page]); // token refreshes must not refetch
   useEffect(() => {
     const onChange = (e: Event) => { if ((e as CustomEvent).detail?.projectId === projectId) void loadRef.current(); };
     window.addEventListener(BACKLOG_CHANGED, onChange);
@@ -269,6 +270,7 @@ export function Backlog({ projectId, boards, token }: Props) {
             </SelectContent>
           </Select>
         </span>
+        {status === 'open' && <span className="inline-flex pl-2"><PlannedSelect planned={planned} onPlannedChange={(p) => { setPlanned(p); setPage(1); }} /></span>}
         <span className="inline-flex pl-2"><BacklogSortSelect sort={sort} onSortChange={(s) => { setSort(s); setPage(1); }} closed={status !== 'open'} /></span>
       </div>
 
@@ -282,7 +284,7 @@ export function Backlog({ projectId, boards, token }: Props) {
           {status !== 'open' && !(labelFilter.length > 0 || priorityFilter.length > 0 || epicFilter) && filter === 'all' ? i18n._(STATUS_EMPTY[status])
             : labelFilter.length > 0 || priorityFilter.length > 0 || epicFilter ? (
             <span className="flex flex-wrap items-center gap-2"><Trans>No tickets match these filters.</Trans><Button type="button" size="sm" variant="link" className="h-auto p-0" onClick={clearFilters}><Trans>Clear filters</Trans></Button></span>
-          ) : data.counts.all === 0 ? t`The backlog is empty.` : filter !== 'all' ? (
+          ) : data.counts.all === 0 ? (status === 'open' && planned === 'exclude' ? t`Nothing unplanned in the backlog. Planned tickets are on their board’s Next sprints.` : t`The backlog is empty.`) : filter !== 'all' ? (
             <span className="flex flex-wrap items-center gap-2"><Trans>Nothing of this type in the backlog.</Trans><Button type="button" size="sm" variant="link" className="h-auto p-0" onClick={clearFilters}><Trans>Clear filters</Trans></Button></span>
           ) : t`The backlog is empty.`}
         </p>

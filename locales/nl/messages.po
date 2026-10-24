@@ -1231,6 +1231,7 @@ msgstr "Blokkeert"
 msgid "board"
 msgstr "bord"
 
+#: app/boards/[id]/page.tsx
 #: components/project/move-to-board.tsx
 #: components/reports/rollup-view.tsx
 msgid "Board"
@@ -1255,6 +1256,10 @@ msgstr "Bordreview: alles, samen"
 #: components/board/template-picker.tsx
 msgid "Board template"
 msgstr "Bordsjabloon"
+
+#: app/boards/[id]/page.tsx
+msgid "Board view"
+msgstr "Bordweergave"
 
 #: app/projects/[id]/edit/page.tsx
 #: app/projects/[id]/page.tsx
@@ -2147,6 +2152,10 @@ msgstr "Kan de bestandsopschoning niet laden. Vernieuw de pagina om het opnieuw 
 #: components/project/repositories.tsx
 msgid "Couldn’t load the linked repositories."
 msgstr "Kan de gelinkte repositories niet laden."
+
+#: components/board/next-sprints.tsx
+msgid "Couldn’t load the next sprints. Please try again."
+msgstr "Kon de volgende sprints niet laden. Probeer het opnieuw."
 
 #: components/roadmap/item-tickets.tsx
 #: components/ticket/dependencies.tsx
@@ -4103,6 +4112,7 @@ msgid "Loading your work…"
 msgstr "Je werk laden…"
 
 #: app/account/page.tsx
+#: components/board/next-sprints.tsx
 #: components/dashboard-work.tsx
 #: components/intake/intake-settings.tsx
 #: components/intake/request-form.tsx
@@ -4485,6 +4495,10 @@ msgstr "Nieuwste eerst"
 msgid "Next"
 msgstr "Volgende"
 
+#: app/boards/[id]/page.tsx
+msgid "Next sprints"
+msgstr "Volgende sprints"
+
 #: lib/error-codes.ts
 msgid "next_starts_at must be in the future"
 msgstr "next_starts_at moet in de toekomst liggen."
@@ -4678,6 +4692,10 @@ msgstr "Geen lopende sprint — tickets hebben geen timebox."
 #: components/board/velocity.tsx
 msgid "No sprint running, so there's nothing to burn down."
 msgstr "Geen lopende sprint, dus er is geen burndown."
+
+#: components/board/next-sprints.tsx
+msgid "No sprints are planned yet."
+msgstr "Er zijn nog geen sprints gepland."
 
 #: components/reports/rollup-view.tsx
 msgid "No sprints finished in this period. Try a longer one."
@@ -4884,6 +4902,10 @@ msgstr "Nog niets op deze roadmap."
 msgid "Nothing recorded yet. History is kept from October 2026."
 msgstr "Nog niets vastgelegd. De geschiedenis wordt bijgehouden vanaf oktober 2026."
 
+#: components/project/backlog.tsx
+msgid "Nothing unplanned in the backlog. Planned tickets are on their board’s Next sprints."
+msgstr "Niets ongepland in de backlog. Geplande tickets staan bij Volgende sprints van hun bord."
+
 #: components/board/past-sprints.tsx
 msgid "Nothing was finished in this sprint."
 msgstr "Er is niets afgerond in deze sprint."
@@ -5005,6 +5027,10 @@ msgstr "Bij merge: een gemergede pull request verplaatst zijn tickets naar Klaar
 #: lib/help.ts
 msgid "On the board, click Standup, then Start once everyone has joined."
 msgstr "Klik op het bord op Stand-up en daarna op Starten zodra iedereen er is."
+
+#: lib/help.ts
+msgid "On the board, open Next sprints. Planned tickets join the board when their sprint starts; until then the backlog hides them unless you choose Planned."
+msgstr "Open op het bord Volgende sprints. Geplande tickets komen op het bord zodra hun sprint start; tot die tijd verbergt de backlog ze, tenzij je Gepland kiest."
 
 #: lib/help.ts
 msgid "On the board’s sprint bar: Start sprint, and Close sprint once it’s running. Admins and the board’s team leads can."
@@ -5446,9 +5472,14 @@ msgstr "Plan moet pro of enterprise zijn."
 msgid "Plan sprint {nextNumber}"
 msgstr "Sprint {nextNumber} plannen"
 
+#: components/project/backlog-sort.tsx
 #: components/reports/report-view.tsx
 msgid "Planned"
 msgstr "Gepland"
+
+#: components/project/backlog-sort.tsx
+msgid "Planned and unplanned"
+msgstr "Gepland en ongepland"
 
 #: components/ticket/planned-badge.tsx
 msgid "Planned into sprint {n}"
@@ -6256,6 +6287,10 @@ msgstr "Tonen"
 #: components/project/backlog.tsx
 msgid "Show open or closed tickets"
 msgstr "Open of gesloten tickets tonen"
+
+#: components/project/backlog-sort.tsx
+msgid "Show planned tickets"
+msgstr "Geplande tickets tonen"
 
 #: components/notifications-bell.tsx
 msgid "Show read ({readCount})"
@@ -7204,6 +7239,10 @@ msgstr "Tickets die nog niet op een bord staan. Verplaats er een naar een bord o
 msgid "tickets per sprint"
 msgstr "tickets per sprint"
 
+#: components/board/next-sprints.tsx
+msgid "Tickets planned for this board’s next sprints. They join the board when their sprint starts. Plan more with <0>Refine</0> on the project’s backlog."
+msgstr "Tickets die gepland zijn voor de volgende sprints van dit bord. Ze komen op het bord zodra hun sprint start. Plan er meer via <0>refinement</0> in de backlog van het project."
+
 #. placeholder {0}: totals.sprints
 #: components/reports/report-view.tsx
 msgid "tickets planned, across {0, plural, one {# sprint} other {# sprints}}"
@@ -7383,6 +7422,10 @@ msgstr "{0} ontkoppelen? De pull requests worden dan niet meer aan tickets van d
 #: components/settings/chat-dm.tsx
 msgid "Unlinking…"
 msgstr "Ontkoppelen…"
+
+#: components/project/backlog-sort.tsx
+msgid "Unplanned"
+msgstr "Ongepland"
 
 #: components/notifications-bell.tsx
 msgid "Unread"
@@ -7655,6 +7698,10 @@ msgstr "Waar zijn de sprintrapporten?"
 #: lib/help.ts
 msgid "Where can I see all my tickets?"
 msgstr "Waar zie ik al mijn tickets?"
+
+#: lib/help.ts
+msgid "Where can I see what’s planned for the next sprint?"
+msgstr "Waar zie ik wat er voor de volgende sprint gepland is?"
 
 #: lib/help.ts
 msgid "Where do I get an API key?"
