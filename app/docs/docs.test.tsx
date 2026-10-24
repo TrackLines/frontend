@@ -39,7 +39,17 @@ test('the MCP guide: keys, every client’s setup (the same steps as Connect AI)
   const { default: McpDocs, keys, tools, chain } = await import('./mcp/page');
   const { AGENTS, MCP_URL } = await import('@/components/mcp-connect');
   const { render } = await import('@/test/i18n');
-  const html = render(<McpDocs />); // the Connect AI steps are <Trans>
+  const prompts = { instructions: 'Work like a member of the team.', tools: [{ name: 'claim_ticket', title: 'Claim ticket', description: 'Assign it to the caller, atomically.' }] };
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = (async () => Response.json(prompts)) as unknown as typeof fetch;
+  const html = render(await McpDocs()); // the Connect AI steps are <Trans>
+  // what agents are told, from the API (TL-566); a message when it can't be reached
+  expect(html).toContain('Work like a member of the team.');
+  expect(html).toContain('Assign it to the caller, atomically.');
+  expect(html).toContain('(1 tools)');
+  globalThis.fetch = (async () => { throw new Error('down'); }) as unknown as typeof fetch;
+  expect(render(await McpDocs())).toContain('They couldn’t be loaded just now.');
+  globalThis.fetch = realFetch;
   expect(html).toContain(MCP_URL);
   for (const k of keys) expect(html).toContain(k.kind);
   for (const a of AGENTS) expect(html).toContain(`>${a.name}<`); // one tab per client, from the dialog's own list

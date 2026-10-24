@@ -40,6 +40,20 @@ export const chain = [
   'Move it to the last column. On a board with agent review it waits there for a person to approve it; otherwise it’s done.',
 ];
 
+// Prompts: what the MCP server tells agents, from the API itself so it can't drift (TL-566).
+export type Prompts = { instructions: string; tools: { name: string; title: string; description: string }[] };
+export const PROMPTS_URL = 'https://api.tracklin.es/api/mcp/prompts';
+
+// loadPrompts reads them from the API, refreshed hourly; null when the API can't be reached.
+async function loadPrompts(): Promise<Prompts | null> {
+  try {
+    const res = await fetch(`${process.env.BACKEND_URL ?? 'http://localhost:8080'}/api/mcp/prompts`, { next: { revalidate: 3600 } });
+    return res.ok ? ((await res.json()) as Prompts) : null;
+  } catch {
+    return null;
+  }
+}
+
 const H2 = ({ children }: { children: React.ReactNode }) => <h2 className="mt-10 text-xl font-semibold">{children}</h2>;
 const P = ({ children }: { children: React.ReactNode }) => <p className="mt-2 text-muted-foreground [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:text-foreground">{children}</p>;
 
@@ -66,7 +80,8 @@ function Rows({ head, rows }: { head: [string, string]; rows: { a: string; b: st
   );
 }
 
-export default function McpDocs() {
+export default async function McpDocs() {
+  const prompts = await loadPrompts();
   return (
     <main className="mx-auto max-w-6xl px-6 py-16">
       <article className="max-w-3xl">
@@ -106,7 +121,26 @@ export default function McpDocs() {
           While a sprint is open they pick from it first, bugs before other work, like a team member would. To have a person
           check an agent’s work before it counts as done, turn on agent review for the board.
         </P>
+
+        <H2>What agents are told</H2>
+        <P>
+          Word for word, the instructions every agent gets when it connects, and the description it sees for each tool.
+          Also at <a href={PROMPTS_URL} className="underline">{PROMPTS_URL}</a>.
+        </P>
+        {prompts ? <PromptList prompts={prompts} /> : <P>They couldn’t be loaded just now.</P>}
       </article>
     </main>
+  );
+}
+
+function PromptList({ prompts }: { prompts: Prompts }) {
+  return (
+    <>
+      <pre className="mt-4 rounded-lg border bg-muted/50 p-4 text-sm whitespace-pre-wrap">{prompts.instructions}</pre>
+      <details className="mt-4 rounded-lg border">
+        <summary className="cursor-pointer px-4 py-3 font-medium">Each tool’s description ({prompts.tools.length} tools)</summary>
+        <Rows head={['Tool', 'Description']} rows={prompts.tools.map((t) => ({ a: t.name, b: t.description }))} />
+      </details>
+    </>
   );
 }
