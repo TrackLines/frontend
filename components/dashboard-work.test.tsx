@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 import { render as renderToStaticMarkup } from '@/test/i18n';
-import { DashboardWorkView } from './dashboard-work';
+import { DashboardWorkView, SHOW, SHOW_CREATED } from './dashboard-work';
 import type { Mention, TicketSearchResult } from '@/lib/api';
 
 const mine = { id: 't1', key: 'TL-12', title: 'Fix login', column_id: 'c', position: 0, description: '', created_by: 'x', priority: 'urgent', blocked: true,
@@ -50,4 +50,12 @@ test('a tab that shows only some of my tickets says how many there are, and link
   expect(html).not.toContain('1 of 1'); // assigned shows everything: no count
   const only = renderToStaticMarkup(<DashboardWorkView assigned={[mine]} created={[]} mentioned={[]} people={[]} totals={{ assigned: 7 }} />);
   expect(only).toContain('1 of 7 tickets');
+});
+
+test('Created by me shows 4, so its footer takes the fifth row and the card keeps its height (TL-572)', () => {
+  expect(SHOW).toBe(5);
+  expect(SHOW_CREATED).toBe(4);
+  const four = Array.from({ length: 4 }, (_, i) => ({ ...raised, id: `c${i}`, key: `TL-${i}` }));
+  const html = renderToStaticMarkup(<DashboardWorkView assigned={[mine]} created={four} mentioned={[]} people={[]} totals={{ created: 9 }} />);
+  expect(html).toContain('of 9 tickets');
 });
