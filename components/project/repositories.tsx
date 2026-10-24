@@ -5,6 +5,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Spinner } from '@/components/ui/spinner';
 import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, ComboboxList } from '@/components/ui/combobox';
 import { integrations, projectRepos, type GitRepo, type ProjectRepo } from '@/lib/api';
 import { PROVIDER_NAMES, connectHint, GIT_PROVIDERS, integrationError } from '@/lib/integrations';
@@ -99,9 +100,11 @@ export function RepositoriesView({ linked, admin, connected, provider, choices, 
         ) : (
           <div className="mt-3 flex flex-wrap items-center gap-2">
             {connected.map((p) => (
-              <Button key={p} size="sm" variant={provider === p ? 'secondary' : 'outline'} disabled={busy} onClick={() => onProvider(p)}><Trans>Link from {PROVIDER_NAMES[p]}</Trans></Button>
+              <Button key={p} size="sm" variant={provider === p ? 'secondary' : 'outline'} disabled={busy} onClick={() => onProvider(p)}>
+                {provider === p && choices === null && <Spinner aria-hidden />}<Trans>Link from {PROVIDER_NAMES[p]}</Trans>
+              </Button>
             ))}
-            {provider && (choices === null ? <span className="text-sm text-muted-foreground"><Trans>Loading repositories…</Trans></span>
+            {provider && (choices === null ? <span role="status" className="text-sm text-muted-foreground"><Trans>Loading repositories…</Trans></span>
               : available.length === 0 ? <span className="text-sm text-muted-foreground"><Trans>No other repositories to link.</Trans></span>
               : (
                 // a combobox, not a select: with many orgs connected the list is long (TL-562)
