@@ -247,7 +247,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
               <div className="grid max-w-sm grid-cols-2 gap-3">
                 <label className="grid gap-1 font-normal text-muted-foreground">
                   <Trans>Days</Trans>
-                  <Select value={String(timeboxDays)} onValueChange={(value) => { if (value) setTimeboxDays(Number(value)); }}>
+                  <Select items={Object.fromEntries(Array.from({ length: 61 }, (_, days) => [String(days), i18n._(msg`${plural(days, { one: '# day', other: '# days' })}`)]))} value={String(timeboxDays)} onValueChange={(value) => { if (value) setTimeboxDays(Number(value)); }}>
                     <SelectTrigger aria-label={t`Timebox days`} className="w-full text-foreground"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       {Array.from({ length: 61 }, (_, days) => (
@@ -258,7 +258,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
                 </label>
                 <label className="grid gap-1 font-normal text-muted-foreground">
                   <Trans>Hours</Trans>
-                  <Select value={String(timeboxHours)} onValueChange={(value) => { if (value) setTimeboxHours(Number(value)); }}>
+                  <Select items={Object.fromEntries(Array.from({ length: 24 }, (_, hours) => [String(hours), i18n._(msg`${plural(hours, { one: '# hour', other: '# hours' })}`)]))} value={String(timeboxHours)} onValueChange={(value) => { if (value) setTimeboxHours(Number(value)); }}>
                     <SelectTrigger aria-label={t`Timebox hours`} className="w-full text-foreground"><SelectValue /></SelectTrigger>
                     <SelectContent>
                       {Array.from({ length: 24 }, (_, hours) => (

@@ -30,6 +30,7 @@ import { attachAll, PendingAttachments, type PendingFile } from '@/components/ti
 import { BACKLOG_CHANGED } from '@/components/quick-add-ticket';
 import { ApiError, backlog, BacklogTicket, type BacklogPage, type BacklogSort, type BacklogStatus, type EpicSummary, boards as boardsApi, organization, tickets, type Board, type OrganizationRole, type Ticket, type TicketType, hostedPaths } from '@/lib/api';
 import { canMoveToBoard, canRefine } from '@/lib/board-access';
+import { BacklogSortSelect } from './backlog-sort';
 import { useAutoRefresh } from '@/lib/use-auto-refresh';
 import { useCachedState } from '@/lib/page-cache';
 import { ListSkeleton } from '@/components/page-skeletons';
@@ -223,6 +224,7 @@ export function Backlog({ projectId, boards, token }: Props) {
         <RefinementMode
           projectId={projectId} boards={boards} token={token} version={changes}
           priorities={priorityFilter} onPrioritiesChange={changePriorities}
+          sort={sort} onSortChange={setSort}
           onClose={doneRefining}
           onOpen={(tk, scale) => openEditor(tk as unknown as BacklogTicket, scale)}
           ticketActions={(tk) => (
@@ -266,19 +268,7 @@ export function Backlog({ projectId, boards, token }: Props) {
             </SelectContent>
           </Select>
         </span>
-        <span className="inline-flex items-center gap-2 pl-2 text-sm text-muted-foreground">
-          <label htmlFor="backlog-sort"><Trans>Sort</Trans></label>
-          <Select value={sort} onValueChange={(value) => { if (value) { setSort(value as BacklogSort); setPage(1); } }}>
-            <SelectTrigger id="backlog-sort" size="sm" aria-label={t`Sort backlog by date`}>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="manual">{status === 'open' ? t`Manual order` : t`Recently closed`}</SelectItem>
-              <SelectItem value="newest"><Trans>Newest first</Trans></SelectItem>
-              <SelectItem value="oldest"><Trans>Oldest first</Trans></SelectItem>
-            </SelectContent>
-          </Select>
-        </span>
+        <span className="inline-flex pl-2"><BacklogSortSelect sort={sort} onSortChange={(s) => { setSort(s); setPage(1); }} closed={status !== 'open'} /></span>
       </div>
 
       {error && <p role="alert" className="mb-3 text-sm text-destructive">{error}</p>}

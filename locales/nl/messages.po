@@ -4168,7 +4168,7 @@ msgstr "Facturering beheren"
 msgid "Manage organization"
 msgstr "Organisatie beheren"
 
-#: components/project/backlog.tsx
+#: components/project/backlog-sort.tsx
 msgid "Manual order"
 msgstr "Handmatige volgorde"
 
@@ -4476,7 +4476,7 @@ msgstr "Nieuw ticket"
 msgid "New tickets"
 msgstr "Nieuwe tickets"
 
-#: components/project/backlog.tsx
+#: components/project/backlog-sort.tsx
 msgid "Newest first"
 msgstr "Nieuwste eerst"
 
@@ -4973,7 +4973,7 @@ msgstr "Offset moet een niet-negatief geheel getal zijn."
 msgid "OK"
 msgstr "OK"
 
-#: components/project/backlog.tsx
+#: components/project/backlog-sort.tsx
 msgid "Oldest first"
 msgstr "Oudste eerst"
 
@@ -5700,7 +5700,7 @@ msgstr "De reden is te lang."
 msgid "Received <0/>"
 msgstr "Ontvangen <0/>"
 
-#: components/project/backlog.tsx
+#: components/project/backlog-sort.tsx
 msgid "Recently closed"
 msgstr "Onlangs gesloten"
 
@@ -6349,11 +6349,11 @@ msgstr "Er ging iets mis"
 msgid "Something went wrong. Please try again."
 msgstr "Er ging iets mis. Probeer het opnieuw."
 
-#: components/project/backlog.tsx
+#: components/project/backlog-sort.tsx
 msgid "Sort"
 msgstr "Sorteren"
 
-#: components/project/backlog.tsx
+#: components/project/backlog-sort.tsx
 msgid "Sort backlog by date"
 msgstr "Backlog sorteren op datum"
 

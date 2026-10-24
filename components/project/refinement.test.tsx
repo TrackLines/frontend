@@ -71,3 +71,15 @@ test('a planned sprint goal: editable for managers, read-only for members', () =
   expect(member).toContain('Bugfixes panel live');
   expect(member).not.toContain('aria-label="Sprint 5 goal"');
 });
+
+test('the sort is shared by the backlog and refinement: newest and oldest first too (TL-581)', async () => {
+  const { BacklogSortSelect } = await import('./backlog-sort');
+  const open = renderToStaticMarkup(<BacklogSortSelect sort="newest" onSortChange={() => {}} id="refine-sort" />);
+  expect(open).toContain('id="refine-sort"');
+  expect(open).toContain('Newest first');
+  const manual = renderToStaticMarkup(<BacklogSortSelect sort="manual" onSortChange={() => {}} />);
+  expect(manual).toContain('Manual order');
+  expect(renderToStaticMarkup(<BacklogSortSelect sort="manual" onSortChange={() => {}} closed />)).toContain('Recently closed');
+  const src = await Bun.file(new URL('./refinement.tsx', import.meta.url)).text();
+  expect(src).toContain('priorities, sort }'); // the to-plan list is loaded in that order
+});
