@@ -5,7 +5,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, ComboboxList } from '@/components/ui/combobox';
 import { integrations, projectRepos, type GitRepo, type ProjectRepo } from '@/lib/api';
 import { PROVIDER_NAMES, connectHint, GIT_PROVIDERS, integrationError } from '@/lib/integrations';
 
@@ -73,6 +73,7 @@ export function RepositoriesView({ linked, admin, connected, provider, choices, 
   const { t, i18n } = useLingui();
   const linkedNames = new Set((linked ?? []).map((r) => `${r.provider}:${r.full_name.toLowerCase()}`));
   const available = (choices ?? []).filter((r) => provider && !linkedNames.has(`${provider}:${r.full_name.toLowerCase()}`));
+  const privateNames = new Set(available.filter((r) => r.private).map((r) => r.full_name));
   return (
     <section aria-label={t`Repositories`}>
       <p className="mb-4 text-muted-foreground"><Trans>Pull requests in these repositories that mention a ticket&apos;s key (e.g. in the branch name) show on the ticket; merging one closes it.</Trans></p>
@@ -103,14 +104,16 @@ export function RepositoriesView({ linked, admin, connected, provider, choices, 
             {provider && (choices === null ? <span className="text-sm text-muted-foreground"><Trans>Loading repositories…</Trans></span>
               : available.length === 0 ? <span className="text-sm text-muted-foreground"><Trans>No other repositories to link.</Trans></span>
               : (
-                <Select items={Object.fromEntries(available.map((r) => [r.full_name, r.full_name]))} value={null} onValueChange={(v) => v && onLink(String(v))} disabled={busy}>
-                  <SelectTrigger size="sm" className="min-w-56" aria-label={t`Choose a ${PROVIDER_NAMES[provider]} repository`}>
-                    <SelectValue placeholder={t`Choose a repository…`} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {available.map((r) => <SelectItem key={r.full_name} value={r.full_name}>{r.full_name}{r.private ? ` ${t`(private)`}` : ''}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                // a combobox, not a select: with many orgs connected the list is long (TL-562)
+                <Combobox items={available.map((r) => r.full_name)} value={null} onValueChange={(v) => v && onLink(v)} disabled={busy}>
+                  <ComboboxInput className="min-w-72" placeholder={t`Search repositories…`} aria-label={t`Choose a ${PROVIDER_NAMES[provider]} repository`} disabled={busy} />
+                  <ComboboxContent>
+                    <ComboboxEmpty><Trans>No repositories match.</Trans></ComboboxEmpty>
+                    <ComboboxList>
+                      {(name: string) => <ComboboxItem key={name} value={name}>{name}{privateNames.has(name) ? ` ${t`(private)`}` : ''}</ComboboxItem>}
+                    </ComboboxList>
+                  </ComboboxContent>
+                </Combobox>
               ))}
           </div>
         )

@@ -1429,10 +1429,6 @@ msgstr "Choose a board…"
 msgid "Choose a project"
 msgstr "Choose a project"
 
-#: components/project/repositories.tsx
-msgid "Choose a repository…"
-msgstr "Choose a repository…"
-
 #: components/ticket/dependencies.tsx
 msgid "Choose a ticket it waits on…"
 msgstr "Choose a ticket it waits on…"
@@ -4458,6 +4454,10 @@ msgstr "No personal keys yet."
 msgid "No repositories linked yet."
 msgstr "No repositories linked yet."
 
+#: components/project/repositories.tsx
+msgid "No repositories match."
+msgstr "No repositories match."
+
 #: components/intake/triage.tsx
 msgid "No requests waiting. Share the request form link from Edit project to start collecting them."
 msgstr "No requests waiting. Share the request form link from Edit project to start collecting them."
@@ -5815,6 +5815,10 @@ msgstr "scope must be organization, team, or project"
 #: components/ticket-search.tsx
 msgid "Search"
 msgstr "Search"
+
+#: components/project/repositories.tsx
+msgid "Search repositories…"
+msgstr "Search repositories…"
 
 #: components/ticket-search.tsx
 msgid "Search tickets"
