@@ -14,7 +14,10 @@ import { TimeboxCountdown } from '@/components/timebox-countdown';
 import { mentions, tickets, type Assignee, type Mention, type TicketSearchResult } from '@/lib/api';
 import { actorName } from '@/lib/notifications';
 
-const SHOW = 5;
+export const SHOW = 5;
+// Created by me shows one fewer: its "5 of 9 tickets · See all" footer then takes the fifth row's
+// place, so the card doesn't grow when the footer appears (TL-572)
+export const SHOW_CREATED = SHOW - 1;
 
 // Load<I>: a list that's still loading (null), failed to load ('failed'), or arrived.
 type Load<I> = I[] | null | 'failed';
@@ -32,7 +35,7 @@ export function DashboardWork({ token }: { token: string }) {
   useEffect(() => {
     tickets.searchPage({ assignee: 'me', status: 'open', limit: SHOW }, token)
       .then((r) => { setAssigned(r.tickets); setTotals((t) => ({ ...t, assigned: r.total })); }, () => setAssigned('failed'));
-    tickets.searchPage({ creator: 'me', status: 'open', limit: SHOW }, token)
+    tickets.searchPage({ creator: 'me', status: 'open', limit: SHOW_CREATED }, token)
       .then((r) => { setCreated(r.tickets); setTotals((t) => ({ ...t, created: r.total })); }, () => setCreated('failed'));
     mentions.list(token, SHOW).then(setMentioned, () => setMentioned('failed'));
     tickets.assignees(token).then(setPeople, () => {});
