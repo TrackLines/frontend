@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { canManageBoard, canRefine } from './board-access';
+import { canManageBoard, canMoveToBoard, canRefine } from './board-access';
 
 test('organization admins can manage linked and unlinked boards', () => {
   expect(canManageBoard({ admin: true, leads: [] }, null)).toBe(true);
@@ -30,4 +30,15 @@ test('roadmaps are changed by org admins and leaders of a team with a board in t
   expect(canManageRoadmaps({ admin: false, leads: ['design'] }, boards)).toBe(false); // leads another project's team
   expect(canManageRoadmaps({ admin: false, leads: [] }, boards)).toBe(false);
   expect(canManageRoadmaps(null, boards)).toBe(false); // still loading, or failed
+});
+
+test('moving tickets onto boards: org admins and the leaders of any of its boards, kanban too (TL-381)', () => {
+  const kanbanOnly = [{ style: 'kanban', team_id: 'ops' }, { style: 'kanban', team_id: null }];
+  expect(canRefine({ admin: true, leads: [] }, kanbanOnly)).toBe(false); // nobody can refine a kanban-only project…
+  expect(canMoveToBoard({ admin: true, leads: [] }, kanbanOnly)).toBe(true); // …but its tickets can still go onto boards
+  expect(canMoveToBoard({ admin: false, leads: ['ops'] }, kanbanOnly)).toBe(true);
+  expect(canMoveToBoard({ admin: false, leads: [] }, kanbanOnly)).toBe(false); // a plain member
+  expect(canMoveToBoard({ admin: false, leads: ['web'] }, kanbanOnly)).toBe(false); // leads another project's team
+  expect(canMoveToBoard(null, kanbanOnly)).toBe(false); // still loading
+  expect(canMoveToBoard({ admin: true, leads: [] }, [])).toBe(false); // no other boards
 });

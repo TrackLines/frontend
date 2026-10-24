@@ -39,9 +39,25 @@ test('details take @mentions', () => {
   expect(dialog({ ticket })).toContain('aria-autocomplete="list"');
 });
 
-test('a backlog ticket can be moved to a board from its edit dialog, when the caller allows it (TL-464)', () => {
+test('a ticket can be moved to a board from its edit dialog, from the backlog (TL-464) or another board (TL-381), when the caller allows it', () => {
   const board = { id: 'b1', project_id: 'p', owner_clerk_id: 'o', name: 'Team', description: '', created_at: '', updated_at: '' };
   expect(dialog({ ticket })).not.toContain('Move to board');
   expect(dialog({ ticket, move: { boards: [], onMoved: () => {} } })).not.toContain('Move to board'); // nowhere to go
-  expect(dialog({ ticket, move: { boards: [board], onMoved: () => {} } })).toContain('Move to board…');
+  expect(dialog({ ticket, move: { boards: [board], onMoved: () => {} } })).toContain('Move to board…'); // on a board (columnId c)
+  expect(dialog({ ticket, columnId: '', move: { boards: [board], onMoved: () => {} } })).toContain('Move to board…'); // in the backlog
+});
+
+test('moving to another board says which sub-tickets go with it (TL-381)', async () => {
+  const { alsoMovesNote } = await import('./ticket-dialog');
+  const { MoveToBoard } = await import('@/components/project/move-to-board');
+  const { i18nFor } = await import('@/lib/i18n');
+  const en = i18nFor('en');
+  const subs = [{ id: 's1', key: 'TL-8', title: 'Part one' }, { id: 's2', key: 'TL-9', title: 'Part two' }];
+  expect(alsoMovesNote(subs, en, 'board')).toBe('Moving it also moves its 2 open sub-tickets on this board: TL-8, TL-9.');
+  expect(alsoMovesNote(subs.slice(0, 1), en, 'board')).toBe('Moving it also moves its open sub-ticket on this board: TL-8.');
+  expect(alsoMovesNote(subs, en)).toContain('Sending it to the backlog'); // the backlog wording stays
+  expect(alsoMovesNote([], en, 'board')).toBe('');
+  const board = { id: 'b1', project_id: 'p', owner_clerk_id: 'o', name: 'Team', description: '', created_at: '', updated_at: '' };
+  const html = renderToStaticMarkup(<MoveToBoard ticket={ticket} boards={[board]} token="tok" onMoved={() => {}} onCancel={() => {}} fromBoard alsoMoves={alsoMovesNote(subs, en, 'board')} />);
+  expect(html).toContain('Moving it also moves its 2 open sub-tickets');
 });

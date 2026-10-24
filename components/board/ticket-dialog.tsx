@@ -40,14 +40,16 @@ type Props = {
   done?: boolean; // in the board's last column: attachments locked
   scale?: EstimateScale; // the board's; no estimate field when absent or 'none'
   epic?: boolean; // offer the Epic type; defaults to everywhere but creating on a board (epics live in the backlog)
-  move?: { boards: Board[]; onMoved: (id: string, planned: boolean) => void }; // backlog: Move to board, for those who can refine (TL-464)
+  move?: { boards: Board[]; onMoved: (id: string, planned: boolean) => void }; // Move to board, from the backlog (TL-464) or another board (TL-381)
 };
 
-// alsoMovesNote: "Sending it to the backlog also moves 2 sub-tickets: TL-5, TL-6." (TL-218), or ''.
-export function alsoMovesNote(subs: MovedTicket[], i18n: I18n): string {
+// alsoMovesNote: "Sending it to the backlog also moves 2 sub-tickets: TL-5, TL-6." (TL-218), or for a
+// move to another board (TL-381) "Moving it also moves…", or ''.
+export function alsoMovesNote(subs: MovedTicket[], i18n: I18n, to: 'backlog' | 'board' = 'backlog'): string {
   if (subs.length === 0) return '';
   const shown = subs.slice(0, 5).map((s) => s.key ?? s.title).join(', '), more = subs.length - 5;
   const names = more > 0 ? i18n._(msg`${shown} and ${more} more`) : shown;
+  if (to === 'board') return i18n._(msg`${plural(subs.length, { one: `Moving it also moves its open sub-ticket on this board: ${names}.`, other: `Moving it also moves its # open sub-tickets on this board: ${names}.` })}`);
   return i18n._(msg`${plural(subs.length, { one: `Sending it to the backlog also moves its open sub-ticket on this board: ${names}.`, other: `Sending it to the backlog also moves its # open sub-tickets on this board: ${names}.` })}`);
 }
 
@@ -295,7 +297,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
             </div>
           )}
           {moving && ticket && move && (
-            <MoveToBoard ticket={ticket} boards={move.boards} token={token} onCancel={() => setMoving(false)}
+            <MoveToBoard ticket={ticket} boards={move.boards} token={token} onCancel={() => setMoving(false)} fromBoard={!!columnId} alsoMoves={alsoMovesNote(subs, i18n, 'board')}
               onMoved={(planned) => { move.onMoved(ticket.id, planned); onOpenChange(false); }} />
           )}
           {wontDo !== null && (

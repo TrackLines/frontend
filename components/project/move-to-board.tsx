@@ -16,9 +16,11 @@ type Loaded = { board: Board; velocity?: Velocity; planned: PlannedSprint[] }; /
 // Past capacity it says so and asks again: "Move anyway", or for a planned sprint, that it'll need
 // approval. Boards with an estimate scale take an estimate first. Moving to the current sprint puts it
 // at the bottom of the first column; planning keeps it in the backlog, planned (as refinement does).
-export function MoveToBoard({ ticket, boards, token, onMoved, onCancel }: {
+export function MoveToBoard({ ticket, boards, token, onMoved, onCancel, fromBoard = false, alsoMoves = '' }: {
   ticket: { id: string; title: string; estimate?: string | null };
   boards: Board[]; token: string; onMoved: (planned: boolean) => void; onCancel: () => void;
+  fromBoard?: boolean; // the ticket is on a board: only the current sprint, as only backlog tickets can be planned (TL-381)
+  alsoMoves?: string; // "Moving it also moves its 2 open sub-tickets…" (TL-381)
 }) {
   const { t, i18n } = useLingui();
   const [boardId, setBoardId] = useState('');
@@ -38,7 +40,7 @@ export function MoveToBoard({ ticket, boards, token, onMoved, onCancel }: {
       const s = (board.estimate_scale ?? 'none') as EstimateScale;
       setEstimate(ticket.estimate && scaleValues(s).includes(ticket.estimate) ? ticket.estimate : '');
       if (board.style === 'kanban') return setLoaded({ board, planned: [] });
-      const [v, planned] = await Promise.all([sprints.velocity(boardId, token), plannedSprints.list(boardId, token)]);
+      const [v, planned] = await Promise.all([sprints.velocity(boardId, token), fromBoard ? [] : plannedSprints.list(boardId, token)]);
       setLoaded({ board, velocity: v, planned });
     })().catch(() => setError(t`Couldn’t load that board. Please try again.`));
   }, [boardId]);
@@ -100,6 +102,7 @@ export function MoveToBoard({ ticket, boards, token, onMoved, onCancel }: {
           <EstimateSelect scale={scale} value={estimate} onChange={setEstimate} required />
         </label>
       )}
+      {alsoMoves && <p role="note" className="text-xs text-muted-foreground">{alsoMoves}</p>}
       {note && <p role="alert" className="rounded-md border border-destructive/30 bg-destructive/5 p-2 text-destructive">{note}</p>}
       {error && <p role="alert" className="text-destructive">{error}</p>}
       <div className="flex gap-2">

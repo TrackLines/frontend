@@ -29,7 +29,7 @@ import { LabelDrawer, MoreLabels, splitLabels, TicketLabels } from '@/components
 import { attachAll, PendingAttachments, type PendingFile } from '@/components/ticket/pending-attachments';
 import { BACKLOG_CHANGED } from '@/components/quick-add-ticket';
 import { ApiError, backlog, BacklogTicket, type BacklogPage, type BacklogSort, type BacklogStatus, type EpicSummary, boards as boardsApi, organization, tickets, type Board, type OrganizationRole, type Ticket, type TicketType, hostedPaths } from '@/lib/api';
-import { canRefine } from '@/lib/board-access';
+import { canMoveToBoard, canRefine } from '@/lib/board-access';
 import { useAutoRefresh } from '@/lib/use-auto-refresh';
 import { useCachedState } from '@/lib/page-cache';
 import { ListSkeleton } from '@/components/page-skeletons';
@@ -327,7 +327,7 @@ export function Backlog({ projectId, boards, token }: Props) {
           onDeleted={(id) => { drop(id); void load(); }} // the edit dialog can delete (it asks first)
           onWontDo={(id) => { drop(id); void load(); }}
           // Move to board without a refinement session (TL-464), for the people who can refine
-          move={canRefine(role, boards) ? { boards, onMoved: (id, planned) => { if (!planned) drop(id); void load(); } } : undefined}
+          move={canMoveToBoard(role, boards) ? { boards, onMoved: (id, planned) => { if (!planned) drop(id); void load(); } } : undefined}
         />
       )}
       <AddDialog
