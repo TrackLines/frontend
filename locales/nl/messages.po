@@ -5252,8 +5252,12 @@ msgid "Open the ticket"
 msgstr "Ticket openen"
 
 #: lib/help.ts
-msgid "Open the ticket → Edit → Move to board…, or use Move to board… in Refine. Boards with estimates ask for one first."
-msgstr "Open het ticket → Bewerken → Naar bord verplaatsen…, of gebruik Naar bord verplaatsen… tijdens refinement. Borden met schattingen vragen er eerst een."
+msgid "Open the ticket → Edit → Move to board… and pick the board; open sub-tickets on this board go with it. Admins and the project’s team leads can."
+msgstr "Open het ticket → Bewerken → Naar bord verplaatsen… en kies het bord; open subtickets op dit bord gaan mee. Beheerders en de teamleiders van het project kunnen dat."
+
+#: lib/help.ts
+msgid "Open the ticket → Edit → Move to board…, or use Move to board… in Refine. Boards with estimates ask for one first. Admins and the project’s team leads can."
+msgstr "Open het ticket → Bewerken → Naar bord verplaatsen…, of gebruik Naar bord verplaatsen… tijdens refinement. Borden met schattingen vragen er eerst een. Beheerders en de teamleiders van het project kunnen dat."
 
 #: lib/help.ts
 msgid "Open the ticket’s own page; under Sub-tickets use Add a sub-ticket… or New sub-ticket…."
@@ -6103,10 +6107,6 @@ msgstr "Terugsturen"
 #: app/settings/organization/page.tsx
 msgid "Send invite"
 msgstr "Uitnodiging sturen"
-
-#: lib/help.ts
-msgid "Send it to the backlog from the ticket, then move it onto the other board with Move to board…."
-msgstr "Stuur het vanuit het ticket naar de backlog en zet het daarna op het andere bord met Naar bord verplaatsen…."
 
 #: lib/error-codes.ts
 msgid "send length_days and/or goal"

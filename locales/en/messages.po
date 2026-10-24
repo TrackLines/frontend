@@ -5252,8 +5252,12 @@ msgid "Open the ticket"
 msgstr "Open the ticket"
 
 #: lib/help.ts
-msgid "Open the ticket → Edit → Move to board…, or use Move to board… in Refine. Boards with estimates ask for one first."
-msgstr "Open the ticket → Edit → Move to board…, or use Move to board… in Refine. Boards with estimates ask for one first."
+msgid "Open the ticket → Edit → Move to board… and pick the board; open sub-tickets on this board go with it. Admins and the project’s team leads can."
+msgstr "Open the ticket → Edit → Move to board… and pick the board; open sub-tickets on this board go with it. Admins and the project’s team leads can."
+
+#: lib/help.ts
+msgid "Open the ticket → Edit → Move to board…, or use Move to board… in Refine. Boards with estimates ask for one first. Admins and the project’s team leads can."
+msgstr "Open the ticket → Edit → Move to board…, or use Move to board… in Refine. Boards with estimates ask for one first. Admins and the project’s team leads can."
 
 #: lib/help.ts
 msgid "Open the ticket’s own page; under Sub-tickets use Add a sub-ticket… or New sub-ticket…."
@@ -6103,10 +6107,6 @@ msgstr "Send back"
 #: app/settings/organization/page.tsx
 msgid "Send invite"
 msgstr "Send invite"
-
-#: lib/help.ts
-msgid "Send it to the backlog from the ticket, then move it onto the other board with Move to board…."
-msgstr "Send it to the backlog from the ticket, then move it onto the other board with Move to board…."
 
 #: lib/error-codes.ts
 msgid "send length_days and/or goal"
