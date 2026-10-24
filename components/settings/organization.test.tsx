@@ -41,3 +41,9 @@ test('a change’s result shows only in its own section: success as a status, fa
   const failed = { section: 'invites' as const, ok: false, text: 'Only organization admins can make this change.' };
   expect(renderToStaticMarkup(<OutcomeNote outcome={failed} section="invites" />)).toMatch(/role="alert"/);
 });
+
+test('the add-member picker shows its label, not a raw value (TL-581)', () => {
+  const html = editor(true);
+  expect(html).toMatch(/data-slot="select-value"[^>]*>Add organization member…</);
+  expect(html).not.toMatch(/data-slot="select-value"[^>]*>__none</);
+});

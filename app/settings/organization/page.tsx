@@ -142,11 +142,11 @@ export default function OrganizationSettingsPage() {
         <div className="mb-4"><h2 className="text-lg font-semibold"><Trans>Invite people</Trans></h2><p className="text-sm text-muted-foreground"><Trans>Invitations are sent by email and expire after seven days.</Trans></p></div>
         <form onSubmit={sendInvite} className="grid gap-3 sm:grid-cols-[2fr_1fr_1fr_auto]">
           <Input type="email" aria-label={t`Email address`} value={inviteEmail} onChange={(event) => setInviteEmail(event.target.value)} required placeholder="name@example.com" />
-          <Select value={inviteScope} onValueChange={(value) => { if (value) { setInviteScope(value as Invitation['scope']); setInviteTarget(''); } }}>
+          <Select items={{ organization: t`Organization`, team: t`Team`, project: t`Project` }} value={inviteScope} onValueChange={(value) => { if (value) { setInviteScope(value as Invitation['scope']); setInviteTarget(''); } }}>
             <SelectTrigger aria-label={t`Invitation scope`} className="w-full"><SelectValue /></SelectTrigger>
             <SelectContent><SelectItem value="organization"><Trans>Organization</Trans></SelectItem><SelectItem value="team"><Trans>Team</Trans></SelectItem><SelectItem value="project"><Trans>Project</Trans></SelectItem></SelectContent>
           </Select>
-          {inviteScope !== 'organization' ? <Select value={inviteTarget || NO_TARGET} onValueChange={(value) => setInviteTarget(value === NO_TARGET || !value ? '' : value)}>
+          {inviteScope !== 'organization' ? <Select items={{ [NO_TARGET]: inviteScope === 'team' ? t`Choose team` : t`Choose project`, ...Object.fromEntries((inviteScope === 'team' ? data.teams.map(({ team }) => team) : data.projects).map((item) => [item.id, item.name])) }} value={inviteTarget || NO_TARGET} onValueChange={(value) => setInviteTarget(value === NO_TARGET || !value ? '' : value)}>
             <SelectTrigger aria-label={t`Invitation target`} className="w-full"><SelectValue placeholder={inviteScope === 'team' ? t`Choose team` : t`Choose project`} /></SelectTrigger>
             <SelectContent><SelectItem value={NO_TARGET}>{inviteScope === 'team' ? <Trans>Choose team</Trans> : <Trans>Choose project</Trans>}</SelectItem>
               {(inviteScope === 'team' ? data.teams.map(({ team }) => team) : data.projects).map((item) => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}

@@ -12,11 +12,12 @@ import { LiveToast } from '@/components/live-toast';
 import { combined, dropped, type LiveState } from '@/lib/live-status';
 import { keepStreaming } from '@/lib/use-board-live';
 import { unchanged } from '@/lib/unchanged';
-import { ApiError, backlog, organization, plannedSprints, streamBoardLive, type BacklogTicket, type Board, type OrganizationRole, type PlannedSprint, type Ticket } from '@/lib/api';
+import { ApiError, backlog, organization, plannedSprints, streamBoardLive, type BacklogSort, type BacklogTicket, type Board, type OrganizationRole, type PlannedSprint, type Ticket } from '@/lib/api';
 import { canManageBoard } from '@/lib/board-access';
 import type { EstimateScale } from '@/lib/estimates';
 import { capacityView, MAX_PLANNED } from '@/lib/refinement';
 import { PriorityFilter } from '@/components/board/priority-filter';
+import { BacklogSortSelect } from './backlog-sort';
 import { TicketKey, ticketPath } from '@/components/ticket/ticket-key';
 import { Input } from '@/components/ui/input';
 import { GOAL_MAX } from '@/components/board/sprint-bar';
@@ -28,6 +29,8 @@ type Props = {
   ticketActions?: (ticket: BacklogTicket) => ReactNode; // e.g. move to a board, delete
   priorities?: string[];
   onPrioritiesChange?: (priorities: string[]) => void;
+  sort?: BacklogSort; // the backlog's order, newest or oldest first too (TL-581)
+  onSortChange?: (sort: BacklogSort) => void;
 };
 
 // RefinementMode plans the project's next sprints from the backlog: unplanned backlog tickets on one
@@ -35,7 +38,7 @@ type Props = {
 // with one click and are sized in place on that board's scale; each sprint shows how full it is
 // against the team's velocity, and an over-full one needs approving.
 // ponytail: buttons, not drag and drop; add DnD if planning lots of tickets gets tedious.
-export function RefinementMode({ projectId, boards, token, onClose, version = 0, onOpen, ticketActions, priorities = [], onPrioritiesChange = () => {} }: Props) {
+export function RefinementMode({ projectId, boards, token, onClose, version = 0, onOpen, ticketActions, priorities = [], onPrioritiesChange = () => {}, sort = 'manual', onSortChange = () => {} }: Props) {
   const { t } = useLingui();
   const sprintBoards = boards.filter((b) => b.style !== 'kanban');
   const [plans, setPlans] = useState<Record<string, PlannedSprint[]> | null>(null); // by board id
@@ -54,14 +57,14 @@ export function RefinementMode({ projectId, boards, token, onClose, version = 0,
     const tok = tokenRef.current;
     const [lists, page] = await Promise.all([
       Promise.all(sprintBoards.map((b) => plannedSprints.list(b.id, tok))),
-      backlog.page(projectId, { page: 1, perPage: 100, priorities }, tok),
+      backlog.page(projectId, { page: 1, perPage: 100, priorities, sort }, tok),
     ]);
     if (request !== latestLoad.current) return;
     // identical refreshes keep what's on screen, so nothing redraws
     setPlans((current) => unchanged(current, Object.fromEntries(sprintBoards.map((b, i) => [b.id, lists[i]]))));
     // planned ones show in their sprint; epics aren't planned (their sub-tickets are, TL-213)
     setTickets((current) => unchanged(current, page.tickets.filter((tk) => !tk.planned_sprint_id && tk.type !== 'epic')));
-  }, [boardIds, projectId, priorities.join(',')]);
+  }, [boardIds, projectId, priorities.join(','), sort]);
   const loadRef = useRef(load);
   loadRef.current = load;
 
@@ -116,7 +119,10 @@ export function RefinementMode({ projectId, boards, token, onClose, version = 0,
           <div className="grid content-start gap-2">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h3 className="font-medium"><Trans>To plan</Trans></h3>
-              <PriorityFilter priorities={priorities} onPrioritiesChange={onPrioritiesChange} />
+              <span className="flex flex-wrap items-center gap-2">
+                <PriorityFilter priorities={priorities} onPrioritiesChange={onPrioritiesChange} />
+                <BacklogSortSelect id="refine-sort" sort={sort} onSortChange={onSortChange} />
+              </span>
             </div>
             {tickets.length === 0 && (priorities.length > 0
               ? <p className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground"><Trans>No tickets match these priorities.</Trans><Button type="button" size="sm" variant="link" className="h-auto p-0" onClick={() => onPrioritiesChange([])}><Trans>Clear filters</Trans></Button></p>

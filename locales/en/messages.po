@@ -4168,7 +4168,7 @@ msgstr "Manage billing"
 msgid "Manage organization"
 msgstr "Manage organization"
 
-#: components/project/backlog.tsx
+#: components/project/backlog-sort.tsx
 msgid "Manual order"
 msgstr "Manual order"
 
@@ -4476,7 +4476,7 @@ msgstr "New ticket"
 msgid "New tickets"
 msgstr "New tickets"
 
-#: components/project/backlog.tsx
+#: components/project/backlog-sort.tsx
 msgid "Newest first"
 msgstr "Newest first"
 
@@ -4973,7 +4973,7 @@ msgstr "offset must be a non-negative integer"
 msgid "OK"
 msgstr "OK"
 
-#: components/project/backlog.tsx
+#: components/project/backlog-sort.tsx
 msgid "Oldest first"
 msgstr "Oldest first"
 
@@ -5700,7 +5700,7 @@ msgstr "reason is too long"
 msgid "Received <0/>"
 msgstr "Received <0/>"
 
-#: components/project/backlog.tsx
+#: components/project/backlog-sort.tsx
 msgid "Recently closed"
 msgstr "Recently closed"
 
@@ -6349,11 +6349,11 @@ msgstr "Something went wrong"
 msgid "Something went wrong. Please try again."
 msgstr "Something went wrong. Please try again."
 
-#: components/project/backlog.tsx
+#: components/project/backlog-sort.tsx
 msgid "Sort"
 msgstr "Sort"
 
-#: components/project/backlog.tsx
+#: components/project/backlog-sort.tsx
 msgid "Sort backlog by date"
 msgstr "Sort backlog by date"
 

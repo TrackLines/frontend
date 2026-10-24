@@ -61,3 +61,9 @@ test('moving to another board says which sub-tickets go with it (TL-381)', async
   const html = renderToStaticMarkup(<MoveToBoard ticket={ticket} boards={[board]} token="tok" onMoved={() => {}} onCancel={() => {}} fromBoard alsoMoves={alsoMovesNote(subs, en, 'board')} />);
   expect(html).toContain('Moving it also moves its 2 open sub-tickets');
 });
+
+test('a spike’s timebox shows "3 days", not a raw "3" (TL-581)', () => {
+  const html = dialog({ ticket: { ...ticket, type: 'spike', timebox_days: 3, timebox_hours: 1 } });
+  expect(html).toMatch(/data-slot="select-value"[^>]*>3 days</);
+  expect(html).toMatch(/data-slot="select-value"[^>]*>1 hour</);
+});
