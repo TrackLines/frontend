@@ -1429,10 +1429,6 @@ msgstr "Kies een bord…"
 msgid "Choose a project"
 msgstr "Kies een project"
 
-#: components/project/repositories.tsx
-msgid "Choose a repository…"
-msgstr "Kies een repository…"
-
 #: components/ticket/dependencies.tsx
 msgid "Choose a ticket it waits on…"
 msgstr "Kies een ticket waarop het wacht…"
@@ -4458,6 +4454,10 @@ msgstr "Nog geen persoonlijke sleutels."
 msgid "No repositories linked yet."
 msgstr "Nog geen repository’s gekoppeld."
 
+#: components/project/repositories.tsx
+msgid "No repositories match."
+msgstr "Geen repository’s gevonden."
+
 #: components/intake/triage.tsx
 msgid "No requests waiting. Share the request form link from Edit project to start collecting them."
 msgstr "Geen wachtende aanvragen. Deel de link naar het aanvraagformulier via Project bewerken om ze te verzamelen."
@@ -5815,6 +5815,10 @@ msgstr "Scope moet organization, team of project zijn."
 #: components/ticket-search.tsx
 msgid "Search"
 msgstr "Zoeken"
+
+#: components/project/repositories.tsx
+msgid "Search repositories…"
+msgstr "Repository’s zoeken…"
 
 #: components/ticket-search.tsx
 msgid "Search tickets"

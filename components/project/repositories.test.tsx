@@ -30,7 +30,7 @@ test('picking a provider offers repos not already linked', () => {
   expect(view({})).toContain('Link from GitHub');
   expect(view({ provider: 'github', choices: null })).toContain('Loading repositories');
   expect(view({ provider: 'github', choices: [{ full_name: 'acme/shop', default_branch: 'trunk', private: true }], linked: [shop] })).toContain('No other repositories to link');
-  expect(view({ provider: 'github', choices: [{ full_name: 'acme/docs', default_branch: 'main', private: false }] })).toContain('Choose a repository');
+  expect(view({ provider: 'github', choices: [{ full_name: 'acme/docs', default_branch: 'main', private: false }] })).toContain('Search repositories');
 });
 
 test('the connect hint names both git providers (TL-285: no Bitbucket flag)', () => {
