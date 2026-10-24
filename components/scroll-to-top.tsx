@@ -9,7 +9,7 @@ export const SHOW_AFTER = 600;
 
 export const shouldShow = (scrollY: number) => scrollY > SHOW_AFTER;
 
-// ScrollToTop: a "back to top" button, bottom-right (toasts and the live pill are bottom-left), shown
+// ScrollToTop: a "back to top" button, bottom-right above the help button (toasts and the live pill are bottom-left), shown
 // only once you've scrolled down a long page (TL-412).
 export function ScrollToTop() {
   const [shown, setShown] = useState(false);
@@ -22,7 +22,7 @@ export function ScrollToTop() {
   if (!shown) return null;
   return (
     <Button type="button" size="icon" variant="outline" aria-label="Scroll to top" title="Scroll to top"
-      className="fixed right-4 bottom-4 z-40 rounded-full shadow-md print:hidden"
+      className="fixed right-4 bottom-16 z-40 rounded-full shadow-md print:hidden"
       onClick={() => window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })}>
       <ArrowUpIcon />
     </Button>
