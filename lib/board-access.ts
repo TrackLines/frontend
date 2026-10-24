@@ -9,6 +9,13 @@ export function canManageRoadmaps(role: { admin: boolean; leads: string[] } | nu
   return !!role && (role.admin || boards.some((b) => !!b.team_id && role.leads.includes(b.team_id)));
 }
 
+// canMoveToBoard: whether someone can move tickets onto the project's boards from the backlog or from
+// another board: an org admin, or a team leader of any of its boards, kanban ones included (a
+// kanban-only project has nobody who can refine, but its tickets still need putting on boards).
+export function canMoveToBoard(role: { admin: boolean; leads: string[] } | null, boards: { team_id?: string | null }[]): boolean {
+  return !!role && boards.some((b) => canManageBoard(role, b.team_id));
+}
+
 // canRefine: whether someone can run refinement for a project: an org admin, or a team leader of one
 // of its sprint boards (TL-241). Unknown role (still loading, or failed) = no.
 export function canRefine(role: { admin: boolean; leads: string[] } | null, boards: { style?: string; team_id?: string | null }[]): boolean {

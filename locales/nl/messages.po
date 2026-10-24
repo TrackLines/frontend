@@ -129,6 +129,11 @@ msgstr "{0, plural, one {# ticket afgerond} other {# tickets afgerond}}, {1} doo
 
 #. placeholder {0}: subs.length
 #: components/board/ticket-dialog.tsx
+msgid "{0, plural, one {Moving it also moves its open sub-ticket on this board: {names}.} other {Moving it also moves its # open sub-tickets on this board: {names}.}}"
+msgstr "{0, plural, one {Als je het verplaatst, gaat ook de open subticket op dit bord mee: {names}.} other {Als je het verplaatst, gaan ook de # open subtickets op dit bord mee: {names}.}}"
+
+#. placeholder {0}: subs.length
+#: components/board/ticket-dialog.tsx
 msgid "{0, plural, one {Sending it to the backlog also moves its open sub-ticket on this board: {names}.} other {Sending it to the backlog also moves its # open sub-tickets on this board: {names}.}}"
 msgstr "{0, plural, one {Als je het naar de backlog stuurt, gaat ook de open subticket op dit bord mee: {names}.} other {Als je het naar de backlog stuurt, gaan ook de # open subtickets op dit bord mee: {names}.}}"
 

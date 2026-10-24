@@ -15,7 +15,7 @@ import { PriorityBadge } from './priority-badge';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
 import { TicketLabels } from '@/components/ticket/labels';
 import { TypeBadge, TimeboxBadge } from '@/components/ticket-type';
-import { tickets, type Ticket } from '@/lib/api';
+import { tickets, type Ticket, type Board } from '@/lib/api';
 import { ChecklistCount } from '@/components/ticket/checklist-count';
 import { TicketDialog } from './ticket-dialog';
 import { TicketView } from './ticket-view';
@@ -34,9 +34,10 @@ type Props = {
   readOnly?: boolean; // the board is being edited: tickets can be viewed, not changed
   onReviewed?: () => void; // approved or sent back: it changed column, so the board reloads
   onViewChange?: (open: boolean) => void; // its read-only view opened or closed (a standup host shares it)
+  move?: { boards: Board[]; onMoved: (id: string, planned: boolean) => void }; // Move to board: the project's other boards (TL-381)
 };
 
-export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, done, scale, readOnly = false, onReviewed, onViewChange }: Props) {
+export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, done, scale, readOnly = false, onReviewed, onViewChange, move }: Props) {
   const { t, i18n } = useLingui();
   const [viewOpen, setViewOpenState] = useState(Boolean(openOnLoad));
   const setViewOpen = (open: boolean) => { setViewOpenState(open); onViewChange?.(open); };
@@ -110,6 +111,7 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
         onSentToBacklog={onDeleted}
         done={done}
         scale={scale}
+        move={readOnly ? undefined : move}
       />
     </>
   );

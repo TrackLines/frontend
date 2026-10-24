@@ -26,7 +26,7 @@ import { unchanged } from '@/lib/unchanged';
 import { participants, speaker } from '@/lib/standup';
 import { useToken } from '@/lib/use-token';
 import { useBoardLive } from '@/lib/use-board-live';
-import { canManageBoard } from '@/lib/board-access';
+import { canManageBoard, canMoveToBoard } from '@/lib/board-access';
 import { prefetch, useCachedState } from '@/lib/page-cache';
 import { BoardSkeleton } from '@/components/page-skeletons';
 import { useAutoRefresh } from '@/lib/use-auto-refresh';
@@ -51,6 +51,7 @@ export default function BoardPage() {
   const [currentUserId, setCurrentUserId] = useState('');
   const [permissionBoardId, setPermissionBoardId] = useState('');
   const [permissionError, setPermissionError] = useState(false);
+  const [moveBoards, setMoveBoards] = useState<Board[]>([]); // where its tickets can be moved to, for those who can (TL-381)
   const [labelFilter, setLabelFilter] = useState<string[]>(() => parseLabels(searchParams));
   const [epicFilter, setEpicFilter] = useState(() => parseEpic(searchParams)); // ?epic=<id> (TL-215)
   const [epics, setEpics] = useState<EpicSummary[]>([]);
@@ -82,6 +83,11 @@ export default function BoardPage() {
       setIsAdmin(role.admin);
       setCurrentUserId(role.user_id);
       setCanManage(canManageBoard(role, next.team_id));
+      // its own failure only hides Move to board, not the board settings; boards rarely change, so not on auto-refresh
+      if (!background) void projects.get(next.project_id, token).then((p) => {
+        const others = (p.boards ?? []).filter((b) => b.id !== next.id && !b.archived_at);
+        setMoveBoards(canMoveToBoard(role, others) ? others : []);
+      }, () => setMoveBoards([]));
       setPermissionBoardId(next.id);
       setPermissionError(false);
     } catch {
@@ -276,6 +282,7 @@ export default function BoardPage() {
                         scale={board.estimate_scale}
                         readOnly={archived}
                         token={token}
+                        move={moveBoards.length > 0 ? { boards: moveBoards, onMoved: () => void load(true) } : undefined}
                         onUpdated={(nt) => updateTickets(col.id, (ts) => ts.map((x) => (x.id === nt.id ? nt : x)))}
                         onReviewed={() => void load(true)}
                         onDeleted={(tid) => updateTickets(col.id, (ts) => ts.filter((x) => x.id !== tid))}
