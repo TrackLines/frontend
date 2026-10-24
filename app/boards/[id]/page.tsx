@@ -27,6 +27,7 @@ import { participants, speaker } from '@/lib/standup';
 import { useToken } from '@/lib/use-token';
 import { useBoardLive } from '@/lib/use-board-live';
 import { canManageBoard, canMoveToBoard } from '@/lib/board-access';
+import { NextSprints } from '@/components/board/next-sprints';
 import { prefetch, useCachedState } from '@/lib/page-cache';
 import { BoardSkeleton } from '@/components/page-skeletons';
 import { useAutoRefresh } from '@/lib/use-auto-refresh';
@@ -57,6 +58,13 @@ export default function BoardPage() {
   const [epics, setEpics] = useState<EpicSummary[]>([]);
   const [priorityFilter, setPriorityFilter] = useState<string[]>(() => parsePriorities(searchParams));
   const [assigneeFilter, setAssigneeFilter] = useState<AssigneeFilter>('all');
+  const [view, setView] = useState<'board' | 'next'>(() => searchParams.get('view') === 'next' ? 'next' : 'board'); // ?view=next links to it (TL-584)
+  const changeView = (next: 'board' | 'next') => {
+    setView(next);
+    const params = new URLSearchParams(searchParams.toString());
+    if (next === 'next') params.set('view', 'next'); else params.delete('view');
+    router.replace(`/boards/${id}${params.size ? `?${params}` : ''}`, { scroll: false });
+  };
   const { standup, live, start: startSharedStandup, act: actOnStandup } = useBoardLive(id, token);
   const [joinedStandup, setJoinedStandup] = useState(false);
   // hosted standup (TL-226): the host's filters and open ticket show on followers' screens
@@ -236,6 +244,14 @@ export default function BoardPage() {
             <FlowCharts boardId={board.id} token={token} />
           </div>
         : <SprintBar board={board} token={token} canManage={boardCanManage} onChanged={load} />}
+      {/* sprint boards: the board, or what's planned for its next sprints (TL-584) */}
+      {!kanban && (
+        <div role="group" aria-label={t`Board view`} className="flex gap-1 border-b px-6 py-2">
+          <Button type="button" size="sm" variant={view === 'board' ? 'secondary' : 'ghost'} aria-pressed={view === 'board'} onClick={() => changeView('board')}><Trans>Board</Trans></Button>
+          <Button type="button" size="sm" variant={view === 'next' ? 'secondary' : 'ghost'} aria-pressed={view === 'next'} onClick={() => changeView('next')}><Trans>Next sprints</Trans></Button>
+        </div>
+      )}
+      {view === 'next' && !kanban ? <NextSprints board={board} token={token} canManage={!!boardCanManage && !archived} /> : <>
       {!hasVisibleTickets && (labelFilter.length > 0 || priorityFilter.length > 0 || assigneeFilter !== 'all') && (
         <p role="status" className="mx-6 mt-4 flex flex-wrap items-center gap-2 rounded-lg border border-dashed p-3 text-sm text-muted-foreground">
           <Trans>No tickets match these filters.</Trans>
@@ -302,6 +318,7 @@ export default function BoardPage() {
       </div>
       </div>
       </BoardDnd>
+      </>}
       {addingTo && (
         <TicketDialog
           open

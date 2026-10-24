@@ -81,5 +81,5 @@ test('the sort is shared by the backlog and refinement: newest and oldest first 
   expect(manual).toContain('Manual order');
   expect(renderToStaticMarkup(<BacklogSortSelect sort="manual" onSortChange={() => {}} closed />)).toContain('Recently closed');
   const src = await Bun.file(new URL('./refinement.tsx', import.meta.url)).text();
-  expect(src).toContain('priorities, sort }'); // the to-plan list is loaded in that order
+  expect(src).toContain('priorities, sort, planned: '); // the to-plan list is loaded in that order
 });

@@ -57,7 +57,7 @@ export function RefinementMode({ projectId, boards, token, onClose, version = 0,
     const tok = tokenRef.current;
     const [lists, page] = await Promise.all([
       Promise.all(sprintBoards.map((b) => plannedSprints.list(b.id, tok))),
-      backlog.page(projectId, { page: 1, perPage: 100, priorities, sort }, tok),
+      backlog.page(projectId, { page: 1, perPage: 100, priorities, sort, planned: 'exclude' }, tok), // planned ones are in their sprint's card
     ]);
     if (request !== latestLoad.current) return;
     // identical refreshes keep what's on screen, so nothing redraws

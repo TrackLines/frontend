@@ -2,7 +2,7 @@
 
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import type { BacklogSort } from '@/lib/api';
+import type { BacklogPlanned, BacklogSort } from '@/lib/api';
 
 // BacklogSortSelect: the backlog's Sort, also in refinement (TL-581), so the order carries over
 // between them. Closed tickets have no manual order: "manual" means most recently closed there.
@@ -24,5 +24,22 @@ export function BacklogSortSelect({ sort, onSortChange, closed = false, id = 'ba
         </SelectContent>
       </Select>
     </span>
+  );
+}
+
+// PlannedSelect: whether the backlog shows tickets already planned into an upcoming sprint (TL-584).
+// Unplanned by default: planned ones are on their board's Next sprints.
+export function PlannedSelect({ planned, onPlannedChange }: { planned: BacklogPlanned; onPlannedChange: (p: BacklogPlanned) => void }) {
+  const { t } = useLingui();
+  const labels: Record<BacklogPlanned, string> = { exclude: t`Unplanned`, only: t`Planned`, all: t`Planned and unplanned` };
+  return (
+    <Select items={labels} value={planned} onValueChange={(value) => value && onPlannedChange(value as BacklogPlanned)}>
+      <SelectTrigger size="sm" aria-label={t`Show planned tickets`}>
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        {(Object.keys(labels) as BacklogPlanned[]).map((p) => <SelectItem key={p} value={p}>{labels[p]}</SelectItem>)}
+      </SelectContent>
+    </Select>
   );
 }

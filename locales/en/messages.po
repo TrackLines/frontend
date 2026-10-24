@@ -1231,6 +1231,7 @@ msgstr "Blocks"
 msgid "board"
 msgstr "board"
 
+#: app/boards/[id]/page.tsx
 #: components/project/move-to-board.tsx
 #: components/reports/rollup-view.tsx
 msgid "Board"
@@ -1255,6 +1256,10 @@ msgstr "Board Review: everything, together"
 #: components/board/template-picker.tsx
 msgid "Board template"
 msgstr "Board template"
+
+#: app/boards/[id]/page.tsx
+msgid "Board view"
+msgstr "Board view"
 
 #: app/projects/[id]/edit/page.tsx
 #: app/projects/[id]/page.tsx
@@ -2147,6 +2152,10 @@ msgstr "Couldn’t load the file clean-up. Please refresh to try again."
 #: components/project/repositories.tsx
 msgid "Couldn’t load the linked repositories."
 msgstr "Couldn’t load the linked repositories."
+
+#: components/board/next-sprints.tsx
+msgid "Couldn’t load the next sprints. Please try again."
+msgstr "Couldn’t load the next sprints. Please try again."
 
 #: components/roadmap/item-tickets.tsx
 #: components/ticket/dependencies.tsx
@@ -4103,6 +4112,7 @@ msgid "Loading your work…"
 msgstr "Loading your work…"
 
 #: app/account/page.tsx
+#: components/board/next-sprints.tsx
 #: components/dashboard-work.tsx
 #: components/intake/intake-settings.tsx
 #: components/intake/request-form.tsx
@@ -4485,6 +4495,10 @@ msgstr "Newest first"
 msgid "Next"
 msgstr "Next"
 
+#: app/boards/[id]/page.tsx
+msgid "Next sprints"
+msgstr "Next sprints"
+
 #: lib/error-codes.ts
 msgid "next_starts_at must be in the future"
 msgstr "next_starts_at must be in the future"
@@ -4678,6 +4692,10 @@ msgstr "No sprint running — tickets aren't time-boxed."
 #: components/board/velocity.tsx
 msgid "No sprint running, so there's nothing to burn down."
 msgstr "No sprint running, so there's nothing to burn down."
+
+#: components/board/next-sprints.tsx
+msgid "No sprints are planned yet."
+msgstr "No sprints are planned yet."
 
 #: components/reports/rollup-view.tsx
 msgid "No sprints finished in this period. Try a longer one."
@@ -4884,6 +4902,10 @@ msgstr "Nothing on this roadmap yet."
 msgid "Nothing recorded yet. History is kept from October 2026."
 msgstr "Nothing recorded yet. History is kept from October 2026."
 
+#: components/project/backlog.tsx
+msgid "Nothing unplanned in the backlog. Planned tickets are on their board’s Next sprints."
+msgstr "Nothing unplanned in the backlog. Planned tickets are on their board’s Next sprints."
+
 #: components/board/past-sprints.tsx
 msgid "Nothing was finished in this sprint."
 msgstr "Nothing was finished in this sprint."
@@ -5005,6 +5027,10 @@ msgstr "On merge: a merged pull request moves its tickets to Done. Pick a column
 #: lib/help.ts
 msgid "On the board, click Standup, then Start once everyone has joined."
 msgstr "On the board, click Standup, then Start once everyone has joined."
+
+#: lib/help.ts
+msgid "On the board, open Next sprints. Planned tickets join the board when their sprint starts; until then the backlog hides them unless you choose Planned."
+msgstr "On the board, open Next sprints. Planned tickets join the board when their sprint starts; until then the backlog hides them unless you choose Planned."
 
 #: lib/help.ts
 msgid "On the board’s sprint bar: Start sprint, and Close sprint once it’s running. Admins and the board’s team leads can."
@@ -5446,9 +5472,14 @@ msgstr "plan must be pro or enterprise"
 msgid "Plan sprint {nextNumber}"
 msgstr "Plan sprint {nextNumber}"
 
+#: components/project/backlog-sort.tsx
 #: components/reports/report-view.tsx
 msgid "Planned"
 msgstr "Planned"
+
+#: components/project/backlog-sort.tsx
+msgid "Planned and unplanned"
+msgstr "Planned and unplanned"
 
 #: components/ticket/planned-badge.tsx
 msgid "Planned into sprint {n}"
@@ -6256,6 +6287,10 @@ msgstr "Show"
 #: components/project/backlog.tsx
 msgid "Show open or closed tickets"
 msgstr "Show open or closed tickets"
+
+#: components/project/backlog-sort.tsx
+msgid "Show planned tickets"
+msgstr "Show planned tickets"
 
 #: components/notifications-bell.tsx
 msgid "Show read ({readCount})"
@@ -7204,6 +7239,10 @@ msgstr "Tickets not on a board yet. Move one to a board to put it in that team's
 msgid "tickets per sprint"
 msgstr "tickets per sprint"
 
+#: components/board/next-sprints.tsx
+msgid "Tickets planned for this board’s next sprints. They join the board when their sprint starts. Plan more with <0>Refine</0> on the project’s backlog."
+msgstr "Tickets planned for this board’s next sprints. They join the board when their sprint starts. Plan more with <0>Refine</0> on the project’s backlog."
+
 #. placeholder {0}: totals.sprints
 #: components/reports/report-view.tsx
 msgid "tickets planned, across {0, plural, one {# sprint} other {# sprints}}"
@@ -7383,6 +7422,10 @@ msgstr "Unlink {0}? Its pull requests stop linking to this project's tickets."
 #: components/settings/chat-dm.tsx
 msgid "Unlinking…"
 msgstr "Unlinking…"
+
+#: components/project/backlog-sort.tsx
+msgid "Unplanned"
+msgstr "Unplanned"
 
 #: components/notifications-bell.tsx
 msgid "Unread"
@@ -7655,6 +7698,10 @@ msgstr "Where are sprint reports?"
 #: lib/help.ts
 msgid "Where can I see all my tickets?"
 msgstr "Where can I see all my tickets?"
+
+#: lib/help.ts
+msgid "Where can I see what’s planned for the next sprint?"
+msgstr "Where can I see what’s planned for the next sprint?"
 
 #: lib/help.ts
 msgid "Where do I get an API key?"
