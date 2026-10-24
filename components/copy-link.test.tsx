@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { CopyButton } from './copy-link';
 
 test('copy button is labelled for screen readers', () => {

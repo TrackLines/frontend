@@ -2,6 +2,9 @@
 // Browser calls go through the same-origin /api proxy (app/api/[...path]); server components
 // call the backend directly via BACKEND_URL. Pass a Clerk session token as `token`
 // (client: useAuth().getToken(), server: (await auth()).getToken()).
+import { ERROR_MESSAGES } from './error-codes';
+import { i18nFor, type Locale } from './i18n';
+import { isLocale, LANG_COOKIE } from './locale';
 import { reportClient, reportServer } from './report';
 import type { EstimateScale } from './estimates';
 
@@ -161,10 +164,34 @@ export const invitations = {
 
 export type Team = { id: string; org_id: string; name: string; description: string; created_at: string; updated_at: string };
 
+// ApiError: a failed call. code is the backend's error code when it sent one (TL-552), and message
+// is then in the person's language (TL-558).
 export class ApiError extends Error {
-  constructor(public status: number, message: string) {
+  constructor(public status: number, message: string, public code?: string) {
     super(message);
   }
+}
+
+// errorFrom reads a failed response: {"code","error"} JSON, or plain text from older backends.
+export async function errorFrom(res: Response, locale: Locale = browserLocale()): Promise<ApiError> {
+  const text = (await res.text()).trim();
+  let code: string | undefined, message = text || res.statusText;
+  if ((res.headers.get('content-type') ?? '').startsWith('application/json')) {
+    try {
+      const body = JSON.parse(text) as { code?: string; error?: string };
+      code = body.code;
+      message = body.error || res.statusText;
+    } catch { /* not JSON after all: keep the text */ }
+  }
+  const known = code ? ERROR_MESSAGES[code] : undefined;
+  return new ApiError(res.status, known ? i18nFor(locale)._(known) : message, code);
+}
+
+// browserLocale: the language the page is in (its cookie); on the server, English.
+function browserLocale(): Locale {
+  if (typeof document === 'undefined') return 'en';
+  const v = document.cookie.match(new RegExp(`(?:^|; )${LANG_COOKIE}=([^;]*)`))?.[1];
+  return isLocale(v) ? v : 'en';
 }
 
 export type SearchQuery = { text?: string; project?: string; board?: string; types?: TicketType[]; priorities?: string[]; assignee?: string;
@@ -222,7 +249,8 @@ export function safeApiPath(path: string): boolean {
 export async function api<T>(path: string, { method = 'GET', body, token }: Options = {}): Promise<T> {
   if (!safeApiPath(path)) throw new ApiError(404, 'not found');
   const send = async (skipCache: boolean) => {
-    const headers: Record<string, string> = {};
+    // JSON errors carry a code the app translates (TL-558); other clients keep plain-text errors
+    const headers: Record<string, string> = { Accept: 'application/json' };
     if (body !== undefined) headers['Content-Type'] = 'application/json';
     // day-based rules (a sprint's last day) follow the user's local time; data stays UTC.
     // Browser only: on the server this would be the server's zone, so the backend uses UTC.
@@ -244,12 +272,12 @@ export async function api<T>(path: string, { method = 'GET', body, token }: Opti
     throw cause;
   }
   if (!res.ok) {
-    const message = (await res.text()).trim() || res.statusText;
+    const err = await errorFrom(res);
     // the backend reports its own 5xx with the cause; from the browser that would only be a duplicate
     if (res.status >= 500 && typeof window === 'undefined') {
       await reportBackendFailure('backend returned a server error', `${method} ${path} (${res.status})`);
     }
-    throw new ApiError(res.status, message);
+    throw err;
   }
   if (res.status === 204) return undefined as T;
   // text answers (a report as Markdown, TL-401) come back as the text itself
@@ -278,7 +306,7 @@ export async function streamLive(
   };
   let response = await request(false);
   if (response.status === 401 && token && typeof window !== 'undefined') response = await request(true);
-  if (!response.ok) throw new ApiError(response.status, (await response.text()).trim() || response.statusText);
+  if (!response.ok) throw await errorFrom(response);
   if (!response.body) throw new Error('Live stream has no response body');
   onOpen?.();
 
@@ -824,4 +852,11 @@ export const googleChat = {
   set: (input: { project_id?: string; url?: string; kinds: ChatKind[] }, token: T) => api<void>('/google-chat', { method: 'PUT', body: input, token }),
   remove: (token: T, projectId?: string) => api<void>(`/google-chat${chatScope(projectId)}`, { method: 'DELETE', token }),
   test: (token: T, projectId?: string) => api<void>('/google-chat/test', { method: 'POST', body: { project_id: projectId }, token }),
+};
+
+// me: the signed-in person's own preferences.
+export const me = {
+  // language (TL-553): null follows the browser
+  language: (token: T) => api<{ language: string | null }>('/me/language', { token }),
+  setLanguage: (language: string | null, token: T) => api<void>('/me/language', { method: 'PUT', body: { language }, token }),
 };

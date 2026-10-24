@@ -1,5 +1,6 @@
 'use client';
 
+import { Trans } from '@lingui/react/macro';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { LabelFilterClear } from './label-filter-clear';
@@ -31,18 +32,18 @@ export function EpicFilter({ epics, epic, onEpicChange }: { epics: EpicSummary[]
       <DropdownMenuTrigger>
         <Badge variant={epic ? 'secondary' : 'outline'} className="cursor-pointer transition-none">
           <span className="flex items-center gap-1.5">
-            <span className="text-muted-foreground">Epic</span>
-            {epic && <><span className="max-w-40 truncate font-medium text-foreground">{chosen?.title ?? 'chosen'}</span><LabelFilterClear onClick={() => onEpicChange('')} /></>}
+            <span className="text-muted-foreground"><Trans>Epic</Trans></span>
+            {epic && <><span className="max-w-40 truncate font-medium text-foreground">{chosen?.title ?? <Trans>chosen</Trans>}</span><LabelFilterClear onClick={() => onEpicChange('')} /></>}
           </span>
         </Badge>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-64">
         <DropdownMenuGroup>
-          <DropdownMenuLabel>Filter by epic</DropdownMenuLabel>
+          <DropdownMenuLabel><Trans>Filter by epic</Trans></DropdownMenuLabel>
           <DropdownMenuRadioGroup value={epic} onValueChange={(v) => onEpicChange(String(v ?? ''))}>
             {open.map((e) => <DropdownMenuRadioItem key={e.id} value={e.id}>{e.key ? `${e.key} ` : ''}{e.title}</DropdownMenuRadioItem>)}
           </DropdownMenuRadioGroup>
-          {epic && <><DropdownMenuSeparator /><DropdownMenuItem onClick={() => onEpicChange('')}>Clear epic filter</DropdownMenuItem></>}
+          {epic && <><DropdownMenuSeparator /><DropdownMenuItem onClick={() => onEpicChange('')}><Trans>Clear epic filter</Trans></DropdownMenuItem></>}
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>

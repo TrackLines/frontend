@@ -44,3 +44,24 @@ Tests run under `bun test`. Pure "View" components render with `renderToStaticMa
 needed); the `embed.js` widget exports its render helpers as CommonJS so they can be unit-tested the
 same way. Every feature ships with tests, including admin/member gating — run the full suite and
 `tsc --noEmit` before finishing.
+
+## Translations
+
+The app uses [Lingui](https://lingui.dev) (TL-549). English is the source language. The catalogues
+are `.po` files in `locales/<lang>/messages.po`, so translators can work in Weblate, Crowdin or Poedit.
+
+Wrap visible strings where they're written; the English text is the key:
+
+```tsx
+import { Plural, Trans, useLingui } from '@lingui/react/macro';
+
+const { t } = useLingui();              // for props: placeholder={t`Search tickets`}
+<Trans>Assigned to me</Trans>           // for text, links and markup inside it too
+<Plural value={n} one="# ticket" other="# tickets" />   // never n === 1 ? … : …
+```
+
+Helpers in `lib/` take the `I18n` and use `i18n._(msg\`…\`)` (`msg` from `@lingui/core/macro`).
+Run `bun run i18n` to extract new strings and compile the catalogues, then commit `locales/`. CI fails
+if the catalogues are out of date. Tests that render Lingui components use `render` from `test/i18n.tsx`.
+`bun test` runs the macros through a Babel plugin (`test/lingui-preload.ts`), and the build uses
+`@lingui/swc-plugin`.

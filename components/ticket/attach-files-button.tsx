@@ -1,5 +1,6 @@
 'use client';
 
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -21,11 +22,12 @@ type Props = {
 // The label opens the picker natively: iPad Safari won't reliably open a display:none input from a
 // script click. Errors show here unless the caller handles them (onError).
 export function AttachFilesButton({ target, onUploaded, onError, variant = 'outline', existing = 0 }: Props) {
+  const { t, i18n } = useLingui();
   const input = useRef<HTMLInputElement>(null);
   const [error, setError] = useState('');
   const fail = (message: string) => (onError ? onError(message) : setError(message));
   const { startUpload, isUploading } = useUploadThing('ticketAttachment', {
-    onUploadError: (e) => fail(e.message || 'Upload failed. Please try again.'),
+    onUploadError: (e) => fail(e.message || t`Upload failed. Please try again.`),
   });
 
   async function upload(list: FileList | null) {
@@ -34,10 +36,10 @@ export function AttachFilesButton({ target, onUploaded, onError, variant = 'outl
     if (files.length === 0) return;
     setError('');
     if (!target) return;
-    const problem = attachProblem(existing, files); // say so before uploading anything (TL-253)
+    const problem = attachProblem(i18n, existing, files); // say so before uploading anything (TL-253)
     if (problem) return fail(problem);
     const done = await startUpload(files, target).catch(() => {
-      fail('Upload failed. Please try again.');
+      fail(t`Upload failed. Please try again.`);
       return undefined;
     });
     if (done) await onUploaded(done.map((f) => ({ key: f.key, url: f.ufsUrl, name: f.name, size: f.size, content_type: f.type })));
@@ -48,7 +50,7 @@ export function AttachFilesButton({ target, onUploaded, onError, variant = 'outl
       <label className={cn(buttonVariants({ variant, size: 'sm' }), 'cursor-pointer has-[:focus-visible]:ring-3 has-[:focus-visible]:ring-ring/50',
         (isUploading || !target) && 'pointer-events-none opacity-50')}>
         <input ref={input} type="file" multiple className="sr-only" disabled={isUploading || !target} onChange={(e) => void upload(e.target.files)} />
-        {isUploading ? 'Uploading…' : 'Attach files'}
+        {isUploading ? <Trans>Uploading…</Trans> : <Trans>Attach files</Trans>}
       </label>
       {error && <span role="alert" className="text-xs text-destructive">{error}</span>}
     </span>

@@ -1,15 +1,17 @@
 'use client';
 
+import { msg } from '@lingui/core/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { LabelFilterClear } from './label-filter-clear';
 import type { Ticket } from '@/lib/api';
 
 export const PRIORITIES = [
-  { value: 'urgent', label: 'Urgent' },
-  { value: 'high', label: 'High' },
-  { value: 'medium', label: 'Medium' },
-  { value: 'low', label: 'Low' },
+  { value: 'urgent', label: msg`Urgent` },
+  { value: 'high', label: msg`High` },
+  { value: 'medium', label: msg`Medium` },
+  { value: 'low', label: msg`Low` },
 ] as const;
 
 const validPriorities = new Set<string>(PRIORITIES.map(({ value }) => value));
@@ -45,6 +47,7 @@ export function filterTicketsByPriorities<T extends Pick<Ticket, 'priority'>>(ti
 }
 
 export function PriorityFilter({ priorities, onPrioritiesChange }: { priorities: string[]; onPrioritiesChange: (priorities: string[]) => void }) {
+  const { i18n } = useLingui();
   const toggle = (priority: string) => onPrioritiesChange(
     priorities.includes(priority) ? priorities.filter((value) => value !== priority) : [...priorities, priority],
   );
@@ -55,20 +58,20 @@ export function PriorityFilter({ priorities, onPrioritiesChange }: { priorities:
       <DropdownMenuTrigger>
         <Badge variant={priorities.length > 0 ? 'secondary' : 'outline'} className="cursor-pointer transition-none">
           <span className="flex items-center gap-1.5">
-            <span className="text-muted-foreground">Priority</span>
+            <span className="text-muted-foreground"><Trans>Priority</Trans></span>
             {priorities.length > 0 && <><span className="text-foreground font-medium">({priorities.length})</span><LabelFilterClear onClick={clear} /></>}
           </span>
         </Badge>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-48">
         <DropdownMenuGroup>
-          <DropdownMenuLabel>Filter by priority</DropdownMenuLabel>
+          <DropdownMenuLabel><Trans>Filter by priority</Trans></DropdownMenuLabel>
           {PRIORITIES.map(({ value, label }) => (
             <DropdownMenuCheckboxItem key={value} checked={priorities.includes(value)} onCheckedChange={() => toggle(value)}>
-              {label}
+              {i18n._(label)}
             </DropdownMenuCheckboxItem>
           ))}
-          {priorities.length > 0 && <><DropdownMenuSeparator /><DropdownMenuItem onClick={clear}>Clear priority filter</DropdownMenuItem></>}
+          {priorities.length > 0 && <><DropdownMenuSeparator /><DropdownMenuItem onClick={clear}><Trans>Clear priority filter</Trans></DropdownMenuItem></>}
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>

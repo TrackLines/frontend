@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { BurnChart, VelocityChart } from './velocity';
 
 const sprint = (number: number, completed: number) => ({ number, starts_at: '', closed_at: '', completed });

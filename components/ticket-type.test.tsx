@@ -1,6 +1,7 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { TicketCard } from './board/ticket-card';
+import { i18nFor } from '@/lib/i18n';
 import { formatTimebox, pickerTypes, TimeboxBadge, TypeBadge, TypePicker } from './ticket-type';
 
 const base = { id: 't', column_id: 'c', title: 'Crash on save', description: '', position: 0, created_by: 'test' };
@@ -30,11 +31,11 @@ test('spike has a badge and is offered by the picker, unlike epic (TL-502)', () 
 });
 
 test('formatTimebox renders days and hours, omitting zero parts (TL-502)', () => {
-  expect(formatTimebox(1, 4)).toBe('1d 4h');
-  expect(formatTimebox(2, 0)).toBe('2d');
-  expect(formatTimebox(0, 6)).toBe('6h');
-  expect(formatTimebox(0, 0)).toBe('');
-  expect(formatTimebox(null, null)).toBe('');
+  expect(formatTimebox(i18nFor('en'), 1, 4)).toBe('1d 4h');
+  expect(formatTimebox(i18nFor('en'), 2, 0)).toBe('2d');
+  expect(formatTimebox(i18nFor('en'), 0, 6)).toBe('6h');
+  expect(formatTimebox(i18nFor('en'), 0, 0)).toBe('');
+  expect(formatTimebox(i18nFor('en'), null, null)).toBe('');
 });
 
 test('TimeboxBadge shows a set timebox and nothing when unset (TL-502)', () => {

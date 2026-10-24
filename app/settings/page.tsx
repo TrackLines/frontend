@@ -2,6 +2,7 @@
 
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 import { PlanCard } from '@/components/billing/plan-card';
@@ -20,6 +21,7 @@ export default function SettingsPage() {
   // organization and integrations are run by org admins (TL-241): everyone else can look, not manage
   const token = useToken();
   const { is } = useFlags();
+  const { t } = useLingui();
   const [admin, setAdmin] = useState(false);
   const signedIn = token !== null;
   const [cleanup, setCleanup] = useState<FileCleanup | null>(null);
@@ -27,10 +29,10 @@ export default function SettingsPage() {
   useEffect(() => { if (token && admin) attachments.cleanup(token).then(setCleanup, () => {}); }, [admin]); // admins only (TL-261)
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
-      <Link href="/dashboard" className="text-sm text-muted-foreground hover:underline">← Projects</Link>
+      <Link href="/dashboard" className="text-sm text-muted-foreground hover:underline">← <Trans>Projects</Trans></Link>
       <header className="mt-2 mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Your organization’s plan, people and connections.</p>
+        <h1 className="text-3xl font-bold tracking-tight"><Trans>Settings</Trans></h1>
+        <p className="mt-1 text-sm text-muted-foreground"><Trans>Your organization’s plan, people and connections.</Trans></p>
       </header>
       {/* useSearchParams needs a Suspense boundary for static rendering */}
       <Suspense><ReturnBanner /></Suspense>
@@ -38,17 +40,17 @@ export default function SettingsPage() {
         <Plan />
         <OrganizationCard admin={admin} />
         {admin && <OrgReportCard />}
-        {admin && <SettingsCard icon={PlugIcon} title="Integrations" href="/settings/integrations" description="Connect GitHub, Bitbucket, Google Chat and Bugfixes." />}
+        {admin && <SettingsCard icon={PlugIcon} title={t`Integrations`} href="/settings/integrations" description={t`Connect GitHub, Bitbucket, Google Chat and Bugfixes.`} />}
         {/* embedding is behind the flags.gg "embedding" flag so it can be rolled out and tested (TL-494) */}
-        {admin && is('embedding').enabled() && <SettingsCard icon={CodeIcon} title="Embedding" href="/settings/embedding" description="Put a public roadmap or your request form on your own site." />}
-        <SettingsCard icon={KeyRoundIcon} title="API keys"
-          description={<>Service keys for servers and integrations. Your own keys and AI agents (Claude, Codex…) are in <Link href="/account/api-keys" className="underline">Your settings</Link>.</>}>
-          <Link href="/settings/api-keys" className={buttonVariants({ variant: 'outline', size: 'sm' })}>Manage API keys</Link>
+        {admin && is('embedding').enabled() && <SettingsCard icon={CodeIcon} title={t`Embedding`} href="/settings/embedding" description={t`Put a public roadmap or your request form on your own site.`} />}
+        <SettingsCard icon={KeyRoundIcon} title={t`API keys`}
+          description={<Trans>Service keys for servers and integrations. Your own keys and AI agents (Claude, Codex…) are in <Link href="/account/api-keys" className="underline">Your settings</Link>.</Trans>}>
+          <Link href="/settings/api-keys" className={buttonVariants({ variant: 'outline', size: 'sm' })}><Trans>Manage API keys</Trans></Link>
           {/* only where AI keys can be made here too: the org-ai-keys flag (TL-451) */}
           {is('org-ai-keys').enabled() && (
             <McpConnect
-              keyHint={<>Each agent needs its own API key: create one in <Link href="/settings/api-keys" className="font-medium text-foreground underline">API keys</Link> and use it in place of <code>tl_ai_your_key</code>.</>}
-              trigger={(open) => <Button variant="ghost" size="sm" onClick={open}>Connect AI</Button>}
+              keyHint={<Trans>Each agent needs its own API key: create one in <Link href="/settings/api-keys" className="font-medium text-foreground underline">API keys</Link> and use it in place of <code>tl_ai_your_key</code>.</Trans>}
+              trigger={(open) => <Button variant="ghost" size="sm" onClick={open}><Trans>Connect AI</Trans></Button>}
             />
           )}
         </SettingsCard>
@@ -60,13 +62,14 @@ export default function SettingsPage() {
 
 function Plan() {
   const token = useToken();
-  return token ? <PlanCard token={token} /> : <li><Skeleton role="status" aria-label="Loading plan…" className="h-44 rounded-xl" /></li>;
+  const { t } = useLingui();
+  return token ? <PlanCard token={token} /> : <li><Skeleton role="status" aria-label={t`Loading plan…`} className="h-44 rounded-xl" /></li>;
 }
 
 // Stripe sends people back here with ?billing=success|cancelled (backend PORTAL_URL).
 function ReturnBanner() {
   const result = useSearchParams().get('billing');
-  if (result === 'success') return <p role="status" className="mb-6 rounded-xl border border-primary/40 bg-primary/5 p-4">Thanks — your plan is upgraded. It can take a moment to show up here.</p>;
-  if (result === 'cancelled') return <p role="status" className="mb-6 rounded-xl border p-4 text-muted-foreground">Checkout cancelled — nothing was charged.</p>;
+  if (result === 'success') return <p role="status" className="mb-6 rounded-xl border border-primary/40 bg-primary/5 p-4"><Trans>Thanks — your plan is upgraded. It can take a moment to show up here.</Trans></p>;
+  if (result === 'cancelled') return <p role="status" className="mb-6 rounded-xl border p-4 text-muted-foreground"><Trans>Checkout cancelled — nothing was charged.</Trans></p>;
   return null;
 }

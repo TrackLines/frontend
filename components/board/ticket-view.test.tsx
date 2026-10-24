@@ -4,7 +4,7 @@ import type { Ticket } from '@/lib/api';
 
 mockDialog();
 const { Assignee, TicketView } = await import('./ticket-view');
-const { renderToStaticMarkup } = await import('react-dom/server');
+const { render: renderToStaticMarkup } = await import('@/test/i18n');
 
 const ticket: Ticket = {
   id: 't1', key: 'TL-7', column_id: 'c', position: 0, title: 'Fix login', description: '**Steps**\n\n- open it', created_by: 'Sam',

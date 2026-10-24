@@ -1,5 +1,6 @@
 'use client';
 
+import { Trans } from '@lingui/react/macro';
 import { useCallback, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuCheckboxItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuGroup } from '@/components/ui/dropdown-menu';
@@ -62,7 +63,7 @@ export function LabelFilter({ options, labels, onLabelsChange, syncUrl = true }:
       <DropdownMenuTrigger>
         <Badge variant={labels.length > 0 ? 'secondary' : 'outline'} className="cursor-pointer transition-none">
           <span className="flex items-center gap-1.5">
-            <span className="text-muted-foreground">Labels</span>
+            <span className="text-muted-foreground"><Trans>Labels</Trans></span>
             {labels.length > 0 && (
               <>
                 <span className="text-foreground font-medium">({labels.length})</span>
@@ -75,11 +76,11 @@ export function LabelFilter({ options, labels, onLabelsChange, syncUrl = true }:
       <DropdownMenuContent align="start" className="w-72">
         {/* Base UI throws if a group label renders outside a group */}
         <DropdownMenuGroup>
-        <DropdownMenuLabel>Filter by label</DropdownMenuLabel>
+        <DropdownMenuLabel><Trans>Filter by label</Trans></DropdownMenuLabel>
         {options === null ? (
-          <div className="text-sm text-muted-foreground px-2 py-1">Loading labels…</div>
+          <div className="text-sm text-muted-foreground px-2 py-1"><Trans>Loading labels…</Trans></div>
         ) : options.length === 0 ? (
-          <div className="text-sm text-muted-foreground px-2 py-1">No labels on these tickets yet.</div>
+          <div className="text-sm text-muted-foreground px-2 py-1"><Trans>No labels on these tickets yet.</Trans></div>
         ) : (
           <>
             {options.map(({ label: l, count }) => {
@@ -97,7 +98,7 @@ export function LabelFilter({ options, labels, onLabelsChange, syncUrl = true }:
               );
             })}
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={clear}>Clear filter</DropdownMenuItem>
+            <DropdownMenuItem onClick={clear}><Trans>Clear filter</Trans></DropdownMenuItem>
           </>
         )}
         </DropdownMenuGroup>

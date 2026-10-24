@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import type { Capacity, PlannedSprint, Ticket } from '@/lib/api';
 import { PlannedSprintCard, RefinementMode } from './refinement';
 

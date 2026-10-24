@@ -1,5 +1,6 @@
 'use client';
 
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -20,6 +21,7 @@ type Props = {
 
 // NameDialog asks for a single name, e.g. "New project" or "New board".
 export function NameDialog({ open, onOpenChange, title, description, placeholder, initialValue = '', submitLabel, children, onSubmit }: Props) {
+  const { t } = useLingui();
   const [name, setName] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -37,7 +39,7 @@ export function NameDialog({ open, onOpenChange, title, description, placeholder
       setName('');
       onOpenChange(false);
     } catch (err) {
-      setError(err instanceof Error && err.message ? err.message : 'Something went wrong. Please try again.');
+      setError(err instanceof Error && err.message ? err.message : t`Something went wrong. Please try again.`);
     } finally {
       setSaving(false);
     }
@@ -55,7 +57,7 @@ export function NameDialog({ open, onOpenChange, title, description, placeholder
           {children}
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           <DialogFooter>
-            <Button type="submit" disabled={saving || !name.trim()}>{saving ? 'Saving…' : submitLabel}</Button>
+            <Button type="submit" disabled={saving || !name.trim()}>{saving ? <Trans>Saving…</Trans> : submitLabel}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

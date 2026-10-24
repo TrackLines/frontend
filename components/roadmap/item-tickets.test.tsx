@@ -1,11 +1,12 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { ItemTickets, localProgress, progressLabel } from './item-tickets';
+import { i18nFor } from '@/lib/i18n';
 
 test('progress reads naturally', () => {
-  expect(progressLabel(0, 0)).toBe('No tickets linked yet');
-  expect(progressLabel(1, 1)).toBe('1 of 1 ticket done');
-  expect(progressLabel(2, 5)).toBe('2 of 5 tickets done');
+  expect(progressLabel(i18nFor('en'), 0, 0)).toBe('No tickets linked yet');
+  expect(progressLabel(i18nFor('en'), 1, 1)).toBe('1 of 1 ticket done');
+  expect(progressLabel(i18nFor('en'), 2, 5)).toBe('2 of 5 tickets done');
 });
 
 test('linked tickets show with progress', () => {

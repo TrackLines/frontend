@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { Trans } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
 import { TicketKey, ticketPath } from '@/components/ticket/ticket-key';
 import { tickets, type TicketSearchResult } from '@/lib/api';
@@ -41,7 +42,7 @@ export function useSimilarTickets(title: string, projectId: string | undefined, 
 export function SimilarTickets({ suggestions, description }: { suggestions: TicketSearchResult[]; description: string }) {
   if (suggestions.length === 0 || description.trim() !== '') return null;
   return (
-    <div className="-mt-3 grid gap-1 text-xs text-muted-foreground">Similar tickets in this project:
+    <div className="-mt-3 grid gap-1 text-xs text-muted-foreground"><Trans>Similar tickets in this project:</Trans>
       {suggestions.map((s) => <Link key={s.id} href={ticketPath(s)} className="hover:underline"><TicketKey value={s.key} /> {s.title}</Link>)}
     </div>
   );

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { Trans } from '@lingui/react/macro';
 import { useState } from 'react';
 import { VisibilityBadge } from '@/components/roadmap/visibility';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -15,14 +16,14 @@ export function RoadmapRow({ roadmap, canManage = false }: { roadmap: Roadmap; c
       <span className="font-medium">{roadmap.title}</span>
       <VisibilityBadge value={roadmap.visibility} />
       <span className="ml-auto flex gap-2">
-        {canManage && <Link href={`/roadmaps/${roadmap.id}/edit`} className={buttonVariants({ variant: 'ghost', size: 'sm' })}>Edit</Link>}
-        <Link href={`/r/${roadmap.id}`} className={buttonVariants({ variant: 'ghost', size: 'sm' })}>View</Link>
+        {canManage && <Link href={`/roadmaps/${roadmap.id}/edit`} className={buttonVariants({ variant: 'ghost', size: 'sm' })}><Trans>Edit</Trans></Link>}
+        <Link href={`/r/${roadmap.id}`} className={buttonVariants({ variant: 'ghost', size: 'sm' })}><Trans>View</Trans></Link>
         <Button
           variant="ghost"
           size="sm"
           onClick={() => navigator.clipboard.writeText(url).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); })}
         >
-          {copied ? 'Copied' : 'Copy link'}
+          {copied ? <Trans>Copied</Trans> : <Trans>Copy link</Trans>}
         </Button>
       </span>
     </li>

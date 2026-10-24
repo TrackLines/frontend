@@ -6,6 +6,7 @@ import {
 } from '@dnd-kit/core';
 import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { useLingui } from '@lingui/react/macro';
 import { useRef, useState, type ReactNode } from 'react';
 import type { Assignee, Column } from '@/lib/api';
 import { draggedPerson } from '@/lib/person-drag';
@@ -25,6 +26,7 @@ type Props = {
 // BoardDnd lets tickets be dragged within and across columns: the board updates instantly,
 // the move is saved, and on failure the board snaps back with a message.
 export function BoardDnd({ boardId, columns, onChange, onMove, onAssign, people = null, children }: Props) {
+  const { t } = useLingui();
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } }), // small threshold so clicks still work
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
@@ -51,7 +53,7 @@ export function BoardDnd({ boardId, columns, onChange, onMove, onAssign, people 
       try {
         await onAssign(String(over.id), person);
       } catch {
-        setError('Couldn’t assign that ticket. Please try again.');
+        setError(t`Couldn’t assign that ticket. Please try again.`);
       }
       return;
     }
@@ -70,7 +72,7 @@ export function BoardDnd({ boardId, columns, onChange, onMove, onAssign, people 
       await onMove(String(active.id), now.columnId, now.position);
     } catch {
       onChange(snapshot);
-      setError('Couldn’t move that ticket — it’s back where it was. Please try again.');
+      setError(t`Couldn’t move that ticket — it’s back where it was. Please try again.`);
     }
   }
 

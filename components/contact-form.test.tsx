@@ -1,5 +1,5 @@
 import { afterEach, expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { ContactForm, sendError } from './contact-form';
 import { ApiError, enquiries } from '@/lib/api';
 import { Markdown } from './markdown';

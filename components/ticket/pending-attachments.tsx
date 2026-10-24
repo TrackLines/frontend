@@ -1,5 +1,6 @@
 'use client';
 
+import { Trans, useLingui } from '@lingui/react/macro';
 import { XIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { attachments } from '@/lib/api';
@@ -15,11 +16,12 @@ export type PendingFile = { key: string; url: string; name: string; size: number
 // add a cleanup sweep if that ever matters.
 // projectId: the project the new ticket goes in (uploads are checked against it); '' until chosen.
 export function PendingAttachments({ files, onChange, projectId }: { files: PendingFile[]; onChange: (f: PendingFile[]) => void; projectId: string }) {
+  const { t } = useLingui();
   return (
     <div className="grid gap-2">
       {/* the button sits by its label, like "Add labels" above it */}
       <div className="flex flex-wrap items-center gap-3">
-        <span className="text-sm font-medium">Attachments <span className="font-normal text-muted-foreground">(optional)</span></span>
+        <span className="text-sm font-medium"><Trans>Attachments <span className="font-normal text-muted-foreground">(optional)</span></Trans></span>
         <AttachFilesButton target={projectId ? { projectId } : null} existing={files.length} onUploaded={(up) => onChange([...files, ...up])} />
       </div>
       {files.length > 0 && (
@@ -28,7 +30,7 @@ export function PendingAttachments({ files, onChange, projectId }: { files: Pend
             <li key={f.key} className="flex items-center gap-2">
               <span className="min-w-0 flex-1 truncate">{f.name}</span>
               <span className="text-muted-foreground">{formatSize(f.size)}</span>
-              <Button type="button" variant="ghost" size="icon-xs" className="text-muted-foreground hover:text-destructive" aria-label={`Don't attach ${f.name}`} onClick={() => onChange(files.filter((x) => x.key !== f.key))}><XIcon /></Button>
+              <Button type="button" variant="ghost" size="icon-xs" className="text-muted-foreground hover:text-destructive" aria-label={t`Don't attach ${f.name}`} onClick={() => onChange(files.filter((x) => x.key !== f.key))}><XIcon /></Button>
             </li>
           ))}
         </ul>

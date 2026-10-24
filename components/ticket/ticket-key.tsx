@@ -1,12 +1,14 @@
+import { useLingui } from '@lingui/react/macro';
 import { CopyButton } from '@/components/copy-link';
 
 export function TicketKey({ value, copy = false }: { value?: string | null; copy?: boolean }) {
+  const { t } = useLingui();
   if (!value) return null;
   return (
     // never squeezed or broken at the hyphen (TL- / 113)
     <span className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap text-xs text-muted-foreground">
       <code className="font-mono">{value}</code>
-      {copy && <CopyButton value={value} label="Copy key" size="sm" ariaLabel={`Copy ticket key ${value}`} className="h-6 px-1.5" />}
+      {copy && <CopyButton value={value} label={t`Copy key`} size="sm" ariaLabel={t`Copy ticket key ${value}`} className="h-6 px-1.5" />}
     </span>
   );
 }

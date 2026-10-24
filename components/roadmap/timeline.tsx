@@ -1,37 +1,40 @@
 'use client';
 
+import type { MessageDescriptor } from '@lingui/core';
+import { msg } from '@lingui/core/macro';
+import { Plural, Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useId, useMemo, useState } from 'react';
 import type { RoadmapItem } from '@/lib/api';
 import { groupByMonth } from './group';
 import { buildGanttItems, DAY_MS, dayStamp, diamondFill, getGanttRange, milestoneDone, milestoneState, monthSegments } from './gantt';
 import { cn } from '@/lib/utils';
+import { dates } from '@/lib/i18n';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Pager } from '@/components/pager';
 
-const day = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
-const statusLabel: Record<NonNullable<RoadmapItem['status']>, string> = {
-  not_started: 'Not started',
-  in_progress: 'In progress',
-  done: 'Done',
+const statusLabel: Record<NonNullable<RoadmapItem['status']>, MessageDescriptor> = {
+  not_started: msg`Not started`,
+  in_progress: msg`In progress`,
+  done: msg`Done`,
 };
 
-const chartDay = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
 const LABEL_WIDTH = 192;
 const COLUMN_GAP = 12;
 const PAGE_SIZE = 20;
 
 export function Gantt({ items }: { items: RoadmapItem[] }) {
+  const { t, i18n } = useLingui();
   const today = useMemo(() => dayStamp(new Date().toISOString().slice(0, 10)), []);
   const { dated: ordered, undated } = buildGanttItems(items);
 
   if (ordered.length === 0) {
     return (
       <div className="rounded-xl border p-5">
-        <h2 className="font-semibold">Gantt chart</h2>
-        <p className="mt-2 text-sm text-muted-foreground">Add target dates to roadmap items to see them on the Gantt chart.</p>
+        <h2 className="font-semibold"><Trans>Gantt chart</Trans></h2>
+        <p className="mt-2 text-sm text-muted-foreground"><Trans>Add target dates to roadmap items to see them on the Gantt chart.</Trans></p>
         {undated.length > 0 && (
-          <ul aria-label="Items without target dates" className="mt-5 divide-y">
+          <ul aria-label={t`Items without target dates`} className="mt-5 divide-y">
             {undated.map((item) => <li key={item.id} className="py-3 font-medium">{item.title}</li>)}
           </ul>
         )}
@@ -43,12 +46,12 @@ export function Gantt({ items }: { items: RoadmapItem[] }) {
   const width = Math.max(760, range.days * 28);
   const pxPerDay = width / range.days;
   const todayLeft = LABEL_WIDTH + COLUMN_GAP + ((today - range.start) / DAY_MS) * pxPerDay;
-  const months = monthSegments(range.start, range.days);
+  const months = monthSegments(i18n, range.start, range.days);
 
   return (
     <div className="grid min-w-0 max-w-full gap-6">
-      <section aria-label="Gantt chart" className="min-w-0 max-w-full rounded-xl border p-4">
-        <h2 className="mb-4 font-semibold">Gantt chart</h2>
+      <section aria-label={t`Gantt chart`} className="min-w-0 max-w-full rounded-xl border p-4">
+        <h2 className="mb-4 font-semibold"><Trans>Gantt chart</Trans></h2>
         <div className="w-full min-w-0 max-w-full overflow-x-auto pb-2">
           <div className="relative" style={{ width: LABEL_WIDTH + COLUMN_GAP + width }}>
             <div className="mb-3 grid items-end gap-3 text-xs text-muted-foreground" style={{ gridTemplateColumns: `${LABEL_WIDTH}px ${width}px` }} aria-hidden="true">
@@ -62,7 +65,7 @@ export function Gantt({ items }: { items: RoadmapItem[] }) {
               </div>
             </div>
             <div className="relative">
-              <div className="pointer-events-none absolute inset-y-0 z-10 border-l-2 border-primary/70" style={{ left: todayLeft }} aria-label="Today" title="Today" />
+              <div className="pointer-events-none absolute inset-y-0 z-10 border-l-2 border-primary/70" style={{ left: todayLeft }} aria-label={t`Today`} title={t`Today`} />
               <ol className="divide-y">
                 {ordered.map((item) => {
                   const offset = ((item.start - range.start) / DAY_MS) * pxPerDay;
@@ -72,15 +75,16 @@ export function Gantt({ items }: { items: RoadmapItem[] }) {
                   const fill = linked
                     ? (item.progress!.done / item.progress!.total) * 100
                     : item.status === 'done' || item.manual_status === 'done' ? 100 : 0;
-                  const startLabel = chartDay.format(new Date(item.start));
-                  const endLabel = chartDay.format(new Date(item.end));
+                  const startLabel = dates(i18n, { day: 'numeric', month: 'short', timeZone: 'UTC' }).format(new Date(item.start));
+                  const endLabel = dates(i18n, { day: 'numeric', month: 'short', timeZone: 'UTC' }).format(new Date(item.end));
+                  const done = item.progress?.done ?? 0, total = item.progress?.total ?? 0;
                   return (
                     <li key={item.id} className="grid min-h-16 items-center gap-3 py-2" style={{ gridTemplateColumns: `${LABEL_WIDTH}px ${width}px` }}>
                       <div className="min-w-0">
                         <p className="truncate text-sm font-medium" title={item.title}>{item.title}</p>
-                        <p className="text-xs text-muted-foreground">{item.milestone ? `Due ${endLabel}` : `${startLabel} – ${endLabel}`}</p>
+                        <p className="text-xs text-muted-foreground">{item.milestone ? t`Due ${endLabel}` : `${startLabel} – ${endLabel}`}</p>
                         <p className="text-xs text-muted-foreground">
-                          {linked ? `${item.progress!.done} of ${item.progress!.total} tickets done` : statusLabel[item.status ?? item.manual_status ?? 'not_started']}
+                          {linked ? <Trans>{done} of <Plural value={total} one="# ticket" other="# tickets" /> done</Trans> : i18n._(statusLabel[item.status ?? item.manual_status ?? 'not_started'])}
                         </p>
                       </div>
                       <div className="relative h-10">
@@ -91,8 +95,8 @@ export function Gantt({ items }: { items: RoadmapItem[] }) {
                             role="img"
                             className="absolute top-2 h-6 overflow-hidden rounded-md border border-primary/70 bg-primary/15"
                             style={{ left: offset, width: barWidth }}
-                            aria-label={`${item.title}: ${startLabel} to ${endLabel}`}
-                            title={`${item.title}: ${startLabel} to ${endLabel}`}
+                            aria-label={t`${item.title}: ${startLabel} to ${endLabel}`}
+                            title={t`${item.title}: ${startLabel} to ${endLabel}`}
                           >
                             <div className="h-full bg-primary/40" style={{ width: `${Math.min(100, Math.max(0, fill))}%` }} />
                           </div>
@@ -106,20 +110,20 @@ export function Gantt({ items }: { items: RoadmapItem[] }) {
           </div>
         </div>
         <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
-          <span className="flex items-center gap-2"><span className="h-4 border-l-2 border-primary/70" aria-hidden="true" /> Today</span>
-          <span className="flex items-center gap-2"><span className="size-2.5 rotate-45 border-2 border-primary" aria-hidden="true" /> Milestone, on its due date</span>
-          <span className="flex items-center gap-2"><span className="size-2.5 rotate-45 border-2 border-primary bg-gradient-to-tl from-primary from-50% to-transparent to-50%" aria-hidden="true" /> Filled as its tickets get done</span>
-          <span className="flex items-center gap-2"><span className="size-2.5 rotate-45 border-2 border-destructive" aria-hidden="true" /> Overdue</span>
+          <span className="flex items-center gap-2"><span className="h-4 border-l-2 border-primary/70" aria-hidden="true" /> <Trans>Today</Trans></span>
+          <span className="flex items-center gap-2"><span className="size-2.5 rotate-45 border-2 border-primary" aria-hidden="true" /> <Trans>Milestone, on its due date</Trans></span>
+          <span className="flex items-center gap-2"><span className="size-2.5 rotate-45 border-2 border-primary bg-gradient-to-tl from-primary from-50% to-transparent to-50%" aria-hidden="true" /> <Trans>Filled as its tickets get done</Trans></span>
+          <span className="flex items-center gap-2"><span className="size-2.5 rotate-45 border-2 border-destructive" aria-hidden="true" /> <Trans>Overdue</Trans></span>
         </p>
       </section>
       {undated.length > 0 && (
-        <section aria-label="Undated roadmap items" className="rounded-xl border p-4">
-          <h2 className="font-semibold">No target date</h2>
+        <section aria-label={t`Undated roadmap items`} className="rounded-xl border p-4">
+          <h2 className="font-semibold"><Trans>No target date</Trans></h2>
           <ol className="mt-2 divide-y">
             {undated.map((item) => (
               <li key={item.id} className="flex flex-wrap items-center justify-between gap-2 py-3">
                 <span className="font-medium">{item.title}</span>
-                {item.start_date && <span className="text-sm text-muted-foreground">Starts {day.format(new Date(`${item.start_date}T00:00:00Z`))}</span>}
+                {item.start_date && <span className="text-sm text-muted-foreground">{t`Starts ${dates(i18n, { day: 'numeric', month: 'short', timeZone: 'UTC' }).format(new Date(`${item.start_date}T00:00:00Z`))}`}</span>}
               </li>
             ))}
           </ol>
@@ -130,6 +134,7 @@ export function Gantt({ items }: { items: RoadmapItem[] }) {
 }
 
 export function Timeline({ id, items, progress }: { id: string; items: RoadmapItem[]; progress?: { done: number; total: number } }) {
+  const { t, i18n } = useLingui();
   const [view, setView] = useState<'timeline' | 'gantt'>('timeline');
   const [page, setPage] = useState(1);
   useEffect(() => {
@@ -144,27 +149,27 @@ export function Timeline({ id, items, progress }: { id: string; items: RoadmapIt
     setPage(1);
     try { window.localStorage.setItem(`roadmap-view:${id}`, next); } catch { /* The view still works without storage. */ }
   }
-  const timelineItems = groupByMonth(items).flatMap((group) => group.items);
+  const timelineItems = groupByMonth(i18n, items).flatMap((group) => group.items);
   const ganttItems = [...items].sort((a, b) => a.position - b.position);
   const orderedItems = view === 'gantt' ? ganttItems : timelineItems;
   const pageCount = Math.ceil(orderedItems.length / PAGE_SIZE);
   const currentPage = Math.min(page, Math.max(1, pageCount));
   const pageItems = orderedItems.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
-  const groups = view === 'timeline' ? groupByMonth(pageItems) : [];
+  const groups = view === 'timeline' ? groupByMonth(i18n, pageItems) : [];
   const firstItem = orderedItems.length ? (currentPage - 1) * PAGE_SIZE + 1 : 0;
   const lastItem = Math.min(currentPage * PAGE_SIZE, orderedItems.length);
   return (
     <div className="grid min-w-0 max-w-full gap-8">
-      <section aria-label="Roadmap progress" className="rounded-xl border p-4">
+      <section aria-label={t`Roadmap progress`} className="rounded-xl border p-4">
         {progress && progress.total > 0 ? (
           <>
             <div className="mb-2 flex flex-wrap items-center justify-between gap-2 text-sm">
-              <h2 className="font-semibold">Overall progress</h2>
-              <span>{progress.done} of {progress.total} tickets done ({Math.round((progress.done / progress.total) * 100)}%)</span>
+              <h2 className="font-semibold"><Trans>Overall progress</Trans></h2>
+              <span><Trans>{progress.done} of <Plural value={progress.total} one="# ticket" other="# tickets" /> done ({Math.round((progress.done / progress.total) * 100)}%)</Trans></span>
             </div>
             <div
               role="progressbar"
-              aria-label="Roadmap ticket progress"
+              aria-label={t`Roadmap ticket progress`}
               aria-valuemin={0}
               aria-valuemax={progress.total}
               aria-valuenow={progress.done}
@@ -174,17 +179,17 @@ export function Timeline({ id, items, progress }: { id: string; items: RoadmapIt
             </div>
           </>
         ) : (
-          <p className="text-sm text-muted-foreground">No linked tickets yet; roadmap item statuses are manual.</p>
+          <p className="text-sm text-muted-foreground"><Trans>No linked tickets yet; roadmap item statuses are manual.</Trans></p>
         )}
       </section>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 id="roadmap-schedule" className="text-lg font-semibold">Roadmap schedule</h2>
-        <div role="group" aria-label="Roadmap view" className="inline-flex rounded-lg border p-1">
-          <Button type="button" size="sm" variant={view === 'timeline' ? 'secondary' : 'ghost'} aria-pressed={view === 'timeline'} onClick={() => chooseView('timeline')}>Timeline</Button>
-          <Button type="button" size="sm" variant={view === 'gantt' ? 'secondary' : 'ghost'} aria-pressed={view === 'gantt'} onClick={() => chooseView('gantt')}>Gantt</Button>
+        <h2 id="roadmap-schedule" className="text-lg font-semibold"><Trans>Roadmap schedule</Trans></h2>
+        <div role="group" aria-label={t`Roadmap view`} className="inline-flex rounded-lg border p-1">
+          <Button type="button" size="sm" variant={view === 'timeline' ? 'secondary' : 'ghost'} aria-pressed={view === 'timeline'} onClick={() => chooseView('timeline')}><Trans>Timeline</Trans></Button>
+          <Button type="button" size="sm" variant={view === 'gantt' ? 'secondary' : 'ghost'} aria-pressed={view === 'gantt'} onClick={() => chooseView('gantt')}><Trans>Gantt</Trans></Button>
         </div>
       </div>
-      {view === 'gantt' ? <Gantt items={pageItems} /> : !groups.length ? <p className="text-muted-foreground">Nothing on this roadmap yet.</p> : (
+      {view === 'gantt' ? <Gantt items={pageItems} /> : !groups.length ? <p className="text-muted-foreground"><Trans>Nothing on this roadmap yet.</Trans></p> : (
         <ol className="space-y-10">
           {groups.map((g) => (
             <li key={g.label}>
@@ -195,10 +200,10 @@ export function Timeline({ id, items, progress }: { id: string; items: RoadmapIt
                     <span className="absolute -left-[1.85rem] top-1.5 size-2.5 rounded-full bg-primary" aria-hidden />
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                       <h3 className="font-medium">{i.title}</h3>
-                      <Badge variant={i.status === 'done' ? 'default' : 'secondary'}>{statusLabel[i.status ?? i.manual_status ?? 'not_started']}</Badge>
+                      <Badge variant={i.status === 'done' ? 'default' : 'secondary'}>{i18n._(statusLabel[i.status ?? i.manual_status ?? 'not_started'])}</Badge>
                       {i.target_date && (
                         <time dateTime={i.target_date} className="text-sm text-muted-foreground">
-                          {day.format(new Date(`${i.target_date}T00:00:00Z`))}
+                          {dates(i18n, { day: 'numeric', month: 'short', timeZone: 'UTC' }).format(new Date(`${i.target_date}T00:00:00Z`))}
                         </time>
                       )}
                     </div>
@@ -212,7 +217,7 @@ export function Timeline({ id, items, progress }: { id: string; items: RoadmapIt
       )}
       {pageCount > 1 && (
         <div className="grid justify-items-center gap-2">
-          <p aria-live="polite" className="text-sm text-muted-foreground">Showing {firstItem}–{lastItem} of {orderedItems.length} items</p>
+          <p aria-live="polite" className="text-sm text-muted-foreground"><Trans>Showing {firstItem}–{lastItem} of {orderedItems.length} items</Trans></p>
           <Pager page={currentPage} lastPage={pageCount} onPage={setPage} anchor="#roadmap-schedule" className="" />
         </div>
       )}
@@ -223,8 +228,11 @@ export function Timeline({ id, items, progress }: { id: string; items: RoadmapIt
 // Milestone: a diamond on the due date, filled from the bottom by how much is done (by area); checked
 // once done, red outline when overdue.
 export function Milestone({ state, done, left, title, due }: { state: 'done' | 'overdue' | 'upcoming'; done: number; left: number; title: string; due: string }) {
+  const { t } = useLingui();
   const pct = Math.round(Math.min(1, Math.max(0, done)) * 100);
-  const said = state === 'done' ? 'done' : `${pct > 0 ? `${pct}% done, ` : ''}${state === 'overdue' ? `overdue, was due ${due}` : `due ${due}`}`;
+  const said = state === 'done' ? t`done`
+    : state === 'overdue' ? (pct > 0 ? t`${pct}% done, overdue, was due ${due}` : t`overdue, was due ${due}`)
+    : pct > 0 ? t`${pct}% done, due ${due}` : t`due ${due}`;
   const S = 24; // the diamond's box, in px and SVG units
   const fill = diamondFill(state === 'done' ? 1 : done, S);
   const clip = `milestone-${useId().replace(/:/g, '')}`; // unique per diamond, even with the same title
@@ -237,7 +245,7 @@ export function Milestone({ state, done, left, title, due }: { state: 'done' | '
       height={S}
       className="absolute top-2 z-[1]"
       style={{ left: left - 2 }}
-      aria-label={`${title}: milestone ${said}`}
+      aria-label={t`${title}: milestone ${said}`}
     >
       <title>{`${title}: ${said}`}</title>
       <clipPath id={clip}><polygon points={`${S / 2},1 ${S - 1},${S / 2} ${S / 2},${S - 1} 1,${S / 2}`} /></clipPath>

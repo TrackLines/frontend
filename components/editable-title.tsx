@@ -1,5 +1,6 @@
 'use client';
 
+import { useLingui } from '@lingui/react/macro';
 import { useState, type FormEvent } from 'react';
 import { CheckIcon, PencilIcon, XIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -17,6 +18,7 @@ type Props = {
 
 // EditableTitle is a heading that turns into an input in place: click the name or the pencil, Enter saves, Escape cancels.
 export function EditableTitle({ value, label, editable, onSave, as: Tag = 'h1', className = '', maxLength = 120 }: Props) {
+  const { t } = useLingui();
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value);
   const [saving, setSaving] = useState(false);
@@ -38,23 +40,24 @@ export function EditableTitle({ value, label, editable, onSave, as: Tag = 'h1', 
       await onSave(next);
       setEditing(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : `Couldn’t rename the ${label}. Please try again.`);
+      setError(err instanceof Error ? err.message : t`Couldn’t rename the ${label}. Please try again.`);
     } finally {
       setSaving(false);
     }
   }
 
   if (editing && editable) {
+    const Label = `${label[0].toUpperCase()}${label.slice(1)}`;
     return (
       <form onSubmit={save} className="flex min-w-0 flex-1 flex-wrap items-center gap-1">
         <Input
-          autoFocus aria-label={`${label[0].toUpperCase()}${label.slice(1)} name`} value={draft} maxLength={maxLength} required
+          autoFocus aria-label={t`${Label} name`} value={draft} maxLength={maxLength} required
           className={`h-auto min-w-0 flex-1 py-1 ${className}`}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Escape') setEditing(false); }}
         />
-        <Button type="submit" size="icon-sm" aria-label="Save name" disabled={saving || !draft.trim()}><CheckIcon /></Button>
-        <Button type="button" size="icon-sm" variant="ghost" aria-label="Cancel renaming" disabled={saving} onClick={() => setEditing(false)}><XIcon /></Button>
+        <Button type="submit" size="icon-sm" aria-label={t`Save name`} disabled={saving || !draft.trim()}><CheckIcon /></Button>
+        <Button type="button" size="icon-sm" variant="ghost" aria-label={t`Cancel renaming`} disabled={saving} onClick={() => setEditing(false)}><XIcon /></Button>
         {error && <p role="alert" className="w-full text-sm text-destructive">{error}</p>}
       </form>
     );
@@ -68,7 +71,7 @@ export function EditableTitle({ value, label, editable, onSave, as: Tag = 'h1', 
         {value}
       </Tag>
       {editable && (
-        <Button type="button" size="icon-sm" variant="ghost" className="shrink-0 text-muted-foreground" aria-label={`Rename ${label}`} onClick={start}>
+        <Button type="button" size="icon-sm" variant="ghost" className="shrink-0 text-muted-foreground" aria-label={t`Rename ${label}`} onClick={start}>
           <PencilIcon />
         </Button>
       )}

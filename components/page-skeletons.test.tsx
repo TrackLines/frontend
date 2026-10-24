@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { BoardSkeleton, ListSkeleton, ProjectSkeleton, TicketSkeleton } from './page-skeletons';
 
 test('skeletons announce loading to screen readers and hide the shapes', () => {

@@ -1,5 +1,6 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
+import { i18nFor } from '@/lib/i18n';
 import type { HistoryEntry } from '@/lib/api';
 import { HistoryPanelView, historySteps } from './history-panel';
 
@@ -9,7 +10,7 @@ const col = (name: string, m: number, outcome: HistoryEntry['outcome'] = 'entere
 const people = [{ id: 'user_ava', label: 'Ava Smith', kind: 'person' as const }, { id: 'claude', label: 'Claude', kind: 'ai' as const }];
 
 test('history reads as what happened, newest first, with skipped stages folded in (TL-76)', () => {
-  const steps = historySteps([
+  const steps = historySteps(i18nFor('en'), [
     { at: at(0), stage: 'backlog', outcome: 'skipped', stage_order: 0, done: false, actor: 'user_ava' },
     col('To do', 0, 'entered', 'user_ava'),
     col('In progress', 5, 'skipped', 'claude'),
@@ -26,7 +27,7 @@ test('history reads as what happened, newest first, with skipped stages folded i
 });
 
 test('a ticket made in a later column says which columns it skipped', () => {
-  const steps = historySteps([
+  const steps = historySteps(i18nFor('en'), [
     { at: at(0), stage: 'backlog', outcome: 'skipped', stage_order: 0, done: false },
     col('To do', 0, 'skipped'), col('Done', 0, 'entered', undefined, true),
   ], people);

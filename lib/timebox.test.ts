@@ -1,4 +1,5 @@
 import { expect, test } from 'bun:test';
+import { i18nFor } from '@/lib/i18n';
 import { businessMinutesBetween, formatDuration, timeboxBudgetMins, timeboxStatus } from './timebox';
 
 // Dates are built with local constructors so the tests are timezone-independent: 2026-01-05 is a
@@ -35,10 +36,10 @@ test('timeboxStatus: not started, within, over', () => {
 });
 
 test('formatDuration renders business time compactly', () => {
-  expect(formatDuration(420)).toBe('7h');
-  expect(formatDuration(90)).toBe('1h 30m');
-  expect(formatDuration(480)).toBe('1d');
-  expect(formatDuration(540)).toBe('1d 1h');
-  expect(formatDuration(45)).toBe('45m');
-  expect(formatDuration(0)).toBe('0m');
+  expect(formatDuration(i18nFor('en'), 420)).toBe('7h');
+  expect(formatDuration(i18nFor('en'), 90)).toBe('1h 30m');
+  expect(formatDuration(i18nFor('en'), 480)).toBe('1d');
+  expect(formatDuration(i18nFor('en'), 540)).toBe('1d 1h');
+  expect(formatDuration(i18nFor('en'), 45)).toBe('45m');
+  expect(formatDuration(i18nFor('en'), 0)).toBe('0m');
 });

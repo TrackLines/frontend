@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 import type { RoadmapItem } from '@/lib/api';
+import { i18nFor } from '@/lib/i18n';
 import { buildGanttItems, DAY_MS, dayStamp, diamondFill, getGanttRange, milestoneDone, milestoneState, monthSegments, type GanttItem } from './gantt';
 
 const item = (id: string, target_date: string | null, start_date: string | null = null, position = 0): RoadmapItem => ({
@@ -33,7 +34,7 @@ describe('roadmap Gantt data', () => {
 
   test('splits the chart axis at UTC month boundaries', () => {
     const start = dayStamp('2026-01-25');
-    const segments = monthSegments(start, 20);
+    const segments = monthSegments(i18nFor(), start, 20);
 
     expect(segments.map(({ label }) => label)).toEqual(['Jan 2026', 'Feb 2026']);
     expect(segments.reduce((sum, segment) => sum + segment.width, 0)).toBe(20);

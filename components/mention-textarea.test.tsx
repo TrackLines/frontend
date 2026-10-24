@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { MentionTextarea } from './mention-textarea';
 
 test('the mention box is our textarea, announced as autocompleting, closed until @ is typed', () => {

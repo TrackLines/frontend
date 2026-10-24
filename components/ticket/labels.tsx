@@ -1,5 +1,7 @@
 'use client';
 
+import { plural } from '@lingui/core/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState, type KeyboardEvent } from 'react';
 import { XIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -12,15 +14,17 @@ import { addLabels, removeLabel } from '@/lib/labels';
 
 // MoreLabels: the "+N" dropdown holding labels that didn't fit; nothing when there are none.
 export function MoreLabels({ labels }: { labels: string[] }) {
+  const { t } = useLingui();
   if (!labels.length) return null;
+  const names = labels.join(', ');
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger render={<Badge render={<button type="button" />} variant="outline" className="cursor-pointer hover:bg-muted" aria-label={`${labels.length} more labels: ${labels.join(', ')}`} />}>
+      <DropdownMenuTrigger render={<Badge render={<button type="button" />} variant="outline" className="cursor-pointer hover:bg-muted" aria-label={t`${plural(labels.length, { one: '# more label', other: '# more labels' })}: ${names}`} />}>
         +{labels.length}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-auto min-w-36">
         <DropdownMenuGroup>
-          <DropdownMenuLabel>More labels</DropdownMenuLabel>
+          <DropdownMenuLabel><Trans>More labels</Trans></DropdownMenuLabel>
           {labels.map((label) => <DropdownMenuItem key={label.toLowerCase()}>{label}</DropdownMenuItem>)}
         </DropdownMenuGroup>
       </DropdownMenuContent>
@@ -36,10 +40,11 @@ export function splitLabels(labels: string[] | undefined, max?: number): [string
 
 // max (lists): past it, the rest go in a "+N" dropdown rather than wrapping the row.
 export function TicketLabels({ labels, className = '', max }: { labels?: string[]; className?: string; max?: number }) {
+  const { t } = useLingui();
   if (!labels?.length) return null;
   const [shown, rest] = splitLabels(labels, max);
   return (
-    <div aria-label="Ticket labels" className={`flex min-w-0 flex-wrap gap-1 ${className}`}>
+    <div aria-label={t`Ticket labels`} className={`flex min-w-0 flex-wrap gap-1 ${className}`}>
       {shown.map((label) => (
         <Badge key={label.toLowerCase()} variant="outline" title={label} className="max-w-40">
           <span className="truncate">{label}</span>
@@ -58,6 +63,7 @@ export function LabelEditor({ projectId, token, labels, onChange, disabled = fal
   disabled?: boolean;
   showLabels?: boolean;
 }) {
+  const { t, i18n } = useLingui();
   const [value, setValue] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [error, setError] = useState('');
@@ -75,7 +81,7 @@ export function LabelEditor({ projectId, token, labels, onChange, disabled = fal
 
   function add(raw: string) {
     if (!raw.trim()) return;
-    const result = addLabels(labels, raw);
+    const result = addLabels(i18n, labels, raw);
     if (result.error) {
       setError(result.error);
       return;
@@ -98,8 +104,8 @@ export function LabelEditor({ projectId, token, labels, onChange, disabled = fal
   );
 
   return (
-    <section className="grid gap-2" aria-label="Edit ticket labels">
-      <p className="text-sm font-medium">Labels <span className="font-normal text-muted-foreground">(optional)</span></p>
+    <section className="grid gap-2" aria-label={t`Edit ticket labels`}>
+      <p className="text-sm font-medium"><Trans>Labels <span className="font-normal text-muted-foreground">(optional)</span></Trans></p>
       {showLabels && <div className="flex min-w-0 flex-wrap gap-1.5">
         {labels.map((label) => (
           <Badge key={label.toLowerCase()} variant="outline" title={label} className="max-w-48 pr-1">
@@ -108,7 +114,7 @@ export function LabelEditor({ projectId, token, labels, onChange, disabled = fal
               type="button"
               variant="ghost"
               size="icon-xs"
-              aria-label={`Remove label ${label}`}
+              aria-label={t`Remove label ${label}`}
               disabled={disabled}
               onClick={() => { onChange(removeLabel(labels, label)); setError(''); }}
               className="ml-0.5 size-4 rounded-full text-muted-foreground"
@@ -123,15 +129,15 @@ export function LabelEditor({ projectId, token, labels, onChange, disabled = fal
           <Input
             value={value}
             disabled={disabled}
-            aria-label="Add a label"
-            placeholder="Type a label and press Enter or comma"
+            aria-label={t`Add a label`}
+            placeholder={t`Type a label and press Enter or comma`}
             onChange={(event) => { setValue(event.target.value); setError(''); }}
             onKeyDown={onKeyDown}
           />
-          <Button type="button" variant="outline" disabled={disabled || !value.trim()} onClick={() => add(value)}>Add</Button>
+          <Button type="button" variant="outline" disabled={disabled || !value.trim()} onClick={() => add(value)}><Trans>Add</Trans></Button>
         </div>
         {options.length > 0 && (
-          <div role="group" aria-label="Suggested labels" className="flex flex-wrap gap-1">
+          <div role="group" aria-label={t`Suggested labels`} className="flex flex-wrap gap-1">
             {options.slice(0, 8).map((label) => (
               <Button key={label.toLowerCase()} type="button" size="sm" variant="ghost" disabled={disabled} onClick={() => add(label)}>
                 {label}
@@ -145,7 +151,7 @@ export function LabelEditor({ projectId, token, labels, onChange, disabled = fal
   );
 }
 
-export function LabelDrawer({ projectId, token, labels, onChange, disabled = false, onSave, saveLabel = 'Done' }: {
+export function LabelDrawer({ projectId, token, labels, onChange, disabled = false, onSave, saveLabel }: {
   projectId: string;
   token: string;
   labels: string[];
@@ -160,17 +166,17 @@ export function LabelDrawer({ projectId, token, labels, onChange, disabled = fal
         <TicketLabels labels={labels} />
         <Drawer swipeDirection="right">
           <DrawerTrigger render={<Button type="button" variant="outline" size="sm" disabled={disabled} />}>
-            {labels.length ? 'Edit labels' : 'Add labels'}
+            {labels.length ? <Trans>Edit labels</Trans> : <Trans>Add labels</Trans>}
           </DrawerTrigger>
           <DrawerContent className="p-4">
             <DrawerHeader className="px-0 pt-0">
-              <DrawerTitle>Labels</DrawerTitle>
-              <DrawerDescription>Add labels to organise and find this ticket.</DrawerDescription>
+              <DrawerTitle><Trans>Labels</Trans></DrawerTitle>
+              <DrawerDescription><Trans>Add labels to organise and find this ticket.</Trans></DrawerDescription>
             </DrawerHeader>
             <LabelEditor projectId={projectId} token={token} labels={labels} onChange={onChange} disabled={disabled} />
             <DrawerFooter className="px-0 pb-0">
               <DrawerClose render={<Button type="button" disabled={disabled} onClick={() => { void onSave?.(); }} />}>
-                {saveLabel}
+                {saveLabel ?? <Trans>Done</Trans>}
               </DrawerClose>
             </DrawerFooter>
           </DrawerContent>

@@ -1,5 +1,6 @@
 import { expect, test } from 'bun:test';
 import type { Ticket } from './api';
+import { i18nFor } from './i18n';
 import { clock, goTo, participants, pause, remaining, resume, REVIEW_MS, reviewing, speaker, start, TURN_MS, waiting } from './standup';
 
 const ticket = (assigned_to: string | null) => ({ id: 't', column_id: 'c', title: '', description: '', position: 0, created_by: 'x', assigned_to }) as Ticket;
@@ -36,9 +37,9 @@ test('pause stops the clock; running over goes negative', () => {
 });
 
 test('clock', () => {
-  expect(clock(TURN_MS)).toBe('2:00');
-  expect(clock(61_500)).toBe('1:02');
-  expect(clock(-20_000)).toBe('over by 0:20');
+  expect(clock(TURN_MS, i18nFor('en'))).toBe('2:00');
+  expect(clock(61_500, i18nFor('en'))).toBe('1:02');
+  expect(clock(-20_000, i18nFor('en'))).toBe('over by 0:20');
 });
 
 test('a standup is waiting until its clock first starts', () => {

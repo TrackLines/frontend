@@ -1,14 +1,15 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { EpicsView, epicSize } from './epics';
+import { i18nFor } from '@/lib/i18n';
 import { byBoard } from '@/components/ticket/sub-tickets';
 import { pickerTypes, TICKET_TYPES } from '@/components/ticket-type';
 import { convertLeavesBoard } from '@/components/board/ticket-dialog';
 
 test('an epic’s progress and size read plainly (TL-214)', () => {
-  expect(epicSize({ done: 3, total: 5, points: 13, unestimated: 2 })).toBe('3 of 5 done · 13 points · 2 not sized');
-  expect(epicSize({ done: 0, total: 1, points: 1, unestimated: 0 })).toBe('0 of 1 done · 1 point');
-  expect(epicSize({ done: 0, total: 0, points: 0, unestimated: 0 })).toBe('No sub-tickets yet');
+  expect(epicSize({ done: 3, total: 5, points: 13, unestimated: 2 }, i18nFor('en'))).toBe('3 of 5 done · 13 points · 2 not sized');
+  expect(epicSize({ done: 0, total: 1, points: 1, unestimated: 0 }, i18nFor('en'))).toBe('0 of 1 done · 1 point');
+  expect(epicSize({ done: 0, total: 0, points: 0, unestimated: 0 }, i18nFor('en'))).toBe('No sub-tickets yet');
 });
 
 test('the project’s Epics section lists each epic with its progress, or says how to make one', () => {
@@ -28,7 +29,7 @@ test('the project’s Epics section lists each epic with its progress, or says h
 });
 
 test('an epic’s page groups its sub-tickets by board, the backlog last', () => {
-  const groups = byBoard([
+  const groups = byBoard(i18nFor('en'), [
     { id: 'a', title: 'a', done: false, board_name: 'Web' },
     { id: 'b', title: 'b', done: true, board_name: null },
     { id: 'c', title: 'c', done: false, board_name: 'Backend' },
@@ -50,7 +51,7 @@ test('Epic is offered everywhere but creating on a board; converting a board tic
 
 test('epics stay out of refinement: they aren’t planned, their sub-tickets are', async () => {
   const src = await Bun.file(new URL('./refinement.tsx', import.meta.url)).text();
-  expect(src).toContain("t.type !== 'epic'");
+  expect(src).toContain("tk.type !== 'epic'");
   // the project page shows Backlog and Epics as tabs, Backlog open (TL-385)
   const tabs = await Bun.file(new URL('./work-tabs.tsx', import.meta.url)).text();
   expect(tabs).toContain('<Epics ');

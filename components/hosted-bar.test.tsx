@@ -3,12 +3,12 @@ import { mockDialog } from '@/test/mock-dialog';
 import type { HostedSession } from '@/lib/api';
 
 mockDialog();
-const { renderToStaticMarkup } = await import('react-dom/server');
+const { render: renderToStaticMarkup } = await import('@/test/i18n');
 const { FollowedTicket, HostedActions, HostedBar, HostedPeople, initials } = await import('./hosted-bar');
 
 const session: HostedSession = { host: 'user_ava', startedAt: 1, focus: { ticketId: 't1' }, people: ['user_ava', 'user_bo', 'user_cy'] };
 const people = [{ id: 'user_ava', label: 'Ava', kind: 'person' as const }, { id: 'user_bo', label: 'You', name: 'Bo', kind: 'person' as const }, { id: 'user_cy', label: 'Cy', kind: 'person' as const }];
-const props = (role: 'host' | 'follower', following = true) => ({ session, role, following, people, noun: 'refinement', onFollow: () => {}, onLeave: () => {}, onEnd: () => {}, onHandOver: () => {} });
+const props = (role: 'host' | 'follower', following = true) => ({ session, role, following, people, noun: 'refinement' as const, onFollow: () => {}, onLeave: () => {}, onEnd: () => {}, onHandOver: () => {} });
 const bar = (role: 'host' | 'follower', following = true) => renderToStaticMarkup(<HostedActions {...props(role, following)} />) + renderToStaticMarkup(
   <HostedPeople session={session} role={role} following={following} people={people} noun="refinement" onFollow={() => {}} onLeave={() => {}} onEnd={() => {}} onHandOver={() => {}} />);
 

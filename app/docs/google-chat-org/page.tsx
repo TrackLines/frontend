@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { B, Guide, H2, Items, P, Steps } from '@/components/docs/prose';
 import { CHAT_KINDS } from '@/lib/google-chat';
+import { serverI18n } from '@/lib/server-i18n';
 
 export const metadata: Metadata = {
   title: 'Google Chat for your organization · TrackLin.es docs',
@@ -9,7 +10,8 @@ export const metadata: Metadata = {
 };
 
 // Google Chat, for an organization admin: team spaces (webhooks) and allowing the Chat app.
-export default function GoogleChatOrgDocs() {
+export default async function GoogleChatOrgDocs() {
+  const i18n = await serverI18n();
   return (
     <Guide
       title="Google Chat for your organization"
@@ -43,7 +45,7 @@ export default function GoogleChatOrgDocs() {
 
       <H2>What can be posted</H2>
       <Items>
-        {CHAT_KINDS.map((k) => <li key={k.kind}>{k.label}</li>)}
+        {CHAT_KINDS.map((k) => <li key={k.kind}>{i18n._(k.label)}</li>)}
       </Items>
       <P>
         Each post has an <B>Open</B> button to the ticket. Space posts come through a webhook, so that’s their only button; the

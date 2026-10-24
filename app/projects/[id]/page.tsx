@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { LoadError } from '@/components/load-error';
 import { RoadmapRow } from '@/components/project/roadmap-row';
 import { useParams } from 'next/navigation';
@@ -20,6 +21,7 @@ import { ProjectSkeleton } from '@/components/page-skeletons';
 import { CopyButton } from '@/components/copy-link';
 
 export default function ProjectPage() {
+  const { t } = useLingui();
   const { id } = useParams<{ id: string }>();
   const token = useToken();
   const [project, setProject] = useCachedState<Project>(`project:${id}`); // last-seen project shows instantly, then refreshes
@@ -48,28 +50,28 @@ export default function ProjectPage() {
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
-      <Link href="/dashboard" className="text-sm text-muted-foreground hover:underline">← Projects</Link>
+      <Link href="/dashboard" className="text-sm text-muted-foreground hover:underline"><Trans>← Projects</Trans></Link>
       <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-3xl font-bold tracking-tight">{project.name}</h1>
         {/* setup (name, key prefix, more boards, repositories) lives on its own page */}
         <span className="flex gap-2">
           <ProjectReportLink projectId={project.id} />
           <RequestsLink projectId={project.id} token={token} />
-          <Link href={`/projects/${project.id}/edit`} className={buttonVariants({ variant: 'outline', size: 'sm' })}>Edit project</Link>
+          <Link href={`/projects/${project.id}/edit`} className={buttonVariants({ variant: 'outline', size: 'sm' })}><Trans>Edit project</Trans></Link>
         </span>
       </div>
       {/* integrations (ChewedFeed, BugFixes) ask for this */}
       <p className="mt-2 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-        Project ID
+        <Trans>Project ID</Trans>
         <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs text-foreground select-all">{project.id}</code>
-        <CopyButton value={project.id} label="Copy ID" size="sm" ariaLabel="Copy project ID" />
+        <CopyButton value={project.id} label={t`Copy ID`} size="sm" ariaLabel={t`Copy project ID`} />
       </p>
       {project.description && <p className="mt-2 text-muted-foreground">{project.description}</p>}
 
       {/* past one board, adding more is setup: it moves to Edit project */}
-      <Section title="Boards" hint="One board per team." action={boardList.length <= 1 && <NewBoardButton projectId={project.id} token={token} />}>
+      <Section title={t`Boards`} hint={t`One board per team.`} action={boardList.length <= 1 && <NewBoardButton projectId={project.id} token={token} />}>
         {boardList.length === 0 ? (
-          <Empty>No boards yet. Add one for each team, e.g. Backend, Design.</Empty>
+          <Empty><Trans>No boards yet. Add one for each team, e.g. Backend, Design.</Trans></Empty>
         ) : (
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {boardList.map((b) => <BoardCard key={b.id} board={b} />)}
@@ -81,11 +83,11 @@ export default function ProjectPage() {
       <WorkTabs projectId={project.id} boards={boardList} token={token} roadmaps={
         <section>
           <div className="mb-4 flex items-end justify-between gap-4">
-            <p className="text-sm text-muted-foreground">Public roadmaps are readable by anyone you send the link to.</p>
-            {manageRoadmaps && <Button variant="outline" onClick={() => setDialog('roadmap')}>New roadmap</Button>}
+            <p className="text-sm text-muted-foreground"><Trans>Public roadmaps are readable by anyone you send the link to.</Trans></p>
+            {manageRoadmaps && <Button variant="outline" onClick={() => setDialog('roadmap')}><Trans>New roadmap</Trans></Button>}
           </div>
           {roadmapList.length === 0 ? (
-            <Empty>No roadmaps yet.</Empty>
+            <Empty><Trans>No roadmaps yet.</Trans></Empty>
           ) : (
             <ul className="divide-y rounded-xl border">
               {roadmapList.map((r) => <RoadmapRow key={r.id} roadmap={r} canManage={manageRoadmaps} />)}
@@ -100,7 +102,7 @@ export default function ProjectPage() {
         projectId={project.id}
         canPublish={role?.admin ?? false}
         onSubmit={async (r) => {
-          const rm = await roadmaps.create(project.id, r, token).catch(() => { throw new Error('Couldn’t create the roadmap. Please try again.'); });
+          const rm = await roadmaps.create(project.id, r, token).catch(() => { throw new Error(t`Couldn’t create the roadmap. Please try again.`); });
           setProject((p) => p && { ...p, roadmaps: [rm, ...(p.roadmaps ?? [])] });
         }}
       />

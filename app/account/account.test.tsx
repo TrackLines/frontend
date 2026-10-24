@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { DevicePushView } from '@/components/settings/device-push';
 
 const read = (p: string) => Bun.file(new URL(p, import.meta.url)).text();
@@ -13,9 +13,9 @@ test('Google Chat lives on Your settings, not the organization’s Settings', as
 
 test('Your settings is reachable from the account menu and the bell, and needs sign-in', async () => {
   const menu = await read('../../components/user-menu.tsx');
-  expect(menu).toContain('label="Your settings"');
+  expect(menu).toContain('label={t`Your settings`}');
   expect(menu).toContain("router.push('/account')");
-  expect(menu).toContain('label="Organization settings"');
+  expect(menu).toContain('label={t`Organization settings`}');
   expect(await read('../../components/notifications-bell.tsx')).toContain('href="/account"');
   expect(await read('../../proxy.ts')).toContain("'/account'");
 });

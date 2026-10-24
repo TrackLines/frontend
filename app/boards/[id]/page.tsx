@@ -2,6 +2,7 @@
 
 import { ArchivedBanner } from '@/components/board/board-lifecycle';
 import Link from 'next/link';
+import { Plural, Trans, useLingui } from '@lingui/react/macro';
 import { LoadError } from '@/components/load-error';
 import { LiveToast } from '@/components/live-toast';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
@@ -39,6 +40,7 @@ export default function BoardPage() {
   const focus = useSearchParams().get('ticket'); // /boards/<id>?ticket=<ticket> opens that ticket's modal
   const searchParams = useSearchParams();
   const router = useRouter();
+  const { t } = useLingui();
   const token = useToken();
   const [board, setBoard] = useCachedState<Board>(`board:${id}`); // last-seen board shows instantly, then refreshes
   const [error, setError] = useState<number | null>(null);
@@ -144,7 +146,7 @@ export default function BoardPage() {
       await startSharedStandup(people);
       setJoinedStandup(true);
     } catch {
-      setStandupError('Couldn’t start the shared standup. Please try again.');
+      setStandupError(t`Couldn’t start the shared standup. Please try again.`);
     } finally {
       setStartingStandup(false);
     }
@@ -169,7 +171,7 @@ export default function BoardPage() {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col">
       <header className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b px-6 py-4">
-        <Link href={`/projects/${board.project_id}`} className="text-sm text-muted-foreground hover:underline">← Project</Link>
+        <Link href={`/projects/${board.project_id}`} className="text-sm text-muted-foreground hover:underline">← <Trans>Project</Trans></Link>
         <h1 className="text-2xl font-bold tracking-tight">{board.name}</h1>
         <LabelFilter
           options={labelCounts((board.columns ?? []).flatMap((c) => c.tickets))}
@@ -179,42 +181,42 @@ export default function BoardPage() {
         />
         <PriorityFilter priorities={priorityFilter} onPrioritiesChange={changePriorities} />
         <EpicFilter epics={epics} epic={epicFilter} onEpicChange={changeEpic} />
-        <div role="group" aria-label="Quick filter by assignee" className="flex gap-1">
-          <Button type="button" size="sm" variant={assigneeFilter === 'mine' ? 'secondary' : 'ghost'} aria-pressed={assigneeFilter === 'mine'} onClick={() => setAssigneeFilter((filter) => filter === 'mine' ? 'all' : 'mine')}>My tickets</Button>
-          <Button type="button" size="sm" variant={assigneeFilter === 'unassigned' ? 'secondary' : 'ghost'} aria-pressed={assigneeFilter === 'unassigned'} onClick={() => setAssigneeFilter((filter) => filter === 'unassigned' ? 'all' : 'unassigned')}>Unassigned</Button>
+        <div role="group" aria-label={t`Quick filter by assignee`} className="flex gap-1">
+          <Button type="button" size="sm" variant={assigneeFilter === 'mine' ? 'secondary' : 'ghost'} aria-pressed={assigneeFilter === 'mine'} onClick={() => setAssigneeFilter((filter) => filter === 'mine' ? 'all' : 'mine')}><Trans>My tickets</Trans></Button>
+          <Button type="button" size="sm" variant={assigneeFilter === 'unassigned' ? 'secondary' : 'ghost'} aria-pressed={assigneeFilter === 'unassigned'} onClick={() => setAssigneeFilter((filter) => filter === 'unassigned' ? 'all' : 'unassigned')}><Trans>Unassigned</Trans></Button>
         </div>
         {/* the same actions in and out of edit mode, so the header doesn't jump around */}
         <div className="ml-auto flex flex-wrap items-center gap-2">
-          <CopyLink path={`/boards/${board.id}`} token={token} title="A board on TrackLin.es" />
+          <CopyLink path={`/boards/${board.id}`} token={token} title={t`A board on TrackLin.es`} />
           {/* standup is for running the board, not configuring it */}
           {!joinedStandup && <Button type="button" variant="outline" size="sm" disabled={startingStandup} onClick={() => standup ? setJoinedStandup(true) : void beginStandup(board)}>
-            {startingStandup ? 'Starting…' : standup ? 'Join standup' : 'Standup'}
+            {startingStandup ? t`Starting…` : standup ? t`Join standup` : t`Standup`}
           </Button>}
           {joinedStandup && hostedStandup.session && (
             <HostedBar session={hostedStandup.session} role={hostedStandup.role} following={hostedStandup.following} people={people} noun="standup"
               onFollow={hostedStandup.setFollowing} onLeave={() => setJoinedStandup(false)} onHandOver={hostedStandup.handOver}
-              onEnd={() => void actOnStandup('end').catch(() => setStandupError('Couldn’t end the standup. Please try again.'))} />
+              onEnd={() => void actOnStandup('end').catch(() => setStandupError(t`Couldn’t end the standup. Please try again.`))} />
           )}
           {/* only while you're in the standup */ joinedStandup && <LiveToast state={live} />}
           {/* settings and columns have their own page (TL-470) */}
-          {boardCanManage && !archived && !joinedStandup && <Link href={`/boards/${board.id}/edit`} className={buttonVariants({ variant: 'outline', size: 'sm' })}>Edit board</Link>}
+          {boardCanManage && !archived && !joinedStandup && <Link href={`/boards/${board.id}/edit`} className={buttonVariants({ variant: 'outline', size: 'sm' })}><Trans>Edit board</Trans></Link>}
         </div>
         {board.description && <p className="w-full text-muted-foreground">{board.description}</p>}
       </header>
       <ArchivedBanner board={board} canManage={boardCanManage} token={token} onRestored={() => void load(true)} />
-      {permissionError && <p role="status" className="border-b px-6 py-2 text-sm text-muted-foreground">Couldn’t verify board permissions. Board settings are hidden until permissions can be checked.</p>}
+      {permissionError && <p role="status" className="border-b px-6 py-2 text-sm text-muted-foreground"><Trans>Couldn’t verify board permissions. Board settings are hidden until permissions can be checked.</Trans></p>}
       {standupError && <p role="alert" className="border-b px-6 py-2 text-sm text-destructive">{standupError}</p>}
-      {focus && !board.columns?.some((c) => c.tickets.some((t) => t.id === focus)) && (
+      {focus && !board.columns?.some((c) => c.tickets.some((tk) => tk.id === focus)) && (
         <p role="status" className="border-b px-6 py-3 text-sm text-muted-foreground">
-          That ticket isn&apos;t on this board&apos;s current view (it may belong to a closed sprint or have moved).{' '}
-          <Link href={`/tickets/${focus}`} className="font-medium text-foreground hover:underline">Open the ticket</Link>
+          <Trans>That ticket isn&apos;t on this board&apos;s current view (it may belong to a closed sprint or have moved).{' '}
+          <Link href={`/tickets/${focus}`} className="font-medium text-foreground hover:underline">Open the ticket</Link></Trans>
         </p>
       )}
       {toBacklog && (
         <p role="status" className="border-b px-6 py-3 text-sm text-muted-foreground">
-          The sprint ends today, so “{toBacklog.title}” went to the backlog.{' '}
-          <Link href={`/tickets/${toBacklog.id}`} className="font-medium text-foreground hover:underline">Open the ticket</Link>{' '}
-          <Button type="button" variant="ghost" size="sm" onClick={() => setToBacklog(null)}>Dismiss</Button>
+          <Trans>The sprint ends today, so “{toBacklog.title}” went to the backlog.</Trans>{' '}
+          <Link href={`/tickets/${toBacklog.id}`} className="font-medium text-foreground hover:underline"><Trans>Open the ticket</Trans></Link>{' '}
+          <Button type="button" variant="ghost" size="sm" onClick={() => setToBacklog(null)}><Trans>Dismiss</Trans></Button>
         </p>
       )}
       {joinedStandup && (
@@ -224,14 +226,14 @@ export default function BoardPage() {
       {/* sprint start/close changes which tickets the board shows, so reload */}
       {kanban
         ? <div className="flex flex-wrap items-center justify-between gap-2 border-b px-6 py-3">
-            <p className="text-sm text-muted-foreground">Kanban board: work flows continuously. Keep each column within its WIP limit.</p>
+            <p className="text-sm text-muted-foreground"><Trans>Kanban board: work flows continuously. Keep each column within its WIP limit.</Trans></p>
             <FlowCharts boardId={board.id} token={token} />
           </div>
         : <SprintBar board={board} token={token} canManage={boardCanManage} onChanged={load} />}
       {!hasVisibleTickets && (labelFilter.length > 0 || priorityFilter.length > 0 || assigneeFilter !== 'all') && (
         <p role="status" className="mx-6 mt-4 flex flex-wrap items-center gap-2 rounded-lg border border-dashed p-3 text-sm text-muted-foreground">
-          No tickets match these filters.
-          <Button type="button" variant="link" size="sm" className="h-auto p-0" onClick={() => { changeFilters([], []); setAssigneeFilter('all'); }}>Clear filters</Button>
+          <Trans>No tickets match these filters.</Trans>
+          <Button type="button" variant="link" size="sm" className="h-auto p-0" onClick={() => { changeFilters([], []); setAssigneeFilter('all'); }}><Trans>Clear filters</Trans></Button>
         </p>
       )}
       <BoardDnd
@@ -248,7 +250,7 @@ export default function BoardPage() {
       {/* standup: its panel sits left of the columns, like Jira's (TL-237) */}
       <div className="flex flex-1 items-start gap-4 p-6">
       {joinedStandup && standup && <StandupPanel standup={standup} onAction={(action, index) => {
-        void actOnStandup(action, index).then(() => setStandupError(''), () => setStandupError('Couldn’t update the shared standup. Please try again.'));
+        void actOnStandup(action, index).then(() => setStandupError(''), () => setStandupError(t`Couldn’t update the shared standup. Please try again.`));
       }} goal={board.sprint?.goal} canRun={hostedStandup.role === 'host' || !hostedStandup.session} people={people} />}
       <div className="flex min-w-0 flex-1 items-start gap-4 overflow-x-auto">
         {board.columns?.map((col) => {
@@ -261,15 +263,15 @@ export default function BoardPage() {
                 column={col} scale={board.estimate_scale} done={done}
                 limited={!done && col.id !== cols[0]?.id} // WIP limits are for work in progress: not To do, not Done
                 note={kanban && done && (board.hidden_done ?? 0) > 0 && (
-                  <p className="text-xs text-muted-foreground">{board.hidden_done} finished over 14 days ago {board.hidden_done === 1 ? 'is' : 'are'} hidden.</p>
+                  <p className="text-xs text-muted-foreground"><Plural value={board.hidden_done ?? 0} one="# finished over 14 days ago is hidden." other="# finished over 14 days ago are hidden." /></p>
                 )}
               >
-                <DroppableColumn id={col.id} ticketIds={shown.map((t) => t.id)}>
-                  {shown.map((t) => (
-                    <SortableTicket key={t.id} id={t.id} disabled={archived}>
+                <DroppableColumn id={col.id} ticketIds={shown.map((tk) => tk.id)}>
+                  {shown.map((tk) => (
+                    <SortableTicket key={tk.id} id={tk.id} disabled={archived}>
                       <TicketCard
-                        ticket={t}
-                        openOnLoad={t.id === focus ? { columnName: col.name } : undefined}
+                        ticket={tk}
+                        openOnLoad={tk.id === focus ? { columnName: col.name } : undefined}
                         done={done}
                         scale={board.estimate_scale}
                         readOnly={archived}
@@ -277,14 +279,14 @@ export default function BoardPage() {
                         onUpdated={(nt) => updateTickets(col.id, (ts) => ts.map((x) => (x.id === nt.id ? nt : x)))}
                         onReviewed={() => void load(true)}
                         onDeleted={(tid) => updateTickets(col.id, (ts) => ts.filter((x) => x.id !== tid))}
-                        onViewChange={(open) => setHostTicket((current) => (open ? t.id : current === t.id ? null : current))}
+                        onViewChange={(open) => setHostTicket((current) => (open ? tk.id : current === tk.id ? null : current))}
                       />
                     </SortableTicket>
                   ))}
                 </DroppableColumn>
                 {/* tickets reach Done by being moved there, not created in it; none are added while editing */}
                 {canAddTicket({ archived, done, columns: cols.length }) && (
-                  <Button variant="ghost" className="justify-start" onClick={() => setAddingTo(col.id)}>+ Add ticket</Button>
+                  <Button variant="ghost" className="justify-start" onClick={() => setAddingTo(col.id)}><Trans>+ Add ticket</Trans></Button>
                 )}
               </Column>
             </div>
@@ -301,7 +303,7 @@ export default function BoardPage() {
           projectId={board.project_id}
           columnId={addingTo}
           scale={board.estimate_scale}
-          onSaved={(t) => (t.column_id ? updateTickets(t.column_id, (ts) => [...ts, t]) : setToBacklog(t))}
+          onSaved={(tk) => (tk.column_id ? updateTickets(tk.column_id, (ts) => [...ts, tk]) : setToBacklog(tk))}
         />
       )}
     </main>

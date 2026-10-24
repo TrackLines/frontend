@@ -1,5 +1,6 @@
 'use client';
 
+import { Trans, useLingui } from '@lingui/react/macro';
 import { Textarea } from '@/components/ui/textarea';
 import { useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
@@ -18,6 +19,7 @@ type Props = {
 };
 
 export function RoadmapEditorForm({ open, onOpenChange, projectId, onSubmit, canPublish = false }: Props) {
+  const { t } = useLingui();
   const start: Visibility = canPublish ? 'public' : 'login_only';
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -36,7 +38,7 @@ export function RoadmapEditorForm({ open, onOpenChange, projectId, onSubmit, can
       setVisibility(start);
       onOpenChange(false);
     } catch (err) {
-      setError(err instanceof Error && err.message ? err.message : 'Something went wrong. Please try again.');
+      setError(err instanceof Error && err.message ? err.message : t`Something went wrong. Please try again.`);
     } finally {
       setSaving(false);
     }
@@ -47,21 +49,21 @@ export function RoadmapEditorForm({ open, onOpenChange, projectId, onSubmit, can
       <DialogContent>
         <form onSubmit={submit} className="grid gap-4">
           <DialogHeader>
-            <DialogTitle>New roadmap</DialogTitle>
+            <DialogTitle><Trans>New roadmap</Trans></DialogTitle>
             <DialogDescription>
-              {canPublish ? 'Starts public by default — anyone with the link can read it.' : 'Starts visible to your organization; an organization admin can make it public.'}
+              {canPublish ? <Trans>Starts public by default — anyone with the link can read it.</Trans> : <Trans>Starts visible to your organization; an organization admin can make it public.</Trans>}
             </DialogDescription>
           </DialogHeader>
           <Input
             autoFocus
             required
             maxLength={120}
-            placeholder="e.g. 2027 plan"
+            placeholder={t`e.g. 2027 plan`}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
           <Textarea
-            placeholder="What's this roadmap about? (optional)"
+            placeholder={t`What's this roadmap about? (optional)`}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={3}
@@ -75,7 +77,7 @@ export function RoadmapEditorForm({ open, onOpenChange, projectId, onSubmit, can
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           <DialogFooter>
             <Button type="submit" disabled={saving || !title.trim()}>
-              {saving ? 'Saving…' : 'Create roadmap'}
+              {saving ? t`Saving…` : t`Create roadmap`}
             </Button>
           </DialogFooter>
         </form>

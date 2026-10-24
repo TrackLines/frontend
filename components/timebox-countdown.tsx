@@ -1,5 +1,8 @@
 'use client';
 
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
+import { Trans } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { formatTimebox } from '@/components/ticket-type';
@@ -13,6 +16,7 @@ const amber = 'border-amber-500/50 text-amber-700 dark:text-amber-300';
 export function TimeboxCountdown({ startedAt, doneAt, days, hours }: {
   startedAt?: string | null; doneAt?: string | null; days?: number | null; hours?: number | null;
 }) {
+  const { i18n } = useLingui();
   const [now, setNow] = useState(() => new Date());
   const live = Boolean(startedAt) && !doneAt; // only tick while In Progress
   useEffect(() => {
@@ -21,16 +25,19 @@ export function TimeboxCountdown({ startedAt, doneAt, days, hours }: {
     return () => clearInterval(id);
   }, [live]);
 
-  const tb = formatTimebox(days, hours);
+  const tb = formatTimebox(i18n, days, hours);
   if (!tb) return null; // no timebox set
 
   const status = timeboxStatus({ startedAt, doneAt, days, hours }, now);
   if (status.state === 'not_started') {
-    return <Badge variant="outline" className={amber} title="Spike timebox">timebox {tb}</Badge>;
+    return <Badge variant="outline" className={amber} title={i18n._(msg`Spike timebox`)}><Trans>timebox {tb}</Trans></Badge>;
   }
+  const title = i18n._(msg`Timebox ${tb} (business hours)`);
   if (status.state === 'over') {
-    return <Badge variant="destructive" title={`Timebox ${tb} (business hours)`}>over timebox by {formatDuration(-status.remainingMins)}</Badge>;
+    const over = formatDuration(i18n, -status.remainingMins);
+    return <Badge variant="destructive" title={title}><Trans>over timebox by {over}</Trans></Badge>;
   }
-  const label = doneAt ? `within timebox · ${formatDuration(status.remainingMins)} spare` : `${formatDuration(status.remainingMins)} of timebox left`;
-  return <Badge variant="outline" className={amber} title={`Timebox ${tb} (business hours)`}>{label}</Badge>;
+  const left = formatDuration(i18n, status.remainingMins);
+  const label = doneAt ? i18n._(msg`within timebox · ${left} spare`) : i18n._(msg`${left} of timebox left`);
+  return <Badge variant="outline" className={amber} title={title}>{label}</Badge>;
 }

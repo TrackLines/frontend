@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { AGENTS, MCP_URL, McpInstructions } from './mcp-connect';
 
 test('every agent tab points at the MCP endpoint with a bearer key', () => {

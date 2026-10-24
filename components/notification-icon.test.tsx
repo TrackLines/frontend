@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { NOTIFICATION_ICONS, NotificationIcon } from './notification-icon';
 
 test('every notification type has its own icon and label; ones that ask for something are amber (TL-280)', () => {

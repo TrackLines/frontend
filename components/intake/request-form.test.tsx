@@ -1,6 +1,7 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { ApiError } from '@/lib/api';
+import { i18nFor } from '@/lib/i18n';
 import { RequestFormView, sendError } from './request-form';
 import { IntakeSettingsView, requestLink } from './intake-settings';
 
@@ -22,10 +23,10 @@ test('loading, closed and sent states never mention the project', () => {
 });
 
 test('send errors are actionable: invalid, closed, rate limited', () => {
-  expect(sendError(new ApiError(400, ''))).toContain('add a title');
-  expect(sendError(new ApiError(404, ''))).toContain('isn’t taking requests');
-  expect(sendError(new ApiError(429, ''))).toContain('try again in an hour');
-  expect(sendError(new Error('offline'))).toContain('try again');
+  expect(sendError(i18nFor('en'), new ApiError(400, ''))).toContain('add a title');
+  expect(sendError(i18nFor('en'), new ApiError(404, ''))).toContain('isn’t taking requests');
+  expect(sendError(i18nFor('en'), new ApiError(429, ''))).toContain('try again in an hour');
+  expect(sendError(i18nFor('en'), new Error('offline'))).toContain('try again');
 });
 
 test('settings: closed offers Open; open shows the link to copy, New link and Close', () => {

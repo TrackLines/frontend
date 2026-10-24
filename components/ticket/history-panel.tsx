@@ -1,5 +1,9 @@
 'use client';
 
+import type { I18n, MessageDescriptor } from '@lingui/core';
+import { msg } from '@lingui/core/macro';
+import { useLingui } from '@lingui/react';
+import { Trans } from '@lingui/react/macro';
 import { HistoryIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { When } from '@/components/when';
@@ -23,26 +27,29 @@ export function HistoryPanel({ ticketId, token, people }: { ticketId: string; to
 
 export type HistoryStep = { at: string; who: string; text: string; skipped: string[] };
 
-const RESOLVED: Record<NonNullable<HistoryEntry['resolution']>, string> = { done: 'done', wont_do: 'won’t do', duplicate: 'a duplicate' };
+const RESOLVED: Record<NonNullable<HistoryEntry['resolution']>, MessageDescriptor> = { done: msg`closed it as done`, wont_do: msg`closed it as won’t do`, duplicate: msg`closed it as a duplicate` };
 
 // historySteps turns entries into what happened, newest first: skipped stages fold into the move that
 // skipped them ("moved it to Done", skipped In progress), and the first step says where it was made.
-export function historySteps(entries: HistoryEntry[], people: Assignee[] | null): HistoryStep[] {
+export function historySteps(i18n: I18n, entries: HistoryEntry[], people: Assignee[] | null): HistoryStep[] {
+  const backlog = i18n._(msg`the backlog`);
   const steps: HistoryStep[] = [];
   let skipped: string[] = [];
   let first = true;
   for (const e of entries) {
     if (e.outcome === 'skipped') {
-      skipped.push(e.stage === 'backlog' ? 'the backlog' : e.column_name ?? 'a column');
+      skipped.push(e.stage === 'backlog' ? backlog : e.column_name ?? i18n._(msg`a column`));
       continue;
     }
-    const where = e.stage === 'backlog' ? 'the backlog' : `${e.column_name}${e.board_name ? ` on ${e.board_name}` : ''}`;
+    const column = e.column_name ?? '';
+    const board = e.board_name;
+    const where = e.stage === 'backlog' ? backlog : board ? i18n._(msg`${column} on ${board}`) : column;
     const text = e.stage === 'resolved'
-      ? `closed it as ${RESOLVED[e.resolution ?? 'done']}`
-      : first ? `created it in ${where}` : e.stage === 'backlog' ? 'sent it to the backlog' : `moved it to ${where}`;
+      ? i18n._(RESOLVED[e.resolution ?? 'done'])
+      : first ? i18n._(msg`created it in ${where}`) : e.stage === 'backlog' ? i18n._(msg`sent it to the backlog`) : i18n._(msg`moved it to ${where}`);
     // made straight on a board: skipping the backlog is how every board ticket starts, not news
-    const shown = first ? skipped.filter((s) => s !== 'the backlog') : skipped;
-    steps.push({ at: e.at, who: e.actor ? personLabel(e.actor, people) : 'TrackLin.es', text, skipped: shown });
+    const shown = first ? skipped.filter((s) => s !== backlog) : skipped;
+    steps.push({ at: e.at, who: e.actor ? personLabel(i18n, e.actor, people) : 'TrackLin.es', text, skipped: shown });
     skipped = [];
     first = false;
   }
@@ -51,19 +58,20 @@ export function historySteps(entries: HistoryEntry[], people: Assignee[] | null)
 
 // HistoryPanelView: the list (pure, for tests).
 export function HistoryPanelView({ entries, people }: { entries: HistoryEntry[]; people: Assignee[] | null }) {
-  const steps = historySteps(entries, people);
+  const { i18n } = useLingui();
+  const steps = historySteps(i18n, entries, people);
   return (
-    <section id="history" aria-label="History" className="grid scroll-mt-4 gap-2 rounded-lg border p-3 text-sm">
-      <h2 className="flex items-center gap-1.5 font-semibold"><HistoryIcon className="size-4" aria-hidden /> History</h2>
+    <section id="history" aria-label={i18n._(msg`History`)} className="grid scroll-mt-4 gap-2 rounded-lg border p-3 text-sm">
+      <h2 className="flex items-center gap-1.5 font-semibold"><HistoryIcon className="size-4" aria-hidden /> <Trans>History</Trans></h2>
       {steps.length === 0 ? (
-        <p className="text-muted-foreground">Nothing recorded yet. History is kept from October 2026.</p>
+        <p className="text-muted-foreground"><Trans>Nothing recorded yet. History is kept from October 2026.</Trans></p>
       ) : (
         <ol className="grid gap-1.5">
           {steps.map((s, i) => (
             <li key={i} className="flex flex-wrap items-baseline gap-x-1.5">
               <span className="font-medium">{s.who}</span>
               <span>{s.text}</span>
-              {s.skipped.length > 0 && <span className="text-muted-foreground">(skipped {s.skipped.join(', ')})</span>}
+              {s.skipped.length > 0 && <span className="text-muted-foreground"><Trans>(skipped {s.skipped.join(', ')})</Trans></span>}
               <When iso={s.at} className="text-xs text-muted-foreground" />
             </li>
           ))}

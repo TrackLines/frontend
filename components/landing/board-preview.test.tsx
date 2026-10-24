@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { BoardPreview, SampleSections } from './board-preview';
 
 test('the sample board shows every card, clickable, laid out like the real ones', () => {

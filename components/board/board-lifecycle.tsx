@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { ArchiveIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -16,6 +17,7 @@ export function lifecycleAction(board: Pick<Board, 'deletable' | 'archived_at'>,
 
 // BoardLifecycle: Delete or Archive in Edit board mode's settings strip.
 export function BoardLifecycle({ board, isAdmin, canManage, token }: { board: Board; isAdmin: boolean; canManage: boolean; token: string }) {
+  const { t } = useLingui();
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -23,9 +25,10 @@ export function BoardLifecycle({ board, isAdmin, canManage, token }: { board: Bo
   if (action !== 'delete' && action !== 'archive') return null;
 
   async function run() {
+    const name = board.name;
     const ok = action === 'delete'
-      ? confirm(`Delete “${board.name}”? It has never been used, so nothing is lost.`)
-      : confirm(`Archive “${board.name}”? It leaves the project page but keeps its history, and you can restore it from Edit project → Archived boards.`);
+      ? confirm(t`Delete “${name}”? It has never been used, so nothing is lost.`)
+      : confirm(t`Archive “${name}”? It leaves the project page but keeps its history, and you can restore it from Edit project → Archived boards.`);
     if (!ok) return;
     setBusy(true);
     setError('');
@@ -34,8 +37,8 @@ export function BoardLifecycle({ board, isAdmin, canManage, token }: { board: Bo
       router.push(`/projects/${board.project_id}`);
     } catch (err) {
       setError(err instanceof ApiError && err.status === 409 ? err.message
-        : err instanceof ApiError && err.status === 403 ? 'Only organization admins and this board’s team leaders can do this.'
-        : `Couldn’t ${action} the board. Please try again.`);
+        : err instanceof ApiError && err.status === 403 ? t`Only organization admins and this board’s team leaders can do this.`
+        : action === 'delete' ? t`Couldn’t delete the board. Please try again.` : t`Couldn’t archive the board. Please try again.`);
       setBusy(false);
     }
   }
@@ -43,7 +46,7 @@ export function BoardLifecycle({ board, isAdmin, canManage, token }: { board: Bo
   return (
     <span className="flex flex-wrap items-center gap-2">
       <Button type="button" variant="outline" size="sm" className={action === 'delete' ? 'text-destructive' : ''} disabled={busy} onClick={() => void run()}>
-        {action === 'delete' ? 'Delete board' : <><ArchiveIcon aria-hidden /> Archive board</>}
+        {action === 'delete' ? <Trans>Delete board</Trans> : <><ArchiveIcon aria-hidden /> <Trans>Archive board</Trans></>}
       </Button>
       {error && <span role="alert" className="text-sm text-destructive">{error}</span>}
     </span>
@@ -52,6 +55,7 @@ export function BoardLifecycle({ board, isAdmin, canManage, token }: { board: Bo
 
 // ArchivedBanner: on an archived board's page; managers can restore it.
 export function ArchivedBanner({ board, canManage, token, onRestored }: { board: Board; canManage: boolean; token: string; onRestored: () => void }) {
+  const { t } = useLingui();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   if (!board.archived_at) return null;
@@ -62,7 +66,7 @@ export function ArchivedBanner({ board, canManage, token, onRestored }: { board:
       await boards.restore(board.id, token);
       onRestored();
     } catch {
-      setError('Couldn’t restore the board. Please try again.');
+      setError(t`Couldn’t restore the board. Please try again.`);
     } finally {
       setBusy(false);
     }
@@ -70,8 +74,8 @@ export function ArchivedBanner({ board, canManage, token, onRestored }: { board:
   return (
     <div role="status" className="flex flex-wrap items-center gap-3 border-b bg-muted/60 px-6 py-3 text-sm">
       <ArchiveIcon className="size-4" aria-hidden />
-      <span>This board is archived. Its history is kept, but it takes no new work.</span>
-      {canManage && <Button type="button" size="sm" variant="outline" disabled={busy} onClick={() => void restore()}>{busy ? 'Restoring…' : 'Restore board'}</Button>}
+      <span><Trans>This board is archived. Its history is kept, but it takes no new work.</Trans></span>
+      {canManage && <Button type="button" size="sm" variant="outline" disabled={busy} onClick={() => void restore()}>{busy ? t`Restoring…` : t`Restore board`}</Button>}
       {error && <span role="alert" className="text-destructive">{error}</span>}
     </div>
   );

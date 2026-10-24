@@ -1,5 +1,6 @@
 import { expect, test } from 'bun:test';
 import type { Board } from './api';
+import { i18nFor } from './i18n';
 import { addColumn, changeColumn, devComplete, devCompleteOptions, dirty, draftOf, layout, layoutChanged, moveColumn, problem, removeColumn, settingsPatch } from './board-edit';
 
 const board = {
@@ -52,12 +53,12 @@ test('save sends only what changed: settings, and the layout with WIP limits onl
 
 test('what stops a save is said plainly', () => {
   const d = draftOf(board);
-  expect(problem(d)).toBeNull();
-  expect(problem({ ...d, name: ' ' })).toBe('The board needs a name.');
-  expect(problem(changeColumn(d, 'doing', { name: '' }))).toBe('Every column needs a name.');
-  expect(problem(changeColumn(d, 'doing', { name: 'x'.repeat(81) }))).toContain('up to 80');
-  expect(problem(changeColumn(d, 'doing', { wip: 1000 }))).toContain('from 1 to 999');
-  expect(problem(changeColumn(d, 'doing', { wip: 0 }))).toContain('from 1 to 999');
+  expect(problem(d, i18nFor('en'))).toBeNull();
+  expect(problem({ ...d, name: ' ' }, i18nFor('en'))).toBe('The board needs a name.');
+  expect(problem(changeColumn(d, 'doing', { name: '' }), i18nFor('en'))).toBe('Every column needs a name.');
+  expect(problem(changeColumn(d, 'doing', { name: 'x'.repeat(81) }), i18nFor('en'))).toContain('up to 80');
+  expect(problem(changeColumn(d, 'doing', { wip: 1000 }), i18nFor('en'))).toContain('from 1 to 999');
+  expect(problem(changeColumn(d, 'doing', { wip: 0 }), i18nFor('en'))).toContain('from 1 to 999');
 });
 
 test('Dev complete (TL-532): only saved columns between To do and Done; a removed one turns it off', () => {

@@ -1,3 +1,5 @@
+import type { I18n } from '@lingui/core';
+import { msg, plural } from '@lingui/core/macro';
 import { ApiError, invitations, organization, projects, teams, type Invitation, type OrgAdmin, type OrganizationMember, type Project, type Team, type TeamMember } from '@/lib/api';
 
 // memberName: a member's real name, else their sign-in identifier (email).
@@ -14,27 +16,32 @@ export function personIn(members: OrganizationMember[], userId: string): string 
 }
 
 // adminSource: how someone became an admin: the Clerk seed ("initial admin: …") or who added them.
-export const adminSource = (grantedBy: string, person: (id: string) => string) =>
-  grantedBy.startsWith('clerk:') ? grantedBy.replace('clerk:', 'initial admin: ') : `added by ${person(grantedBy)}`;
+export function adminSource(i18n: I18n, grantedBy: string, person: (id: string) => string) {
+  if (grantedBy.startsWith('clerk:')) {
+    const who = grantedBy.slice('clerk:'.length);
+    return i18n._(msg`initial admin: ${who}`);
+  }
+  const name = person(grantedBy);
+  return i18n._(msg`added by ${name}`);
+}
 
 // saveError: what a failed change says. Accepting an invitation before Clerk's step reads as a
 // how-to; 403 = admins only; 409 carries the server's reason.
-export function saveError(key: string, err: unknown): string {
+export function saveError(i18n: I18n, key: string, err: unknown): string {
   const status = err instanceof ApiError ? err.status : 0;
-  if (key.startsWith('accept:') && (status === 403 || status === 409)) return 'Accept the Clerk email invitation first, then complete the TrackLin.es membership here.';
-  if (status === 403) return 'Only organization admins can make this change.';
+  if (key.startsWith('accept:') && (status === 403 || status === 409)) return i18n._(msg`Accept the Clerk email invitation first, then complete the TrackLin.es membership here.`);
+  if (status === 403) return i18n._(msg`Only organization admins can make this change.`);
   if (status === 409 || status === 422) return (err as ApiError).message; // 422: Clerk refused, with its reason (TL-239)
-  if (status === 402) return 'Your plan includes up to 20 members, counting invitations not yet accepted. Upgrade to Enterprise in Settings for unlimited members.'; // TL-418
-  return 'Couldn’t save that change. Please try again.';
+  if (status === 402) return i18n._(msg`Your plan includes up to 20 members, counting invitations not yet accepted. Upgrade to Enterprise in Settings for unlimited members.`); // TL-418
+  return i18n._(msg`Couldn’t save that change. Please try again.`);
 }
 
 // memberCount: the Members heading: "12 members", with the plan's limit when it has one, counting
 // invitations not yet accepted (TL-418): "12 members and 1 invitation pending, of up to 20 on your plan".
-export function memberCount(members: number, pending: number, limit: number | null | undefined): string {
-  const people = `${members} member${members === 1 ? '' : 's'}`;
-  if (limit == null || limit < 0) return people;
-  const waiting = pending > 0 ? ` and ${pending} invitation${pending === 1 ? '' : 's'} pending` : '';
-  return `${people}${waiting}, of up to ${limit} on your plan`;
+export function memberCount(i18n: I18n, members: number, pending: number, limit: number | null | undefined): string {
+  if (limit == null || limit < 0) return i18n._(msg`${plural(members, { one: '# member', other: '# members' })}`);
+  if (pending > 0) return i18n._(msg`${plural(members, { one: '# member', other: '# members' })} and ${plural(pending, { one: '# invitation', other: '# invitations' })} pending, of up to ${limit} on your plan`);
+  return i18n._(msg`${plural(members, { one: '# member', other: '# members' })}, of up to ${limit} on your plan`);
 }
 
 // inviteInput: the invitation to send; team and project invitations need their target, the org one has none.
@@ -43,9 +50,9 @@ export const inviteInput = (email: string, scope: Invitation['scope'], target: s
 export const inviteReady = (scope: Invitation['scope'], target: string) => scope === 'organization' || target !== '';
 
 // targetName: the team or project an invitation is for (by name), falling back to its kind.
-export function targetName(teams: Team[], projects: Project[], invitation: Pick<Invitation, 'scope' | 'target_id'>) {
-  if (invitation.scope === 'team') return teams.find((t) => t.id === invitation.target_id)?.name ?? 'team';
-  return projects.find((p) => p.id === invitation.target_id)?.name ?? 'project';
+export function targetName(i18n: I18n, teams: Team[], projects: Project[], invitation: Pick<Invitation, 'scope' | 'target_id'>) {
+  if (invitation.scope === 'team') return teams.find((t) => t.id === invitation.target_id)?.name ?? i18n._(msg`team`);
+  return projects.find((p) => p.id === invitation.target_id)?.name ?? i18n._(msg`project`);
 }
 
 // Each change's result shows in the section that started it, not at the top of a long page (TL-220).

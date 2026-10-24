@@ -1,6 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+import type { I18n } from '@lingui/core';
+import { msg, plural } from '@lingui/core/macro';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -9,11 +12,12 @@ import { tickets, type EpicProgress, type EpicSummary } from '@/lib/api';
 import { useAutoRefresh } from '@/lib/use-auto-refresh';
 
 // epicSize: "3 of 5 done · 13 points · 2 not sized" (TL-214).
-export function epicSize(p: EpicProgress): string {
-  if (p.total === 0) return 'No sub-tickets yet';
-  const parts = [`${p.done} of ${p.total} done`];
-  if (p.points > 0) parts.push(`${Math.round(p.points * 10) / 10} point${p.points === 1 ? '' : 's'}`);
-  if (p.unestimated > 0) parts.push(`${p.unestimated} not sized`);
+export function epicSize(p: EpicProgress, i18n: I18n): string {
+  if (p.total === 0) return i18n._(msg`No sub-tickets yet`);
+  const { done, total, unestimated } = p;
+  const parts = [i18n._(msg`${done} of ${total} done`)];
+  if (p.points > 0) parts.push(i18n._(msg`${plural(Math.round(p.points * 10) / 10, { one: '# point', other: '# points' })}`));
+  if (unestimated > 0) parts.push(i18n._(msg`${unestimated} not sized`));
   return parts.join(' · ');
 }
 
@@ -34,15 +38,16 @@ export function Epics({ projectId, token, active = true }: { projectId: string; 
 // EpicsView: pure, for tests. Nothing until loaded; a hint when there are none; an error when the
 // first load failed (a failed refresh keeps the list it has).
 export function EpicsView({ epics, failed = false }: { epics: EpicSummary[] | null; failed?: boolean }) {
-  if (epics === null) return failed ? <p role="alert" className="text-sm text-destructive">Couldn&apos;t load the epics. Please refresh to try again.</p> : null;
+  const { t, i18n } = useLingui();
+  if (epics === null) return failed ? <p role="alert" className="text-sm text-destructive"><Trans>Couldn&apos;t load the epics. Please refresh to try again.</Trans></p> : null;
   return (
     <section id="epics">
       <div className="mb-4">
         {/* the Epics tab names it (TL-385) */}
-        <p className="text-sm text-muted-foreground">Large pieces of work across boards. Their sub-tickets go on the boards; the epic shows how far they&apos;ve got.</p>
+        <p className="text-sm text-muted-foreground"><Trans>Large pieces of work across boards. Their sub-tickets go on the boards; the epic shows how far they&apos;ve got.</Trans></p>
       </div>
       {epics.length === 0 ? (
-        <p className="rounded-xl border border-dashed p-6 text-sm text-muted-foreground">No epics yet. Add one to the backlog with the Epic type, or make a big ticket an epic from its edit form.</p>
+        <p className="rounded-xl border border-dashed p-6 text-sm text-muted-foreground"><Trans>No epics yet. Add one to the backlog with the Epic type, or make a big ticket an epic from its edit form.</Trans></p>
       ) : (
         <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {epics.map((e) => (
@@ -52,10 +57,10 @@ export function EpicsView({ epics, failed = false }: { epics: EpicSummary[] | nu
                 <span className="flex items-center gap-2">
                   <TicketKey value={e.key} />
                   <span className="min-w-0 flex-1 truncate font-medium">{e.title}</span>
-                  {e.done && <Badge variant="secondary">{e.resolution === 'wont_do' ? 'Won’t do' : 'Done'}</Badge>}
+                  {e.done && <Badge variant="secondary">{e.resolution === 'wont_do' ? t`Won’t do` : t`Done`}</Badge>}
                 </span>
-                <Progress value={percent(e.progress)} aria-label={`${e.title}: ${percent(e.progress)}% done`} />
-                <span className="text-xs text-muted-foreground">{epicSize(e.progress)}</span>
+                <Progress value={percent(e.progress)} aria-label={t`${e.title}: ${percent(e.progress)}% done`} />
+                <span className="text-xs text-muted-foreground">{epicSize(e.progress, i18n)}</span>
               </Link>
             </li>
           ))}

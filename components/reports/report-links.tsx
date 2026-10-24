@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { ChartColumnIcon } from 'lucide-react';
 import { SettingsCard } from '@/components/settings/settings-card';
 import { buttonVariants } from '@/components/ui/button';
@@ -9,9 +10,10 @@ import { buttonVariants } from '@/components/ui/button';
 // project's and, for org admins, the organization's.
 
 export function ProjectReportLink({ projectId }: { projectId: string }) {
-  return <Link href={`/reports?project=${projectId}`} className={buttonVariants({ variant: 'outline', size: 'sm' })}><ChartColumnIcon />Sprint report</Link>;
+  return <Link href={`/reports?project=${projectId}`} className={buttonVariants({ variant: 'outline', size: 'sm' })}><ChartColumnIcon /><Trans>Sprint report</Trans></Link>;
 }
 
 export function OrgReportCard() {
-  return <SettingsCard icon={ChartColumnIcon} title="Sprint report" href="/reports?org=1" description="How every project’s sprints went, to share with leadership." />;
+  const { t } = useLingui();
+  return <SettingsCard icon={ChartColumnIcon} title={t`Sprint report`} href="/reports?org=1" description={t`How every project’s sprints went, to share with leadership.`} />;
 }

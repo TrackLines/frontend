@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import type { Board } from '@/lib/api';
 import { ArchivedBanner, lifecycleAction } from './board-lifecycle';
 import { ArchivedBoardsView } from '@/components/project/archived-boards';

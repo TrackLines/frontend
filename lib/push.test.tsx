@@ -29,15 +29,17 @@ test('subscribe sends the browser subscription; unsubscribe sends its endpoint',
 
 test('a failed Turn on says why instead of doing nothing (TL-393)', async () => {
   const { pushFailure } = await import('./push');
+  const { i18nFor } = await import('./i18n');
+  const i18n = i18nFor('en');
   const named = (name: string, message: string) => Object.assign(new Error(message), { name });
   // plain Chromium (e.g. on Linux) has no push service: subscribe() rejects like this
-  expect(pushFailure(named('AbortError', 'Registration failed - push service error'))).toContain('no push service to deliver them');
-  expect(pushFailure(named('NotAllowedError', 'Permission denied'))).toContain('blocked for this site');
-  expect(pushFailure(new Error('500'))).toBe('Couldn’t change notifications on this device. Please try again.');
+  expect(pushFailure(i18n, named('AbortError', 'Registration failed - push service error'))).toContain('no push service to deliver them');
+  expect(pushFailure(i18n, named('NotAllowedError', 'Permission denied'))).toContain('blocked for this site');
+  expect(pushFailure(i18n, new Error('500'))).toBe('Couldn’t change notifications on this device. Please try again.');
 });
 
 test('the card and the bell show that reason', async () => {
-  const { renderToStaticMarkup } = await import('react-dom/server');
+  const { render: renderToStaticMarkup } = await import('@/test/i18n');
   const { DevicePushView } = await import('@/components/settings/device-push');
   const { PushControl } = await import('@/components/notifications-bell');
   const why = 'this browser has no push service';

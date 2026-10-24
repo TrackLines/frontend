@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useRef, useState } from 'react';
 import { Pager } from '@/components/pager';
 import { TicketKey } from '@/components/ticket/ticket-key';
@@ -33,7 +34,7 @@ export function Mentions({ token }: { token: string }) {
     <div className="grid gap-4">
       <div className="flex flex-wrap items-center gap-2">
         <Button size="sm" variant={hideDone ? 'secondary' : 'ghost'} aria-pressed={hideDone} onClick={() => { setHideDone((h) => !h); setPage(1); }}>
-          Hide done
+          <Trans>Hide done</Trans>
         </Button>
       </div>
       <MentionsView data={data} people={people ?? []} hideDone={hideDone} />
@@ -46,12 +47,13 @@ export function Mentions({ token }: { token: string }) {
 
 // MentionsView: one page of mentions (pure, for tests).
 export function MentionsView({ data, people, hideDone }: { data: MentionsPage | null | 'failed'; people: Assignee[]; hideDone: boolean }) {
-  if (data === 'failed') return <p role="alert" className="text-sm text-destructive">Couldn&apos;t load your mentions. Please try again.</p>;
-  if (data === null) return <p role="status" className="text-sm text-muted-foreground">Loading your mentions…</p>;
+  const { i18n } = useLingui();
+  if (data === 'failed') return <p role="alert" className="text-sm text-destructive"><Trans>Couldn&apos;t load your mentions. Please try again.</Trans></p>;
+  if (data === null) return <p role="status" className="text-sm text-muted-foreground"><Trans>Loading your mentions…</Trans></p>;
   if (data.mentions.length === 0) {
     return (
       <p className="rounded-xl border border-dashed p-8 text-center text-muted-foreground">
-        {hideDone ? 'No open tickets mention you.' : 'Nobody has mentioned you yet.'}
+        {hideDone ? <Trans>No open tickets mention you.</Trans> : <Trans>Nobody has mentioned you yet.</Trans>}
       </p>
     );
   }
@@ -61,9 +63,9 @@ export function MentionsView({ data, people, hideDone }: { data: MentionsPage | 
         <li key={m.ticket_id} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2.5 text-sm">
           <TicketKey value={m.key} />
           <Link href={`/tickets/${m.ticket_id}`} className={`min-w-0 flex-1 font-medium hover:underline ${m.done ? 'text-muted-foreground line-through' : ''}`}>{m.title}</Link>
-          {m.done && <Badge variant="outline">Done</Badge>}
+          {m.done && <Badge variant="outline"><Trans>Done</Trans></Badge>}
           <span className="text-xs text-muted-foreground">{m.project_name}</span>
-          <span className="text-xs text-muted-foreground">{actorName(m.actor, people)} · <When iso={m.mentioned_at} /></span>
+          <span className="text-xs text-muted-foreground">{actorName(i18n, m.actor, people)} · <When iso={m.mentioned_at} /></span>
         </li>
       ))}
     </ul>

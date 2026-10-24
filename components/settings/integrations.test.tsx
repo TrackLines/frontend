@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { FeatureFlags } from '@/components/feature-flags';
 import { BugfixesTokenForm, IntegrationsSettings, ProviderCardView } from './integrations';
 
@@ -71,8 +71,9 @@ test('Bitbucket: the workspaces the connected person reaches, whose account it i
 
 test('integrations are in tabs by what they do, Repositories first, and every provider is in exactly one (TL-389)', async () => {
   const { INTEGRATION_TABS } = await import('./integrations');
+  const { i18nFor } = await import('@/lib/i18n');
   const { INTEGRATION_PROVIDERS } = await import('@/lib/integrations');
-  expect(INTEGRATION_TABS.map((t) => t.name)).toEqual(['Repositories', 'Communication', 'Reporting', 'Calendars']);
+  expect(INTEGRATION_TABS.map((t) => i18nFor('en')._(t.name))).toEqual(['Repositories', 'Communication', 'Reporting', 'Calendars']);
   expect(INTEGRATION_TABS.find((t) => t.id === 'calendars')).toMatchObject({ items: ['google-calendar'] }); // TL-409: always there now (no flag)
   expect(INTEGRATION_TABS.find((t) => t.id === 'repositories')?.items).toEqual(['github', 'bitbucket']);
   expect(INTEGRATION_TABS.find((t) => t.id === 'communication')?.items).toEqual(['google-chat']);

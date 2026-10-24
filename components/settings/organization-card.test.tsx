@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { OrganizationCard } from './organization-card';
 
 test('only admins are offered to manage the organization; members can view it (TL-241)', () => {

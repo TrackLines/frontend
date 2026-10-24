@@ -1,5 +1,6 @@
 'use client';
 
+import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
 import { EstimateSelect } from '@/components/board/estimate';
 import { Button } from '@/components/ui/button';
@@ -19,6 +20,7 @@ export function MoveToBoard({ ticket, boards, token, onMoved, onCancel }: {
   ticket: { id: string; title: string; estimate?: string | null };
   boards: Board[]; token: string; onMoved: (planned: boolean) => void; onCancel: () => void;
 }) {
+  const { t, i18n } = useLingui();
   const [boardId, setBoardId] = useState('');
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [targetId, setTargetId] = useState('');
@@ -38,13 +40,13 @@ export function MoveToBoard({ ticket, boards, token, onMoved, onCancel }: {
       if (board.style === 'kanban') return setLoaded({ board, planned: [] });
       const [v, planned] = await Promise.all([sprints.velocity(boardId, token), plannedSprints.list(boardId, token)]);
       setLoaded({ board, velocity: v, planned });
-    })().catch(() => setError('Couldn’t load that board. Please try again.'));
+    })().catch(() => setError(t`Couldn’t load that board. Please try again.`));
   }, [boardId]);
 
   // counted with the estimate picked here, which is what the move sends
-  const targets = loaded?.velocity ? moveTargets(loaded.velocity, loaded.planned, scale === 'none' ? ticket.estimate : estimate) : [];
-  const target = targets.find((t) => t.id === targetId);
-  const note = target && overNote(target);
+  const targets = loaded?.velocity ? moveTargets(loaded.velocity, loaded.planned, scale === 'none' ? ticket.estimate : estimate, i18n) : [];
+  const target = targets.find((x) => x.id === targetId);
+  const note = target && overNote(target, i18n);
   const needsEstimate = scale !== 'none' && !estimate;
   const ready = !!loaded && !needsEstimate && (!sprintBoard || targets.length === 0 || !!target);
 
@@ -64,45 +66,45 @@ export function MoveToBoard({ ticket, boards, token, onMoved, onCancel }: {
       }
     } catch (err) {
       // 409: the sprint ends today (scope locked); 400: e.g. estimate required. The backend says which.
-      setError(err instanceof ApiError && err.status < 500 ? err.message : `Couldn’t move “${ticket.title}”. Please try again.`);
+      setError(err instanceof ApiError && err.status < 500 ? err.message : t`Couldn’t move “${ticket.title}”. Please try again.`);
     } finally {
       setBusy(false);
     }
   }
 
-  const action = !note ? (target && target.id !== 'current' ? 'Plan into sprint' : 'Move') : target?.id === 'current' ? 'Move anyway' : 'Plan anyway';
+  const action = !note ? (target && target.id !== 'current' ? t`Plan into sprint` : t`Move`) : target?.id === 'current' ? t`Move anyway` : t`Plan anyway`;
   return (
-    <div role="group" aria-label="Move to board" className="grid gap-3 rounded-lg border p-3 text-sm">
-      <p className="font-medium">Move to a board</p>
+    <div role="group" aria-label={t`Move to board`} className="grid gap-3 rounded-lg border p-3 text-sm">
+      <p className="font-medium"><Trans>Move to a board</Trans></p>
       <Select items={Object.fromEntries(boards.map((b) => [b.id, b.name]))} value={boardId || null} onValueChange={(v) => v && setBoardId(String(v))}>
-        <SelectTrigger aria-label="Board" className="w-full"><SelectValue placeholder="Choose a board…" /></SelectTrigger>
+        <SelectTrigger aria-label={t`Board`} className="w-full"><SelectValue placeholder={t`Choose a board…`} /></SelectTrigger>
         <SelectContent>{boards.map((b) => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}</SelectContent>
       </Select>
-      {boardId && !loaded && !error && <p className="text-muted-foreground">Loading…</p>}
-      {loaded && sprintBoard && targets.length === 0 && <p className="text-muted-foreground">No sprint is open on this board: it goes to the first column.</p>}
+      {boardId && !loaded && !error && <p className="text-muted-foreground"><Trans>Loading…</Trans></p>}
+      {loaded && sprintBoard && targets.length === 0 && <p className="text-muted-foreground"><Trans>No sprint is open on this board: it goes to the first column.</Trans></p>}
       {targets.length > 0 && (
         <fieldset className="grid gap-2">
-          <legend className="mb-1 font-medium">Sprint</legend>
-          {targets.map((t) => (
-            <label key={t.id} className="flex items-center gap-2">
-              <input type="radio" name="move-target" value={t.id} checked={targetId === t.id} onChange={() => setTargetId(t.id)} />
-              <span>{t.label}</span>
-              <span className={t.over ? 'text-destructive' : 'text-muted-foreground'}>{fullness(t)}</span>
+          <legend className="mb-1 font-medium"><Trans>Sprint</Trans></legend>
+          {targets.map((x) => (
+            <label key={x.id} className="flex items-center gap-2">
+              <input type="radio" name="move-target" value={x.id} checked={targetId === x.id} onChange={() => setTargetId(x.id)} />
+              <span>{x.label}</span>
+              <span className={x.over ? 'text-destructive' : 'text-muted-foreground'}>{fullness(x, i18n)}</span>
             </label>
           ))}
         </fieldset>
       )}
       {loaded && scale !== 'none' && (
         <label className="grid gap-1.5 font-medium">
-          Estimate <span className="font-normal text-muted-foreground">({loaded.board.name} needs one)</span>
+          <Trans>Estimate <span className="font-normal text-muted-foreground">({loaded.board.name} needs one)</span></Trans>
           <EstimateSelect scale={scale} value={estimate} onChange={setEstimate} required />
         </label>
       )}
       {note && <p role="alert" className="rounded-md border border-destructive/30 bg-destructive/5 p-2 text-destructive">{note}</p>}
       {error && <p role="alert" className="text-destructive">{error}</p>}
       <div className="flex gap-2">
-        <Button type="button" size="sm" variant={note ? 'destructive' : 'default'} disabled={busy || !ready} onClick={() => void move()}>{busy ? 'Moving…' : action}</Button>
-        <Button type="button" size="sm" variant="outline" disabled={busy} onClick={onCancel}>Cancel</Button>
+        <Button type="button" size="sm" variant={note ? 'destructive' : 'default'} disabled={busy || !ready} onClick={() => void move()}>{busy ? t`Moving…` : action}</Button>
+        <Button type="button" size="sm" variant="outline" disabled={busy} onClick={onCancel}><Trans>Cancel</Trans></Button>
       </div>
     </div>
   );

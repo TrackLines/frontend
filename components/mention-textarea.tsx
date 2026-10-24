@@ -1,5 +1,6 @@
 'use client';
 
+import { useLingui } from '@lingui/react/macro';
 import { useRef, useState, type ComponentProps, type KeyboardEvent } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { tickets } from '@/lib/api';
@@ -8,6 +9,7 @@ import { matchPeople, mentionAt, mentionPeople, mentionText, type MentionPerson 
 // MentionTextarea: our Textarea where typing @ lists the org's people (real name and username, both
 // narrow it); arrows + Enter/Tab or a click types the mention. People load on the first @.
 export function MentionTextarea({ token, people: given, onKeyDown, onBlur, ...props }: ComponentProps<typeof Textarea> & { token: string; people?: MentionPerson[] }) {
+  const { t } = useLingui();
   const ref = useRef<HTMLTextAreaElement>(null);
   const [people, setPeople] = useState<MentionPerson[] | null>(given ?? null);
   const [at, setAt] = useState<{ start: number; query: string } | null>(null);
@@ -64,7 +66,7 @@ export function MentionTextarea({ token, people: given, onKeyDown, onBlur, ...pr
         role={open ? 'combobox' : undefined} aria-expanded={open || undefined} aria-autocomplete="list"
         aria-controls={open ? `${props.id ?? 'mention'}-people` : undefined} />
       {open && (
-        <ul id={`${props.id ?? 'mention'}-people`} role="listbox" aria-label="People"
+        <ul id={`${props.id ?? 'mention'}-people`} role="listbox" aria-label={t`People`}
           className="absolute top-full left-0 z-50 mt-1 grid max-h-64 w-72 max-w-full overflow-y-auto rounded-lg border bg-popover p-1 text-sm text-popover-foreground shadow-md">
           {shown.map((p, i) => (
             <li key={p.id} role="option" aria-selected={i === active}

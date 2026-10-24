@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { render as renderToStaticMarkup } from '@/test/i18n';
 import { Column } from './column';
 
 const ticket = (id: string) => ({ id, column_id: 'c', title: id, description: '', position: 0, created_by: 'u' });

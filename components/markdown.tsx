@@ -1,3 +1,6 @@
+'use client';
+
+import { Trans, useLingui } from '@lingui/react/macro';
 import type { ComponentProps } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -19,6 +22,7 @@ function taskBox(node?: HastNode): HastNode | undefined {
 // in the text is shown as text, never run; links open in a new tab. Task lists ("- [ ] …") render as
 // checkboxes; with onToggleTask they can be clicked, reporting the task's line in the source.
 export function Markdown({ children, className = '', onToggleTask }: { children: string; className?: string; onToggleTask?: (line: number) => void }) {
+  const { t } = useLingui();
   return (
     <div className={`markdown break-words ${className}`}>
       <ReactMarkdown
@@ -31,7 +35,7 @@ export function Markdown({ children, className = '', onToggleTask }: { children:
           // (anonymous request-form text included); other images show as a link instead (TL-252)
           img: ({ node: _node, src, alt }) => (typeof src === 'string' && ownImage(src)
             ? <img src={src} alt={alt ?? ''} className="max-w-full" />
-            : <a href={typeof src === 'string' ? src : undefined} target="_blank" rel="noreferrer noopener">{alt || 'image'}</a>),
+            : <a href={typeof src === 'string' ? src : undefined} target="_blank" rel="noreferrer noopener">{alt || t`image`}</a>),
           // checkboxes carry no source position, so their list item draws them (below)
           input: ({ node: _node, ...props }) => (props.type === 'checkbox' ? null : <input {...props} />),
           li: ({ node, children, ...props }) => {
@@ -43,7 +47,7 @@ export function Markdown({ children, className = '', onToggleTask }: { children:
             return (
               <li {...props}>
                 <input type="checkbox" checked={checked} disabled={!clickable} readOnly={!clickable} className="mr-1.5 align-middle" data-line={line}
-                  aria-label={checked ? 'Done: click to mark not done' : 'Not done: click to mark done'}
+                  aria-label={checked ? t`Done: click to mark not done` : t`Not done: click to mark done`}
                   onChange={() => { if (clickable) onToggleTask!(line!); }} />
                 {children}
               </li>
@@ -78,10 +82,11 @@ export function looksLikeMarkdown(text: string): boolean {
 
 // MarkdownPreview: the live preview editors show while the text uses markdown.
 export function MarkdownPreview({ text }: { text: string }) {
+  const { t } = useLingui();
   if (!looksLikeMarkdown(text)) return null;
   return (
-    <div aria-label="Preview" className="grid gap-1 rounded-lg border border-dashed p-3 text-sm font-normal">
-      <span className="text-xs text-muted-foreground">Preview</span>
+    <div aria-label={t`Preview`} className="grid gap-1 rounded-lg border border-dashed p-3 text-sm font-normal">
+      <span className="text-xs text-muted-foreground"><Trans>Preview</Trans></span>
       <Markdown>{text}</Markdown>
     </div>
   );

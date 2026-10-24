@@ -1,13 +1,16 @@
+import type { MessageDescriptor } from '@lingui/core';
+import { msg } from '@lingui/core/macro';
 import { ApiError } from './api';
 
 // The state of a live-updates connection (refinement, standup), in words people understand (TL-222).
 export type LiveState = 'connecting' | 'live' | 'reconnecting' | 'unavailable';
 
-export const LIVE_LABEL: Record<LiveState, { text: string; hint: string }> = {
-  connecting: { text: 'Connecting to live updates…', hint: 'Getting ready to show changes others make as they happen.' },
-  live: { text: 'Live updates', hint: 'Changes others make appear here as they happen.' },
-  reconnecting: { text: 'Reconnecting…', hint: 'Live updates dropped; changes from others will appear when they’re back.' },
-  unavailable: { text: 'Live updates unavailable', hint: 'Refresh to see changes others have made.' },
+// translate at render: i18n._(LIVE_LABEL[state].text)
+export const LIVE_LABEL: Record<LiveState, { text: MessageDescriptor; hint: MessageDescriptor }> = {
+  connecting: { text: msg`Connecting to live updates…`, hint: msg`Getting ready to show changes others make as they happen.` },
+  live: { text: msg`Live updates`, hint: msg`Changes others make appear here as they happen.` },
+  reconnecting: { text: msg`Reconnecting…`, hint: msg`Live updates dropped; changes from others will appear when they’re back.` },
+  unavailable: { text: msg`Live updates unavailable`, hint: msg`Refresh to see changes others have made.` },
 };
 
 // dropped: the state after a connection ends: unavailable when the server says live views are off

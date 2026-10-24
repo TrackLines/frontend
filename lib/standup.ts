@@ -1,5 +1,7 @@
 // Standup mode: everyone on the board gets a turn (2 min) with the board filtered to their tickets,
 // then a board review with everything (5 min). Shared live through the backend; the host runs it.
+import type { I18n } from '@lingui/core';
+import { msg } from '@lingui/core/macro';
 import type { Assignee, Ticket } from './api';
 import { personLabel } from './people';
 
@@ -24,13 +26,13 @@ export type Standup = { people: Participant[]; index: number; spentMs: number; r
 // speakerName: a participant's name as this viewer knows them. The standup carries the starter's
 // labels, where "You" meant the starter, so each viewer names people from their own list (TL-236).
 // people: the viewer's org people list (usePeople), or null while it loads.
-export function speakerName(p: Participant, people: Assignee[] | null): string {
-  if (people) return personLabel(p.id, people);
-  return p.label === 'You' ? 'A teammate' : p.label;
+export function speakerName(p: Participant, people: Assignee[] | null, i18n: I18n): string {
+  if (people) return personLabel(i18n, p.id, people);
+  return p.label === 'You' ? i18n._(msg`A teammate`) : p.label;
 }
 
 // turnTitle: "Your turn" for the viewer, "Ava’s turn" for anyone else.
-export const turnTitle = (name: string) => (name === 'You' ? 'Your turn' : `${name}’s turn`);
+export const turnTitle = (name: string, i18n: I18n) => (name === i18n._(msg`You`) ? i18n._(msg`Your turn`) : i18n._(msg`${name}’s turn`));
 
 export const start = (people: Participant[], now: number): Standup => ({ people, index: 0, spentMs: 0, runningSince: now });
 
@@ -59,8 +61,8 @@ export function remaining(s: Standup, now: number): number {
 }
 
 // clock shows m:ss, with "over by" once the time is up (the speaker isn't cut off mid-sentence).
-export function clock(ms: number): string {
+export function clock(ms: number, i18n: I18n): string {
   const secs = Math.ceil(Math.abs(ms) / 1000);
   const text = `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`;
-  return ms < 0 ? `over by ${text}` : text;
+  return ms < 0 ? i18n._(msg`over by ${text}`) : text;
 }
