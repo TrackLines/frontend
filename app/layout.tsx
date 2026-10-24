@@ -8,6 +8,7 @@ import { headers } from 'next/headers';
 import { ClerkProvider, Show } from '@clerk/nextjs';
 import { shadcn } from '@clerk/themes';
 import { ThemeProvider } from 'next-themes';
+import { THEME } from '@/lib/theme';
 import { ThemeChooser } from '@/components/theme-chooser';
 import { UserMenu } from '@/components/user-menu';
 import { QuickAddTicket } from '@/components/quick-add-ticket';
@@ -44,7 +45,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     // suppressHydrationWarning: next-themes sets the theme class on <html> before React hydrates
     <html lang={locale} className={cn("font-sans", geist.variable)} suppressHydrationWarning>
       <body>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange storageKey="tracklines-theme" nonce={nonce}>
+        <ThemeProvider {...THEME} nonce={nonce}>
         <ClerkProvider dynamic appearance={{ theme: shadcn }} localization={locale === 'nl' ? nlNL : undefined}>
         <FeatureFlags>
         <I18n locale={locale}>
