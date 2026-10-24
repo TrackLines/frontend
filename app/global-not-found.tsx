@@ -1,6 +1,5 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { headers } from 'next/headers';
 import { ThemeProvider } from 'next-themes';
 import { msg } from '@lingui/core/macro';
@@ -30,7 +29,9 @@ export default async function GlobalNotFound() {
           <p className="text-sm font-semibold text-primary">404</p>
           <h1 className="mt-2 text-2xl font-bold tracking-tight">{i18n._(msg`This page doesn’t exist`)}</h1>
           <p className="mt-2 text-muted-foreground">{i18n._(msg`The link may be old, or the address mistyped.`)}</p>
-          <Link href="/" className="mt-6 inline-block font-medium underline">{i18n._(msg`Go to TrackLin.es`)}</Link>
+          {/* a plain link, not next/link: this page has its own <html>, and a client-side move to a page
+              under the root layout did nothing (TL-586). A full page load always works, JS or not. */}
+          <a href="/" className="mt-6 inline-block font-medium underline">{i18n._(msg`Go to TrackLin.es`)}</a>
         </main>
         </ThemeProvider>
       </body>
