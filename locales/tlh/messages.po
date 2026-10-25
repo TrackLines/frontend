@@ -1249,6 +1249,7 @@ msgid "Blocked"
 msgstr "botlu'"
 
 #: components/ticket/dependencies.tsx
+#: components/ticket/relations.tsx
 msgid "Blocked by"
 msgstr "botwI'"
 
@@ -1256,7 +1257,12 @@ msgstr "botwI'"
 msgid "blocked must be exclude"
 msgstr "blocked'e' exclude 'oHnIS"
 
+#: components/ticket/blocked-badge.tsx
+msgid "Blocked: see what it's waiting on"
+msgstr "bot! loSbogh yIlegh"
+
 #: components/ticket/dependencies.tsx
+#: components/ticket/relations.tsx
 msgid "Blocks"
 msgstr "bot"
 
@@ -5533,7 +5539,9 @@ msgstr "navmey"
 msgid "parent_comment_id must be a comment on the same ticket"
 msgstr "parent_comment_id'e' ticket rapDaq QIn 'oHnIS"
 
+#. placeholder {0}: parent.title
 #. placeholder {0}: ticket.parent.title
+#: components/ticket/relations.tsx
 #: components/ticket/sub-tickets.tsx
 msgid "Part of <0>{0}</0>"
 msgstr "<0>{0}</0> 'ay'"
@@ -7781,6 +7789,10 @@ msgstr "ticketmey rInbe'bogh loSlI'"
 #: components/board/standup.tsx
 msgid "waiting to start"
 msgstr "taghmeH loSlI'"
+
+#: components/ticket/relations.tsx
+msgid "Was waiting on (all done)"
+msgstr "loSpu' (Hoch rIn)"
 
 #: components/mentions.tsx
 msgid "Watch again"

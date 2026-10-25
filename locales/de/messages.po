@@ -1249,6 +1249,7 @@ msgid "Blocked"
 msgstr "Blockiert"
 
 #: components/ticket/dependencies.tsx
+#: components/ticket/relations.tsx
 msgid "Blocked by"
 msgstr "Blockiert durch"
 
@@ -1256,7 +1257,12 @@ msgstr "Blockiert durch"
 msgid "blocked must be exclude"
 msgstr "blocked muss exclude sein."
 
+#: components/ticket/blocked-badge.tsx
+msgid "Blocked: see what it's waiting on"
+msgstr "Blockiert: sieh, worauf es wartet"
+
 #: components/ticket/dependencies.tsx
+#: components/ticket/relations.tsx
 msgid "Blocks"
 msgstr "Blockiert"
 
@@ -5533,7 +5539,9 @@ msgstr "Seitennummerierung"
 msgid "parent_comment_id must be a comment on the same ticket"
 msgstr "parent_comment_id muss ein Kommentar im selben Ticket sein."
 
+#. placeholder {0}: parent.title
 #. placeholder {0}: ticket.parent.title
+#: components/ticket/relations.tsx
 #: components/ticket/sub-tickets.tsx
 msgid "Part of <0>{0}</0>"
 msgstr "Teil von <0>{0}</0>"
@@ -7781,6 +7789,10 @@ msgstr "Wartet auf Tickets, die noch nicht fertig sind"
 #: components/board/standup.tsx
 msgid "waiting to start"
 msgstr "wartet auf Start"
+
+#: components/ticket/relations.tsx
+msgid "Was waiting on (all done)"
+msgstr "Wartete auf (alles fertig)"
 
 #: components/mentions.tsx
 msgid "Watch again"

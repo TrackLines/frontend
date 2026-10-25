@@ -64,7 +64,7 @@ export function Dependencies({ ticket, token, onChanged }: { ticket: TicketDetai
     <section aria-labelledby={`deps-${ticket.id}`} className="grid gap-3">
       <h2 id={`deps-${ticket.id}`} className="text-sm font-semibold"><Trans>Dependencies</Trans></h2>
       <div className="grid gap-1.5">
-        <p className="text-xs font-medium text-muted-foreground uppercase"><Trans>Blocked by</Trans></p>
+        <p id="blocked-by" className="scroll-mt-20 text-xs font-medium text-muted-foreground uppercase"><Trans>Blocked by</Trans></p>
         {ticket.blocked_by.length === 0 ? (
           <p className="text-sm text-muted-foreground">{ticket.done ? <Trans>Nothing.</Trans> : <Trans>Nothing — it can be picked up.</Trans>}</p>
         ) : (
