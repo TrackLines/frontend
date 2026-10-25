@@ -3846,8 +3846,8 @@ msgid "Language"
 msgstr "Language"
 
 #: lib/error-codes.ts
-msgid "language must be one of en, nl, or null"
-msgstr "language must be one of en, nl, or null"
+msgid "language must be one of en, nl, de, es, pt, fr, tlh, or null"
+msgstr "language must be one of en, nl, de, es, pt, fr, tlh, or null"
 
 #: components/project/epics.tsx
 msgid "Large pieces of work across boards. Their sub-tickets go on the boards; the epic shows how far they've got."

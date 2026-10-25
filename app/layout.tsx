@@ -21,14 +21,18 @@ import { I18n } from '@/components/i18n-provider';
 import { Toaster } from '@/components/ui/sonner';
 import { ErrorReporter } from '@/components/error-reporter';
 import { msg } from '@lingui/core/macro';
+import type { Locale } from '@/lib/i18n';
 import { serverI18n, serverLocale } from '@/lib/server-i18n';
 import { LanguageSync } from '@/components/language-sync';
-import { nlNL } from '@clerk/localizations';
+import { deDE, esES, frFR, nlNL, ptBR } from '@clerk/localizations';
 import './globals.css';
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
 
 const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+
+// Clerk's sign-in and account screens in the same language; Klingon gets English (Clerk has none).
+const CLERK: Partial<Record<Locale, typeof nlNL>> = { nl: nlNL, de: deDE, es: esES, pt: ptBR, fr: frFR };
 
 export const metadata: Metadata = {
   title: 'TrackLin.es',
@@ -46,7 +50,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     <html lang={locale} className={cn("font-sans", geist.variable)} suppressHydrationWarning>
       <body>
         <ThemeProvider {...THEME} nonce={nonce}>
-        <ClerkProvider dynamic appearance={{ theme: shadcn }} localization={locale === 'nl' ? nlNL : undefined}>
+        <ClerkProvider dynamic appearance={{ theme: shadcn }} localization={CLERK[locale]}>
         <FeatureFlags>
         <I18n locale={locale}>
           <LanguageSync current={locale} />

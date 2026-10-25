@@ -23,6 +23,7 @@ export function LanguageCard({ token }: { token: string }) {
   const [saved, setSaved] = useState<string | null | undefined>(undefined);
   const [error, setError] = useState('');
   useEffect(() => { void me.language(token).then((r) => setSaved(r.language), () => setSaved(null)); }, []); // token refreshes must not refetch
+
   if (!is('translations').enabled() || saved === undefined) return null;
   async function choose(v: string) {
     const language = v === BROWSER ? null : v;

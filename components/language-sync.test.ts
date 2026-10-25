@@ -8,5 +8,6 @@ test('the language follows the translations flag (TL-553)', () => {
   expect(wantedLocale(other, null, ['nl-NL'])).toBe('en'); // no flag at all is off
   expect(wantedLocale(on, null, ['nl-NL', 'en'])).toBe('nl');
   expect(wantedLocale(on, 'en', ['nl-NL'])).toBe('en'); // the saved choice beats the browser
-  expect(wantedLocale(on, null, ['fr-FR'])).toBe('en');
+  expect(wantedLocale(on, null, ['fr-FR'])).toBe('fr'); // TL-611
+  expect(wantedLocale(on, null, ['it-IT'])).toBe('en');
 });

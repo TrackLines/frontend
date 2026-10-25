@@ -18,4 +18,6 @@ export function pickLocale(saved: string | null | undefined, browser: readonly s
 }
 
 // LANGUAGE_NAMES: each language in its own words, so anyone can find theirs.
-export const LANGUAGE_NAMES: Record<Locale, string> = { en: 'English', nl: 'Nederlands' };
+export const LANGUAGE_NAMES: Record<Locale, string> = {
+  en: 'English', nl: 'Nederlands', de: 'Deutsch', es: 'Español', pt: 'Português (Brasil)', fr: 'Français', tlh: 'tlhIngan Hol',
+};
