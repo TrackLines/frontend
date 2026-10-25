@@ -95,6 +95,11 @@ msgstr "{0, plural, one {# point} other {# points}}"
 msgid "{0, plural, one {# roadmap} other {# roadmaps}}"
 msgstr "{0, plural, one {# roadmap} other {# roadmaps}}"
 
+#. placeholder {0}: results.length
+#: components/ticket-search.tsx
+msgid "{0, plural, one {# ticket found} other {# tickets found}}"
+msgstr "{0, plural, one {# ticket found} other {# tickets found}}"
+
 #. placeholder {0}: burn.unestimated
 #: components/board/velocity.tsx
 msgid "{0, plural, one {# ticket has no estimate and counts as 0.} other {# tickets have no estimate and count as 0.}}"
@@ -7367,6 +7372,7 @@ msgstr "TrackLin.es is run by {company}."
 
 #: app/error.tsx
 #: app/global-error.tsx
+#: components/ticket-search.tsx
 #: components/ticket/comments.tsx
 msgid "Try again"
 msgstr "Try again"
