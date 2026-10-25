@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 
-const DEFAULT_INTERVAL_MS = 30_000;
+const DEFAULT_INTERVAL_MS = 60_000; // every minute, like the TUI (TL-650)
 
 // Refresh shared server state periodically while the page is visible, and as soon
 // as the user returns to the tab. Keep the latest callback without restarting
