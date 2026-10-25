@@ -34,7 +34,7 @@ export const tools = [
 export const chain = [
   'Read all of it: the ticket, its comments, and its attachments when it has some.',
   'Claim it, so nobody else picks it up.',
-  'Move it to the board’s in-progress column (claiming says which). On a board with only To do and Done it stays in To do while the work is done.',
+  'Move it to the board’s in-progress column (claiming says which). On a board with only To do and Done it stays in To do until the work is done.',
   'Do the work, with tests.',
   'Run the tests, all of them, and make sure they pass.',
   'Comment with what changed and the results.',
