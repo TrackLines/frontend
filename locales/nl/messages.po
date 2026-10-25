@@ -4236,8 +4236,8 @@ msgid "Members"
 msgstr "Leden"
 
 #: lib/help.ts
-msgid "Mention yourself in a comment (type @ and your name). Anyone mentioned on a ticket hears about its comments, moves and finishing. To stop, hover over it on your Mentions page and press the mouth; press it again to watch again."
-msgstr "Noem jezelf in een reactie (typ @ en je naam). Iedereen die op een ticket genoemd wordt, hoort over de reacties, verplaatsingen en afronding ervan. Om te stoppen ga je er op je Vermeldingen-pagina met de muis overheen en druk je op de mond; druk nog eens om weer te volgen."
+msgid "Mention yourself in a comment (type @ and your name). Anyone mentioned on a ticket hears about its comments, moves and finishing. To stop, press the mouth next to it on your Mentions page; press it again to watch again."
+msgstr "Noem jezelf in een reactie (typ @ en je naam). Iedereen die op een ticket genoemd wordt, hoort over de reacties, verplaatsingen en afronding ervan. Om te stoppen druk je op de mond ernaast op je Vermeldingen-pagina; druk nog eens om weer te volgen."
 
 #: components/notification-icon.tsx
 msgid "Mentioned you"
