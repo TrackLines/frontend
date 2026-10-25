@@ -120,7 +120,7 @@ export default function TicketPage() {
           <EstimateBadge estimate={tk.estimate} />
           {tk.sprint_number != null && <Badge variant="secondary"><Trans>Sprint {tk.sprint_number}</Trans></Badge>}
           <PlannedBadge ticket={tk} />
-          {tk.blocked && <BlockedBadge />}
+          {tk.blocked && <BlockedBadge href="#blocked-by" />}
           <NeedsReviewBadge ticket={tk} />
           {tk.resolution === 'wont_do' && <Badge variant="outline" title={t`Closed as decided against`}><Trans>Won&apos;t do</Trans></Badge>}
           {tk.resolution === 'duplicate' && <Badge variant="outline"><Trans>Duplicate</Trans></Badge>}

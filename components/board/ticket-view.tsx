@@ -13,7 +13,7 @@ import { TicketLabels } from '@/components/ticket/labels';
 import { Badge } from '@/components/ui/badge';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import type { Ticket } from '@/lib/api';
+import { tickets, type Ticket, type TicketDetail } from '@/lib/api';
 import { EstimateBadge } from './estimate';
 import { TICKET_DIALOG_WIDTH } from './ticket-dialog';
 import { personLabel } from '@/lib/people';
@@ -21,7 +21,8 @@ import { awayText } from '@/lib/away';
 import { usePeople } from '@/lib/use-people';
 import { TicketKey, ticketPath, linkTitle } from '@/components/ticket/ticket-key';
 import Link from 'next/link';
-import type { ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
+import { TicketRelations } from '@/components/ticket/relations';
 import { ChecklistCount } from '@/components/ticket/checklist-count';
 import { toggleTask } from '@/lib/checklist';
 
@@ -41,6 +42,14 @@ type Props = {
 export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, token, done, onReviewed, sample, onDescription }: Props) {
   const { t, i18n } = useLingui();
   const people = usePeople(token);
+  // the board only knows "blocked": the parent and what blocks it come with the ticket itself (TL-639)
+  const [detail, setDetail] = useState<Pick<TicketDetail, 'parent' | 'blocked_by' | 'blocks'> | null>(null);
+  useEffect(() => {
+    if (!open || !token || sample) return;
+    let live = true;
+    tickets.get(ticket.id, token).then((d) => { if (live) setDetail(d); }, () => {});
+    return () => { live = false; };
+  }, [open, ticket.id, token !== undefined]); // token refreshes must not refetch
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -75,6 +84,7 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
           <dt className="text-muted-foreground"><Trans>Assigned to</Trans></dt>
           <dd>{ticket.assigned_to ? <Assignee id={ticket.assigned_to} people={people} /> : <span className="text-muted-foreground italic"><Trans>Unassigned</Trans></span>}</dd>
         </dl>
+        {detail && <TicketRelations parent={detail.parent} blockedBy={detail.blocked_by} blocks={detail.blocks} />}
         {token && onReviewed && <ReviewActions ticket={ticket} token={token} onReviewed={onReviewed} />}
         <TicketLabels labels={ticket.labels} />
         <section aria-label={t`Ticket details`} className="min-h-20 rounded-md bg-muted/50 p-3 text-sm">
