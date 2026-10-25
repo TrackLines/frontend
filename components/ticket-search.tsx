@@ -1,6 +1,6 @@
 'use client';
 
-import { msg } from '@lingui/core/macro';
+import { msg, plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react';
@@ -93,16 +93,11 @@ export function TicketSearch() {
   }
 
   function onInputKeyDown(event: KeyboardEvent<HTMLInputElement>) {
-    if (event.key === 'ArrowDown') {
-      event.preventDefault();
-      if (results.length > 0) setActive((index) => Math.min(index + 1, results.length - 1));
-    } else if (event.key === 'ArrowUp') {
-      event.preventDefault();
-      setActive((index) => Math.max(index - 1, 0));
-    } else if (event.key === 'Enter' && results[active]) {
-      event.preventDefault();
-      choose(results[active]);
-    }
+    const next = searchKey(event.key, active, results.length);
+    if (next === null) return;
+    event.preventDefault();
+    if (next === 'open') choose(results[active]);
+    else setActive(next);
   }
 
   return (
@@ -138,7 +133,7 @@ export function TicketSearch() {
             </div>
           </div>
           <div id="ticket-search-results" role="listbox" aria-label={t`Ticket search results`} className="max-h-[45vh] overflow-y-auto border-t px-2 py-2">
-            <SearchResults results={results} loading={loading} error={error} active={active} onChoose={choose} onActive={setActive} />
+            <SearchResults results={results} loading={loading} error={error} active={active} onChoose={choose} onActive={setActive} onRetry={() => void runSearch(query, project, types, assignee)} />
           </div>
           <p className="border-t px-4 py-2 text-xs text-muted-foreground"><Trans>↑↓ to move · Enter to open · Esc to close</Trans></p>
         </DialogContent>
@@ -147,19 +142,32 @@ export function TicketSearch() {
   );
 }
 
+// searchKey: what a key in the search box does: the result to highlight, 'open' the highlighted
+// one, or null (not ours: let the input have it).
+export function searchKey(key: string, active: number, count: number): number | 'open' | null {
+  switch (key) {
+    case 'ArrowDown': return Math.max(Math.min(active + 1, count - 1), 0);
+    case 'ArrowUp': return Math.max(active - 1, 0);
+    case 'Enter': return active < count ? 'open' : null;
+  }
+  return null;
+}
+
 // assigneeChoices: people and agents to filter by, after "Assigned to me" (so not me) and never service keys.
 export const assigneeChoices = (people: Assignee[], me: string) => people.filter((p) => p.kind !== 'service' && p.id !== me);
 
 // SearchResults: the result list (pure, for tests): error, searching, nothing found, or the tickets
 // with where each lives, the active one highlighted.
-export function SearchResults({ results, loading, error, active, onChoose, onActive }: {
+export function SearchResults({ results, loading, error, active, onChoose, onActive, onRetry }: {
   results: TicketSearchResult[]; loading: boolean; error: string; active: number;
-  onChoose: (ticket: TicketSearchResult) => void; onActive: (index: number) => void;
+  onChoose: (ticket: TicketSearchResult) => void; onActive: (index: number) => void; onRetry: () => void;
 }) {
   const { t } = useLingui();
   return (
     <>
-      {error ? <p role="alert" className="p-3 text-sm text-destructive">{error}</p>
+      {/* screen readers hear how many matched as the results change */}
+      <p aria-live="polite" className="sr-only">{!error && !loading ? t`${plural(results.length, { one: '# ticket found', other: '# tickets found' })}` : ''}</p>
+      {error ? <div role="alert" className="flex items-center gap-2 p-3 text-sm text-destructive">{error}<Button type="button" size="sm" variant="outline" onClick={onRetry}><Trans>Try again</Trans></Button></div>
         : loading && results.length === 0 ? <p role="status" className="p-3 text-sm text-muted-foreground"><Trans>Searching…</Trans></p>
         : results.length === 0 ? <p className="p-3 text-sm text-muted-foreground"><Trans>No tickets match this search.</Trans></p>
         : results.map((ticket, index) => (
