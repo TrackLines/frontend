@@ -54,6 +54,7 @@ export type Board = {
   estimate_scale?: EstimateScale;
   agent_review?: boolean; // agents' moves into Done wait for a person's review
   dev_complete_column_id?: string | null; // merged PRs land here, a release moves them to Done (TL-531)
+  review_column_id?: string | null; // agents' finished work waits here for review (TL-592); null: the column before Done
   archived_at?: string | null; // archived: off the project page, history kept, no new work
   deletable?: boolean; // never used (no tickets, no sprints): can be deleted; otherwise archive it
   sprint?: Sprint; // open sprint, absent when the board doesn't run sprints
@@ -363,7 +364,7 @@ export const boards = {
   create: (projectId: string, b: { name: string; description?: string; template_id?: string }, token: T) =>
     api<Board>(`/projects/${projectId}/boards`, { method: 'POST', body: b, token }),
   // Update the board name and/or settings; switching estimate_scale clears open tickets' estimates.
-  update: (id: string, b: { name?: string; estimate_scale?: EstimateScale; style?: BoardStyle; agent_review?: boolean; dev_complete_column_id?: string }, token: T) => api<void>(`/boards/${id}`, { method: 'PATCH', body: b, token }),
+  update: (id: string, b: { name?: string; estimate_scale?: EstimateScale; style?: BoardStyle; agent_review?: boolean; dev_complete_column_id?: string; review_column_id?: string }, token: T) => api<void>(`/boards/${id}`, { method: 'PATCH', body: b, token }),
   remove: (id: string, token: T) => api<void>(`/boards/${id}`, { method: 'DELETE', token }), // never-used boards only
   archive: (id: string, token: T) => api<void>(`/boards/${id}/archive`, { method: 'POST', token }),
   restore: (id: string, token: T) => api<void>(`/boards/${id}/restore`, { method: 'POST', token }),

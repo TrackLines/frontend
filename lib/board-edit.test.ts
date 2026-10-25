@@ -1,7 +1,7 @@
 import { expect, test } from 'bun:test';
 import type { Board } from './api';
 import { i18nFor } from './i18n';
-import { addColumn, changeColumn, devComplete, devCompleteOptions, dirty, draftOf, layout, layoutChanged, moveColumn, problem, removeColumn, settingsPatch } from './board-edit';
+import { addColumn, changeColumn, devComplete, devCompleteOptions, reviewColumn, showReviewColumn, dirty, draftOf, layout, layoutChanged, moveColumn, problem, removeColumn, settingsPatch } from './board-edit';
 
 const board = {
   id: 'b', project_id: 'p', owner_clerk_id: 'o', name: 'Web', description: '', created_at: '', updated_at: '', style: 'kanban', estimate_scale: 'none',
@@ -70,4 +70,15 @@ test('Dev complete (TL-532): only saved columns between To do and Done; a remove
   const gone = removeColumn(d, 'review');
   expect(devComplete(gone)).toBe('');
   expect(settingsPatch(gone, d)).toEqual({ dev_complete_column_id: '' });
+});
+
+test('Review column (TL-593): offered with agent review on 4+ columns; saved middle columns only', () => {
+  const d = draftOf({ ...board, agent_review: true, review_column_id: 'review' } as Board);
+  expect(showReviewColumn(d)).toBe(true);
+  expect(showReviewColumn({ ...d, agentReview: false })).toBe(false); // only agents' work waits there
+  expect(showReviewColumn(removeColumn(d, 'review'))).toBe(false); // 3 columns: the column before Done is the only choice
+  expect(reviewColumn(d)).toBe('review');
+  expect(settingsPatch({ ...d, reviewColumn: 'doing' }, d)).toEqual({ review_column_id: 'doing' });
+  expect(settingsPatch({ ...d, reviewColumn: 'done' }, d)).toEqual({ review_column_id: '' }); // Done isn't an option
+  expect(settingsPatch(removeColumn(d, 'review'), d)).toEqual({ review_column_id: '' });
 });
