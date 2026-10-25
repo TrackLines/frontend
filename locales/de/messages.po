@@ -190,6 +190,12 @@ msgstr "Leitung von {0}"
 msgid "{0} of {1, plural, one {# ticket} other {# tickets}} done ({2}%)"
 msgstr "{0} von {1, plural, one {# Ticket} other {# Tickets}} fertig ({2} %)"
 
+#. placeholder {0}: progress.done
+#. placeholder {1}: progress.total
+#: components/roadmap/report.tsx
+msgid "{0} of {1} linked tickets done"
+msgstr "{0} von {1} verknüpften Tickets fertig"
+
 #. placeholder {0}: st.open
 #: components/project/project-card.tsx
 msgid "{0} open"
@@ -1354,6 +1360,7 @@ msgid "Burn-down"
 msgstr "Burn-down"
 
 #: components/board/velocity.tsx
+#: components/roadmap/report.tsx
 msgid "Burn-up"
 msgstr "Burn-up"
 
@@ -1812,6 +1819,7 @@ msgid "Copied"
 msgstr "Kopiert"
 
 #: components/reports/export-menu.tsx
+#: components/roadmap/report.tsx
 msgid "Copied as Markdown."
 msgstr "Als Markdown kopiert."
 
@@ -1842,6 +1850,7 @@ msgid "Copy {label} embed snippet"
 msgstr "Embed-Snippet für {label} kopieren"
 
 #: components/reports/export-menu.tsx
+#: components/roadmap/report.tsx
 msgid "Copy as Markdown"
 msgstr "Als Markdown kopieren"
 
@@ -2064,6 +2073,7 @@ msgid "Couldn’t finish connecting {0}."
 msgstr "Die Verbindung mit {0} konnte nicht abgeschlossen werden."
 
 #: components/reports/export-menu.tsx
+#: components/roadmap/report.tsx
 msgid "Couldn’t get the Markdown. Please try again."
 msgstr "Das Markdown konnte nicht abgerufen werden. Bitte versuch es noch einmal."
 
@@ -2759,6 +2769,7 @@ msgstr "fertig"
 #: components/quick-add-ticket.tsx
 #: components/reports/report-view.tsx
 #: components/roadmap/item-editor.tsx
+#: components/roadmap/report.tsx
 #: components/roadmap/timeline.tsx
 #: components/ticket/labels.tsx
 msgid "Done"
@@ -2786,10 +2797,12 @@ msgid "Download {name}"
 msgstr "{name} herunterladen"
 
 #: components/reports/export-menu.tsx
+#: components/roadmap/report.tsx
 msgid "Download Markdown"
 msgstr "Markdown herunterladen"
 
 #: components/reports/export-menu.tsx
+#: components/roadmap/report.tsx
 msgid "Downloaded."
 msgstr "Heruntergeladen."
 
@@ -3196,6 +3209,7 @@ msgid "expires in {days, plural, one {# day} other {# days}}"
 msgstr "läuft in {days, plural, one {# Tag} other {# Tagen}} ab"
 
 #: components/reports/export-menu.tsx
+#: components/roadmap/report.tsx
 msgid "Export"
 msgstr "Exportieren"
 
@@ -3366,6 +3380,7 @@ msgid "Gantt chart"
 msgstr "Gantt-Diagramm"
 
 #: components/reports/export-menu.tsx
+#: components/roadmap/report.tsx
 msgid "Generated {when} by TrackLin.es"
 msgstr "Erstellt {when} von TrackLin.es"
 
@@ -3462,6 +3477,10 @@ msgstr "Zustand"
 #: lib/error-codes.ts
 msgid "health must be on_track, at_risk or off_track and note must be 1 to 2000 characters"
 msgstr "health muss on_track, at_risk oder off_track sein, und note muss 1 bis 2000 Zeichen lang sein."
+
+#: components/roadmap/report.tsx
+msgid "Health over time"
+msgstr "Status im Zeitverlauf"
 
 #: components/help-bot.tsx
 msgid "Help"
@@ -3635,6 +3654,7 @@ msgid "In Google, as a Workspace admin, open <0>Security → Access and data con
 msgstr "Öffne in Google als Workspace-Admin <0>Security → Access and data control → API controls → Manage Domain Wide Delegation</0> (dafür musst du Super-Admin sein), wähle <1>Add new</1> und füge ein:"
 
 #: components/roadmap/item-editor.tsx
+#: components/roadmap/report.tsx
 #: components/roadmap/timeline.tsx
 msgid "In progress"
 msgstr "In Arbeit"
@@ -3779,6 +3799,10 @@ msgstr "manual_status eines Eintrags muss not_started, in_progress oder done sei
 msgid "item title is required"
 msgstr "Ein Titel für den Eintrag ist erforderlich."
 
+#: components/roadmap/report.tsx
+msgid "Items by status"
+msgstr "Einträge nach Status"
+
 #: components/roadmap/timeline.tsx
 msgid "Items without target dates"
 msgstr "Einträge ohne Zieldatum"
@@ -3908,6 +3932,14 @@ msgstr "zuletzt genutzt {0}"
 msgid "last: a ticket here is done"
 msgstr "letzte: Ein Ticket hier ist fertig"
 
+#: components/roadmap/report.tsx
+msgid "Late"
+msgstr "Verspätet"
+
+#: components/roadmap/report.tsx
+msgid "Late: past the target date and not done."
+msgstr "Verspätet: Zieldatum überschritten und nicht fertig."
+
 #: components/roadmap/group.ts
 msgid "Later"
 msgstr "Später"
@@ -3997,6 +4029,14 @@ msgstr "Verknüpft"
 #: components/roadmap/item-tickets.tsx
 msgid "Linked tickets"
 msgstr "Verknüpfte Tickets"
+
+#: components/roadmap/report.tsx
+msgid "Linked tickets done against all linked tickets, for each item that has any."
+msgstr "Erledigte verknüpfte Tickets gegenüber allen verknüpften Tickets, je Eintrag mit Tickets."
+
+#: components/roadmap/report.tsx
+msgid "Linked tickets done each week (the solid line) against all linked tickets (dashed): the gap is what's left."
+msgstr "Erledigte verknüpfte Tickets pro Woche (durchgezogene Linie) gegenüber allen verknüpften Tickets (gestrichelt): Die Lücke ist, was noch offen ist."
 
 #: lib/error-codes.ts
 msgid "linked tickets must be in the roadmap's project"
@@ -4803,6 +4843,10 @@ msgstr "Noch keine Tickets geplant. Füge welche aus dem Backlog hinzu."
 msgid "No tickets yet."
 msgstr "Noch keine Tickets."
 
+#: components/roadmap/report.tsx
+msgid "No updates posted yet."
+msgstr "Noch keine Updates veröffentlicht."
+
 #: components/roadmap/updates.tsx
 msgid "No updates yet."
 msgstr "Noch keine Updates."
@@ -4895,6 +4939,7 @@ msgid "Not set up"
 msgstr "Nicht eingerichtet"
 
 #: components/roadmap/item-editor.tsx
+#: components/roadmap/report.tsx
 #: components/roadmap/timeline.tsx
 msgid "Not started"
 msgstr "Nicht begonnen"
@@ -5691,6 +5736,10 @@ msgstr "priority muss low, medium, high oder urgent sein."
 msgid "Privacy"
 msgstr "Datenschutz"
 
+#: components/roadmap/report.tsx
+msgid "Progress by item"
+msgstr "Fortschritt je Eintrag"
+
 #: app/reports/page.tsx
 #: lib/organization-settings.ts
 msgid "project"
@@ -6014,6 +6063,10 @@ msgstr "Roadmap nicht gefunden"
 msgid "Roadmap progress"
 msgstr "Roadmap-Fortschritt"
 
+#: components/roadmap/report.tsx
+msgid "Roadmap report"
+msgstr "Roadmap-Bericht"
+
 #: components/roadmap/timeline.tsx
 msgid "Roadmap schedule"
 msgstr "Roadmap-Zeitplan"
@@ -6055,6 +6108,7 @@ msgid "Save"
 msgstr "Speichern"
 
 #: components/reports/export-menu.tsx
+#: components/roadmap/report.tsx
 msgid "Save as PDF (presentation)"
 msgstr "Als PDF speichern (Präsentation)"
 
@@ -7410,6 +7464,10 @@ msgstr "Zu viele Embed-Origins für diese Organisation."
 #: lib/error-codes.ts
 msgid "too many requests from you; please try again later"
 msgstr "Zu viele Anfragen von dir; bitte versuch es später noch einmal."
+
+#: components/roadmap/report.tsx
+msgid "Total"
+msgstr "Gesamt"
 
 #. placeholder {0}: num(total)
 #: components/reports/donut.tsx
