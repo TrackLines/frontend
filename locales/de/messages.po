@@ -2329,6 +2329,10 @@ msgid "Couldn't load your roadmaps"
 msgstr "Deine Roadmaps konnten nicht geladen werden"
 
 #: components/settings/webhooks.tsx
+msgid "Couldn’t load your webhooks (HTTP {status}). Please try again."
+msgstr "Deine Webhooks konnten nicht geladen werden (HTTP {status}). Bitte versuche es erneut."
+
+#: components/settings/webhooks.tsx
 msgid "Couldn’t load your webhooks."
 msgstr "Deine Webhooks konnten nicht geladen werden."
 
@@ -5457,6 +5461,10 @@ msgstr "Nur Organisations-Admins können Integrationen verwalten."
 msgid "only organization admins can manage the plan"
 msgstr "Nur Organisations-Admins können den Tarif verwalten."
 
+#: components/settings/webhooks.tsx
+msgid "Only organization admins can manage webhooks."
+msgstr "Nur Admins der Organisation können Webhooks verwalten."
+
 #: app/boards/[id]/edit/page.tsx
 msgid "Only organization admins can save templates."
 msgstr "Nur Organisations-Admins können Vorlagen speichern."
@@ -8026,6 +8034,7 @@ msgid "Webhooks"
 msgstr "Webhooks"
 
 #: app/settings/webhooks/page.tsx
+#: components/settings/webhooks.tsx
 msgid "Webhooks aren’t turned on for your organization yet."
 msgstr "Webhooks sind für deine Organisation noch nicht aktiviert."
 

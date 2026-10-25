@@ -22,6 +22,10 @@ export function webhookURL(raw: string): string | null {
   }
 }
 
+// loadProblem: why the list didn't load. 404: the backend's webhooks flag is off (it reads flags.gg
+// with its own credentials, so the page can be on while it's off); 403: not an org admin.
+export const loadProblem = (status: number): 'off' | 'admins' | 'other' => (status === 404 ? 'off' : status === 403 ? 'admins' : 'other');
+
 const host = (url: string) => { try { return new URL(url).host; } catch { return url; } };
 
 // WebhooksSettings: the org's outbound webhooks (TL-636): add an endpoint and pick its events, see the
@@ -38,7 +42,13 @@ export function WebhooksSettings() {
   useEffect(() => {
     if (!token) return;
     webhooks.list(token).then(setList, (e) => {
-      if (e instanceof ApiError && e.status === 402) { setPlan(false); setList([]); } else setError(t`Couldn’t load your webhooks.`);
+      const status = e instanceof ApiError ? e.status : 0;
+      if (status === 402) { setPlan(false); setList([]); return; }
+      // say why, not just that (TL-641): off on the backend, or not an admin, aren't faults
+      const why = loadProblem(status);
+      setError(why === 'off' ? t`Webhooks aren’t turned on for your organization yet.`
+        : why === 'admins' ? t`Only organization admins can manage webhooks.`
+        : status ? t`Couldn’t load your webhooks (HTTP ${status}). Please try again.` : t`Couldn’t load your webhooks.`);
     });
   }, [signedIn]);
 
