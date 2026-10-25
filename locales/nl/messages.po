@@ -796,6 +796,10 @@ msgstr "Ticket toevoegen"
 msgid "Add a title to each roadmap item before saving."
 msgstr "Geef elk roadmap-item een titel voordat je opslaat."
 
+#: components/settings/webhooks.tsx
+msgid "Add a webhook"
+msgstr "Een webhook toevoegen"
+
 #: components/settings/integrations.tsx
 msgid "Add another GitHub account"
 msgstr "Nog een GitHub-account toevoegen"
@@ -875,6 +879,10 @@ msgstr "Aan backlog toevoegen"
 msgid "Add useful context or acceptance notes."
 msgstr "Voeg nuttige context of acceptatienotities toe."
 
+#: components/settings/webhooks.tsx
+msgid "Add webhook"
+msgstr "Webhook toevoegen"
+
 #: components/intake/triage.tsx
 #: components/reports/report-view.tsx
 msgid "Added"
@@ -887,6 +895,10 @@ msgstr "“{added}” toegevoegd aan de backlog van {where}."
 #: components/quick-add-ticket.tsx
 msgid "Added “{added}” to the backlog."
 msgstr "“{added}” toegevoegd aan de backlog."
+
+#: components/settings/webhooks.tsx
+msgid "added <0/>"
+msgstr "toegevoegd <0/>"
 
 #: components/reports/report-view.tsx
 msgid "added after sprints started"
@@ -1025,6 +1037,14 @@ msgstr "Een organisatiebeheerder kan hier je Google Workspace koppelen."
 #: lib/help.ts
 msgid "An organization admin connects Google Calendar in Settings → Integrations → Calendars; people away are marked in assigning and standup."
 msgstr "Een organisatiebeheerder koppelt Google Calendar in Instellingen → Integraties → Agenda’s; wie afwezig is, wordt aangegeven bij toewijzen en in de stand-up."
+
+#: lib/error-codes.ts
+msgid "an organization can have up to 10 webhook endpoints"
+msgstr "een organisatie kan maximaal 10 webhook-endpoints hebben"
+
+#: components/settings/webhooks.tsx
+msgid "An organization can have up to 10 webhooks."
+msgstr "Een organisatie kan maximaal 10 webhooks hebben."
 
 #: lib/error-codes.ts
 msgid "an organization needs at least one admin"
@@ -1179,6 +1199,11 @@ msgstr "Bijlagen ({0})"
 #: components/ticket/pending-attachments.tsx
 msgid "Attachments <0>(optional)</0>"
 msgstr "Bijlagen <0>(optioneel)</0>"
+
+#. placeholder {0}: d.attempts
+#: components/settings/webhooks.tsx
+msgid "attempt {0}"
+msgstr "poging {0}"
 
 #: components/settings/google-chat.tsx
 msgid "Avatar URL"
@@ -1933,6 +1958,10 @@ msgstr "Project-ID kopiëren"
 msgid "Copy request form link"
 msgstr "Link naar aanvraagformulier kopiëren"
 
+#: components/settings/webhooks.tsx
+msgid "Copy secret"
+msgstr "Geheim kopiëren"
+
 #. placeholder {0}: ticket.key
 #: components/ticket-search.tsx
 msgid "Copy ticket key {0}"
@@ -2299,6 +2328,10 @@ msgstr "Kan je projecten niet laden. Vernieuw de pagina om het opnieuw te prober
 msgid "Couldn't load your roadmaps"
 msgstr "Kan je roadmaps niet laden"
 
+#: components/settings/webhooks.tsx
+msgid "Couldn’t load your webhooks."
+msgstr "Kon je webhooks niet laden."
+
 #: components/my-work.tsx
 msgid "Couldn't load your work. Please try again."
 msgstr "Kan je werk niet laden. Probeer het opnieuw."
@@ -2615,6 +2648,7 @@ msgstr "Dagen"
 #: components/project/backlog.tsx
 #: components/settings/embedding.tsx
 #: components/settings/organization.tsx
+#: components/settings/webhooks.tsx
 msgid "Delete"
 msgstr "Verwijderen"
 
@@ -2648,6 +2682,11 @@ msgstr "Sjabloon verwijderen"
 #: components/settings/organization.tsx
 msgid "Delete the {0} team?"
 msgstr "Team {0} verwijderen?"
+
+#. placeholder {0}: host(w.url)
+#: components/settings/webhooks.tsx
+msgid "Delete the webhook to {0}? Nothing more will be sent to it."
+msgstr "De webhook naar {0} verwijderen? Er wordt niets meer naartoe gestuurd."
 
 #: components/board/ticket-dialog.tsx
 msgid "Delete this ticket? It’s kept for 30 days in case it was a mistake (contact us to get it back), then permanently deleted with its comments and files."
@@ -2683,12 +2722,17 @@ msgstr "Verwijderen…"
 
 #: components/reports/report-view.tsx
 #: components/reports/rollup-view.tsx
+#: components/settings/webhooks.tsx
 msgid "Delivered"
 msgstr "Opgeleverd"
 
 #: components/reports/rollup-view.tsx
 msgid "Delivered by month"
 msgstr "Opgeleverd per maand"
+
+#: components/settings/webhooks.tsx
+msgid "Deliveries"
+msgstr "Leveringen"
 
 #: components/ticket/dependencies.tsx
 msgid "Dependencies"
@@ -3099,6 +3143,10 @@ msgstr "Stand-up beëindigen"
 msgid "Endpoint"
 msgstr "Endpoint"
 
+#: components/settings/webhooks.tsx
+msgid "Endpoint URL"
+msgstr "Endpoint-URL"
+
 #: components/board/sprint-status.ts
 msgid "ends in {days} days"
 msgstr "eindigt over {days} dagen"
@@ -3122,6 +3170,10 @@ msgstr "Aanvragen zijn op dit moment niet beschikbaar."
 #: components/board/ticket-dialog.tsx
 msgid "Enter a title."
 msgstr "Voer een titel in."
+
+#: components/settings/webhooks.tsx
+msgid "Enter an https address, like https://example.com/hooks/tracklines."
+msgstr "Vul een https-adres in, zoals https://example.com/hooks/tracklines."
 
 #: components/settings/embedding.tsx
 msgid "Enter an origin like https://example.com."
@@ -3286,6 +3338,10 @@ msgstr "External wordt ingesteld door integraties (API-sleutels)."
 #: lib/error-codes.ts
 msgid "external needs source (bugfixes), project and id; url must be http(s)"
 msgstr "External heeft source (bugfixes), project en id nodig; url moet http(s) zijn."
+
+#: components/settings/webhooks.tsx
+msgid "Failed"
+msgstr "Mislukt"
 
 #: components/ticket-type.tsx
 msgid "feature"
@@ -3560,6 +3616,10 @@ msgstr "Gezondheid door de tijd"
 msgid "Help"
 msgstr "Help"
 
+#: components/settings/webhooks.tsx
+msgid "Hide deliveries"
+msgstr "Leveringen verbergen"
+
 #: components/notifications-bell.tsx
 msgid "Hide read"
 msgstr "Gelezen verbergen"
@@ -3703,9 +3763,17 @@ msgstr "Hoe weet het wie er op vakantie is?"
 msgid "How every project’s sprints went, to share with leadership."
 msgstr "Hoe de sprints van elk project zijn verlopen, om te delen met het management."
 
+#: app/settings/webhooks/page.tsx
+msgid "How webhooks work"
+msgstr "Hoe webhooks werken"
+
 #: app/account/page.tsx
 msgid "How you hear about tickets assigned to you, mentions and reviews, and your own API keys. Your name, email and sign-in are in your account menu."
 msgstr "Hoe je hoort over tickets die aan je zijn toegewezen, vermeldingen en reviews, en je eigen API-sleutels. Je naam, e-mail en inloggegevens staan in je accountmenu."
+
+#: components/settings/webhooks.tsx
+msgid "I’ve saved it"
+msgstr "Ik heb het bewaard"
 
 #: components/markdown.tsx
 msgid "image"
@@ -4168,6 +4236,10 @@ msgstr "Bord laden…"
 msgid "Loading charts…"
 msgstr "Grafieken laden…"
 
+#: components/settings/webhooks.tsx
+msgid "Loading deliveries…"
+msgstr "Leveringen laden…"
+
 #: app/settings/file-cleanup/loading.tsx
 #: app/settings/file-cleanup/page.tsx
 msgid "Loading file clean-up…"
@@ -4278,6 +4350,7 @@ msgstr "Je werk laden…"
 #: components/project/repositories.tsx
 #: components/quick-add-ticket.tsx
 #: components/settings/embedding.tsx
+#: components/settings/webhooks.tsx
 msgid "Loading…"
 msgstr "Laden…"
 
@@ -4633,6 +4706,10 @@ msgstr "Nieuw project"
 msgid "New roadmap"
 msgstr "Nieuwe roadmap"
 
+#: components/settings/webhooks.tsx
+msgid "New secret"
+msgstr "Nieuw geheim"
+
 #: components/ticket/sub-tickets.tsx
 msgid "New sub-ticket…"
 msgstr "Nieuw subticket…"
@@ -4941,6 +5018,10 @@ msgstr "Nog geen updates geplaatst."
 msgid "No updates yet."
 msgstr "Nog geen updates."
 
+#: components/settings/webhooks.tsx
+msgid "No webhooks yet."
+msgstr "Nog geen webhooks."
+
 #: components/project/backlog.tsx
 msgid "No won’t do tickets in the backlog."
 msgstr "Geen ‘wordt niet gedaan’-tickets in de backlog."
@@ -5087,6 +5168,10 @@ msgstr "Nog niets op deze roadmap."
 msgid "Nothing recorded yet. History is kept from October 2026."
 msgstr "Nog niets vastgelegd. De geschiedenis wordt bijgehouden vanaf oktober 2026."
 
+#: components/settings/webhooks.tsx
+msgid "Nothing sent in the last 30 days."
+msgstr "De afgelopen 30 dagen niets verstuurd."
+
 #: components/project/backlog.tsx
 msgid "Nothing unplanned in the backlog. Planned tickets are on their board’s Next sprints."
 msgstr "Niets ongepland in de backlog. Geplande tickets staan bij Volgende sprints van hun bord."
@@ -5161,6 +5246,7 @@ msgstr "van het geplande werk klaar, over {sprints, plural, one {# sprint} other
 
 #: app/boards/[id]/edit/page.tsx
 #: components/settings/device-push.tsx
+#: components/settings/webhooks.tsx
 msgid "Off"
 msgstr "Uit"
 
@@ -5186,6 +5272,7 @@ msgstr "Oudste eerst"
 
 #: app/boards/[id]/edit/page.tsx
 #: components/settings/device-push.tsx
+#: components/settings/webhooks.tsx
 msgid "On"
 msgstr "Aan"
 
@@ -5616,6 +5703,10 @@ msgstr "Pauzeren"
 msgid "paused"
 msgstr "gepauzeerd"
 
+#: components/settings/webhooks.tsx
+msgid "Pending"
+msgstr "In de wacht"
+
 #: components/mention-textarea.tsx
 msgid "People"
 msgstr "Mensen"
@@ -5639,6 +5730,14 @@ msgstr "Persoonlijke sleutel"
 #: components/settings/api-keys.tsx
 msgid "Personal keys act as you, for your own scripts and displays."
 msgstr "Persoonlijke sleutels handelen als jou, voor je eigen scripts en schermen."
+
+#: components/settings/webhooks.tsx
+msgid "Pick at least one event."
+msgstr "Kies minstens één gebeurtenis."
+
+#: lib/error-codes.ts
+msgid "pick at least one known event"
+msgstr "kies minstens één bekende gebeurtenis"
 
 #: components/billing/plan-card.tsx
 msgid "Plan"
@@ -6106,6 +6205,10 @@ msgstr "Resolution moet done of wont_do zijn."
 msgid "resolved"
 msgstr "opgelost"
 
+#: components/settings/webhooks.tsx
+msgid "Response"
+msgstr "Antwoord"
+
 #: components/mcp-connect.tsx
 msgid "Restart Claude Desktop; TrackLin.es appears in the tools menu."
 msgstr "Herstart Claude Desktop; TrackLin.es verschijnt in het toolsmenu."
@@ -6350,6 +6453,11 @@ msgstr "Zoek in titels, details en opmerkingen, of voer een ticketcode of -numme
 msgid "Searching…"
 msgstr "Zoeken…"
 
+#. placeholder {0}: w.secret_hint
+#: components/settings/webhooks.tsx
+msgid "secret ends …{0}"
+msgstr "geheim eindigt op …{0}"
+
 #: components/settings/organization-card.tsx
 msgid "See who’s in your organization, its teams and who leads them."
 msgstr "Bekijk wie er in je organisatie zit, welke teams er zijn en wie ze leidt."
@@ -6361,6 +6469,14 @@ msgstr "Opnieuw gezien nadat dit ticket klaar was"
 #: components/intake/request-form.tsx
 msgid "Send a request"
 msgstr "Een aanvraag sturen"
+
+#: components/settings/webhooks.tsx
+msgid "Send a test"
+msgstr "Test versturen"
+
+#: components/settings/webhooks.tsx
+msgid "Send again"
+msgstr "Opnieuw versturen"
 
 #: components/intake/request-form.tsx
 msgid "Send another"
@@ -6386,6 +6502,14 @@ msgstr "Aanvraag sturen"
 msgid "Send test message"
 msgstr "Testbericht sturen"
 
+#: components/settings/webhooks.tsx
+msgid "Send these events"
+msgstr "Deze gebeurtenissen versturen"
+
+#: app/settings/page.tsx
+msgid "Send ticket, sprint and roadmap events to your own tools as they happen."
+msgstr "Stuur ticket-, sprint- en roadmapgebeurtenissen naar je eigen tools zodra ze gebeuren."
+
 #: components/board/ticket-dialog.tsx
 msgid "Send to backlog"
 msgstr "Naar backlog sturen"
@@ -6401,6 +6525,10 @@ msgstr "Je TrackLin.es-meldingen naar het Google Chat-account <0>{0}</0> sturen?
 #: components/settings/google-chat.tsx
 msgid "Sending…"
 msgstr "Versturen…"
+
+#: components/settings/webhooks.tsx
+msgid "Sent"
+msgstr "Verstuurd"
 
 #: components/notification-icon.tsx
 msgid "Sent back"
@@ -6475,6 +6603,7 @@ msgstr "{0} instellen"
 #: app/settings/integrations/page.tsx
 #: app/settings/organization/page.tsx
 #: app/settings/page.tsx
+#: app/settings/webhooks/page.tsx
 msgid "Settings"
 msgstr "Instellingen"
 
@@ -6506,6 +6635,10 @@ msgstr "Korte, gedateerde notities over hoe de roadmap ervoor staat, op de roadm
 #: components/project/backlog.tsx
 msgid "Show"
 msgstr "Tonen"
+
+#: components/settings/webhooks.tsx
+msgid "Show older"
+msgstr "Oudere tonen"
 
 #: components/project/backlog.tsx
 msgid "Show open or closed tickets"
@@ -7006,6 +7139,10 @@ msgstr "Teams"
 msgid "Teams connect members to project boards."
 msgstr "Teams verbinden leden met projectborden."
 
+#: app/settings/webhooks/page.tsx
+msgid "Tell your own tools when work changes: TrackLin.es sends each event to your endpoint as it happens."
+msgstr "Laat je eigen tools weten wanneer werk verandert: TrackLin.es stuurt elke gebeurtenis meteen naar je endpoint."
+
 #: components/board/template-picker.tsx
 msgid "Template"
 msgstr "Sjabloon"
@@ -7041,6 +7178,10 @@ msgstr "Bedankt, we hebben het ontvangen"
 #: components/settings/integrations.tsx
 msgid "That account isn’t in any Bitbucket workspaces."
 msgstr "Dat account zit niet in een Bitbucket-workspace."
+
+#: components/settings/webhooks.tsx
+msgid "That didn’t work. Please try again."
+msgstr "Dat lukte niet. Probeer het opnieuw."
 
 #: lib/error-codes.ts
 msgid "that GitHub installation is already connected to another organization"
@@ -7207,6 +7348,10 @@ msgstr "Het team bekijkt je aanvraag. Als ze meer nodig hebben, kunnen ze je ber
 #: components/settings/chat-dm.tsx
 msgid "The TrackLin.es app messages you in Google Chat when you’re assigned a ticket, mentioned, or something needs your review."
 msgstr "De TrackLin.es-app stuurt je een bericht in Google Chat wanneer je een ticket toegewezen krijgt, vermeld wordt of iets jouw review nodig heeft."
+
+#: lib/error-codes.ts
+msgid "the URL must be https and not a private address"
+msgstr "de URL moet https zijn en geen privéadres"
 
 #: components/mcp-connect.tsx
 msgid "Then enable it under Settings → MCP."
@@ -7606,13 +7751,19 @@ msgstr "Opnieuw proberen"
 
 #: components/notifications-bell.tsx
 #: components/settings/device-push.tsx
+#: components/settings/webhooks.tsx
 msgid "Turn off"
 msgstr "Uitschakelen"
 
 #: components/notifications-bell.tsx
 #: components/settings/device-push.tsx
+#: components/settings/webhooks.tsx
 msgid "Turn on"
 msgstr "Inschakelen"
+
+#: components/settings/webhooks.tsx
+msgid "Turned off after repeated failed deliveries. Fix the endpoint, then turn it back on."
+msgstr "Uitgezet na herhaaldelijk mislukte leveringen. Repareer het endpoint en zet het dan weer aan."
 
 #: components/ticket-type.tsx
 msgid "Type"
@@ -7774,6 +7925,10 @@ msgstr "Urgent"
 msgid "Use Attach files on a ticket. Up to 10 files of 10 MB each, and not while it’s in Done."
 msgstr "Gebruik Bestanden bijvoegen op een ticket. Maximaal 10 bestanden van 10 MB, en niet terwijl het in Klaar staat."
 
+#: components/settings/webhooks.tsx
+msgid "Use it to check that requests really come from TrackLin.es: see <0>verifying webhooks</0>."
+msgstr "Gebruik het om te controleren dat verzoeken echt van TrackLin.es komen: zie <0>webhooks controleren</0>."
+
 #: lib/help.ts
 msgid "Use New project on the dashboard. Your plan sets how many projects you can have (Free 1, Pro 5)."
 msgstr "Gebruik Nieuw project op het dashboard. Je abonnement bepaalt hoeveel projecten je kunt hebben (Free 1, Pro 5)."
@@ -7864,6 +8019,23 @@ msgstr "We zijn ervan op de hoogte gebracht. Probeer het opnieuw of ga terug naa
 #: components/settings/google-chat.tsx
 msgid "Webhook URL"
 msgstr "Webhook-URL"
+
+#: app/settings/page.tsx
+#: app/settings/webhooks/page.tsx
+msgid "Webhooks"
+msgstr "Webhooks"
+
+#: app/settings/webhooks/page.tsx
+msgid "Webhooks aren’t turned on for your organization yet."
+msgstr "Webhooks staan nog niet aan voor je organisatie."
+
+#: components/settings/webhooks.tsx
+msgid "Webhooks come with the Pro and Enterprise plans. <0>Change your plan</0> to use them."
+msgstr "Webhooks horen bij de Pro- en Enterprise-abonnementen. <0>Wijzig je abonnement</0> om ze te gebruiken."
+
+#: lib/error-codes.ts
+msgid "webhooks need the Pro or Enterprise plan"
+msgstr "webhooks vereisen het Pro- of Enterprise-abonnement"
 
 #: components/board/flow-charts.tsx
 msgid "Weekly throughput"
@@ -8186,6 +8358,10 @@ msgstr "Je roadmaps in alle projecten. Openbare roadmaps zijn voor anderen allee
 #: components/user-menu.tsx
 msgid "Your settings"
 msgstr "Jouw instellingen"
+
+#: components/settings/webhooks.tsx
+msgid "Your signing secret. Copy it now: it won’t be shown again."
+msgstr "Je ondertekeningsgeheim. Kopieer het nu: het wordt niet opnieuw getoond."
 
 #: app/my-work/page.tsx
 msgid "Your tickets across every board and project, most recently changed first — assigned to you, or raised by you."
