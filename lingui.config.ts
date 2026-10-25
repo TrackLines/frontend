@@ -5,7 +5,7 @@ import { formatter } from '@lingui/format-po';
 // and Poedit all read. `bun run i18n` extracts new strings and compiles the catalogues.
 export default defineConfig({
   sourceLocale: 'en',
-  locales: ['en', 'nl'],
+  locales: ['en', 'nl', 'de', 'es', 'pt', 'fr', 'tlh'],
   catalogs: [{ path: '<rootDir>/locales/{locale}/messages', include: ['app', 'components', 'lib'], exclude: ['**/*.test.*', '**/node_modules/**'] }],
   format: formatter({ lineNumbers: false }),
 });

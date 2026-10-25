@@ -8,7 +8,7 @@ import { dates, i18nFor, LOCALES } from './i18n';
 const tk = { id: 't1', key: 'TL-1', title: 'A', priority: 'medium', project_name: 'P', column_name: null } as TicketSearchResult;
 
 test('each locale has its own instance, fixed to it (TL-550)', () => {
-  expect(LOCALES).toEqual(['en', 'nl']);
+  expect(LOCALES).toEqual(['en', 'nl', 'de', 'es', 'pt', 'fr', 'tlh']);
   expect(i18nFor('en').locale).toBe('en');
   expect(i18nFor('nl').locale).toBe('nl');
   expect(i18nFor('nl')).toBe(i18nFor('nl'));
@@ -29,10 +29,13 @@ test('dates follow the language; English keeps en-GB (TL-553)', () => {
   const at = new Date('2026-10-23T00:00:00Z');
   expect(dates(i18nFor('nl'), opts).format(at)).toContain('okt');
   expect(dates(i18nFor('en'), opts).format(at)).toBe('23 Oct');
+  expect(dates(i18nFor('de'), opts).format(at)).toContain('Okt');
+  expect(dates(i18nFor('pt'), opts).format(at)).toContain('out');
+  expect(dates(i18nFor('tlh'), opts).format(at)).toBe('23 Oct'); // no Klingon calendar: English's
 });
 
-test('every Dutch message is translated and keeps its placeholders (TL-559)', async () => {
-  const po = await Bun.file(`${import.meta.dir}/../locales/nl/messages.po`).text();
+test.each(LOCALES.filter((l) => l !== 'en'))('every %s message is translated and keeps its placeholders (TL-559, TL-611)', async (locale) => {
+  const po = await Bun.file(`${import.meta.dir}/../locales/${locale}/messages.po`).text();
   const pairs = [...po.matchAll(/^msgid (".*")\nmsgstr (".*")$/gm)].map((m) => [JSON.parse(m[1]), JSON.parse(m[2])] as [string, string]).filter(([id]) => id);
   expect(pairs.length).toBeGreaterThan(1000);
   const marks = (s: string) => [...s.matchAll(/\{(\w+)[,}]|<\/?\d+\/?>/g)].map((m) => m[1] ?? m[0]).sort().join(' ');

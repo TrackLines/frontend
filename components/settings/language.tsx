@@ -9,8 +9,8 @@ import { setLanguageCookie } from '@/components/language-sync';
 import { SettingsCard } from '@/components/settings/settings-card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { me } from '@/lib/api';
-import { LOCALES } from '@/lib/i18n';
-import { LANGUAGE_NAMES, pickLocale } from '@/lib/locale';
+import { HIDDEN_LOCALES, LOCALES } from '@/lib/i18n';
+import { isKonami, konami, LANGUAGE_NAMES, pickLocale } from '@/lib/locale';
 
 const BROWSER = 'browser'; // the Select's value for "follow the browser" (saved as null)
 
@@ -22,7 +22,17 @@ export function LanguageCard({ token }: { token: string }) {
   const { t } = useLingui();
   const [saved, setSaved] = useState<string | null | undefined>(undefined);
   const [error, setError] = useState('');
+  const [klingon, setKlingon] = useState(false); // the Konami code was entered here (TL-610)
   useEffect(() => { void me.language(token).then((r) => setSaved(r.language), () => setSaved(null)); }, []); // token refreshes must not refetch
+  useEffect(() => {
+    let keys: string[] = [];
+    const onKey = (e: KeyboardEvent) => {
+      keys = konami(keys, e.key);
+      if (isKonami(keys)) setKlingon(true);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
   if (!is('translations').enabled() || saved === undefined) return null;
   async function choose(v: string) {
     const language = v === BROWSER ? null : v;
@@ -43,10 +53,13 @@ export function LanguageCard({ token }: { token: string }) {
         <SelectTrigger aria-label={t`Language`} className="w-48"><SelectValue /></SelectTrigger>
         <SelectContent>
           <SelectItem value={BROWSER}><Trans>Browser default</Trans></SelectItem>
-          {LOCALES.map((l) => <SelectItem key={l} value={l} lang={l}>{LANGUAGE_NAMES[l]}</SelectItem>)}
+          {shownLocales(klingon || saved === 'tlh').map((l) => <SelectItem key={l} value={l} lang={l}>{LANGUAGE_NAMES[l]}</SelectItem>)}
         </SelectContent>
       </Select>
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
     </SettingsCard>
   );
 }
+
+// shownLocales: the languages offered; the hidden ones (Klingon) once unlocked, or already chosen.
+export const shownLocales = (unlocked: boolean) => LOCALES.filter((l) => unlocked || !HIDDEN_LOCALES.includes(l));

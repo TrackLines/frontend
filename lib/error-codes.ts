@@ -54,7 +54,7 @@ export const ERROR_MESSAGES: Record<string, MessageDescriptor> = {
   bad_key_kind: msg`kind must be ai, service or personal`,
   bad_key_prefix: msg`key prefix must be 2–6 capital letters or digits, starting with a letter`,
   bad_labels: msg`invalid labels`,
-  bad_language: msg`language must be one of en, nl, or null`,
+  bad_language: msg`language must be one of en, nl, de, es, pt, fr, tlh, or null`,
   bad_link_code: msg`this link has expired or was already used: message the TrackLin.es app in Google Chat for a new one`,
   bad_member_limit: msg`limit must be between 1 and 500`,
   bad_offset: msg`offset must be a non-negative integer`,
