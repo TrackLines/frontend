@@ -206,6 +206,12 @@ msgstr "{0} sur {1, plural, one {# ticket} other {# tickets}} terminé(s) ({2} %
 msgid "{0} of {1} linked tickets done"
 msgstr "{0} sur {1} tickets liés terminés"
 
+#. placeholder {0}: job.progress
+#. placeholder {1}: job.total
+#: components/settings/csv-import.tsx
+msgid "{0} of {1} tickets…"
+msgstr "{0} sur {1} tickets…"
+
 #. placeholder {0}: st.open
 #: components/project/project-card.tsx
 msgid "{0} open"
@@ -216,6 +222,11 @@ msgstr "{0} ouvert(s)"
 #: lib/integrations.ts
 msgid "{0} or {1}"
 msgstr "{0} ou {1}"
+
+#. placeholder {0}: skipped.length
+#: components/settings/csv-import.tsx
+msgid "{0} rows or values left out"
+msgstr "{0} lignes ou valeurs laissées de côté"
 
 #. placeholder {0}: team.name
 #: components/settings/organization.tsx
@@ -1364,6 +1375,14 @@ msgstr "Les tableaux qui ont été utilisés sont archivés au lieu d’être su
 msgid "Breadcrumb"
 msgstr "Fil d’Ariane"
 
+#: app/settings/page.tsx
+msgid "Bring tickets in from a CSV (Trello, Asana, Linear, spreadsheets) as a new project."
+msgstr "Importez des tickets depuis un CSV (Trello, Asana, Linear, tableurs) dans un nouveau projet."
+
+#: app/settings/import/page.tsx
+msgid "Bring tickets in from a CSV as a new project. You see what it will make before anything is created, and can scrap it afterwards."
+msgstr "Importez des tickets depuis un CSV dans un nouveau projet. Vous voyez ce qui sera créé avant toute création, et pouvez l’annuler ensuite."
+
 #: app/roadmaps/page.tsx
 msgid "Browse projects"
 msgstr "Parcourir les projets"
@@ -2130,6 +2149,10 @@ msgstr "Déconnexion impossible."
 msgid "Couldn’t end the standup. Please try again."
 msgstr "Impossible de terminer le standup. Veuillez réessayer."
 
+#: components/project/export-csv.tsx
+msgid "Couldn’t export the tickets. Please try again."
+msgstr "Impossible d’exporter les tickets. Veuillez réessayer."
+
 #: components/quick-add-ticket.tsx
 msgid "Couldn’t find this board’s project."
 msgstr "Impossible de trouver le projet de ce tableau."
@@ -2573,6 +2596,10 @@ msgstr "Créer la feuille de route"
 msgid "Create team"
 msgstr "Créer l’équipe"
 
+#: components/settings/csv-import.tsx
+msgid "Created"
+msgstr "Créé"
+
 #: components/project/backlog.tsx
 msgid "Created <0/>"
 msgstr "Créé <0/>"
@@ -2602,6 +2629,10 @@ msgstr "l’a créé dans {where}"
 #: components/settings/api-keys.tsx
 msgid "Creating…"
 msgstr "Création…"
+
+#: components/settings/csv-import.tsx
+msgid "CSV file"
+msgstr "Fichier CSV"
 
 #: components/board/ticket-card.tsx
 msgid "Current column"
@@ -2742,6 +2773,7 @@ msgstr "Livraisons"
 msgid "Dependencies"
 msgstr "Dépendances"
 
+#: components/settings/csv-import.tsx
 #: components/settings/organization.tsx
 msgid "Description"
 msgstr "Description"
@@ -2857,6 +2889,7 @@ msgstr "terminé"
 #: components/roadmap/item-editor.tsx
 #: components/roadmap/report.tsx
 #: components/roadmap/timeline.tsx
+#: components/settings/csv-import.tsx
 #: components/ticket/labels.tsx
 msgid "Done"
 msgstr "Terminé"
@@ -2926,6 +2959,7 @@ msgstr "échéance {due}"
 msgid "Due {endLabel}"
 msgstr "Échéance {endLabel}"
 
+#: components/settings/csv-import.tsx
 #: components/ticket/due-date-field.tsx
 msgid "Due date"
 msgstr "Échéance"
@@ -3335,6 +3369,10 @@ msgstr "expire dans {days, plural, one {# jour} other {# jours}}"
 msgid "Export"
 msgstr "Exporter"
 
+#: components/project/export-csv.tsx
+msgid "Export CSV"
+msgstr "Exporter en CSV"
+
 #: lib/error-codes.ts
 msgid "external is set by integrations (API keys)"
 msgstr "external est défini par les intégrations (clés API)"
@@ -3461,6 +3499,10 @@ msgstr "Sprints terminés avec un objectif : atteint ou non."
 msgid "first: new tickets start here"
 msgstr "première : les nouveaux tickets commencent ici"
 
+#: components/settings/csv-import.tsx
+msgid "Fix these first:"
+msgstr "Corrigez d’abord ceci :"
+
 #: components/board/flow-report.tsx
 msgid "Flow report"
 msgstr "Rapport de flux"
@@ -3504,6 +3546,10 @@ msgstr "from et to sont des dates (AAAA-MM-JJ), from avant to, à deux ans d’�
 #: components/settings/integrations.tsx
 msgid "From Bugfixes → Settings → Access tokens"
 msgstr "Depuis Bugfixes → Paramètres → Jetons d’accès"
+
+#: components/settings/csv-import.tsx
+msgid "From Trello, Asana, Linear, Jira, a spreadsheet, or another TrackLin.es project’s export. Up to about 1 MB."
+msgstr "Depuis Trello, Asana, Linear, Jira, un tableur ou l’export d’un autre projet TrackLin.es. Jusqu’à environ 1 Mo."
 
 #: components/roadmap/timeline.tsx
 msgid "Gantt"
@@ -3549,6 +3595,10 @@ msgstr "Aller à la page précédente"
 #: app/global-not-found.tsx
 msgid "Go to TrackLin.es"
 msgstr "Aller sur TrackLin.es"
+
+#: components/settings/csv-import.tsx
+msgid "Go to your projects"
+msgstr "Aller à vos projets"
 
 #: components/settings/chat-dm.tsx
 msgid "Go to Your settings"
@@ -3783,9 +3833,19 @@ msgstr "Je l’ai enregistré"
 msgid "image"
 msgstr "image"
 
+#: app/settings/import/page.tsx
+#: app/settings/page.tsx
+#: components/settings/csv-import.tsx
+msgid "Import"
+msgstr "Importer"
+
 #: lib/people.ts
 msgid "Imported"
 msgstr "Importé"
+
+#: app/settings/import/page.tsx
+msgid "Importing isn’t turned on for your organization yet."
+msgstr "L’import n’est pas encore activé pour votre organisation."
 
 #: lib/help.ts
 msgid "In Edit project → Archived boards. Restore one from its banner."
@@ -4000,6 +4060,10 @@ msgstr "Conservez la clé dans une variable d’environnement (ex. dans le profi
 msgid "Keep ticket"
 msgstr "Conserver le ticket"
 
+#: components/settings/csv-import.tsx
+msgid "Key prefix"
+msgstr "Préfixe de clé"
+
 #: lib/error-codes.ts
 msgid "key prefix must be 2–6 capital letters or digits, starting with a letter"
 msgstr "le préfixe de clé doit compter 2 à 6 lettres majuscules ou chiffres, en commençant par une lettre"
@@ -4025,6 +4089,7 @@ msgid "kind must be ai, service or personal"
 msgstr "kind doit valoir ai, service ou personal"
 
 #: components/board/label-filter.tsx
+#: components/settings/csv-import.tsx
 #: components/ticket/labels.tsx
 msgid "Labels"
 msgstr "Étiquettes"
@@ -4368,6 +4433,12 @@ msgstr "Explorez de votre côté ; les tickets de l’hôte ne s’ouvrent plus 
 msgid "Low"
 msgstr "Basse"
 
+#. placeholder {0}: job.report.created.tickets
+#. placeholder {1}: job.report.created.boards
+#: components/settings/csv-import.tsx
+msgid "Made {0} tickets on {1} boards."
+msgstr "{0} tickets créés sur {1} tableaux."
+
 #: components/hosted-bar.tsx
 msgid "Make {name} the host"
 msgstr "Désigner {name} comme hôte"
@@ -4702,6 +4773,7 @@ msgid "New link"
 msgstr "Nouveau lien"
 
 #: app/dashboard/page.tsx
+#: components/settings/csv-import.tsx
 msgid "New project"
 msgstr "Nouveau projet"
 
@@ -5118,6 +5190,10 @@ msgstr "Non configuré"
 #: components/roadmap/timeline.tsx
 msgid "Not started"
 msgstr "Non commencé"
+
+#: components/settings/csv-import.tsx
+msgid "Not used"
+msgstr "Non utilisée"
 
 #: components/settings/google-calendar.tsx
 msgid "not yet"
@@ -5915,6 +5991,7 @@ msgid "Predictability by month"
 msgstr "Prévisibilité par mois"
 
 #: components/markdown.tsx
+#: components/settings/csv-import.tsx
 #: components/ticket/attachments.tsx
 msgid "Preview"
 msgstr "Aperçu"
@@ -5929,6 +6006,7 @@ msgid "Previous"
 msgstr "Précédent"
 
 #: components/board/priority-filter.tsx
+#: components/settings/csv-import.tsx
 msgid "Priority"
 msgstr "Priorité"
 
@@ -6425,6 +6503,18 @@ msgstr "Périmètre verrouillé : le sprint se termine aujourd’hui, les nouvea
 msgid "scope must be organization, team, or project"
 msgstr "scope doit valoir organization, team ou project"
 
+#: components/settings/csv-import.tsx
+msgid "Scrap this import"
+msgstr "Annuler cet import"
+
+#: components/settings/csv-import.tsx
+msgid "Scrap this import? Everything it made is deleted."
+msgstr "Annuler cet import ? Tout ce qu’il a créé sera supprimé."
+
+#: components/settings/csv-import.tsx
+msgid "Scrapped: everything the import made is gone."
+msgstr "Annulé : tout ce que l’import a créé a disparu."
+
 #: components/ticket-search.tsx
 msgid "Search"
 msgstr "Rechercher"
@@ -6608,6 +6698,7 @@ msgstr "Configurer {0}"
 #: app/settings/api-keys/page.tsx
 #: app/settings/embedding/page.tsx
 #: app/settings/file-cleanup/page.tsx
+#: app/settings/import/page.tsx
 #: app/settings/integrations/page.tsx
 #: app/settings/organization/page.tsx
 #: app/settings/page.tsx
@@ -6981,6 +7072,10 @@ msgstr "Visible par votre organisation au départ ; un administrateur de l’org
 msgid "Status"
 msgstr "Statut"
 
+#: components/settings/csv-import.tsx
+msgid "Status (becomes the board’s columns)"
+msgstr "Statut (devient les colonnes du tableau)"
+
 #: components/roadmap/item-editor.tsx
 msgid "Status <0>(set by hand until tickets are linked)</0>"
 msgstr "Statut <0>(défini manuellement jusqu’à ce que des tickets soient liés)</0>"
@@ -7187,6 +7282,7 @@ msgstr "Merci, nous l’avons bien reçu"
 msgid "That account isn’t in any Bitbucket workspaces."
 msgstr "Ce compte ne fait partie d’aucun espace de travail Bitbucket."
 
+#: components/settings/csv-import.tsx
 #: components/settings/webhooks.tsx
 msgid "That didn’t work. Please try again."
 msgstr "Cela n’a pas marché. Veuillez réessayer."
@@ -7290,6 +7386,11 @@ msgstr "l’agenda des jours fériés doit être un agenda de jours fériés pub
 #: lib/error-codes.ts
 msgid "the holidays calendar should be a calendar ID, e.g. en.uk#holiday@group.v.calendar.google.com"
 msgstr "l’agenda des jours fériés doit être un ID d’agenda, ex. en.uk#holiday@group.v.calendar.google.com"
+
+#. placeholder {0}: job.error
+#: components/settings/csv-import.tsx
+msgid "The import failed, and nothing was kept: {0}"
+msgstr "L’import a échoué et rien n’a été conservé : {0}"
 
 #: components/settings/language.tsx
 msgid "The language TrackLin.es is in for you, on every device."
@@ -7444,6 +7545,15 @@ msgstr "ce lien a expiré ou a déjà été utilisé : envoyez un message à l�
 #: components/settings/chat-dm.tsx
 msgid "This link has expired or was already used. Send the TrackLin.es app a message in Google Chat for a new one."
 msgstr "Ce lien a expiré ou a déjà été utilisé. Envoyez un message à l’application TrackLin.es dans Google Chat pour en obtenir un nouveau."
+
+#. placeholder {0}: job.projects?.[0]?.name
+#. placeholder {1}: job.projects?.[0]?.prefix
+#. placeholder {2}: job.planned.tickets
+#. placeholder {3}: job.planned.boards
+#. placeholder {4}: job.planned.columns
+#: components/settings/csv-import.tsx
+msgid "This makes the project <0>{0}</0> ({1}) with {2} tickets, {3} boards and {4} columns."
+msgstr "Cela crée le projet <0>{0}</0> ({1}) avec {2} tickets, {3} tableaux et {4} colonnes."
 
 #: app/global-not-found.tsx
 msgid "This page doesn’t exist"
@@ -7702,6 +7812,7 @@ msgstr "Chronologie"
 #: components/board/ticket-dialog.tsx
 #: components/intake/request-form.tsx
 #: components/roadmap/item-editor.tsx
+#: components/settings/csv-import.tsx
 msgid "Title"
 msgstr "Titre"
 
@@ -7773,6 +7884,7 @@ msgstr "Activer"
 msgid "Turned off after repeated failed deliveries. Fix the endpoint, then turn it back on."
 msgstr "Désactivé après des échecs de livraison répétés. Corrigez le point de terminaison, puis réactivez-le."
 
+#: components/settings/csv-import.tsx
 #: components/ticket-type.tsx
 msgid "Type"
 msgstr "Type"
@@ -8174,6 +8286,10 @@ msgstr "Quel agent"
 #: components/settings/api-keys.tsx
 msgid "Which agent?"
 msgstr "Quel agent ?"
+
+#: components/settings/csv-import.tsx
+msgid "Which column is which"
+msgstr "Quelle colonne est quoi"
 
 #: components/roadmap/visibility.tsx
 msgid "Who can see this roadmap?"
