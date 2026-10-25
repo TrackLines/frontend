@@ -173,6 +173,11 @@ msgstr "Description de {0}"
 msgid "{0} estimates every ticket, so size this one before it joins the board."
 msgstr "{0} estime chaque ticket, donc dimensionnez celui-ci avant qu’il rejoigne le tableau."
 
+#. placeholder {0}: b.to_review
+#: components/project/refinement.tsx
+msgid "{0} imported tickets wait for review: <0>settle them on the board</0> before planning its first sprint."
+msgstr "{0} tickets importés attendent une revue : <0>traitez-les sur le tableau</0> avant de planifier son premier sprint."
+
 #. placeholder {0}: st.backlog
 #: components/project/project-card.tsx
 msgid "{0} in backlog"
@@ -419,6 +424,10 @@ msgstr "{members, plural, one {# membre} other {# membres}}, sur {limit} maximum
 #: lib/timebox.ts
 msgid "{mm}m"
 msgstr "{mm} min"
+
+#: components/board/import-review.tsx
+msgid "{n, plural, one {# imported ticket to review before the first sprint} other {# imported tickets to review before the first sprint}}"
+msgstr "{n, plural, one {# ticket importé à revoir avant le premier sprint} other {# tickets importés à revoir avant le premier sprint}}"
 
 #: components/reports/rollup-view.tsx
 msgid "{n} of {total}"
@@ -1005,6 +1014,10 @@ msgstr "Tous les projets"
 msgid "All roadmaps"
 msgstr "Toutes les feuilles de route"
 
+#: components/board/import-review.tsx
+msgid "All settled: the board can start its first sprint."
+msgstr "Tout est traité : le tableau peut lancer son premier sprint."
+
 #: components/settings/embedding.tsx
 msgid "Allowed sites"
 msgstr "Sites autorisés"
@@ -1048,6 +1061,10 @@ msgstr "Un administrateur de l’organisation peut connecter votre Google Worksp
 #: lib/help.ts
 msgid "An organization admin connects Google Calendar in Settings → Integrations → Calendars; people away are marked in assigning and standup."
 msgstr "Un administrateur de l’organisation connecte Google Agenda dans Paramètres → Intégrations → Agendas ; les personnes absentes sont signalées lors de l’assignation et du standup."
+
+#: components/board/import-review.tsx
+msgid "An organization admin or this board’s team leader settles these."
+msgstr "Un administrateur de l’organisation ou le responsable d’équipe de ce tableau les traite."
 
 #: lib/error-codes.ts
 msgid "an organization can have up to 10 webhook endpoints"
@@ -1691,6 +1708,7 @@ msgstr "client doit être l’un de claude-code, claude-desktop, codex, cursor, 
 msgid "Close"
 msgstr "Fermer"
 
+#: components/board/import-review.tsx
 #: components/board/ticket-dialog.tsx
 msgid "Close as won’t do"
 msgstr "Fermer comme ne sera pas fait"
@@ -1727,6 +1745,10 @@ msgstr "fermé comme ne sera pas fait"
 #: lib/google-chat.ts
 msgid "Closed as won’t do"
 msgstr "Fermé comme ne sera pas fait"
+
+#: components/board/import-review.tsx
+msgid "Closed in the review after importing: untouched for over 6 months."
+msgstr "Fermé lors de la revue après l’import : inchangé depuis plus de 6 mois."
 
 #: components/ticket/history-panel.tsx
 msgid "closed it as a duplicate"
@@ -3843,6 +3865,10 @@ msgstr "Importer"
 msgid "Imported"
 msgstr "Importé"
 
+#: components/board/import-review.tsx
+msgid "Imported tickets to review"
+msgstr "Tickets importés à revoir"
+
 #: app/settings/import/page.tsx
 msgid "Importing isn’t turned on for your organization yet."
 msgstr "L’import n’est pas encore activé pour votre organisation."
@@ -4038,6 +4064,7 @@ msgstr "les tableaux Kanban n’ont pas de sprints"
 msgid "Kanban charts"
 msgstr "Graphiques Kanban"
 
+#: components/board/import-review.tsx
 #: components/settings/file-cleanup.tsx
 #: components/ticket/attachments.tsx
 msgid "Keep"
@@ -4121,6 +4148,10 @@ msgstr "30 derniers jours"
 #: lib/sprint-report.ts
 msgid "Last 90 days"
 msgstr "90 derniers jours"
+
+#: components/board/import-review.tsx
+msgid "last changed <0/>"
+msgstr "dernière modification <0/>"
 
 #: lib/sprint-report.ts
 msgid "Last quarter"
@@ -4407,6 +4438,7 @@ msgid "Loading your work…"
 msgstr "Chargement de votre travail…"
 
 #: app/account/page.tsx
+#: components/board/import-review.tsx
 #: components/board/next-sprints.tsx
 #: components/dashboard-work.tsx
 #: components/intake/intake-settings.tsx
@@ -5224,6 +5256,10 @@ msgstr "Rien ne vous est assigné pour le moment."
 msgid "Nothing dismissed."
 msgstr "Rien n’a été ignoré."
 
+#: components/board/import-review.tsx
+msgid "Nothing happened to these for over 6 months before the import. Keep each one in the backlog, or close it as won’t do. The first sprint can start once they’re all settled."
+msgstr "Rien ne s’est passé pour ceux-ci pendant plus de 6 mois avant l’import. Gardez chacun dans le backlog, ou fermez-le comme abandonné. Le premier sprint pourra démarrer une fois qu’ils seront tous traités."
+
 #: components/settings/file-cleanup.tsx
 msgid "Nothing is due to be deleted."
 msgstr "Rien n’est à supprimer."
@@ -5710,6 +5746,10 @@ msgstr "l’adhésion à l’organisation n’est pas encore active"
 #: components/user-menu.tsx
 msgid "Organization settings"
 msgstr "Paramètres de l’organisation"
+
+#: components/board/import-review.tsx
+msgid "original"
+msgstr "original"
 
 #: components/board/ticket-view.tsx
 msgid "Original:"
@@ -6323,6 +6363,14 @@ msgstr "Vérification"
 #: app/boards/[id]/edit/page.tsx
 msgid "Review column"
 msgstr "Colonne de vérification"
+
+#: components/board/sprint-bar.tsx
+msgid "Review the imported tickets first"
+msgstr "Revoyez d’abord les tickets importés"
+
+#: components/board/import-review.tsx
+msgid "Review them"
+msgstr "Les revoir"
 
 #: app/settings/organization/page.tsx
 #: components/settings/api-keys.tsx
@@ -7282,6 +7330,7 @@ msgstr "Merci, nous l’avons bien reçu"
 msgid "That account isn’t in any Bitbucket workspaces."
 msgstr "Ce compte ne fait partie d’aucun espace de travail Bitbucket."
 
+#: components/board/import-review.tsx
 #: components/settings/csv-import.tsx
 #: components/settings/webhooks.tsx
 msgid "That didn’t work. Please try again."

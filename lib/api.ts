@@ -52,6 +52,7 @@ export type Board = {
   created_at: string; updated_at: string; columns?: Column[];
   style?: BoardStyle;
   hidden_done?: number; // kanban: Done tickets finished over 14 days ago, left off the board
+  to_review?: number; // imported tickets set aside: no sprint can start or be planned until it's 0 (TL-541)
   estimate_scale?: EstimateScale;
   agent_review?: boolean; // agents' moves into Done wait for a person's review
   dev_complete_column_id?: string | null; // merged PRs land here, a release moves them to Done (TL-531)
@@ -584,6 +585,15 @@ export const plannedSprints = {
   // plannedId null takes the ticket out; estimate on the planned board's scale
   planTicket: (ticketId: string, plannedId: string | null, token: T, estimate?: string) =>
     api<void>(`/tickets/${ticketId}/planned-sprint`, { method: 'PUT', body: { planned_sprint_id: plannedId, ...(estimate !== undefined && { estimate }) }, token }),
+};
+
+// Imported boards (TL-541/545): tickets an import set aside, untouched for over 6 months in the source,
+// to keep (stays in the backlog) or close as won't do (tickets.resolve) before the first sprint.
+export type ReviewTicket = { id: string; key: string; title: string; type: TicketType; priority: string; updated_at: string; url: string };
+export const importReview = {
+  list: (boardId: string, token: T) => api<ReviewTicket[]>(`/boards/${encodeURIComponent(boardId)}/import-review`, { token }),
+  keep: (boardId: string, ticketId: string, token: T) =>
+    api<void>(`/boards/${encodeURIComponent(boardId)}/import-review/${encodeURIComponent(ticketId)}/keep`, { method: 'POST', token }),
 };
 
 export const sprints = {

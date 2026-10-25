@@ -12,6 +12,7 @@ import { ApiError, sprints, type Board, type Sprint } from '@/lib/api';
 import { LENGTH_PRESETS, dateInput, daysUntil, sprintLocked, sprintStatus } from './sprint-status';
 import { Charts } from './velocity';
 import { PastSprints } from './past-sprints';
+import { ImportReview } from './import-review';
 import { dates } from '@/lib/i18n';
 
 type Props = { board: Board; token: string; canManage: boolean; editMode?: boolean; onChanged: () => void };
@@ -53,7 +54,10 @@ export function SprintBar({ board, token, canManage, editMode = false, onChanged
       ) : (
         <>
           <span className="text-muted-foreground"><Trans>No sprint running — tickets aren&apos;t time-boxed.</Trans></span>
-          {canManage && !editMode && <Button size="sm" onClick={() => setStarting(true)}><Trans>Start sprint</Trans></Button>}
+          {/* an imported board settles its set-aside tickets first (TL-545) */}
+          {canManage && !editMode && <Button size="sm" disabled={(board.to_review ?? 0) > 0} title={(board.to_review ?? 0) > 0 ? t`Review the imported tickets first` : undefined}
+            onClick={() => setStarting(true)}><Trans>Start sprint</Trans></Button>}
+          {!editMode && <ImportReview board={board} token={token} canManage={canManage} onChanged={onChanged} />}
         </>
       )}
       {/* number > 1 means there's history; between sprints (closed by hand) there may be too */}
