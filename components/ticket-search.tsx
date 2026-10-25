@@ -5,6 +5,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { SearchIcon } from 'lucide-react';
+import { DueBadge } from '@/components/ticket/due-badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -30,6 +31,7 @@ export function TicketSearch() {
   const [project, setProject] = useState('');
   const [types, setTypes] = useState<TicketType[]>([]);
   const [assignee, setAssignee] = useState('');
+  const [due, setDue] = useState<'' | 'overdue' | 'soon' | 'none'>(''); // TL-632
   const [me, setMe] = useState('');
   const [projectOptions, setProjectOptions] = useState<Project[]>([]);
   const [assigneeOptions, setAssigneeOptions] = useState<Assignee[]>([]);
@@ -40,13 +42,14 @@ export function TicketSearch() {
   const requestId = useRef(0);
   const typeKey = types.join(',');
 
-  const runSearch = useCallback(async (text: string, currentProject: string, currentTypes: TicketType[], currentAssignee: string) => {
+  const runSearch = useCallback(async (text: string, currentProject: string, currentTypes: TicketType[], currentAssignee: string, currentDue: typeof due = '') => {
     if (!token) return;
     const request = ++requestId.current;
     setLoading(true);
     setError('');
     try {
-      const found = await tickets.search({ text, project: currentProject, types: currentTypes, assignee: currentAssignee, limit: 20 }, token);
+      const found = await tickets.search({ text, project: currentProject, types: currentTypes, assignee: currentAssignee, limit: 20,
+        ...(currentDue && { due: currentDue }), ...((currentDue === 'overdue' || currentDue === 'soon') && { sort: 'due' as const }) }, token);
       if (request === requestId.current) {
         setResults(found);
         setActive(0);
@@ -72,9 +75,9 @@ export function TicketSearch() {
 
   useEffect(() => {
     if (!open || !token) return;
-    const timeout = setTimeout(() => void runSearch(query, project, types, assignee), query.trim() ? 180 : 0);
+    const timeout = setTimeout(() => void runSearch(query, project, types, assignee, due), query.trim() ? 180 : 0);
     return () => clearTimeout(timeout);
-  }, [open, token, query, project, typeKey, assignee, runSearch]);
+  }, [open, token, query, project, typeKey, assignee, due, runSearch]);
 
   useEffect(() => {
     function onShortcut(event: globalThis.KeyboardEvent) {
@@ -129,11 +132,17 @@ export function TicketSearch() {
                 <option value="unassigned">{t`Unassigned`}</option>
                 {assigneeChoices(assigneeOptions, me).map((person) => <option key={person.id} value={person.id}>{shownLabel(i18n, person)}</option>)}
               </select>
-              {(project || types.length || assignee) ? <Button type="button" size="sm" variant="link" onClick={() => { setProject(''); setTypes([]); setAssignee(''); }}><Trans>Clear filters</Trans></Button> : null}
+              <select aria-label={t`Filter by due date`} className="h-8 rounded-lg border border-input bg-background px-2 text-sm" value={due} onChange={(event) => setDue(event.target.value as typeof due)}>
+                <option value="">{t`Any due date`}</option>
+                <option value="overdue">{t`Overdue`}</option>
+                <option value="soon">{t`Due today or tomorrow`}</option>
+                <option value="none">{t`No due date`}</option>
+              </select>
+              {(project || types.length || assignee || due) ? <Button type="button" size="sm" variant="link" onClick={() => { setProject(''); setTypes([]); setAssignee(''); setDue(''); }}><Trans>Clear filters</Trans></Button> : null}
             </div>
           </div>
           <div id="ticket-search-results" role="listbox" aria-label={t`Ticket search results`} className="max-h-[45vh] overflow-y-auto border-t px-2 py-2">
-            <SearchResults results={results} loading={loading} error={error} active={active} onChoose={choose} onActive={setActive} onRetry={() => void runSearch(query, project, types, assignee)} />
+            <SearchResults results={results} loading={loading} error={error} active={active} onChoose={choose} onActive={setActive} onRetry={() => void runSearch(query, project, types, assignee, due)} />
           </div>
           <p className="border-t px-4 py-2 text-xs text-muted-foreground"><Trans>↑↓ to move · Enter to open · Esc to close</Trans></p>
         </DialogContent>
@@ -180,6 +189,7 @@ export function SearchResults({ results, loading, error, active, onChoose, onAct
                 <span className="block truncate text-xs text-muted-foreground">{ticket.project_name} · {ticket.board_name ? `${ticket.board_name}${ticket.column_name ? ` · ${ticket.column_name}` : ''}` : t`Backlog`}</span>
               </span>
               {ticket.type && <TypeBadge type={ticket.type} />}
+              <DueBadge due={ticket.due_date} done={ticket.done} />
               <PriorityBadge priority={ticket.priority} hideDefault />
             </button>
             {ticket.key && <CopyButton value={ticket.key} label={t`Copy key`} size="sm" ariaLabel={t`Copy ticket key ${ticket.key}`} />}

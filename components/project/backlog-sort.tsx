@@ -11,7 +11,7 @@ export function BacklogSortSelect({ sort, onSortChange, closed = false, id = 'ba
 }) {
   const { t } = useLingui();
   // the labels, so the closed select shows "Newest first", not "newest"
-  const labels: Record<BacklogSort, string> = { manual: closed ? t`Recently closed` : t`Manual order`, newest: t`Newest first`, oldest: t`Oldest first` };
+  const labels: Record<BacklogSort, string> = { manual: closed ? t`Recently closed` : t`Manual order`, newest: t`Newest first`, oldest: t`Oldest first`, due: t`Due soonest` };
   return (
     <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
       <label htmlFor={id}><Trans>Sort</Trans></label>

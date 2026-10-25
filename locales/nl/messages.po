@@ -51,6 +51,11 @@ msgstr "{0, plural, one {# bord} other {# borden}}"
 msgid "{0, plural, one {# board} other {# boards}}, one per team. To archive or delete one, open it and use Edit board."
 msgstr "{0, plural, one {# bord} other {# borden}}, één per team. Open een bord en gebruik Bord bewerken om het te archiveren of te verwijderen."
 
+#. placeholder {0}: -d
+#: lib/due.ts
+msgid "{0, plural, one {# day overdue} other {# days overdue}}"
+msgstr "{0, plural, one {# dag te laat} other {# dagen te laat}}"
+
 #. placeholder {0}: Number(days.toFixed(1))
 #. placeholder {0}: plan.length_days
 #. placeholder {0}: sprint.length_days
@@ -270,6 +275,10 @@ msgstr "{count} zonder schatting"
 #: components/project/project-card.tsx
 msgid "{count} urgent"
 msgstr "{count} urgent"
+
+#: lib/due.ts
+msgid "{d, plural, one {Due in # day} other {Due in # days}}"
+msgstr "{d, plural, one {Over # dag} other {Over # dagen}}"
 
 #: lib/timebox.ts
 msgid "{d}d"
@@ -1037,6 +1046,10 @@ msgstr "Een ander project in deze organisatie gebruikt die prefix al."
 msgid "Any assignee"
 msgstr "Elke toegewezene"
 
+#: components/ticket-search.tsx
+msgid "Any due date"
+msgstr "Elke vervaldatum"
+
 #: components/mcp-connect.tsx
 msgid "Any MCP client that supports remote servers over Streamable HTTP:"
 msgstr "Elke MCP-client die externe servers via Streamable HTTP ondersteunt:"
@@ -1605,6 +1618,10 @@ msgstr "Prioriteitsfilter wissen"
 #: components/notifications-bell.tsx
 msgid "Clear read"
 msgstr "Gelezen wissen"
+
+#: components/ticket/due-date-field.tsx
+msgid "Clear the due date"
+msgstr "Vervaldatum wissen"
 
 #. placeholder {0}: notificationLine(i18n, n, people)
 #: components/notifications-bell.tsx
@@ -2861,9 +2878,33 @@ msgstr "deadline {due}"
 msgid "Due {endLabel}"
 msgstr "Deadline {endLabel}"
 
+#: components/ticket/due-date-field.tsx
+msgid "Due date"
+msgstr "Vervaldatum"
+
+#: components/ticket/due-date-field.tsx
+msgid "Due date <0>(optional)</0>"
+msgstr "Vervaldatum <0>(optioneel)</0>"
+
 #: components/settings/file-cleanup.tsx
 msgid "Due for deletion"
 msgstr "Wordt binnenkort verwijderd"
+
+#: components/project/backlog-sort.tsx
+msgid "Due soonest"
+msgstr "Eerst vervallend"
+
+#: lib/due.ts
+msgid "Due today"
+msgstr "Vandaag"
+
+#: components/ticket-search.tsx
+msgid "Due today or tomorrow"
+msgstr "Vandaag of morgen"
+
+#: lib/due.ts
+msgid "Due tomorrow"
+msgstr "Morgen"
 
 #: app/tickets/[id]/page.tsx
 #: components/board/ticket-view.tsx
@@ -3297,6 +3338,10 @@ msgstr "Filteren op toegewezene"
 #: components/my-work.tsx
 msgid "Filter by board"
 msgstr "Filteren op bord"
+
+#: components/ticket-search.tsx
+msgid "Filter by due date"
+msgstr "Filter op vervaldatum"
 
 #: components/board/epic-filter.tsx
 msgid "Filter by epic"
@@ -4666,6 +4711,10 @@ msgstr "Geen afgeronde tickets in de backlog."
 msgid "No done tickets mention you."
 msgstr "Geen afgeronde tickets noemen je."
 
+#: components/ticket-search.tsx
+msgid "No due date"
+msgstr "Geen vervaldatum"
+
 #: components/project/backlog.tsx
 msgid "No duplicate tickets in the backlog."
 msgstr "Geen dubbele tickets in de backlog."
@@ -5512,6 +5561,7 @@ msgid "Overall progress"
 msgstr "Totale voortgang"
 
 #: components/roadmap/timeline.tsx
+#: components/ticket-search.tsx
 msgid "Overdue"
 msgstr "Te laat"
 
@@ -5930,6 +5980,11 @@ msgstr "Teruggevallen"
 #: components/ticket/pull-requests-panel.tsx
 msgid "Released in {0}"
 msgstr "Uitgebracht in {0}"
+
+#. placeholder {0}: n.text
+#: lib/notifications.ts
+msgid "Reminder: {0}"
+msgstr "Herinnering: {0}"
 
 #: components/project/refinement.tsx
 #: components/roadmap/item-editor.tsx

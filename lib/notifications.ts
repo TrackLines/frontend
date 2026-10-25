@@ -23,6 +23,7 @@ export function actorName(i18n: I18n, actor: string, people: Assignee[]): string
 // The line a notification reads as: "Ava assigned you TL-12: Fix login".
 export function notificationLine(i18n: I18n, n: Pick<AppNotification, 'actor' | 'text'> & { kind?: string }, people: Assignee[]): string {
   if (n.kind === 'legal') return n.text; // from TrackLin.es itself: "We've updated our Terms of service…" (TL-424)
+  if (n.kind === 'due') return i18n._(msg`Reminder: ${n.text}`); // nobody did it: the date came (TL-632)
   return `${actorName(i18n, n.actor, people)} ${n.text}`; // text comes from the backend, in English
 }
 
