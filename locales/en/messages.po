@@ -907,6 +907,7 @@ msgstr "AI key"
 msgid "AI keys can be assigned tickets."
 msgstr "AI keys can be assigned tickets."
 
+#: components/mentions.tsx
 #: components/project/backlog.tsx
 msgid "All"
 msgstr "All"
@@ -3431,10 +3432,6 @@ msgstr "health must be on_track, at_risk or off_track and note must be 1 to 2000
 msgid "Help"
 msgstr "Help"
 
-#: components/mentions.tsx
-msgid "Hide done"
-msgstr "Hide done"
-
 #: components/notifications-bell.tsx
 msgid "Hide read"
 msgstr "Hide read"
@@ -3565,6 +3562,10 @@ msgstr "How do I switch to dark mode?"
 #: lib/help.ts
 msgid "How do I upgrade or change plan?"
 msgstr "How do I upgrade or change plan?"
+
+#: lib/help.ts
+msgid "How do I watch a ticket?"
+msgstr "How do I watch a ticket?"
 
 #: lib/help.ts
 msgid "How does it know who’s on holiday?"
@@ -4234,6 +4235,10 @@ msgstr "Member removed from team."
 msgid "Members"
 msgstr "Members"
 
+#: lib/help.ts
+msgid "Mention yourself in a comment (type @ and your name). Anyone mentioned on a ticket hears about its comments, moves and finishing. To stop, press the mouth next to it on your Mentions page; press it again to watch again."
+msgstr "Mention yourself in a comment (type @ and your name). Anyone mentioned on a ticket hears about its comments, moves and finishing. To stop, press the mouth next to it on your Mentions page; press it again to watch again."
+
 #: components/notification-icon.tsx
 msgid "Mentioned you"
 msgstr "Mentioned you"
@@ -4544,6 +4549,10 @@ msgstr "No details provided."
 msgid "No done tickets in the backlog."
 msgstr "No done tickets in the backlog."
 
+#: components/mentions.tsx
+msgid "No done tickets mention you."
+msgstr "No done tickets mention you."
+
 #: components/project/backlog.tsx
 msgid "No duplicate tickets in the backlog."
 msgstr "No duplicate tickets in the backlog."
@@ -4811,6 +4820,10 @@ msgstr "Not connected"
 #: components/ticket/dependencies.tsx
 msgid "not done"
 msgstr "not done"
+
+#: components/mentions.tsx
+msgid "Not done"
+msgstr "Not done"
 
 #: components/markdown.tsx
 msgid "Not done: click to mark done"
@@ -6280,6 +6293,7 @@ msgstr "Share of planned work done each sprint. The band, 80–100%, is on targe
 msgid "Short, dated notes on how the roadmap is going, shown on the roadmap with the newest first."
 msgstr "Short, dated notes on how the roadmap is going, shown on the roadmap with the newest first."
 
+#: components/mentions.tsx
 #: components/project/backlog.tsx
 msgid "Show"
 msgstr "Show"
@@ -6647,6 +6661,10 @@ msgstr "Stop posting to this Google Chat space?"
 #: components/ticket/dependencies.tsx
 msgid "Stop waiting on {title}"
 msgstr "Stop waiting on {title}"
+
+#: components/mentions.tsx
+msgid "Stop watching"
+msgstr "Stop watching"
 
 #: app/boards/[id]/edit/page.tsx
 msgid "Style"
@@ -7581,6 +7599,10 @@ msgstr "Waiting on tickets that aren't done yet"
 #: components/board/standup.tsx
 msgid "waiting to start"
 msgstr "waiting to start"
+
+#: components/mentions.tsx
+msgid "Watch again"
+msgstr "Watch again"
 
 #: app/global-error.tsx
 msgid "We’ve been told about it."

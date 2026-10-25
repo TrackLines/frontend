@@ -6,7 +6,7 @@ import type { Mention, TicketSearchResult } from '@/lib/api';
 const mine = { id: 't1', key: 'TL-12', title: 'Fix login', column_id: 'c', position: 0, description: '', created_by: 'x', priority: 'urgent', blocked: true,
   project_name: 'TrackLines', board_id: 'b', board_name: 'Backend', column_name: 'In progress', done: false, snippet: '' } as TicketSearchResult;
 const raised = { ...mine, id: 't9', key: 'TL-99', title: 'Idea I raised', blocked: false, priority: 'medium', column_name: null } as TicketSearchResult;
-const mention: Mention = { ticket_id: 't2', key: 'TL-40', title: 'Old bug', done: true, project_name: 'TrackLines', actor: 'user_bo', comment_id: 'c1', mentioned_at: new Date().toISOString() };
+const mention: Mention = { ticket_id: 't2', key: 'TL-40', title: 'Old bug', done: true, project_name: 'TrackLines', actor: 'user_bo', comment_id: 'c1', mentioned_at: new Date().toISOString(), muted: false };
 
 test('my assigned tickets and the tickets that mention me', () => {
   const html = renderToStaticMarkup(<DashboardWorkView assigned={[mine]} created={[]} mentioned={[mention, { ...mention, ticket_id: 't3', key: 'TL-41', actor: 'Codex', done: false }]}
@@ -58,4 +58,12 @@ test('Created by me shows 4, so its footer takes the fifth row and the card keep
   const four = Array.from({ length: 4 }, (_, i) => ({ ...raised, id: `c${i}`, key: `TL-${i}` }));
   const html = renderToStaticMarkup(<DashboardWorkView assigned={[mine]} created={four} mentioned={[]} people={[]} totals={{ created: 9 }} />);
   expect(html).toContain('of 9 tickets');
+});
+
+// TL-588: the panel's mentions have the same watch toggle as the Mentions page
+test('mentions in the panel have the watch toggle', () => {
+  const html = renderToStaticMarkup(<DashboardWorkView assigned={[]} created={[]} mentioned={[mention, { ...mention, ticket_id: 't3', muted: true }]} people={[]} token="tk" />);
+  expect(html).toContain('aria-label="Stop watching"');
+  expect(html).toContain('aria-label="Watch again"');
+  expect(html).toContain('group-hover:opacity-100'); // only on hover in the panel, so it doesn't look busy
 });

@@ -709,13 +709,18 @@ export type AppNotification = {
 export type Mention = {
   ticket_id: string; key: string; title: string; done: boolean; project_name: string;
   actor: string; comment_id: string; mentioned_at: string;
+  muted: boolean; // not watching it any more (TL-587); it stays listed
 };
 export type MentionsPage = { mentions: Mention[]; total: number; page: number; per_page: number };
+export type MentionStatus = 'open' | 'done' | 'all'; // done covers closed tickets too (TL-589)
 export const mentions = {
-  list: (token: T, limit = 10) => api<Mention[]>(`/mentions?limit=${limit}`, { token }),
-  // a page at a time with the total; hideDone leaves out done and closed tickets
-  page: (token: T, page: number, perPage: number, hideDone: boolean) =>
-    api<MentionsPage>(`/mentions/page?page=${page}&per_page=${perPage}${hideDone ? '&hide_done=true' : ''}`, { token }),
+  list: (token: T, limit = 10, status: MentionStatus = 'all') => api<Mention[]>(`/mentions?limit=${limit}&status=${status}`, { token }),
+  // a page at a time with the total
+  page: (token: T, page: number, perPage: number, status: MentionStatus) =>
+    api<MentionsPage>(`/mentions/page?page=${page}&per_page=${perPage}&status=${status}`, { token }),
+  // stop watching a ticket you're mentioned on, or watch it again (TL-587)
+  mute: (ticketId: string, token: T) => api<void>(`/mentions/${ticketId}/mute`, { method: 'PUT', token }),
+  unmute: (ticketId: string, token: T) => api<void>(`/mentions/${ticketId}/mute`, { method: 'DELETE', token }),
 };
 
 export const notifications = {
