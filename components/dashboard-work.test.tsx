@@ -65,4 +65,5 @@ test('mentions in the panel have the watch toggle', () => {
   const html = renderToStaticMarkup(<DashboardWorkView assigned={[]} created={[]} mentioned={[mention, { ...mention, ticket_id: 't3', muted: true }]} people={[]} token="tk" />);
   expect(html).toContain('aria-label="Stop watching"');
   expect(html).toContain('aria-label="Watch again"');
+  expect(html).toContain('group-hover:opacity-100'); // only on hover in the panel, so it doesn't look busy
 });

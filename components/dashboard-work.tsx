@@ -97,7 +97,7 @@ export function DashboardWorkView({ assigned, created, mentioned, people, totals
   const mentionsPanel = !(pending(mentioned) || has(mentioned)) ? null : (
     <Panel title={t`Mentions`} more={{ href: '/mentions', label: t`All mentions` }} items={mentioned} empty={t`Nobody has mentioned you yet.`}>
       {(m: Mention) => (
-        <Row key={m.ticket_id} href={`/tickets/${m.ticket_id}`} ticketKey={m.key} title={m.title} done={m.done} action={<WatchToggle mention={m} token={token} />}>
+        <Row key={m.ticket_id} href={`/tickets/${m.ticket_id}`} ticketKey={m.key} title={m.title} done={m.done} action={<WatchToggle mention={m} token={token} hover />}>
           <span className="truncate">{actorName(i18n, m.actor, people)} · <When iso={m.mentioned_at} /></span>
           <span className="truncate">{m.project_name}</span>
         </Row>

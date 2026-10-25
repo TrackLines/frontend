@@ -65,7 +65,7 @@ export function MentionsView({ data, people, status, token }: { data: MentionsPa
   return (
     <ul id="mentions" className="divide-y rounded-xl border">
       {data.mentions.map((m) => (
-        <li key={m.ticket_id} className="group flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2.5 text-sm">
+        <li key={m.ticket_id} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2.5 text-sm">
           <TicketKey value={m.key} />
           <Link href={`/tickets/${m.ticket_id}`} className={`min-w-0 flex-1 font-medium hover:underline ${m.done ? 'text-muted-foreground line-through' : ''}`}>{m.title}</Link>
           {m.done && <Badge variant="outline"><Trans>Done</Trans></Badge>}
@@ -78,10 +78,10 @@ export function MentionsView({ data, people, status, token }: { data: MentionsPa
   );
 }
 
-// WatchToggle: a mention row's watch switch (TL-588), shown when you hover over the row (or tab to it).
-// A mouth while you watch the ticket (you hear its comments and moves); press it to mute and it's
+// WatchToggle: a mention row's watch switch (TL-588). Always shown on the Mentions page; in the
+// dashboard panel (hover) only when you hover over the row or tab to it, so the panel stays calm. A mouth while you watch the ticket (you hear its comments and moves); press it to mute and it's
 // a closed mouth; press again to watch again, without mentioning yourself. Only on mention lists.
-export function WatchToggle({ mention, token }: { mention: Mention; token: string }) {
+export function WatchToggle({ mention, token, hover = false }: { mention: Mention; token: string; hover?: boolean }) {
   const { t } = useLingui();
   const [muted, setMuted] = useState(mention.muted);
   const [busy, setBusy] = useState(false);
@@ -99,7 +99,7 @@ export function WatchToggle({ mention, token }: { mention: Mention; token: strin
   const label = muted ? t`Watch again` : t`Stop watching`;
   return (
     <Button size="icon-xs" variant="ghost" aria-label={label} title={label} disabled={busy} onClick={toggle}
-      className="opacity-0 group-hover:opacity-100 focus-visible:opacity-100">
+      className={hover ? 'opacity-0 group-hover:opacity-100 focus-visible:opacity-100' : undefined}>
       {muted ? <MouthOff /> : <Mouth />}
     </Button>
   );

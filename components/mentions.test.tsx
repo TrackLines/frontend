@@ -27,15 +27,15 @@ test('empty, loading and failed say so; the filter changes the empty text', () =
   expect(renderToStaticMarkup(<MentionsView data="failed" people={people} status="all" token="tk" />)).toContain('role="alert"');
 });
 
-// TL-588: a mouth to stop watching, a closed mouth to watch again; hidden until you hover the row
+// TL-588: a mouth to stop watching, a closed mouth to watch again
 test('each mention has a watch toggle: a mouth while watching, a closed mouth once muted', () => {
   const html = renderToStaticMarkup(<MentionsView data={{ mentions: [m('TL-1', false), { ...m('TL-2', true), muted: true }], total: 2, page: 1, per_page: 25 }} people={people} status="all" token="tk" />);
   expect(html.match(/aria-label="Stop watching"/g)?.length).toBe(1);
   expect(html.match(/aria-label="Watch again"/g)?.length).toBe(1); // muted rows stay listed
   expect(html).toContain('lucide-mouth"');
   expect(html).toContain('lucide-mouth-off');
-  expect(html).toContain('group-hover:opacity-100');
-  expect(renderToStaticMarkup(<WatchToggle mention={m('TL-3', false)} token="tk" />)).toContain('opacity-0');
+  expect(html).not.toContain('opacity-0'); // always shown on the page (works without hover, on phones too)
+  expect(renderToStaticMarkup(<WatchToggle mention={m('TL-3', false)} token="tk" hover />)).toContain('group-hover:opacity-100');
 });
 
 const realFetch = globalThis.fetch;
