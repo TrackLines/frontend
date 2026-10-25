@@ -142,6 +142,12 @@ msgstr "{0, plural, one {Movê-lo também move o sub-ticket aberto dele neste qu
 msgid "{0, plural, one {Sending it to the backlog also moves its open sub-ticket on this board: {names}.} other {Sending it to the backlog also moves its # open sub-tickets on this board: {names}.}}"
 msgstr "{0, plural, one {Enviá-lo para o backlog também move o sub-ticket aberto dele neste quadro: {names}.} other {Enviá-lo para o backlog também move os # sub-tickets abertos dele neste quadro: {names}.}}"
 
+#. placeholder {0}: num(s.value)
+#. placeholder {1}: Math.round((s.value / total) * 100)
+#: components/reports/donut.tsx
+msgid "{0} ({1}%)"
+msgstr "{0} ({1}%)"
+
 #. placeholder {0}: column.name
 #: components/board/column.tsx
 msgid "{0} column"
@@ -2912,6 +2918,14 @@ msgid "Each board's share of planned work done in the period. The band, 80–100
 msgstr "A parcela do trabalho planejado concluída por cada quadro no período. A faixa de 80–100% está dentro da meta."
 
 #: components/reports/rollup-view.tsx
+msgid "Each one's share of the points finished, on boards that estimate."
+msgstr "A parte de cada um nos pontos concluídos, em quadros que estimam."
+
+#: components/reports/rollup-view.tsx
+msgid "Each one's share of the tickets finished, on boards that count tickets."
+msgstr "A parte de cada um nos tickets concluídos, em quadros que contam tickets."
+
+#: components/reports/rollup-view.tsx
 msgid "Each project's share of planned work done in the period. The band, 80–100%, is on target."
 msgstr "A parcela do trabalho planejado concluída por cada projeto no período. A faixa de 80–100% está dentro da meta."
 
@@ -3147,6 +3161,14 @@ msgstr "Todos aparecem como de folga nos eventos de dia inteiro dele. Seu própr
 msgid "Everyone who can read this roadmap sees the update, with your name. It can’t be edited or deleted once posted."
 msgstr "Todos que podem ler este roadmap veem a atualização, com o seu nome. Ela não pode ser editada nem excluída depois de publicada."
 
+#: components/reports/report-view.tsx
+msgid "Everything finished in the period, by type, in points."
+msgstr "Tudo o que foi concluído no período, por tipo, em pontos."
+
+#: components/reports/report-view.tsx
+msgid "Everything finished in the period, by type, in tickets."
+msgstr "Tudo o que foi concluído no período, por tipo, em tickets."
+
 #: components/settings/api-keys.tsx
 msgid "expired: make a new key"
 msgstr "expirada: crie uma nova chave"
@@ -3286,6 +3308,10 @@ msgstr "Concluídos por sprint e a média das três últimas (a linha), em ponto
 #: components/reports/report-view.tsx
 msgid "Finished per sprint, and the average of the last three (the line), in tickets."
 msgstr "Concluídos por sprint e a média das três últimas (a linha), em tickets."
+
+#: components/reports/report-view.tsx
+msgid "Finished sprints that set a goal: met or not."
+msgstr "Sprints concluídas com meta: cumprida ou não."
 
 #: components/board/column-list.tsx
 msgid "first: new tickets start here"
@@ -4262,6 +4288,7 @@ msgid "Merged"
 msgstr "Merge feito"
 
 #: components/reports/report-view.tsx
+#: components/reports/rollup-view.tsx
 msgid "Met"
 msgstr "Atingida"
 
@@ -4851,6 +4878,7 @@ msgid "Not linked"
 msgstr "Não vinculado"
 
 #: components/reports/report-view.tsx
+#: components/reports/rollup-view.tsx
 msgid "Not met"
 msgstr "Não atingida"
 
@@ -5544,6 +5572,14 @@ msgstr "Pontos concluídos"
 #: components/reports/rollup-view.tsx
 msgid "Points delivered"
 msgstr "Pontos entregues"
+
+#: components/reports/rollup-view.tsx
+msgid "Points delivered by board"
+msgstr "Pontos entregues por quadro"
+
+#: components/reports/rollup-view.tsx
+msgid "Points delivered by project"
+msgstr "Pontos entregues por projeto"
 
 #: components/board/velocity.tsx
 msgid "points done"
@@ -6533,6 +6569,7 @@ msgid "Sprint goal:"
 msgstr "Meta da sprint:"
 
 #: components/reports/report-view.tsx
+#: components/reports/rollup-view.tsx
 msgid "Sprint goals"
 msgstr "Metas das sprints"
 
@@ -6567,6 +6604,10 @@ msgstr "Sprints"
 #: components/reports/rollup-view.tsx
 msgid "sprints that set a goal"
 msgstr "sprints que definiram uma meta"
+
+#: components/reports/rollup-view.tsx
+msgid "Sprints that set a goal: met or not."
+msgstr "Sprints com meta: cumprida ou não."
 
 #: app/boards/[id]/edit/page.tsx
 msgid "Sprints: time boxes. Kanban: continuous flow."
@@ -7250,6 +7291,14 @@ msgstr "Tickets concluídos por semana"
 msgid "Tickets delivered"
 msgstr "Tickets entregues"
 
+#: components/reports/rollup-view.tsx
+msgid "Tickets delivered by board"
+msgstr "Tickets entregues por quadro"
+
+#: components/reports/rollup-view.tsx
+msgid "Tickets delivered by project"
+msgstr "Tickets entregues por projeto"
+
 #: components/board/velocity.tsx
 msgid "tickets done"
 msgstr "tickets concluídos"
@@ -7361,6 +7410,11 @@ msgstr "origens de embed demais para esta organização"
 #: lib/error-codes.ts
 msgid "too many requests from you; please try again later"
 msgstr "solicitações demais de você; tente novamente mais tarde"
+
+#. placeholder {0}: num(total)
+#: components/reports/donut.tsx
+msgid "Total: {0}"
+msgstr "Total: {0}"
 
 #: components/mcp-connect.tsx
 msgid "TrackLin.es has a built-in MCP server, so agents can read boards, claim tickets, move them and comment."
@@ -7805,6 +7859,10 @@ msgstr "Não será feito"
 #: components/reports/report-view.tsx
 msgid "Work mix"
 msgstr "Mix de trabalho"
+
+#: components/reports/report-view.tsx
+msgid "Work mix, whole period"
+msgstr "Mix de trabalho, período inteiro"
 
 #: components/settings/google-calendar.tsx
 msgid "Workspace domain"

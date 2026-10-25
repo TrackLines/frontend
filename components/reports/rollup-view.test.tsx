@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 import { render as renderToStaticMarkup } from '@/test/i18n';
-import { delivered, RollupView } from './rollup-view';
+import { delivered, RollupView, shares } from './rollup-view';
 import { i18nFor } from '@/lib/i18n';
 import { OrgReportCard, ProjectReportLink } from './report-links';
 import type { BoardReport, ReportTotals, RollupReport } from '@/lib/api';
@@ -48,4 +48,15 @@ test('nothing finished: says so', () => {
 test('the project button and the org settings card link to their reports (no flag)', () => {
   expect(renderToStaticMarkup(<ProjectReportLink projectId="p1" />)).toContain('href="/reports?project=p1"');
   expect(renderToStaticMarkup(<OrgReportCard />)).toContain('href="/reports?org=1"');
+});
+
+test('donuts: goals met, and each board\'s share of what was delivered, points and tickets apart (TL-619)', () => {
+  const html = renderToStaticMarkup(<RollupView report={project} range={range} />);
+  for (const chart of ['Sprint goals', 'Points delivered by board', 'Tickets delivered by board']) expect(html).toContain(`aria-label="${chart}"`);
+  expect(html).toContain('1 (50%)'); // 1 of 2 goals met, 1 missed
+  expect(shares(project, 'points')).toEqual([{ key: 'b1', label: 'Backend', value: 8 }]);
+  expect(shares(project, 'tickets')).toEqual([{ key: 'b2', label: 'Design', value: 1 }]);
+  const org: RollupReport = { ...project, boards: undefined, projects: [{ ...project, id: 'p1', name: 'Shop' }, { ...project, id: 'p2', name: 'Ops', points: null }] };
+  expect(shares(org, 'points')).toEqual([{ key: 'p1', label: 'Shop', value: 8 }, { key: 'p2', label: 'Ops', value: 0 }]);
+  for (const banned of ['assign', 'user_']) expect(html).not.toContain(banned); // never people
 });

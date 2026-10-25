@@ -13,7 +13,7 @@ const report: BoardReport = {
     { number: 2, starts_at: '2026-08-15T00:00:00Z', ends_at: '2026-08-29T00:00:00Z', closed_at: '2026-08-29T00:00:00Z', goal: 'Ship search', goal_met: true, planned: 3, done: 2, predictability: 0.667, added: 1, removed: 1, carried: 0, velocity: 1.5, approved_over: null, mix: [{ type: 'bug', count: 1, value: 1 }, { type: 'feature', count: 1, value: 1 }] },
     { number: 3, starts_at: '2026-08-29T00:00:00Z', ends_at: '2026-09-12T00:00:00Z', closed_at: null, goal: 'Billing', goal_met: null, planned: 5, done: 1, predictability: 0.2, added: 0, removed: 0, carried: null, velocity: null, approved_over: null, mix: [] },
   ],
-  totals: { sprints: 2, planned: 7, done: 3, predictability: 0.43, added: 1, carried: 3, velocity: 1.5, mix: [] },
+  totals: { sprints: 2, planned: 7, done: 3, predictability: 0.43, added: 1, carried: 3, velocity: 1.5, mix: [{ type: 'bug', count: 2, value: 2 }, { type: 'feature', count: 1, value: 1 }] },
   previous: { sprints: 1, planned: 4, done: 1, predictability: 0.25, added: null, carried: 3, velocity: 1, mix: [] },
 };
 
@@ -82,4 +82,13 @@ test('spikes: how many finished within or over their timebox, only when one fini
   for (const spikes of [undefined, { done: 0, within: 0, over: 0, over_hours: 0 }]) {
     expect(renderToStaticMarkup(<ReportView report={{ ...report, spikes }} />)).not.toContain('aria-label="Spikes"');
   }
+});
+
+test('donuts: the period\'s work mix and sprint goals met, with their numbers written out (TL-619)', () => {
+  const html = renderToStaticMarkup(<ReportView report={report} />);
+  for (const chart of ['Work mix, whole period', 'Sprint goals']) expect(html).toContain(`aria-label="${chart}"`);
+  expect(html).toContain('2 (67%)'); // bugs: 2 of 3
+  expect(html).toContain('1 (33%)'); // features
+  const none = renderToStaticMarkup(<ReportView report={{ ...report, totals: { ...report.totals, mix: [] } }} />);
+  expect(none).not.toContain('aria-label="Work mix, whole period"'); // nothing finished: no donut
 });
