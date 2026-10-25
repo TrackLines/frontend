@@ -10,6 +10,7 @@ import { projects, roadmaps } from '@/lib/api';
 import { isRoadmapId, ownerOnly, readRoadmap } from '@/lib/public-roadmap';
 import { Timeline } from '@/components/roadmap/timeline';
 import { HealthBadge, UpdatesTimeline } from '@/components/roadmap/updates';
+import { RoadmapReport } from '@/components/roadmap/report';
 import { Locked } from './locked';
 
 type Props = { params: Promise<{ id: string }> };
@@ -49,10 +50,13 @@ export default async function RoadmapPage({ params }: Props) {
   return (
     <main className="mx-auto max-w-6xl px-6 py-16">
       {project && (
-        <nav aria-label={i18n._(msg`Roadmap navigation`)} className="mb-10 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+        <nav aria-label={i18n._(msg`Roadmap navigation`)} className="mb-10 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm print:hidden">
           <Link href={`/projects/${project.id}`} className="text-muted-foreground hover:text-foreground hover:underline">← {project.name}</Link>
           <Link href="/roadmaps" className="text-muted-foreground hover:text-foreground hover:underline">{i18n._(msg`All roadmaps`)}</Link>
-          {r.can_manage && <Link href={`/roadmaps/${r.id}/edit`} className={`${buttonVariants({ variant: 'outline', size: 'sm' })} ml-auto`}>{i18n._(msg`Edit roadmap`)}</Link>}
+          {r.can_manage && <div className="ml-auto flex items-center gap-2">
+            <RoadmapReport roadmap={r} updates={updates ?? []} />
+            <Link href={`/roadmaps/${r.id}/edit`} className={buttonVariants({ variant: 'outline', size: 'sm' })}>{i18n._(msg`Edit roadmap`)}</Link>
+          </div>}
         </nav>
       )}
       <header className="mb-12">

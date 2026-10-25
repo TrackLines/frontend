@@ -43,7 +43,8 @@ test('people who can’t change roadmaps see why, and no Edit links (TL-413)', a
   expect(row(true)).toContain('href="/roadmaps/r1/edit"');
   expect(row(false)).not.toContain('/edit');
   const page = await Bun.file(new URL('../../app/r/[id]/page.tsx', import.meta.url)).text();
-  expect(page).toContain('{r.can_manage && <Link href={`/roadmaps/${r.id}/edit`}'); // the public view offers Edit only to managers
+  // the public view offers Export (TL-617) and Edit only to managers
+  expect(page).toMatch(/\{r\.can_manage && <div[^>]*>\s*<RoadmapReport roadmap=\{r\} updates=\{updates \?\? \[\]\} \/>\s*<Link href=\{`\/roadmaps\/\$\{r\.id\}\/edit`\}/);
   expect(page).toContain('<UpdatesTimeline updates={updates} />'); // and shows the updates to every reader
   const project = await Bun.file(new URL('../../app/projects/[id]/page.tsx', import.meta.url)).text();
   expect(project).toContain("{manageRoadmaps && <Button variant=\"outline\" onClick={() => setDialog('roadmap')}><Trans>New roadmap</Trans></Button>}");

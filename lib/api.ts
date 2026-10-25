@@ -89,6 +89,8 @@ export type Roadmap = {
 // A roadmap update (TL-87): dated, with a health; permanent once posted. author: by name (TL-413).
 export type RoadmapHealth = 'on_track' | 'at_risk' | 'off_track';
 export type RoadmapUpdate = { id: string; health: RoadmapHealth; note: string; published_at: string; author?: string };
+// One week of a roadmap's burn-up (TL-616): linked tickets done by the week's end, of all linked then.
+export type RoadmapBurnup = { week_start: string; done: number; total: number };
 // A project holds a board per team plus its roadmaps; boards/roadmaps are only filled by projects.get.
 export type Project = {
   id: string; name: string; description: string; key_prefix?: string; created_at: string; updated_at: string;
@@ -530,6 +532,9 @@ export const roadmaps = {
   updates: (id: string, token?: T) => api<RoadmapUpdate[]>(`/roadmaps/${id}/updates`, { token }),
   postUpdate: (id: string, u: { health: RoadmapHealth; note: string }, token: T) =>
     api<RoadmapUpdate>(`/roadmaps/${id}/updates`, { method: 'POST', body: u, token }),
+  // the report (TL-616), for those who manage it: the burn-up for the PDF, or the whole thing as Markdown
+  report: (id: string, token: T) => api<{ burnup: RoadmapBurnup[] }>(`/roadmaps/${id}/report`, { token }),
+  reportMarkdown: (id: string, token: T) => api<string>(`/roadmaps/${id}/report?format=md`, { token }),
 };
 
 export const billing = {
