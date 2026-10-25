@@ -153,6 +153,11 @@ msgstr "{0} ({1}%)"
 msgid "{0} column"
 msgstr "{0} tut"
 
+#. placeholder {0}: d.toFixed(1)
+#: components/board/flow-report.tsx
+msgid "{0} days"
+msgstr "{0} jaj"
+
 #. placeholder {0}: team.name
 #: components/settings/organization.tsx
 msgid "{0} description"
@@ -223,6 +228,12 @@ msgstr "{0} vo' {1} ghoS"
 #: components/project/board-card.tsx
 msgid "{0} to do"
 msgstr "{0} ta'nIS"
+
+#. placeholder {0}: board.name
+#. placeholder {1}: flow.weeks
+#: components/board/flow-report.tsx
+msgid "{0}, the last {1} weeks"
+msgstr "{0}, Hogh {1} Qav"
 
 #. placeholder {0}: e.title
 #. placeholder {1}: percent(e.progress)
@@ -584,6 +595,10 @@ msgstr "2–6 ngutlhmey pagh mI'mey, ngutlh wa'DIch. ngaQHa'moHwI'mey ngaSbogh c
 #: components/settings/api-keys.tsx
 msgid "30 days"
 msgstr "30 jaj"
+
+#: components/board/flow-report.tsx
+msgid "85th percentile"
+msgstr "85 vatlh DIch"
 
 #. placeholder {0}: fmtDays(flow.p85_cycle_days)
 #: components/board/flow-charts.tsx
@@ -2775,6 +2790,10 @@ msgstr "rIn"
 msgid "Done"
 msgstr "rIn"
 
+#: components/board/flow-charts.tsx
+msgid "Done by type"
+msgstr "Segh rIn"
+
 #: components/project/refinement.tsx
 msgid "Done refining"
 msgstr "Dubghach rIn"
@@ -3330,6 +3349,10 @@ msgstr "ngoQ ghajbogh sprintmey rIntaHbogh: chav'a' pagh chavbe'?"
 #: components/board/column-list.tsx
 msgid "first: new tickets start here"
 msgstr "wa'DIch: naDev tagh ticketmey chu'"
+
+#: components/board/flow-report.tsx
+msgid "Flow report"
+msgstr "He ja'"
 
 #: components/hosted-bar.tsx
 msgid "Follow host"
@@ -4134,6 +4157,10 @@ msgstr "jInmol Hevlu'lI'…"
 msgid "Loading projects…"
 msgstr "jInmolmey Hevlu'lI'…"
 
+#: app/boards/[id]/flow/page.tsx
+msgid "Loading report…"
+msgstr "ja' yIloS…"
+
 #: components/project/repositories.tsx
 msgid "Loading repositories…"
 msgstr "repositorymey Hevlu'lI'…"
@@ -4285,6 +4312,10 @@ msgstr "velqa' perlu'"
 #: components/ticket/duplicates.tsx
 msgid "Marking…"
 msgstr "perlI'…"
+
+#: components/board/flow-report.tsx
+msgid "Median cycle time"
+msgstr "ghoS poH botlh"
 
 #. placeholder {0}: fmtDays(flow.median_cycle_days)
 #: components/board/flow-charts.tsx
@@ -4818,6 +4849,10 @@ msgstr "beqmey tu'lu'be' DaH."
 msgid "No tickets have been completed in the last 12 weeks yet. Charts will appear when work is finished."
 msgstr "Qav 12 HoghDaq ticketmey rInbe' DaH. Qu' rInDI' chartmey 'oS."
 
+#: components/board/flow-report.tsx
+msgid "No tickets have been completed in this period yet."
+msgstr "poHvam ticket rInlu'be'. yIloS!"
+
 #: components/roadmap/item-tickets.tsx
 msgid "No tickets linked yet"
 msgstr "ticketmey rarlu'be' DaH"
@@ -5337,6 +5372,10 @@ msgstr "'echlet sprintmey ret, jInmol, ghom'a' SeHlaw ghap vo' ja'ghach yIpoSmoH
 msgid "Open board"
 msgstr "'echlet yIpoSmoH"
 
+#: components/board/flow-charts.tsx
+msgid "Open by column"
+msgstr "tut poSmoH"
+
 #: app/tickets/[id]/page.tsx
 msgid "Open in board"
 msgstr "'echletDaq yIpoSmoH"
@@ -5368,6 +5407,10 @@ msgstr "'echlet yIpoSmoH → 'echlet yIchoH. DamIwmeH tutmey tIlIS, WIP veHmey t
 #: components/intake/intake-settings.tsx
 msgid "Open the form"
 msgstr "nav yIpoSmoH"
+
+#: components/board/flow-charts.tsx
+msgid "Open the full report, to save as PDF or Markdown →"
+msgstr "ja' naQ yIpoSmoH, PDF Markdown je yIpol →"
 
 #: components/board/ticket-card.tsx
 msgid "Open the full ticket"
@@ -7357,9 +7400,14 @@ msgstr "jInmol ticketmey nobpu'bogh"
 msgid "tickets done"
 msgstr "ticketmey rIn"
 
+#: components/board/flow-report.tsx
 #: components/project/project-card.tsx
 msgid "Tickets done"
 msgstr "ticketmey rIn"
+
+#: components/board/flow-charts.tsx
+msgid "Tickets finished in the period, by type."
+msgstr "poHvam ticketmey rInpu'bogh, Segh."
 
 #: components/board/velocity.tsx
 msgid "tickets left"
@@ -7372,6 +7420,10 @@ msgstr "jInmol rapDaq ticketmey tu'lu'nIS"
 #: components/project/backlog.tsx
 msgid "Tickets not on a board yet. Move one to a board to put it in that team's sprint, or refine to plan the next sprints."
 msgstr "'echletDaq ticketmey tu'lu'be' DaH. beq sprintDaq DanobmeH 'echletDaq wa' yIvIHmoH, pagh sprintmey veb DanabmeH yIDub."
+
+#: components/board/flow-charts.tsx
+msgid "Tickets open in each column now, Done left out."
+msgstr "DaH tut Hoch ticketmey poSbogh, rIn Dalu'."
 
 #: components/reports/report-view.tsx
 msgid "tickets per sprint"

@@ -153,6 +153,11 @@ msgstr "{0} ({1} %)"
 msgid "{0} column"
 msgstr "Columna {0}"
 
+#. placeholder {0}: d.toFixed(1)
+#: components/board/flow-report.tsx
+msgid "{0} days"
+msgstr "{0} días"
+
 #. placeholder {0}: team.name
 #: components/settings/organization.tsx
 msgid "{0} description"
@@ -223,6 +228,12 @@ msgstr "{0} a {1}"
 #: components/project/board-card.tsx
 msgid "{0} to do"
 msgstr "{0} por hacer"
+
+#. placeholder {0}: board.name
+#. placeholder {1}: flow.weeks
+#: components/board/flow-report.tsx
+msgid "{0}, the last {1} weeks"
+msgstr "{0}, las últimas {1} semanas"
 
 #. placeholder {0}: e.title
 #. placeholder {1}: percent(e.progress)
@@ -584,6 +595,10 @@ msgstr "2–6 letras o dígitos, empezando por una letra. Las claves existentes 
 #: components/settings/api-keys.tsx
 msgid "30 days"
 msgstr "30 días"
+
+#: components/board/flow-report.tsx
+msgid "85th percentile"
+msgstr "Percentil 85"
 
 #. placeholder {0}: fmtDays(flow.p85_cycle_days)
 #: components/board/flow-charts.tsx
@@ -2775,6 +2790,10 @@ msgstr "hecho"
 msgid "Done"
 msgstr "Hecho"
 
+#: components/board/flow-charts.tsx
+msgid "Done by type"
+msgstr "Hechos por tipo"
+
 #: components/project/refinement.tsx
 msgid "Done refining"
 msgstr "Refinamiento terminado"
@@ -3330,6 +3349,10 @@ msgstr "Sprints terminados con objetivo: cumplido o no."
 #: components/board/column-list.tsx
 msgid "first: new tickets start here"
 msgstr "primera: los tickets nuevos empiezan aquí"
+
+#: components/board/flow-report.tsx
+msgid "Flow report"
+msgstr "Informe de flujo"
 
 #: components/hosted-bar.tsx
 msgid "Follow host"
@@ -4134,6 +4157,10 @@ msgstr "Cargando proyecto…"
 msgid "Loading projects…"
 msgstr "Cargando proyectos…"
 
+#: app/boards/[id]/flow/page.tsx
+msgid "Loading report…"
+msgstr "Cargando informe…"
+
 #: components/project/repositories.tsx
 msgid "Loading repositories…"
 msgstr "Cargando repositorios…"
@@ -4285,6 +4312,10 @@ msgstr "marcado como duplicado"
 #: components/ticket/duplicates.tsx
 msgid "Marking…"
 msgstr "Marcando…"
+
+#: components/board/flow-report.tsx
+msgid "Median cycle time"
+msgstr "Tiempo de ciclo mediano"
 
 #. placeholder {0}: fmtDays(flow.median_cycle_days)
 #: components/board/flow-charts.tsx
@@ -4818,6 +4849,10 @@ msgstr "Aún no hay equipos."
 msgid "No tickets have been completed in the last 12 weeks yet. Charts will appear when work is finished."
 msgstr "Aún no se ha completado ningún ticket en las últimas 12 semanas. Los gráficos aparecerán cuando se termine trabajo."
 
+#: components/board/flow-report.tsx
+msgid "No tickets have been completed in this period yet."
+msgstr "Aún no se ha completado ningún ticket en este periodo."
+
 #: components/roadmap/item-tickets.tsx
 msgid "No tickets linked yet"
 msgstr "Aún no hay tickets vinculados"
@@ -5337,6 +5372,10 @@ msgstr "Abre un informe desde los sprints pasados de un tablero, un proyecto o l
 msgid "Open board"
 msgstr "Abrir tablero"
 
+#: components/board/flow-charts.tsx
+msgid "Open by column"
+msgstr "Abiertos por columna"
+
 #: app/tickets/[id]/page.tsx
 msgid "Open in board"
 msgstr "Abrir en el tablero"
@@ -5368,6 +5407,10 @@ msgstr "Abre el tablero → Editar tablero. Arrastra las columnas para reordenar
 #: components/intake/intake-settings.tsx
 msgid "Open the form"
 msgstr "Abrir el formulario"
+
+#: components/board/flow-charts.tsx
+msgid "Open the full report, to save as PDF or Markdown →"
+msgstr "Abre el informe completo para guardarlo como PDF o Markdown →"
 
 #: components/board/ticket-card.tsx
 msgid "Open the full ticket"
@@ -7357,9 +7400,14 @@ msgstr "Tickets entregados por proyecto"
 msgid "tickets done"
 msgstr "tickets hechos"
 
+#: components/board/flow-report.tsx
 #: components/project/project-card.tsx
 msgid "Tickets done"
 msgstr "Tickets hechos"
+
+#: components/board/flow-charts.tsx
+msgid "Tickets finished in the period, by type."
+msgstr "Tickets terminados en el periodo, por tipo."
 
 #: components/board/velocity.tsx
 msgid "tickets left"
@@ -7372,6 +7420,10 @@ msgstr "los tickets deben pertenecer al mismo proyecto"
 #: components/project/backlog.tsx
 msgid "Tickets not on a board yet. Move one to a board to put it in that team's sprint, or refine to plan the next sprints."
 msgstr "Tickets que aún no están en un tablero. Mueve uno a un tablero para ponerlo en el sprint de ese equipo, o refina para planificar los próximos sprints."
+
+#: components/board/flow-charts.tsx
+msgid "Tickets open in each column now, Done left out."
+msgstr "Tickets abiertos ahora en cada columna, sin Hecho."
 
 #: components/reports/report-view.tsx
 msgid "tickets per sprint"

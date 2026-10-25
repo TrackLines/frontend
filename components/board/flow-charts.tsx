@@ -3,6 +3,7 @@
 import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { Bar, BarChart, CartesianGrid, LabelList, ReferenceLine, Scatter, ScatterChart, XAxis, YAxis } from 'recharts';
 import { boards, type BoardFlow } from '@/lib/api';
 import { Button } from '@/components/ui/button';
@@ -11,6 +12,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Skeleton } from '@/components/ui/skeleton';
 import { cycleTimePoints, flowChartState } from '@/lib/flow';
 import { dates } from '@/lib/i18n';
+import { Donut } from '@/components/reports/donut';
+import { TYPE_LABEL } from '@/lib/sprint-report';
 
 const fmtCount = (count: number) => String(count);
 
@@ -46,15 +49,17 @@ export function FlowCharts({ boardId, token }: { boardId: string; token: string 
             <div className="grid grid-cols-1 gap-8">
               <CycleTimeChart flow={data} />
               <ThroughputChart flow={data} />
+              <FlowDonuts flow={data} />
             </div>
           )}
+          <Link href={`/boards/${boardId}/flow`} className="text-sm font-medium hover:underline"><Trans>Open the full report, to save as PDF or Markdown →</Trans></Link>
         </DialogContent>
       </Dialog>
     </>
   );
 }
 
-function CycleTimeChart({ flow }: { flow: BoardFlow }) {
+export function CycleTimeChart({ flow }: { flow: BoardFlow }) {
   const { t, i18n } = useLingui();
   const fmtDays = (days: number) => t`${plural(Number(days.toFixed(1)), { one: '# day', other: '# days' })}`;
   const known = cycleTimePoints(flow);
@@ -90,7 +95,7 @@ function CycleTimeChart({ flow }: { flow: BoardFlow }) {
   );
 }
 
-function ThroughputChart({ flow }: { flow: BoardFlow }) {
+export function ThroughputChart({ flow }: { flow: BoardFlow }) {
   const { t, i18n } = useLingui();
   const data = flow.throughput.map((week) => ({ ...week, label: dates(i18n, { day: 'numeric', month: 'short', timeZone: 'UTC' }).format(new Date(`${week.week_start}T00:00:00Z`)) }));
   const config = { tickets: { label: t`Tickets completed`, color: 'var(--chart-1)' } } satisfies ChartConfig;
@@ -110,5 +115,18 @@ function ThroughputChart({ flow }: { flow: BoardFlow }) {
       </ChartContainer>
       <p className="text-sm text-muted-foreground"><Trans>Tickets completed each week. The chart includes weeks with no completions.</Trans></p>
     </section>
+  );
+}
+
+// FlowDonuts: what's open in each column now, and what got done by type (TL-622).
+export function FlowDonuts({ flow }: { flow: BoardFlow }) {
+  const { t, i18n } = useLingui();
+  return (
+    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 print:grid-cols-2">
+      <Donut title={t`Open by column`} note={t`Tickets open in each column now, Done left out.`}
+        data={(flow.wip ?? []).map((w) => ({ key: w.column_id, label: w.column, value: w.tickets }))} />
+      <Donut title={t`Done by type`} note={t`Tickets finished in the period, by type.`}
+        data={(flow.mix ?? []).map((m) => ({ key: m.type, label: TYPE_LABEL[m.type] ? i18n._(TYPE_LABEL[m.type]) : m.type, value: m.tickets }))} />
+    </div>
   );
 }
