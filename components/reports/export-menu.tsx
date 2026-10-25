@@ -15,15 +15,20 @@ export function markdownFile(name: string, range: Range): string {
   return `${slug}-sprints-${range.from}-to-${range.to}.md`;
 }
 
-// ExportMenu: a report as a presentation PDF (the browser's print, landscape: TL-401), or as
+// ExportMenu: a sprint report as a presentation PDF (the browser's print, landscape: TL-401), or as
 // Markdown (the server's, TL-399), downloaded or copied.
 export function ExportMenu({ scope, range, name, token }: { scope: Scope; range: Range; name: string; token: string }) {
+  return <Export markdown={() => reports.markdown(scope, range, token)} file={markdownFile(name, range)} />;
+}
+
+// Export: any report's menu: PDF by printing the page, Markdown from markdown() saved as file or copied.
+export function Export({ markdown: get, file }: { markdown: () => Promise<string>; file: string }) {
   const { t } = useLingui();
   const [status, setStatus] = useState('');
   async function markdown(then: (text: string) => Promise<void> | void, done: string) {
     setStatus('');
     try {
-      await then(await reports.markdown(scope, range, token));
+      await then(await get());
       setStatus(done);
     } catch {
       setStatus(t`Couldn’t get the Markdown. Please try again.`);
@@ -37,7 +42,7 @@ export function ExportMenu({ scope, range, name, token }: { scope: Scope; range:
           <DropdownMenuItem onClick={() => window.print()}><PrinterIcon /><Trans>Save as PDF (presentation)</Trans></DropdownMenuItem>
           <DropdownMenuItem onClick={() => void markdown((text) => {
             const url = URL.createObjectURL(new Blob([text], { type: 'text/markdown' }));
-            const a = Object.assign(document.createElement('a'), { href: url, download: markdownFile(name, range) });
+            const a = Object.assign(document.createElement('a'), { href: url, download: file });
             a.click();
             URL.revokeObjectURL(url);
           }, t`Downloaded.`)}><FileTextIcon /><Trans>Download Markdown</Trans></DropdownMenuItem>
@@ -50,7 +55,7 @@ export function ExportMenu({ scope, range, name, token }: { scope: Scope; range:
 }
 
 // PrintCover: the PDF's first page, only in print: the logo, what the report covers and when it was made.
-export function PrintCover({ title, kind, range, generated = new Date() }: { title: string; kind: string; range: Range; generated?: Date }) {
+export function PrintCover({ title, kind, range, heading, generated = new Date() }: { title: string; kind: string; range: Range; heading?: string; generated?: Date }) {
   const { i18n } = useLingui();
   const when = dates(i18n, { dateStyle: 'long', timeStyle: 'short' }).format(generated);
   return (
@@ -58,7 +63,7 @@ export function PrintCover({ title, kind, range, generated = new Date() }: { tit
       {/* eslint-disable-next-line @next/next/no-img-element -- a plain img prints reliably */}
       <img src="/logo-tile.png" alt="TrackLin.es" width={56} height={56} className="size-14 rounded-xl" />
       <div>
-        <p className="text-sm font-bold tracking-[.14em] uppercase"><Trans>Sprint report · {kind}</Trans></p>
+        <p className="text-sm font-bold tracking-[.14em] uppercase">{heading ?? <Trans>Sprint report · {kind}</Trans>}</p>
         <h1 className="mt-2 text-5xl font-bold tracking-tight">{title}</h1>
       </div>
       <p className="text-lg"><Trans>{range.from} to {range.to}</Trans></p>

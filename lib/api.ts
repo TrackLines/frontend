@@ -67,7 +67,9 @@ export type BoardFlow = {
   tickets: { id: string; key: string; title: string; started_at: string | null; done_at: string; cycle_days: number | null }[];
   median_cycle_days: number | null;
   p85_cycle_days: number | null;
-  throughput: { week_start: string; tickets: number }[];
+  throughput: { week_start: string; tickets: number; median_cycle_days?: number | null; p85_cycle_days?: number | null }[];
+  wip?: { column_id: string; column: string; tickets: number }[]; // open tickets per column now, Done left out (TL-621)
+  mix?: { type: TicketType; tickets: number }[]; // done in the window, by type
 };
 export type RoadmapItem = {
   id: string; title: string; description: string; target_date: string | null; position: number;
@@ -363,6 +365,7 @@ export const projects = {
 export const boards = {
   get: (id: string, token: T) => api<Board>(`/boards/${id}`, { token }),
   flow: (id: string, token: T, weeks = 12) => api<BoardFlow>(`/boards/${id}/flow?weeks=${weeks}`, { token }),
+  flowMarkdown: (id: string, token: T, weeks = 12) => api<string>(`/boards/${id}/flow?weeks=${weeks}&format=md`, { token }), // the flow report (TL-621)
   create: (projectId: string, b: { name: string; description?: string; template_id?: string }, token: T) =>
     api<Board>(`/projects/${projectId}/boards`, { method: 'POST', body: b, token }),
   // Update the board name and/or settings; switching estimate_scale clears open tickets' estimates.
