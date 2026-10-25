@@ -1649,6 +1649,10 @@ msgstr "Closing it now:"
 msgid "Closing…"
 msgstr "Closing…"
 
+#: app/boards/[id]/edit/page.tsx
+msgid "Column before Done"
+msgstr "Column before Done"
+
 #. placeholder {0}: column.name
 #: components/board/column-list.tsx
 msgid "Column name: {0}"
@@ -4405,8 +4409,8 @@ msgid "Name this embed, e.g. Marketing site"
 msgstr "Name this embed, e.g. Marketing site"
 
 #: lib/error-codes.ts
-msgid "name, estimate_scale, style, agent_review or dev_complete_column_id is required"
-msgstr "name, estimate_scale, style, agent_review or dev_complete_column_id is required"
+msgid "name, estimate_scale, style, agent_review, dev_complete_column_id or review_column_id is required"
+msgstr "name, estimate_scale, style, agent_review, dev_complete_column_id or review_column_id is required"
 
 #: components/project/refinement.tsx
 msgid "Needs approval"
@@ -5931,6 +5935,10 @@ msgstr "Resume"
 msgid "Review"
 msgstr "Review"
 
+#: app/boards/[id]/edit/page.tsx
+msgid "Review column"
+msgstr "Review column"
+
 #: app/settings/organization/page.tsx
 #: components/settings/api-keys.tsx
 msgid "Revoke"
@@ -6964,6 +6972,10 @@ msgstr "The owner has shared this roadmap with signed-in users only."
 msgid "The provider refused or couldn’t be reached. Try again."
 msgstr "The provider refused or couldn’t be reached. Try again."
 
+#: lib/error-codes.ts
+msgid "the review column must be one of this board's columns, other than To do and Done"
+msgstr "the review column must be one of this board's columns, other than To do and Done"
+
 #: components/reports/report-view.tsx
 #: components/reports/rollup-view.tsx
 msgid "the same as the period before"
@@ -7708,6 +7720,10 @@ msgstr "When it’s available for you, choose it in Your settings → Language."
 #: components/ticket/bugfixes-panel.tsx
 msgid "Where"
 msgstr "Where"
+
+#: app/boards/[id]/edit/page.tsx
+msgid "Where an agent’s finished ticket waits for a person’s review."
+msgstr "Where an agent’s finished ticket waits for a person’s review."
 
 #: lib/help.ts
 msgid "Where are archived boards?"
