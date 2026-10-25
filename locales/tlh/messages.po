@@ -796,6 +796,10 @@ msgstr "ticket yIchel"
 msgid "Add a title to each roadmap item before saving."
 msgstr "He nav Doch Hoch pong tIchel DapolDI'."
 
+#: components/settings/webhooks.tsx
+msgid "Add a webhook"
+msgstr "webhook yIchel"
+
 #: components/settings/integrations.tsx
 msgid "Add another GitHub account"
 msgstr "latlh GitHub mab yIchel"
@@ -875,6 +879,10 @@ msgstr "backlogDaq yIchel"
 msgid "Add useful context or acceptance notes."
 msgstr "De' lI' pagh lajmeH QInmey tIchel."
 
+#: components/settings/webhooks.tsx
+msgid "Add webhook"
+msgstr "webhook yIchel"
+
 #: components/intake/triage.tsx
 #: components/reports/report-view.tsx
 msgid "Added"
@@ -887,6 +895,10 @@ msgstr "{where} backlogDaq “{added}” chellu'pu'."
 #: components/quick-add-ticket.tsx
 msgid "Added “{added}” to the backlog."
 msgstr "backlogDaq “{added}” chellu'pu'."
+
+#: components/settings/webhooks.tsx
+msgid "added <0/>"
+msgstr "chelpu' <0/>"
 
 #: components/reports/report-view.tsx
 msgid "added after sprints started"
@@ -1025,6 +1037,14 @@ msgstr "naDev Google Workspace rarlaH ghom'a' loHwI'."
 #: lib/help.ts
 msgid "An organization admin connects Google Calendar in Settings → Integrations → Calendars; people away are marked in assigning and standup."
 msgstr "SeHlaw → rarghachmey → poH nav Daq Google Calendar rar ghom'a' loHwI'; Qu' nobmeH Qam ghomDaq je naDev ghobe'bogh ghotpu' tu'lu'."
+
+#: lib/error-codes.ts
+msgid "an organization can have up to 10 webhook endpoints"
+msgstr "ghom'a' wa'maH webhook ghajlaH"
+
+#: components/settings/webhooks.tsx
+msgid "An organization can have up to 10 webhooks."
+msgstr "ghom'a' wa'maH webhook ghajlaH."
 
 #: lib/error-codes.ts
 msgid "an organization needs at least one admin"
@@ -1179,6 +1199,11 @@ msgstr "ghItlhmey rarlu'bogh ({0})"
 #: components/ticket/pending-attachments.tsx
 msgid "Attachments <0>(optional)</0>"
 msgstr "ghItlhmey rarlu'bogh <0>(DaneHchugh)</0>"
+
+#. placeholder {0}: d.attempts
+#: components/settings/webhooks.tsx
+msgid "attempt {0}"
+msgstr "nID {0}"
 
 #: components/settings/google-chat.tsx
 msgid "Avatar URL"
@@ -1933,6 +1958,10 @@ msgstr "jInmol ID yIvelqa'moH"
 msgid "Copy request form link"
 msgstr "tlhobmeH nav rarwI' yIvelqa'moH"
 
+#: components/settings/webhooks.tsx
+msgid "Copy secret"
+msgstr "pegh yIlaD"
+
 #. placeholder {0}: ticket.key
 #: components/ticket-search.tsx
 msgid "Copy ticket key {0}"
@@ -2299,6 +2328,10 @@ msgstr "jInmolmeylIj Hevlu'laHbe'. yInIDqa'meH nav yIchu'moH."
 msgid "Couldn't load your roadmaps"
 msgstr "He navmeylIj Hevlu'laHbe'"
 
+#: components/settings/webhooks.tsx
+msgid "Couldn’t load your webhooks."
+msgstr "webhookmey Hevlu'laHbe'. Qagh!"
+
 #: components/my-work.tsx
 msgid "Couldn't load your work. Please try again."
 msgstr "Qu'meylIj Hevlu'laHbe'. yInIDqa'."
@@ -2615,6 +2648,7 @@ msgstr "jajmey"
 #: components/project/backlog.tsx
 #: components/settings/embedding.tsx
 #: components/settings/organization.tsx
+#: components/settings/webhooks.tsx
 msgid "Delete"
 msgstr "yIQaw'"
 
@@ -2648,6 +2682,11 @@ msgstr "mIllogh yIQaw'"
 #: components/settings/organization.tsx
 msgid "Delete the {0} team?"
 msgstr "{0} beq DaQaw''a'?"
+
+#. placeholder {0}: host(w.url)
+#: components/settings/webhooks.tsx
+msgid "Delete the webhook to {0}? Nothing more will be sent to it."
+msgstr "{0} webhook yIQaw'? latlh Doch ngeHlu'be'."
 
 #: components/board/ticket-dialog.tsx
 msgid "Delete this ticket? It’s kept for 30 days in case it was a mistake (contact us to get it back), then permanently deleted with its comments and files."
@@ -2683,12 +2722,17 @@ msgstr "Qaw'lI'…"
 
 #: components/reports/report-view.tsx
 #: components/reports/rollup-view.tsx
+#: components/settings/webhooks.tsx
 msgid "Delivered"
 msgstr "ngeHlu'pu'"
 
 #: components/reports/rollup-view.tsx
 msgid "Delivered by month"
 msgstr "jar ngeHlu'pu'bogh"
+
+#: components/settings/webhooks.tsx
+msgid "Deliveries"
+msgstr "ngeHmey"
 
 #: components/ticket/dependencies.tsx
 msgid "Dependencies"
@@ -3099,6 +3143,10 @@ msgstr "Qam ghom yIrInmoH"
 msgid "Endpoint"
 msgstr "Endpoint"
 
+#: components/settings/webhooks.tsx
+msgid "Endpoint URL"
+msgstr "URL"
+
 #: components/board/sprint-status.ts
 msgid "ends in {days} days"
 msgstr "{days} jaj pIq rIn"
@@ -3122,6 +3170,10 @@ msgstr "DaH tlhobmey chaw'lu'be'"
 #: components/board/ticket-dialog.tsx
 msgid "Enter a title."
 msgstr "pong yIghItlh."
+
+#: components/settings/webhooks.tsx
+msgid "Enter an https address, like https://example.com/hooks/tracklines."
+msgstr "https Daq yIghItlh, https://example.com/hooks/tracklines rur."
 
 #: components/settings/embedding.tsx
 msgid "Enter an origin like https://example.com."
@@ -3286,6 +3338,10 @@ msgstr "rarghachmey (API ngaQHa'moHwI'mey) cher external"
 #: lib/error-codes.ts
 msgid "external needs source (bugfixes), project and id; url must be http(s)"
 msgstr "external poQ source (bugfixes), project, id je; http(s) 'oHnIS url"
+
+#: components/settings/webhooks.tsx
+msgid "Failed"
+msgstr "luj"
 
 #: components/ticket-type.tsx
 msgid "feature"
@@ -3560,6 +3616,10 @@ msgstr "poH Dotlh"
 msgid "Help"
 msgstr "QaH"
 
+#: components/settings/webhooks.tsx
+msgid "Hide deliveries"
+msgstr "ngeHmey yISo'"
+
 #: components/notifications-bell.tsx
 msgid "Hide read"
 msgstr "laDlu'pu'bogh tISo'"
@@ -3703,9 +3763,17 @@ msgstr "chay' leSpoHDaq ghaHtaH 'Iv 'e' Sov?"
 msgid "How every project’s sprints went, to share with leadership."
 msgstr "Hoch jInmol sprintmey chay' qaS, DevwI'pu'vaD DangeHmeH."
 
+#: app/settings/webhooks/page.tsx
+msgid "How webhooks work"
+msgstr "chay' webhookmey Qap"
+
 #: app/account/page.tsx
 msgid "How you hear about tickets assigned to you, mentions and reviews, and your own API keys. Your name, email and sign-in are in your account menu."
 msgstr "chay' SoHvaD ticketmey noblu'bogh, pongmey, nuDghachmey je Daghov, API ngaQHa'moHwI'meylIj je. mablIj tetlhDaq ponglIj, emaillIj, 'elghachlIj je tu'lu'."
+
+#: components/settings/webhooks.tsx
+msgid "I’ve saved it"
+msgstr "vIpolpu'"
 
 #: components/markdown.tsx
 msgid "image"
@@ -4168,6 +4236,10 @@ msgstr "'echlet Hevlu'lI'…"
 msgid "Loading charts…"
 msgstr "chartmey Hevlu'lI'…"
 
+#: components/settings/webhooks.tsx
+msgid "Loading deliveries…"
+msgstr "ngeHmey yIloS…"
+
 #: app/settings/file-cleanup/loading.tsx
 #: app/settings/file-cleanup/page.tsx
 msgid "Loading file clean-up…"
@@ -4278,6 +4350,7 @@ msgstr "Qu'meylIj Hevlu'lI'…"
 #: components/project/repositories.tsx
 #: components/quick-add-ticket.tsx
 #: components/settings/embedding.tsx
+#: components/settings/webhooks.tsx
 msgid "Loading…"
 msgstr "yIloS…"
 
@@ -4633,6 +4706,10 @@ msgstr "jInmol chu'"
 msgid "New roadmap"
 msgstr "He nav chu'"
 
+#: components/settings/webhooks.tsx
+msgid "New secret"
+msgstr "pegh chu'"
+
 #: components/ticket/sub-tickets.tsx
 msgid "New sub-ticket…"
 msgstr "ticket puq chu'…"
@@ -4941,6 +5018,10 @@ msgstr "chu'ghach ngeHlu'be'."
 msgid "No updates yet."
 msgstr "chu'ghachmey tu'lu'be' DaH."
 
+#: components/settings/webhooks.tsx
+msgid "No webhooks yet."
+msgstr "webhook tu'lu'be'."
+
 #: components/project/backlog.tsx
 msgid "No won’t do tickets in the backlog."
 msgstr "backlogDaq ticketmey ta'be'lu'bogh tu'lu'be'."
@@ -5087,6 +5168,10 @@ msgstr "He navvamDaq pagh tu'lu' DaH."
 msgid "Nothing recorded yet. History is kept from October 2026."
 msgstr "pagh qonlu' DaH. October 2026 vo' qun pollu'."
 
+#: components/settings/webhooks.tsx
+msgid "Nothing sent in the last 30 days."
+msgstr "Hogh loS ngeHlu'pu'be'."
+
 #: components/project/backlog.tsx
 msgid "Nothing unplanned in the backlog. Planned tickets are on their board’s Next sprints."
 msgstr "backlogDaq pagh nablu'be'bogh. ticketmey nablu'pu'bogh 'echletchaj sprintmey vebDaq tu'lu'."
@@ -5161,6 +5246,7 @@ msgstr "Qu' nablu'pu'bogh rIn, {sprints, plural, one {# sprint} other {# sprintm
 
 #: app/boards/[id]/edit/page.tsx
 #: components/settings/device-push.tsx
+#: components/settings/webhooks.tsx
 msgid "Off"
 msgstr "Qotlh"
 
@@ -5186,6 +5272,7 @@ msgstr "ngo'qu' wa'DIch"
 
 #: app/boards/[id]/edit/page.tsx
 #: components/settings/device-push.tsx
+#: components/settings/webhooks.tsx
 msgid "On"
 msgstr "chu'"
 
@@ -5616,6 +5703,10 @@ msgstr "yIyev"
 msgid "paused"
 msgstr "yevlu'pu'"
 
+#: components/settings/webhooks.tsx
+msgid "Pending"
+msgstr "loS"
+
 #: components/mention-textarea.tsx
 msgid "People"
 msgstr "ghotpu'"
@@ -5639,6 +5730,14 @@ msgstr "nIteb ngaQHa'moHwI'"
 #: components/settings/api-keys.tsx
 msgid "Personal keys act as you, for your own scripts and displays."
 msgstr "SoH Datlhej nIteb ngaQHa'moHwI'mey, scriptmeylIj HaSta 'aghwI'mey je vaD."
+
+#: components/settings/webhooks.tsx
+msgid "Pick at least one event."
+msgstr "wa' wanI' yIwIv."
+
+#: lib/error-codes.ts
+msgid "pick at least one known event"
+msgstr "wa' wanI' Sovlu'bogh yIwIv"
 
 #: components/billing/plan-card.tsx
 msgid "Plan"
@@ -6106,6 +6205,10 @@ msgstr "resolution'e' done pagh wont_do 'oHnIS"
 msgid "resolved"
 msgstr "rInmoHlu'pu'"
 
+#: components/settings/webhooks.tsx
+msgid "Response"
+msgstr "jang"
+
 #: components/mcp-connect.tsx
 msgid "Restart Claude Desktop; TrackLin.es appears in the tools menu."
 msgstr "Claude Desktop yItaghqa'; jan tetlhDaq TrackLin.es 'oS."
@@ -6350,6 +6453,11 @@ msgstr "pongmey, De'mey, QInmey tInej, pagh ticket ngaQHa'moHwI' mI' ghap yIghIt
 msgid "Searching…"
 msgstr "nejlI'…"
 
+#. placeholder {0}: w.secret_hint
+#: components/settings/webhooks.tsx
+msgid "secret ends …{0}"
+msgstr "pegh Qav …{0}"
+
 #: components/settings/organization-card.tsx
 msgid "See who’s in your organization, its teams and who leads them."
 msgstr "ghom'a'lIjDaq 'Iv tu'lu', beqmeyDaj, 'ej chaH Dev 'Iv 'e' yIlegh."
@@ -6361,6 +6469,14 @@ msgstr "ticketvam rInpu'DI' leghqa'lu'"
 #: components/intake/request-form.tsx
 msgid "Send a request"
 msgstr "tlhob yIngeH"
+
+#: components/settings/webhooks.tsx
+msgid "Send a test"
+msgstr "waH yIngeH"
+
+#: components/settings/webhooks.tsx
+msgid "Send again"
+msgstr "yIngeHqa'"
 
 #: components/intake/request-form.tsx
 msgid "Send another"
@@ -6386,6 +6502,14 @@ msgstr "tlhob yIngeH"
 msgid "Send test message"
 msgstr "waH QIn yIngeH"
 
+#: components/settings/webhooks.tsx
+msgid "Send these events"
+msgstr "wanI'meyvam yIngeH"
+
+#: app/settings/page.tsx
+msgid "Send ticket, sprint and roadmap events to your own tools as they happen."
+msgstr "ticket, sprint, He nav wanI'mey jan lI'Daq yIngeH. Qapla'!"
+
 #: components/board/ticket-dialog.tsx
 msgid "Send to backlog"
 msgstr "backlogDaq yIngeH"
@@ -6401,6 +6525,10 @@ msgstr "Google Chat mab <0>{0}</0>Daq TrackLin.es ghuHmeylIj DangeH'a'?"
 #: components/settings/google-chat.tsx
 msgid "Sending…"
 msgstr "ngeHlI'…"
+
+#: components/settings/webhooks.tsx
+msgid "Sent"
+msgstr "ngeHpu'"
 
 #: components/notification-icon.tsx
 msgid "Sent back"
@@ -6475,6 +6603,7 @@ msgstr "{0} yIcher"
 #: app/settings/integrations/page.tsx
 #: app/settings/organization/page.tsx
 #: app/settings/page.tsx
+#: app/settings/webhooks/page.tsx
 msgid "Settings"
 msgstr "SeHlaw"
 
@@ -6506,6 +6635,10 @@ msgstr "He nav Ho'DoS QInHommey jaj ghajbogh, He navDaq 'anglu', chu'qu' wa'DIch
 #: components/project/backlog.tsx
 msgid "Show"
 msgstr "yI'ang"
+
+#: components/settings/webhooks.tsx
+msgid "Show older"
+msgstr "ngo' yIcha'"
 
 #: components/project/backlog.tsx
 msgid "Show open or closed tickets"
@@ -7006,6 +7139,10 @@ msgstr "beqmey"
 msgid "Teams connect members to project boards."
 msgstr "jInmol 'echletmeyDaq beqpu' rar beqmey."
 
+#: app/settings/webhooks/page.tsx
+msgid "Tell your own tools when work changes: TrackLin.es sends each event to your endpoint as it happens."
+msgstr "Qu' choHDI' jan lI' yIja': TrackLin.es Hoch wanI' ngeH."
+
 #: components/board/template-picker.tsx
 msgid "Template"
 msgstr "mIllogh"
@@ -7041,6 +7178,10 @@ msgstr "qatlho', wIHevpu'"
 #: components/settings/integrations.tsx
 msgid "That account isn’t in any Bitbucket workspaces."
 msgstr "Bitbucket workspaceDaq mabvetlh tu'lu'be'."
+
+#: components/settings/webhooks.tsx
+msgid "That didn’t work. Please try again."
+msgstr "Qapbe'. yInIDqa'."
 
 #: lib/error-codes.ts
 msgid "that GitHub installation is already connected to another organization"
@@ -7207,6 +7348,10 @@ msgstr "tlhoblIj bej beq. latlh poQchugh, ghelmeH Daq DanobDaq SoH SuchlaH."
 #: components/settings/chat-dm.tsx
 msgid "The TrackLin.es app messages you in Google Chat when you’re assigned a ticket, mentioned, or something needs your review."
 msgstr "ticket SoHvaD noblu'DI', SoH ponglu'DI', pagh nuDghachlIj poQ vay'DI', Google ChatDaq SoHvaD QIn ngeH TrackLin.es app."
+
+#: lib/error-codes.ts
+msgid "the URL must be https and not a private address"
+msgstr "URL https 'oHnIS, pagh pegh Daq"
 
 #: components/mcp-connect.tsx
 msgid "Then enable it under Settings → MCP."
@@ -7606,13 +7751,19 @@ msgstr "yInIDqa'"
 
 #: components/notifications-bell.tsx
 #: components/settings/device-push.tsx
+#: components/settings/webhooks.tsx
 msgid "Turn off"
 msgstr "yIchu'Ha'"
 
 #: components/notifications-bell.tsx
 #: components/settings/device-push.tsx
+#: components/settings/webhooks.tsx
 msgid "Turn on"
 msgstr "yIchu'"
+
+#: components/settings/webhooks.tsx
+msgid "Turned off after repeated failed deliveries. Fix the endpoint, then turn it back on."
+msgstr "luj law' ngeH. yIchu'Ha'. yItI' 'ej yIchu'qa'."
 
 #: components/ticket-type.tsx
 msgid "Type"
@@ -7774,6 +7925,10 @@ msgstr "SIbI' ta'nIS"
 msgid "Use Attach files on a ticket. Up to 10 files of 10 MB each, and not while it’s in Done."
 msgstr "ticketDaq ghItlhmey tIrar yIlo'. 10 ghItlhmey veH, Hoch 10 MB, 'ej rInDaq ghaHtaHvIS Qo'."
 
+#: components/settings/webhooks.tsx
+msgid "Use it to check that requests really come from TrackLin.es: see <0>verifying webhooks</0>."
+msgstr "TrackLin.es vo' 'oH'a'? yInuD: <0>webhookmey yInuD</0>."
+
 #: lib/help.ts
 msgid "Use New project on the dashboard. Your plan sets how many projects you can have (Free 1, Pro 5)."
 msgstr "SeHlawDaq jInmol chu' yIlo'. jInmolmey 'ar DaghajlaH 'e' cher nablIj (Free 1, Pro 5)."
@@ -7864,6 +8019,23 @@ msgstr "maHvaD ja'lu'pu'. yInIDqa', pagh jInmolmeylIjDaq yIchegh."
 #: components/settings/google-chat.tsx
 msgid "Webhook URL"
 msgstr "Webhook URL"
+
+#: app/settings/page.tsx
+#: app/settings/webhooks/page.tsx
+msgid "Webhooks"
+msgstr "webhookmey"
+
+#: app/settings/webhooks/page.tsx
+msgid "Webhooks aren’t turned on for your organization yet."
+msgstr "ghom'a'lIj webhookmey chu'be'lu'."
+
+#: components/settings/webhooks.tsx
+msgid "Webhooks come with the Pro and Enterprise plans. <0>Change your plan</0> to use them."
+msgstr "Pro Enterprise je webhookmey ghaj. <0>DIlmeylIj yIchoH</0>."
+
+#: lib/error-codes.ts
+msgid "webhooks need the Pro or Enterprise plan"
+msgstr "Pro pagh Enterprise poQ webhookmey"
 
 #: components/board/flow-charts.tsx
 msgid "Weekly throughput"
@@ -8186,6 +8358,10 @@ msgstr "Hoch jInmolmeyDaq He navmeylIj. rarwI' ghom vegh neH latlhpu'vaD He navm
 #: components/user-menu.tsx
 msgid "Your settings"
 msgstr "SeHlawlIj"
+
+#: components/settings/webhooks.tsx
+msgid "Your signing secret. Copy it now: it won’t be shown again."
+msgstr "pegh SoQ. DaH yIlaD: latlh cha'be'lu'."
 
 #: app/my-work/page.tsx
 msgid "Your tickets across every board and project, most recently changed first — assigned to you, or raised by you."

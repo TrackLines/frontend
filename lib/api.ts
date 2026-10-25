@@ -787,6 +787,30 @@ export const embed = {
   keyUsage: (id: string, t: T) => api<EmbedUsage[]>(`/embed/keys/${encodeURIComponent(id)}/usage`, { token: t }),
 };
 
+// Outbound webhooks (TL-636, on TL-635): an org's endpoints, admins only, Pro and Enterprise.
+export const WEBHOOK_EVENTS = ['ticket.created', 'ticket.updated', 'ticket.moved', 'ticket.assigned', 'ticket.done', 'ticket.deleted',
+  'comment.created', 'sprint.started', 'sprint.closed', 'roadmap.update_published'] as const;
+export type WebhookEvent = (typeof WEBHOOK_EVENTS)[number];
+export type WebhookEndpoint = {
+  id: string; url: string; events: WebhookEvent[]; enabled: boolean; disabled_reason: 'failures' | 'manual' | null;
+  consecutive_failures: number; secret_hint: string; created_at: string;
+};
+export type WebhookDelivery = {
+  id: string; event: string; state: 'pending' | 'ok' | 'failed'; attempts: number; status_code: number | null; error: string | null;
+  duration_ms: number | null; created_at: string; next_attempt_at: string | null; request_body: string; response_body: string | null;
+};
+const hook = (id: string) => `/org/webhooks/${encodeURIComponent(id)}`;
+export const webhooks = {
+  list: (t: T) => api<WebhookEndpoint[]>('/org/webhooks', { token: t }),
+  create: (w: { url: string; events: WebhookEvent[] }, t: T) => api<{ endpoint: WebhookEndpoint; secret: string }>('/org/webhooks', { method: 'POST', body: w, token: t }),
+  update: (id: string, w: { url?: string; events?: WebhookEvent[]; enabled?: boolean }, t: T) => api<WebhookEndpoint>(hook(id), { method: 'PATCH', body: w, token: t }),
+  rotate: (id: string, t: T) => api<{ secret: string }>(`${hook(id)}/secret`, { method: 'POST', token: t }),
+  remove: (id: string, t: T) => api<void>(hook(id), { method: 'DELETE', token: t }),
+  test: (id: string, t: T) => api<void>(`${hook(id)}/test`, { method: 'POST', token: t }),
+  deliveries: (id: string, page: number, t: T) => api<{ deliveries: WebhookDelivery[]; more: boolean }>(`${hook(id)}/deliveries?page=${page}`, { token: t }),
+  redeliver: (id: string, delivery: string, t: T) => api<void>(`${hook(id)}/deliveries/${encodeURIComponent(delivery)}/redeliver`, { method: 'POST', token: t }),
+};
+
 // Web Push: notifications on this device even when Tracklines is closed (if the server has VAPID keys).
 export type PushSettings = { enabled: boolean; public_key?: string };
 export const push = {

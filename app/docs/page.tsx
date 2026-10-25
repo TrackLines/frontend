@@ -17,6 +17,7 @@ export const guides = [
   { slug: 'google-calendar', name: 'Google Calendar', body: 'Connect your Google Workspace so TrackLin.es knows who’s on holiday, in assigning and in standup.' },
   { slug: 'sprint-reports', name: 'Sprint reports', body: 'How a board, project or your organization delivered, with charts, to share as a PDF or Markdown.' },
   { slug: 'api', name: 'API', body: 'Script TrackLin.es with an API key: authentication, and every endpoint with its parameters and responses.' },
+  { slug: 'webhooks', name: 'Webhooks', body: 'Send ticket, comment, sprint and roadmap events to your own tools, signed so you can trust them.' },
   { slug: 'tui', name: 'Terminal app', body: 'My work, boards and backlogs in the terminal, keyboard first, with vim keys.' },
   { slug: 'trmnl', name: 'TRMNL', body: 'Show your open tickets on a TRMNL e-ink display, with a read-only personal key.' },
   { slug: 'epics', name: 'Epics', body: 'Large pieces of work across boards: how they differ from tickets, and using them on roadmaps.' },
