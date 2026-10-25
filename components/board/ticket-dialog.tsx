@@ -107,7 +107,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
       setMissing({ title: false, estimate: false });
     }
     // only on opening (or another ticket): a background refresh hands us a fresh copy of the same
-    // ticket every 30s, and resetting then wiped whatever was being typed (TL-141)
+    // ticket every minute, and resetting then wiped whatever was being typed (TL-141)
   }, [open, ticket?.id]);
 
   const duplicateSuggestions = useSimilarTickets(title, projectId, token, open && !ticket);
