@@ -24,6 +24,7 @@ export type Ticket = {
   planned_sprint_id?: string | null; // a backlog ticket planned into a board's upcoming sprint (refinement)
   planned_sprint_number?: number | null; // that sprint's number-to-be and board, for "Sprint 6 · Backend" (TL-582)
   planned_board_name?: string | null;
+  due_date?: string | null; // YYYY-MM-DD (TL-632); show with <DueBadge>
   external_source?: string | null; external_url?: string | null; // made by an integration, e.g. a Bugfixes report
   resolution?: 'done' | 'wont_do' | 'duplicate' | null; // how a backlog ticket was closed
   duplicate_of_id?: string | null; duplicate_of_key?: string | null; duplicate_of_title?: string | null;
@@ -33,7 +34,7 @@ export type Ticket = {
 // A project ticket not on any board or sprint yet.
 export type BacklogTicket = Omit<Ticket, 'column_id'> & { column_id: null; project_id: string; type: TicketType };
 export type BacklogPage = { tickets: BacklogTicket[]; counts: Record<TicketType | 'all', number>; labels: ProjectLabel[] };
-export type BacklogSort = 'manual' | 'newest' | 'oldest';
+export type BacklogSort = 'manual' | 'newest' | 'oldest' | 'due';
 export type BacklogPlanned = 'exclude' | 'only' | 'all'; // tickets planned into an upcoming sprint (TL-584)
 // BacklogStatus: open tickets (the default), or closed ones: done, won't do, duplicates, or all of them
 export type BacklogStatus = 'open' | 'done' | 'wont_do' | 'duplicate' | 'closed';
@@ -203,7 +204,8 @@ function browserLocale(): Locale {
 }
 
 export type SearchQuery = { text?: string; project?: string; board?: string; types?: TicketType[]; priorities?: string[]; assignee?: string;
-  creator?: string; status?: 'open' | 'done'; limit?: number; page?: number; match?: 'any' };
+  creator?: string; status?: 'open' | 'done'; limit?: number; page?: number; match?: 'any';
+  due?: 'overdue' | 'soon' | 'none'; sort?: 'due' }; // due: by the viewer's day (TL-632)
 
 function searchParams(q: SearchQuery): URLSearchParams {
   const params = new URLSearchParams();
@@ -216,6 +218,8 @@ function searchParams(q: SearchQuery): URLSearchParams {
   if (q.assignee) params.set('assignee', q.assignee);
   if (q.creator) params.set('creator', q.creator); // "created by me" (TL-490)
   if (q.status) params.set('status', q.status);
+  if (q.due) params.set('due', q.due);
+  if (q.sort) params.set('sort', q.sort);
   if (q.page && q.page > 1) params.set('page', String(q.page));
   params.set('limit', String(q.limit ?? 20));
   return params;
@@ -495,9 +499,9 @@ export const tickets = {
   assign: (id: string, assignee: string | null, token: T) => api<Ticket>(`/tickets/${id}/assignee`, { method: 'PUT', body: { assignee }, token }),
   assignees: (token: T) => api<Assignee[]>('/assignees', { token }),
   // on the sprint's last day the ticket goes to the backlog instead: column_id null, redirected_to_backlog
-  create: (columnId: string, t: { title: string; description?: string; type?: TicketType; priority?: string; labels?: string[]; estimate?: string; timebox_days?: number; timebox_hours?: number }, token: T) =>
+  create: (columnId: string, t: { title: string; description?: string; type?: TicketType; priority?: string; labels?: string[]; estimate?: string; timebox_days?: number; timebox_hours?: number; due_date?: string }, token: T) =>
     api<Ticket & { redirected_to_backlog?: boolean }>(`/columns/${columnId}/tickets`, { method: 'POST', body: t, token }),
-  update: (id: string, t: { title: string; description: string; type?: TicketType; priority?: string; estimate?: string; timebox_days?: number; timebox_hours?: number }, token: T) => api<void>(`/tickets/${id}`, { method: 'PATCH', body: t, token }),
+  update: (id: string, t: { title: string; description: string; type?: TicketType; priority?: string; estimate?: string; timebox_days?: number; timebox_hours?: number; due_date?: string }, token: T) => api<void>(`/tickets/${id}`, { method: 'PATCH', body: t, token }),
   setLabels: (id: string, labels: string[], token: T) => api<{ labels: string[] }>(`/tickets/${id}/labels`, { method: 'PUT', body: { labels }, token }),
   remove: (id: string, token: T) => api<void>(`/tickets/${id}`, { method: 'DELETE', token }),
   // dependencies: replace what ticket {id} waits on (same project, no loops); claim is refused while blocked
@@ -632,7 +636,7 @@ export const backlog = {
     if (q.epic) params.set('epic', q.epic); // an epic's sub-tickets only (TL-215)
     return api<BacklogPage>(`/projects/${projectId}/backlog/page?${params}`, { token });
   },
-  create: (projectId: string, t: { title: string; description?: string; type: TicketType; priority?: string; labels?: string[]; timebox_days?: number; timebox_hours?: number }, token: T) =>
+  create: (projectId: string, t: { title: string; description?: string; type: TicketType; priority?: string; labels?: string[]; timebox_days?: number; timebox_hours?: number; due_date?: string }, token: T) =>
     api<BacklogTicket>(`/projects/${projectId}/backlog`, { method: 'POST', body: t, token }),
   // its open sub-tickets on the board go too (TL-218): also_moved lists them
   send: (ticketId: string, token: T) => api<{ also_moved?: MovedTicket[] } | undefined>(`/tickets/${ticketId}/backlog`, { method: 'POST', token }),

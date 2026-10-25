@@ -19,6 +19,7 @@ import { attachAll, PendingAttachments, type PendingFile } from '@/components/ti
 import { TypePicker } from '@/components/ticket-type';
 import { PrioritySelect } from './priority-select';
 import { EstimateSelect } from './estimate';
+import { DueDateField } from '@/components/ticket/due-date-field';
 import { missingTicketFields } from './ticket-validation';
 import { TicketKey } from '@/components/ticket/ticket-key';
 import { MoveToBoard } from '@/components/project/move-to-board';
@@ -71,6 +72,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
   const [estimate, setEstimate] = useState(ticket?.estimate ?? '');
   const [timeboxDays, setTimeboxDays] = useState(ticket?.timebox_days ?? 0); // spike timebox (TL-502)
   const [timeboxHours, setTimeboxHours] = useState(ticket?.timebox_hours ?? 0);
+  const [dueDate, setDueDate] = useState(ticket?.due_date ?? ''); // TL-632; "" = none
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -97,6 +99,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
       setEstimate(ticket?.estimate ?? '');
       setTimeboxDays(ticket?.timebox_days ?? 0);
       setTimeboxHours(ticket?.timebox_hours ?? 0);
+      setDueDate(ticket?.due_date ?? '');
       setConfirmDelete(false);
       setMoving(false);
       setWontDo(null);
@@ -147,12 +150,12 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
       // a spike's timebox (TL-502); other types don't carry one, so clear it (0/0) if the type changed away
       const timebox = type === 'spike' ? { timebox_days: timeboxDays, timebox_hours: timeboxHours } : { timebox_days: 0, timebox_hours: 0 };
       if (ticket) {
-        await tickets.update(ticket.id, { title: cleanTitle, description: description.trim(), type, priority, ...(estimating && { estimate }), ...timebox }, token);
+        await tickets.update(ticket.id, { title: cleanTitle, description: description.trim(), type, priority, ...(estimating && { estimate }), ...timebox, due_date: dueDate }, token);
         const result = await tickets.setLabels(ticket.id, labels, token);
         if (leavesBoard && onSentToBacklog) onSentToBacklog(ticket.id); // now an epic, in the backlog
-        else onSaved({ ...ticket, title: cleanTitle, description: description.trim(), type, priority, labels: result.labels, ...(estimating && { estimate: estimate || null }), ...(type === 'epic' && { estimate: null }), timebox_days: type === 'spike' ? timeboxDays || null : null, timebox_hours: type === 'spike' ? timeboxHours || null : null });
+        else onSaved({ ...ticket, title: cleanTitle, description: description.trim(), type, priority, labels: result.labels, ...(estimating && { estimate: estimate || null }), ...(type === 'epic' && { estimate: null }), timebox_days: type === 'spike' ? timeboxDays || null : null, timebox_hours: type === 'spike' ? timeboxHours || null : null, due_date: dueDate || null });
       } else {
-        const input = { title: cleanTitle, description: description.trim(), type, priority, labels, ...(estimating && estimate && columnId && { estimate }), ...(type === 'spike' && { timebox_days: timeboxDays, timebox_hours: timeboxHours }) };
+        const input = { title: cleanTitle, description: description.trim(), type, priority, labels, ...(estimating && estimate && columnId && { estimate }), ...(type === 'spike' && { timebox_days: timeboxDays, timebox_hours: timeboxHours }), ...(dueDate && { due_date: dueDate }) };
         const created = columnId ? await tickets.create(columnId, input, token) : (await backlog.create(projectId ?? '', input, token)) as unknown as Ticket;
         await attachAll(created.id, files, token); // failures are visible on the ticket's attachment list
         setFiles([]);
@@ -240,6 +243,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
                 {missing.estimate && <span id="ticket-estimate-error" className="text-xs font-normal text-destructive"><Trans>Choose an estimate.</Trans></span>}
               </label>
             )}
+            <DueDateField value={dueDate} onChange={setDueDate} />
           </div>
           {type === 'spike' && (
             <fieldset className="grid gap-1.5 text-sm font-medium">

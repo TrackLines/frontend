@@ -2,6 +2,7 @@
 
 import { Trans, useLingui } from '@lingui/react/macro';
 import { NeedsReviewBadge, ReviewActions } from './review';
+import { DueBadge } from '@/components/ticket/due-badge';
 import { Markdown } from '@/components/markdown';
 import { When } from '@/components/when';
 import { CopyLink } from '@/components/copy-link';
@@ -62,6 +63,7 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
             <Trans>Status</Trans> <Badge variant="secondary">{columnName}</Badge>
             {ticket.duplicate_of_key && <Badge variant="outline"><Trans>Duplicate of {ticket.duplicate_of_key}</Trans></Badge>}
             <EstimateBadge estimate={ticket.estimate} />
+            <DueBadge due={ticket.due_date} done={done || !!ticket.done_at} />
             <NeedsReviewBadge ticket={ticket} />
           </DialogDescription>
         </DialogHeader>

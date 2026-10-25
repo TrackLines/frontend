@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Plural, Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState, type ReactNode } from 'react';
+import { DueBadge } from '@/components/ticket/due-badge';
 import { PriorityBadge } from '@/components/board/priority-badge';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
 import { TicketKey, ticketPath } from '@/components/ticket/ticket-key';
@@ -58,6 +59,7 @@ export function DashboardWorkView({ assigned, created, mentioned, people, totals
     <Row key={tk.id} href={ticketPath(tk)} ticketKey={tk.key} title={tk.title}>
       <PriorityBadge priority={tk.priority} hideDefault />
       {tk.blocked && <BlockedBadge />}
+      <DueBadge due={tk.due_date} done={tk.done} />
       {tk.type === 'spike' && <TimeboxCountdown startedAt={tk.started_at} doneAt={tk.done_at} days={tk.timebox_days} hours={tk.timebox_hours} />}
       <Badge variant="secondary">{tk.column_name ?? t`Backlog`}</Badge>
       <PlannedBadge ticket={tk} />

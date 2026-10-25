@@ -2,6 +2,7 @@
 
 import { Trans, useLingui } from '@lingui/react/macro';
 import { NeedsReviewBadge } from './review';
+import { DueBadge } from '@/components/ticket/due-badge';
 import { plainText } from '@/components/markdown';
 import { When } from '@/components/when';
 import { Badge } from '@/components/ui/badge';
@@ -62,6 +63,7 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
           {ticket.type === 'spike' && <TimeboxBadge days={ticket.timebox_days} hours={ticket.timebox_hours} />}
           <PriorityBadge priority={ticket.priority} hideDefault />
           {ticket.blocked && <BlockedBadge />}
+          <DueBadge due={ticket.due_date} done={!!ticket.done_at} />
           <NeedsReviewBadge ticket={ticket} />
           {ticket.external_source === 'bugfixes' && <Badge variant="outline" title={t`Reported by Bugfixes`}>Bugfixes</Badge>}
           <span className="ml-auto flex shrink-0 items-center gap-1">

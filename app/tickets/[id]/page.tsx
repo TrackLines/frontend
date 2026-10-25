@@ -1,5 +1,6 @@
 'use client';
 
+import { DueBadge } from '@/components/ticket/due-badge';
 import { NeedsReviewBadge, ReviewActions } from '@/components/board/review';
 import { Markdown } from '@/components/markdown';
 import { When } from '@/components/when';
@@ -121,6 +122,7 @@ export default function TicketPage() {
           {tk.sprint_number != null && <Badge variant="secondary"><Trans>Sprint {tk.sprint_number}</Trans></Badge>}
           <PlannedBadge ticket={tk} />
           {tk.blocked && <BlockedBadge href="#blocked-by" />}
+          <DueBadge due={tk.due_date} done={tk.done} />
           <NeedsReviewBadge ticket={tk} />
           {tk.resolution === 'wont_do' && <Badge variant="outline" title={t`Closed as decided against`}><Trans>Won&apos;t do</Trans></Badge>}
           {tk.resolution === 'duplicate' && <Badge variant="outline"><Trans>Duplicate</Trans></Badge>}

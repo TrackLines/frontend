@@ -51,6 +51,11 @@ msgstr "{0, plural, one {# quadro} other {# quadros}}"
 msgid "{0, plural, one {# board} other {# boards}}, one per team. To archive or delete one, open it and use Edit board."
 msgstr "{0, plural, one {# quadro} other {# quadros}}, um por equipe. Para arquivar ou excluir um, abra-o e use Editar quadro."
 
+#. placeholder {0}: -d
+#: lib/due.ts
+msgid "{0, plural, one {# day overdue} other {# days overdue}}"
+msgstr "{0, plural, one {# dia de atraso} other {# dias de atraso}}"
+
 #. placeholder {0}: Number(days.toFixed(1))
 #. placeholder {0}: plan.length_days
 #. placeholder {0}: sprint.length_days
@@ -270,6 +275,10 @@ msgstr "{count} sem estimativa"
 #: components/project/project-card.tsx
 msgid "{count} urgent"
 msgstr "{count} urgentes"
+
+#: lib/due.ts
+msgid "{d, plural, one {Due in # day} other {Due in # days}}"
+msgstr "{d, plural, one {Vence em # dia} other {Vence em # dias}}"
 
 #: lib/timebox.ts
 msgid "{d}d"
@@ -1037,6 +1046,10 @@ msgstr "outro projeto desta organização já usa esse prefixo de chave"
 msgid "Any assignee"
 msgstr "Qualquer responsável"
 
+#: components/ticket-search.tsx
+msgid "Any due date"
+msgstr "Qualquer prazo"
+
 #: components/mcp-connect.tsx
 msgid "Any MCP client that supports remote servers over Streamable HTTP:"
 msgstr "Qualquer cliente MCP que suporte servidores remotos via Streamable HTTP:"
@@ -1605,6 +1618,10 @@ msgstr "Limpar filtro de prioridade"
 #: components/notifications-bell.tsx
 msgid "Clear read"
 msgstr "Limpar lidas"
+
+#: components/ticket/due-date-field.tsx
+msgid "Clear the due date"
+msgstr "Limpar o prazo"
 
 #. placeholder {0}: notificationLine(i18n, n, people)
 #: components/notifications-bell.tsx
@@ -2861,9 +2878,33 @@ msgstr "prazo {due}"
 msgid "Due {endLabel}"
 msgstr "Prazo {endLabel}"
 
+#: components/ticket/due-date-field.tsx
+msgid "Due date"
+msgstr "Prazo"
+
+#: components/ticket/due-date-field.tsx
+msgid "Due date <0>(optional)</0>"
+msgstr "Prazo <0>(opcional)</0>"
+
 #: components/settings/file-cleanup.tsx
 msgid "Due for deletion"
 msgstr "Sujeito a exclusão"
+
+#: components/project/backlog-sort.tsx
+msgid "Due soonest"
+msgstr "Prazo mais próximo primeiro"
+
+#: lib/due.ts
+msgid "Due today"
+msgstr "Vence hoje"
+
+#: components/ticket-search.tsx
+msgid "Due today or tomorrow"
+msgstr "Vence hoje ou amanhã"
+
+#: lib/due.ts
+msgid "Due tomorrow"
+msgstr "Vence amanhã"
 
 #: app/tickets/[id]/page.tsx
 #: components/board/ticket-view.tsx
@@ -3297,6 +3338,10 @@ msgstr "Filtrar por responsável"
 #: components/my-work.tsx
 msgid "Filter by board"
 msgstr "Filtrar por quadro"
+
+#: components/ticket-search.tsx
+msgid "Filter by due date"
+msgstr "Filtrar por prazo"
 
 #: components/board/epic-filter.tsx
 msgid "Filter by epic"
@@ -4666,6 +4711,10 @@ msgstr "Nenhum ticket concluído no backlog."
 msgid "No done tickets mention you."
 msgstr "Nenhum ticket concluído menciona você."
 
+#: components/ticket-search.tsx
+msgid "No due date"
+msgstr "Sem prazo"
+
 #: components/project/backlog.tsx
 msgid "No duplicate tickets in the backlog."
 msgstr "Nenhum ticket duplicado no backlog."
@@ -5512,6 +5561,7 @@ msgid "Overall progress"
 msgstr "Progresso geral"
 
 #: components/roadmap/timeline.tsx
+#: components/ticket-search.tsx
 msgid "Overdue"
 msgstr "Atrasado"
 
@@ -5930,6 +5980,11 @@ msgstr "Regrediu"
 #: components/ticket/pull-requests-panel.tsx
 msgid "Released in {0}"
 msgstr "Lançado em {0}"
+
+#. placeholder {0}: n.text
+#: lib/notifications.ts
+msgid "Reminder: {0}"
+msgstr "Lembrete: {0}"
 
 #: components/project/refinement.tsx
 #: components/roadmap/item-editor.tsx

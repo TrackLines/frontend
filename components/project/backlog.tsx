@@ -1,5 +1,6 @@
 'use client';
 
+import { DueBadge } from '@/components/ticket/due-badge';
 import { SimilarTickets, useSimilarTickets } from '@/components/ticket/similar-tickets';
 import { MarkdownTextarea, plainText } from '@/components/markdown';
 import { When } from '@/components/when';
@@ -446,7 +447,7 @@ export function BacklogRow({ t: tk, busy, onEdit }: { t: BacklogTicket; busy: bo
   return (
     <li className="grid grid-cols-[auto_auto_auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1.5 p-4">
       <span className={`col-start-1 row-start-1 ${tk.duplicate_of_id ? 'line-through' : ''}`}><TicketKey value={tk.key} /></span>
-      <span className="col-start-1 row-start-2 flex flex-wrap gap-1"><TypeBadge type={tk.type} /><PlannedBadge ticket={tk} />{tk.blocked && <BlockedBadge />}{tk.resolution && <Badge variant="secondary">{i18n._(RESOLUTION_LABEL[tk.resolution])}</Badge>}</span>
+      <span className="col-start-1 row-start-2 flex flex-wrap gap-1"><TypeBadge type={tk.type} /><PlannedBadge ticket={tk} />{tk.blocked && <BlockedBadge />}<DueBadge due={tk.due_date} done={!!tk.resolution} />{tk.resolution && <Badge variant="secondary">{i18n._(RESOLUTION_LABEL[tk.resolution])}</Badge>}</span>
       {tk.created_at && <span className="col-span-2 col-start-1 row-start-3 self-end text-xs whitespace-nowrap text-muted-foreground"><Trans>Created <When iso={tk.created_at} /></Trans></span>}
       {shown.length > 0 && <TicketLabels labels={shown} className="col-start-2 row-span-2 row-start-1 flex-col items-start" />}
       {rest.length > 0 && <span className="col-start-3 row-span-2 row-start-1"><MoreLabels labels={rest} /></span>}
