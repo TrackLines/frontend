@@ -2,6 +2,8 @@ import { expect, test } from 'bun:test';
 import { render as renderToStaticMarkup } from '@/test/i18n';
 import { changes, current, HISTORY, longDate, previousOf, versionOf, type LegalDoc } from './legal-history';
 import { TERMS } from './terms';
+import { LANG_COOKIE } from './locale';
+import { THEME } from './theme';
 import { PRIVACY } from './privacy';
 import { HistoryList, VersionPage } from '@/components/legal-history';
 import { LegalPage } from '@/components/legal-page';
@@ -15,7 +17,11 @@ const PUBLISHED: Record<LegalDoc, Record<string, string>> = {
   // terms 2026-10-17: pre-launch correction (owner, 2026-10-17): "BugFix.es"
   terms: { '2026-10-17': '6caee2edf71a32e2134fb5dbdae8711c2539377823f7c227e2b3c5b4007b69a2' },
   // privacy 2026-10-17: pre-launch correction (owner, 2026-10-17): links to each provider (and ChewedFeed HQ), "Flags.gg", "BugFix.es"
-  privacy: { '2026-10-17': '953aec79535ae87943f85f5ab66e7f63d7f4fb1b6104f7dd1f2c5c46d01e6aad' },
+  // privacy 2026-10-25: every cookie and item of device storage; what deleting your account erases (TL-595)
+  privacy: {
+    '2026-10-17': '953aec79535ae87943f85f5ab66e7f63d7f4fb1b6104f7dd1f2c5c46d01e6aad',
+    '2026-10-25': '0b333b88d7b224e568da39770307367a172961fa1e3299db06eaacdf704fa9b6',
+  },
 };
 const sha = (s: string) => new Bun.CryptoHasher('sha256').update(s).digest('hex');
 
@@ -67,10 +73,24 @@ test('the pages: Last updated links to every version; each version shows itself 
 
 test('the backend’s list of versions, and the bell’s notice', async () => {
   const list = await GET().json();
-  expect(list).toEqual([{ doc: 'terms', version: '2026-10-17', summary: 'First published version.' }, { doc: 'privacy', version: '2026-10-17', summary: 'First published version.' }]);
+  expect(list).toEqual([{ doc: 'terms', version: '2026-10-17', summary: 'First published version.' }, { doc: 'privacy', version: '2026-10-17', summary: 'First published version.' },
+    { doc: 'privacy', version: '2026-10-25', summary: 'Lists every cookie and item of device storage, and says what deleting your account erases.' }]);
   const notice = { kind: 'legal', actor: '', text: 'We’ve updated our Terms of service (from 2026-11-20): Downtime credit now counts short outages.', ticket_id: null, ticket_key: null, board_id: null, link: '/terms/2026-11-20' };
   expect(notificationLine(i18nFor('en'), notice, [])).toBe(notice.text); // not "Someone We've updated…"
   expect(notificationHref(notice)).toBe('/terms/2026-11-20');
   expect(notificationHref({ ...notice, link: '//evil.example/x' })).toBeNull(); // only pages on this site
   expect(notificationHref({ ...notice, link: '/\\evil.example/x' })).toBeNull(); // browsers read /\ as // (audit)
+});
+
+// TL-595 (UK law audit, PECR): the policy names everything TrackLin.es keeps on a device. A new cookie
+// or local storage key fails this until the policy lists it (in a new version) and the file is added here.
+test('the privacy policy lists every cookie and item of device storage the code uses', async () => {
+  for (const key of [LANG_COOKIE, THEME.storageKey, 'roadmap-view:', 'push-no-service', '/sw.js', '__session']) expect(PRIVACY).toContain(key);
+  const storing = new Set<string>();
+  for await (const file of new Bun.Glob('{app,components,lib}/**/*.{ts,tsx}').scan('.')) {
+    if (/\.test\.tsx?$/.test(file)) continue;
+    const src = await Bun.file(file).text();
+    if (/localStorage|sessionStorage|document\.cookie|indexedDB|cookies\(\)\.set/.test(src)) storing.add(file);
+  }
+  expect([...storing].sort()).toEqual(['components/language-sync.tsx', 'components/roadmap/timeline.tsx', 'lib/api.ts', 'lib/push.ts']);
 });

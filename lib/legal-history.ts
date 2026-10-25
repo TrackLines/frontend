@@ -1,4 +1,5 @@
 import privacy20261017 from './legal-versions/privacy-2026-10-17';
+import privacy20261025 from './legal-versions/privacy-2026-10-25';
 import terms20261017 from './legal-versions/terms-2026-10-17';
 
 // Every published version of the Terms of service and the Privacy policy (TL-424), oldest first.
@@ -12,7 +13,10 @@ export type LegalVersion = { version: string; summary: string; body: string }; /
 
 export const HISTORY: Record<LegalDoc, LegalVersion[]> = {
   terms: [{ version: '2026-10-17', summary: 'First published version.', body: terms20261017 }],
-  privacy: [{ version: '2026-10-17', summary: 'First published version.', body: privacy20261017 }],
+  privacy: [
+    { version: '2026-10-17', summary: 'First published version.', body: privacy20261017 },
+    { version: '2026-10-25', summary: 'Lists every cookie and item of device storage, and says what deleting your account erases.', body: privacy20261025 },
+  ],
 };
 
 export const DOC_TITLE: Record<LegalDoc, string> = { terms: 'Terms of service', privacy: 'Privacy policy' };
