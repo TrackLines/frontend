@@ -17,3 +17,10 @@ test('the 404 follows the chosen theme, with the CSP nonce, and the app’s font
   expect(html).toContain('This page doesn’t exist');
   expect(html).toContain('lang="en"');
 });
+
+// TL-586: next/link's client-side move out of the 404's own <html> did nothing; a plain <a> reloads.
+test('the 404’s home link is a full page load', async () => {
+  const src = await Bun.file(new URL('./global-not-found.tsx', import.meta.url)).text();
+  expect(src).not.toContain("from 'next/link'");
+  expect(src).toContain('<a href="/"');
+});
