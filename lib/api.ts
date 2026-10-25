@@ -811,6 +811,27 @@ export const webhooks = {
   redeliver: (id: string, delivery: string, t: T) => api<void>(`${hook(id)}/deliveries/${encodeURIComponent(delivery)}/redeliver`, { method: 'POST', token: t }),
 };
 
+// Imports (TL-536, the CSV source TL-637/638): a preview, then a run in the background, a report, and scrap.
+export type ImportCounts = { projects: number; boards: number; columns: number; tickets: number; comments: number };
+export type ImportSkip = { kind: string; source_id: string; reason: string };
+export type ImportJob = {
+  id: string; source: string; state: 'previewing' | 'running' | 'cancelling' | 'done' | 'failed' | 'cancelled' | 'scrapped';
+  problems?: { code: string; source_id?: string; message: string }[]; skipped?: ImportSkip[];
+  planned?: ImportCounts; projects?: { name: string; prefix: string; tickets: number }[];
+  progress: number; total: number; report: { created: ImportCounts; skipped: ImportSkip[] } | null; error?: string;
+};
+export type CSVField = 'title' | 'description' | 'type' | 'priority' | 'labels' | 'status' | 'due' | 'created';
+export const importsApi = {
+  previewCSV: (o: { csv: string; name: string; prefix: string; mapping: Partial<Record<CSVField, string>> }, t: T) =>
+    api<ImportJob>('/imports', { method: 'POST', body: { source: 'csv', options: o }, token: t }),
+  get: (id: string, t: T) => api<ImportJob>(`/imports/${encodeURIComponent(id)}`, { token: t }),
+  run: (id: string, t: T) => api<ImportJob>(`/imports/${encodeURIComponent(id)}/run`, { method: 'POST', token: t }),
+  cancel: (id: string, t: T) => api<void>(`/imports/${encodeURIComponent(id)}/cancel`, { method: 'POST', token: t }),
+  scrap: (id: string, t: T) => api<void>(`/imports/${encodeURIComponent(id)}/scrap`, { method: 'POST', token: t }),
+};
+// exportCSV: a project's tickets as CSV text (TL-637), for the browser to save.
+export const exportCSV = (projectId: string, t: T) => api<string>(`/projects/${encodeURIComponent(projectId)}/export.csv`, { token: t });
+
 // Web Push: notifications on this device even when Tracklines is closed (if the server has VAPID keys).
 export type PushSettings = { enabled: boolean; public_key?: string };
 export const push = {

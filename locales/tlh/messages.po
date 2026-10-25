@@ -206,6 +206,12 @@ msgstr "{0} rIn, {1, plural, one {# ticket} other {# ticketmey}} ({2}%)"
 msgid "{0} of {1} linked tickets done"
 msgstr "ticketmey rarlu'pu'bogh {1} {0} rIn"
 
+#. placeholder {0}: job.progress
+#. placeholder {1}: job.total
+#: components/settings/csv-import.tsx
+msgid "{0} of {1} tickets…"
+msgstr "{1} ticketmey {0}…"
+
 #. placeholder {0}: st.open
 #: components/project/project-card.tsx
 msgid "{0} open"
@@ -216,6 +222,11 @@ msgstr "{0} poS"
 #: lib/integrations.ts
 msgid "{0} or {1}"
 msgstr "{0} pagh {1}"
+
+#. placeholder {0}: skipped.length
+#: components/settings/csv-import.tsx
+msgid "{0} rows or values left out"
+msgstr "{0} tlhegh pagh lo'laHghach Dalpu'"
 
 #. placeholder {0}: team.name
 #: components/settings/organization.tsx
@@ -1364,6 +1375,14 @@ msgstr "'echletmey lo'lu'pu'bogh ngaSlu' Qaw'lu'be', vaj qunchaj ratlh. jInmolDa
 msgid "Breadcrumb"
 msgstr "He mIllogh"
 
+#: app/settings/page.tsx
+msgid "Bring tickets in from a CSV (Trello, Asana, Linear, spreadsheets) as a new project."
+msgstr "CSV vo' ticketmey yIqem (Trello, Asana, Linear), jInmol chu'. Qapla'!"
+
+#: app/settings/import/page.tsx
+msgid "Bring tickets in from a CSV as a new project. You see what it will make before anything is created, and can scrap it afterwards."
+msgstr "CSV vo' ticketmey yIqem, jInmol chu'. chenmoHlu'pa' yIlegh; ghIq DaQaw'laH."
+
 #: app/roadmaps/page.tsx
 msgid "Browse projects"
 msgstr "jInmolmey tInej"
@@ -2130,6 +2149,10 @@ msgstr "rarHa'lu'laHbe'."
 msgid "Couldn’t end the standup. Please try again."
 msgstr "Qam ghom rInmoHlu'laHbe'. yInIDqa'."
 
+#: components/project/export-csv.tsx
+msgid "Couldn’t export the tickets. Please try again."
+msgstr "ticketmey ngeHlu'laHbe'. yInIDqa'."
+
 #: components/quick-add-ticket.tsx
 msgid "Couldn’t find this board’s project."
 msgstr "'echletvam jInmol tu'lu'laHbe'."
@@ -2573,6 +2596,10 @@ msgstr "He nav yIchenmoH"
 msgid "Create team"
 msgstr "beq yIchenmoH"
 
+#: components/settings/csv-import.tsx
+msgid "Created"
+msgstr "chenmoHlu'pu'"
+
 #: components/project/backlog.tsx
 msgid "Created <0/>"
 msgstr "chenmoHlu'pu' <0/>"
@@ -2602,6 +2629,10 @@ msgstr "{where}Daq chenmoH"
 #: components/settings/api-keys.tsx
 msgid "Creating…"
 msgstr "chenmoHlI'…"
+
+#: components/settings/csv-import.tsx
+msgid "CSV file"
+msgstr "CSV De'"
 
 #: components/board/ticket-card.tsx
 msgid "Current column"
@@ -2742,6 +2773,7 @@ msgstr "ngeHmey"
 msgid "Dependencies"
 msgstr "botwI'mey"
 
+#: components/settings/csv-import.tsx
 #: components/settings/organization.tsx
 msgid "Description"
 msgstr "Del"
@@ -2857,6 +2889,7 @@ msgstr "rIn"
 #: components/roadmap/item-editor.tsx
 #: components/roadmap/report.tsx
 #: components/roadmap/timeline.tsx
+#: components/settings/csv-import.tsx
 #: components/ticket/labels.tsx
 msgid "Done"
 msgstr "rIn"
@@ -2926,6 +2959,7 @@ msgstr "Qav jaj {due}"
 msgid "Due {endLabel}"
 msgstr "Qav jaj {endLabel}"
 
+#: components/settings/csv-import.tsx
 #: components/ticket/due-date-field.tsx
 msgid "Due date"
 msgstr "DaH jaj"
@@ -3335,6 +3369,10 @@ msgstr "{days, plural, one {# jaj} other {# jaj}} pIq ngI'"
 msgid "Export"
 msgstr "yIngeH"
 
+#: components/project/export-csv.tsx
+msgid "Export CSV"
+msgstr "CSV yIngeH"
+
 #: lib/error-codes.ts
 msgid "external is set by integrations (API keys)"
 msgstr "rarghachmey (API ngaQHa'moHwI'mey) cher external"
@@ -3461,6 +3499,10 @@ msgstr "ngoQ ghajbogh sprintmey rIntaHbogh: chav'a' pagh chavbe'?"
 msgid "first: new tickets start here"
 msgstr "wa'DIch: naDev tagh ticketmey chu'"
 
+#: components/settings/csv-import.tsx
+msgid "Fix these first:"
+msgstr "wa'DIch yItI':"
+
 #: components/board/flow-report.tsx
 msgid "Flow report"
 msgstr "He ja'"
@@ -3504,6 +3546,10 @@ msgstr "from to je jajmey (YYYY-MM-DD) 'oHnIS, to nIDpa' from, cha' DIS veH"
 #: components/settings/integrations.tsx
 msgid "From Bugfixes → Settings → Access tokens"
 msgstr "Bugfixes → SeHlaw → 'elmeH tokenmey vo'"
+
+#: components/settings/csv-import.tsx
+msgid "From Trello, Asana, Linear, Jira, a spreadsheet, or another TrackLin.es project’s export. Up to about 1 MB."
+msgstr "Trello, Asana, Linear, Jira, pagh latlh TrackLin.es jInmol vo'. 1 MB neH."
 
 #: components/roadmap/timeline.tsx
 msgid "Gantt"
@@ -3549,6 +3595,10 @@ msgstr "nav vorghDaq yIjaH"
 #: app/global-not-found.tsx
 msgid "Go to TrackLin.es"
 msgstr "TrackLin.esDaq yIjaH"
+
+#: components/settings/csv-import.tsx
+msgid "Go to your projects"
+msgstr "jInmolmeylIjDaq yIjaH"
 
 #: components/settings/chat-dm.tsx
 msgid "Go to Your settings"
@@ -3783,9 +3833,19 @@ msgstr "vIpolpu'"
 msgid "image"
 msgstr "mIllogh"
 
+#: app/settings/import/page.tsx
+#: app/settings/page.tsx
+#: components/settings/csv-import.tsx
+msgid "Import"
+msgstr "yIqem"
+
 #: lib/people.ts
 msgid "Imported"
 msgstr "Hevlu'pu'"
+
+#: app/settings/import/page.tsx
+msgid "Importing isn’t turned on for your organization yet."
+msgstr "ghom'a'lIj qemmeH chu'be'lu'."
 
 #: lib/help.ts
 msgid "In Edit project → Archived boards. Restore one from its banner."
@@ -4000,6 +4060,10 @@ msgstr "ngaQHa'moHwI' environment variable Daq yIpol (rur: shell profileDaq):"
 msgid "Keep ticket"
 msgstr "ticket yIpol"
 
+#: components/settings/csv-import.tsx
+msgid "Key prefix"
+msgstr "ngaQHa'moHwI' moH"
+
 #: lib/error-codes.ts
 msgid "key prefix must be 2–6 capital letters or digits, starting with a letter"
 msgstr "ngaQHa'moHwI' moHaq'e' 2–6 ngutlhmey tInqu' pagh mI'mey 'oHnIS, ngutlh wa'DIch"
@@ -4025,6 +4089,7 @@ msgid "kind must be ai, service or personal"
 msgstr "kind'e' ai, service pagh personal 'oHnIS"
 
 #: components/board/label-filter.tsx
+#: components/settings/csv-import.tsx
 #: components/ticket/labels.tsx
 msgid "Labels"
 msgstr "permey"
@@ -4368,6 +4433,12 @@ msgstr "nIteb yInej; SoHvaD pa' DevwI' ticketmey poSbe'choH"
 msgid "Low"
 msgstr "bIng"
 
+#. placeholder {0}: job.report.created.tickets
+#. placeholder {1}: job.report.created.boards
+#: components/settings/csv-import.tsx
+msgid "Made {0} tickets on {1} boards."
+msgstr "{0} ticketmey, {1} 'echletmey chenmoHpu'."
+
 #: components/hosted-bar.tsx
 msgid "Make {name} the host"
 msgstr "pa' DevwI' {name} yIchenmoH"
@@ -4702,6 +4773,7 @@ msgid "New link"
 msgstr "rarwI' chu'"
 
 #: app/dashboard/page.tsx
+#: components/settings/csv-import.tsx
 msgid "New project"
 msgstr "jInmol chu'"
 
@@ -5118,6 +5190,10 @@ msgstr "cherlu'be'"
 #: components/roadmap/timeline.tsx
 msgid "Not started"
 msgstr "taghbe'"
+
+#: components/settings/csv-import.tsx
+msgid "Not used"
+msgstr "lo'lu'be'"
 
 #: components/settings/google-calendar.tsx
 msgid "not yet"
@@ -5915,6 +5991,7 @@ msgid "Predictability by month"
 msgstr "jar pIHlaHghach"
 
 #: components/markdown.tsx
+#: components/settings/csv-import.tsx
 #: components/ticket/attachments.tsx
 msgid "Preview"
 msgstr "wa'DIch legh"
@@ -5929,6 +6006,7 @@ msgid "Previous"
 msgstr "vorgh"
 
 #: components/board/priority-filter.tsx
+#: components/settings/csv-import.tsx
 msgid "Priority"
 msgstr "potlh"
 
@@ -6425,6 +6503,18 @@ msgstr "Qu' tIn ngaQmoHlu'pu': DaHjaj rIn sprint, vaj backlogDaq ghoS ticketmey 
 msgid "scope must be organization, team, or project"
 msgstr "scope'e' organization, team pagh project 'oHnIS"
 
+#: components/settings/csv-import.tsx
+msgid "Scrap this import"
+msgstr "qemvam yIQaw'"
+
+#: components/settings/csv-import.tsx
+msgid "Scrap this import? Everything it made is deleted."
+msgstr "qemvam yIQaw'? chenmoHbogh Hoch Qaw'lu'."
+
+#: components/settings/csv-import.tsx
+msgid "Scrapped: everything the import made is gone."
+msgstr "Qaw'lu'pu': qem chenmoHbogh Hoch Dach."
+
 #: components/ticket-search.tsx
 msgid "Search"
 msgstr "yInej"
@@ -6608,6 +6698,7 @@ msgstr "{0} yIcher"
 #: app/settings/api-keys/page.tsx
 #: app/settings/embedding/page.tsx
 #: app/settings/file-cleanup/page.tsx
+#: app/settings/import/page.tsx
 #: app/settings/integrations/page.tsx
 #: app/settings/organization/page.tsx
 #: app/settings/page.tsx
@@ -6981,6 +7072,10 @@ msgstr "ghom'a'lIjvaD neH 'anglu' wa'DIch; Hoch ghotvaD poSmoHlaH ghom'a' loHwI'
 msgid "Status"
 msgstr "Dotlh"
 
+#: components/settings/csv-import.tsx
+msgid "Status (becomes the board’s columns)"
+msgstr "Dotlh ('echlet tutmey moj)"
+
 #: components/roadmap/item-editor.tsx
 msgid "Status <0>(set by hand until tickets are linked)</0>"
 msgstr "Dotlh <0>(ticketmey rarlu'pa' ghopvo' cherlu')</0>"
@@ -7187,6 +7282,7 @@ msgstr "qatlho', wIHevpu'"
 msgid "That account isn’t in any Bitbucket workspaces."
 msgstr "Bitbucket workspaceDaq mabvetlh tu'lu'be'."
 
+#: components/settings/csv-import.tsx
 #: components/settings/webhooks.tsx
 msgid "That didn’t work. Please try again."
 msgstr "Qapbe'. yInIDqa'."
@@ -7290,6 +7386,11 @@ msgstr "leSpoH poH nav'e' Hoch ghot leSpoH poH nav (…#holiday@group.v.calendar
 #: lib/error-codes.ts
 msgid "the holidays calendar should be a calendar ID, e.g. en.uk#holiday@group.v.calendar.google.com"
 msgstr "leSpoH poH nav'e' poH nav ID 'oHnIS, rur: en.uk#holiday@group.v.calendar.google.com"
+
+#. placeholder {0}: job.error
+#: components/settings/csv-import.tsx
+msgid "The import failed, and nothing was kept: {0}"
+msgstr "qem luj, pollu'pu'be': {0}"
 
 #: components/settings/language.tsx
 msgid "The language TrackLin.es is in for you, on every device."
@@ -7444,6 +7545,15 @@ msgstr "rarwI'vam ngI'pu' pagh lo'lu'pu': chu' DaHevmeH Google ChatDaq TrackLin.
 #: components/settings/chat-dm.tsx
 msgid "This link has expired or was already used. Send the TrackLin.es app a message in Google Chat for a new one."
 msgstr "rarwI'vam ngI'pu' pagh lo'lu'pu'. chu' DaHevmeH Google ChatDaq TrackLin.es appvaD QIn yIngeH."
+
+#. placeholder {0}: job.projects?.[0]?.name
+#. placeholder {1}: job.projects?.[0]?.prefix
+#. placeholder {2}: job.planned.tickets
+#. placeholder {3}: job.planned.boards
+#. placeholder {4}: job.planned.columns
+#: components/settings/csv-import.tsx
+msgid "This makes the project <0>{0}</0> ({1}) with {2} tickets, {3} boards and {4} columns."
+msgstr "jInmol <0>{0}</0> ({1}) chenmoH: {2} ticketmey, {3} 'echletmey, {4} tutmey."
 
 #: app/global-not-found.tsx
 msgid "This page doesn’t exist"
@@ -7702,6 +7812,7 @@ msgstr "poH tlhegh"
 #: components/board/ticket-dialog.tsx
 #: components/intake/request-form.tsx
 #: components/roadmap/item-editor.tsx
+#: components/settings/csv-import.tsx
 msgid "Title"
 msgstr "pong"
 
@@ -7773,6 +7884,7 @@ msgstr "yIchu'"
 msgid "Turned off after repeated failed deliveries. Fix the endpoint, then turn it back on."
 msgstr "luj law' ngeH. yIchu'Ha'. yItI' 'ej yIchu'qa'."
 
+#: components/settings/csv-import.tsx
 #: components/ticket-type.tsx
 msgid "Type"
 msgstr "Segh"
@@ -8174,6 +8286,10 @@ msgstr "AI vumwI' 'Iv"
 #: components/settings/api-keys.tsx
 msgid "Which agent?"
 msgstr "AI vumwI' 'Iv?"
+
+#: components/settings/csv-import.tsx
+msgid "Which column is which"
+msgstr "nuq tut nuq"
 
 #: components/roadmap/visibility.tsx
 msgid "Who can see this roadmap?"

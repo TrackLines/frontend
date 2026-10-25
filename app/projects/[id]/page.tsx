@@ -19,6 +19,7 @@ import { useToken } from '@/lib/use-token';
 import { prefetch, useCachedState } from '@/lib/page-cache';
 import { ProjectSkeleton } from '@/components/page-skeletons';
 import { CopyButton } from '@/components/copy-link';
+import { ExportCSVButton } from '@/components/project/export-csv';
 
 export default function ProjectPage() {
   const { t } = useLingui();
@@ -56,6 +57,7 @@ export default function ProjectPage() {
         {/* setup (name, key prefix, more boards, repositories) lives on its own page */}
         <span className="flex gap-2">
           <ProjectReportLink projectId={project.id} />
+          <ExportCSVButton projectId={project.id} name={project.name} token={token} />
           <RequestsLink projectId={project.id} token={token} />
           <Link href={`/projects/${project.id}/edit`} className={buttonVariants({ variant: 'outline', size: 'sm' })}><Trans>Edit project</Trans></Link>
         </span>
