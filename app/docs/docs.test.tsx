@@ -56,6 +56,7 @@ test('the MCP guide: keys, every client’s setup (the same steps as Connect AI)
   expect(html).toContain('claude mcp add'); // the first client's steps are open
   for (const t of tools) expect(html).toContain(t.name);
   expect(chain).toHaveLength(7);
+  expect(chain[2]).toContain('only To do and Done'); // never Done to start it (TL-591)
   expect(html).toContain('href="/docs"');
   expect(renderToStaticMarkup(<DocsPage />)).toContain('href="/docs/mcp"');
 });
