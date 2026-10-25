@@ -2,7 +2,7 @@ import { afterEach, expect, test } from 'bun:test';
 import { createHmac } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { render } from '@/test/i18n';
-import { Deliveries, webhookURL } from './webhooks';
+import { Deliveries, loadProblem, webhookURL } from './webhooks';
 import { WEBHOOK_EVENTS, webhooks, type WebhookDelivery } from '@/lib/api';
 import { ERROR_MESSAGES } from '@/lib/error-codes';
 import WebhooksDocs, { VERIFY_NODE } from '@/app/docs/webhooks/page';
@@ -67,4 +67,10 @@ test('the page and its Settings card are behind the webhooks flag and for admins
   const read = (p: string) => Bun.file(new URL(p, import.meta.url)).text();
   expect(await read('../../app/settings/webhooks/page.tsx')).toContain("is('webhooks').enabled()");
   expect(await read('../../app/settings/page.tsx')).toContain("{admin && is('webhooks').enabled() && <SettingsCard icon={WebhookIcon}");
+});
+
+test('a list that won\'t load says why: off on the backend, or not an admin (TL-641)', async () => {
+  expect([404, 403, 500, 0].map(loadProblem)).toEqual(['off', 'admins', 'other', 'other']);
+  const src = await Bun.file(new URL('./webhooks.tsx', import.meta.url)).text();
+  for (const s of ['Webhooks aren’t turned on for your organization yet.', 'Only organization admins can manage webhooks.', 'Couldn’t load your webhooks (HTTP ${status}).']) expect(src).toContain(s);
 });
