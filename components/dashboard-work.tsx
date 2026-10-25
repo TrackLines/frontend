@@ -12,6 +12,7 @@ import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TimeboxCountdown } from '@/components/timebox-countdown';
 import { PlannedBadge } from '@/components/ticket/planned-badge';
+import { WatchToggle } from '@/components/mentions';
 import { mentions, tickets, type Assignee, type Mention, type TicketSearchResult } from '@/lib/api';
 import { actorName } from '@/lib/notifications';
 
@@ -38,10 +39,10 @@ export function DashboardWork({ token }: { token: string }) {
       .then((r) => { setAssigned(r.tickets); setTotals((t) => ({ ...t, assigned: r.total })); }, () => setAssigned('failed'));
     tickets.searchPage({ creator: 'me', status: 'open', limit: SHOW_CREATED }, token)
       .then((r) => { setCreated(r.tickets); setTotals((t) => ({ ...t, created: r.total })); }, () => setCreated('failed'));
-    mentions.list(token, SHOW).then(setMentioned, () => setMentioned('failed'));
+    mentions.list(token, SHOW, 'open').then(setMentioned, () => setMentioned('failed')); // done ones are on /mentions (TL-590)
     tickets.assignees(token).then(setPeople, () => {});
   }, []); // load once; token refreshes must not refetch
-  return <DashboardWorkView assigned={assigned} created={created} mentioned={mentioned} people={people} totals={totals} />;
+  return <DashboardWorkView assigned={assigned} created={created} mentioned={mentioned} people={people} totals={totals} token={token} />;
 }
 
 // Totals: how many open tickets each My work tab has in all, when it shows only some (TL-548)
@@ -49,8 +50,8 @@ type Totals = { assigned?: number; created?: number };
 
 // DashboardWorkView: the cards (pure, for tests). The "My work" card is hidden once nothing is
 // assigned and nothing was created by me; "Mentions" is hidden once nobody has mentioned me.
-export function DashboardWorkView({ assigned, created, mentioned, people, totals = {} }: {
-  assigned: Load<TicketSearchResult>; created: Load<TicketSearchResult>; mentioned: Load<Mention>; people: Assignee[]; totals?: Totals;
+export function DashboardWorkView({ assigned, created, mentioned, people, totals = {}, token = '' }: {
+  assigned: Load<TicketSearchResult>; created: Load<TicketSearchResult>; mentioned: Load<Mention>; people: Assignee[]; totals?: Totals; token?: string;
 }) {
   const { t, i18n } = useLingui();
   const ticketRow = (tk: TicketSearchResult) => (
@@ -96,7 +97,7 @@ export function DashboardWorkView({ assigned, created, mentioned, people, totals
   const mentionsPanel = !(pending(mentioned) || has(mentioned)) ? null : (
     <Panel title={t`Mentions`} more={{ href: '/mentions', label: t`All mentions` }} items={mentioned} empty={t`Nobody has mentioned you yet.`}>
       {(m: Mention) => (
-        <Row key={m.ticket_id} href={`/tickets/${m.ticket_id}`} ticketKey={m.key} title={m.title} done={m.done}>
+        <Row key={m.ticket_id} href={`/tickets/${m.ticket_id}`} ticketKey={m.key} title={m.title} done={m.done} action={<WatchToggle mention={m} token={token} />}>
           <span className="truncate">{actorName(i18n, m.actor, people)} · <When iso={m.mentioned_at} /></span>
           <span className="truncate">{m.project_name}</span>
         </Row>
@@ -144,12 +145,13 @@ function Panel<I>({ title, more, items, empty, footer, children }: {
   );
 }
 
-function Row({ href, ticketKey, title, done = false, children }: { href: string; ticketKey?: string; title: string; done?: boolean; children: ReactNode }) {
+function Row({ href, ticketKey, title, done = false, action, children }: { href: string; ticketKey?: string; title: string; done?: boolean; action?: ReactNode; children: ReactNode }) {
   return (
-    <li className="grid gap-1 px-4 py-2.5 text-sm">
+    <li className="group grid gap-1 px-4 py-2.5 text-sm">
       <span className="flex min-w-0 items-center gap-2">
         <TicketKey value={ticketKey} />
         <Link href={href} className={`min-w-0 flex-1 truncate font-medium hover:underline ${done ? 'text-muted-foreground line-through' : ''}`}>{title}</Link>
+        {action}
       </span>
       <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">{children}</span>
     </li>
