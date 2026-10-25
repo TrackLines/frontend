@@ -11,6 +11,7 @@ import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartToo
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import type { BoardReport, ReportSpikes, SprintReport } from '@/lib/api';
 import { num, pct, scopeChange, trend, TYPE_LABEL } from '@/lib/sprint-report';
+import { Donut } from './donut';
 import { dates } from '@/lib/i18n';
 
 // ReportView: one board's sprint report (TL-400), laid out for showing to leadership: the summary,
@@ -100,6 +101,15 @@ export function ReportView({ report }: { report: BoardReport }) {
                 {['bug', 'feature', 'task', 'spike'].map((ty) => <Bar key={ty} dataKey={ty} stackId="mix" fill={`var(--color-${ty})`} isAnimationActive={false} />)}
               </BarChart>
             </ChartCard>
+          </div>
+
+          {/* shares across the whole period (TL-619): what the work went on, and how goals went */}
+          <div className="grid gap-8 lg:grid-cols-2 print:grid-cols-2 print:break-after-page">
+            <Donut title={t`Work mix, whole period`} note={points ? t`Everything finished in the period, by type, in points.` : t`Everything finished in the period, by type, in tickets.`}
+              data={totals.mix.map((m) => ({ key: m.type, label: TYPE_LABEL[m.type] ? i18n._(TYPE_LABEL[m.type]) : m.type, value: m.value }))} />
+            <Donut title={t`Sprint goals`} note={t`Finished sprints that set a goal: met or not.`}
+              data={[{ key: 'met', label: t`Met`, value: closed.filter((s) => s.goal && s.goal_met === true).length },
+                { key: 'missed', label: t`Not met`, value: closed.filter((s) => s.goal && s.goal_met === false).length }]} />
           </div>
 
           {sprints.some((s) => s.goal) && (

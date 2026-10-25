@@ -142,6 +142,12 @@ msgstr "{0, plural, one {Als je het verplaatst, gaat ook de open subticket op di
 msgid "{0, plural, one {Sending it to the backlog also moves its open sub-ticket on this board: {names}.} other {Sending it to the backlog also moves its # open sub-tickets on this board: {names}.}}"
 msgstr "{0, plural, one {Als je het naar de backlog stuurt, gaat ook de open subticket op dit bord mee: {names}.} other {Als je het naar de backlog stuurt, gaan ook de # open subtickets op dit bord mee: {names}.}}"
 
+#. placeholder {0}: num(s.value)
+#. placeholder {1}: Math.round((s.value / total) * 100)
+#: components/reports/donut.tsx
+msgid "{0} ({1}%)"
+msgstr "{0} ({1}%)"
+
 #. placeholder {0}: column.name
 #: components/board/column.tsx
 msgid "{0} column"
@@ -2912,6 +2918,14 @@ msgid "Each board's share of planned work done in the period. The band, 80–100
 msgstr "Het aandeel gepland werk dat elk bord in de periode heeft afgerond. De band van 80–100% is op koers."
 
 #: components/reports/rollup-view.tsx
+msgid "Each one's share of the points finished, on boards that estimate."
+msgstr "Ieders aandeel in de afgeronde punten, op borden die schatten."
+
+#: components/reports/rollup-view.tsx
+msgid "Each one's share of the tickets finished, on boards that count tickets."
+msgstr "Ieders aandeel in de afgeronde tickets, op borden die tickets tellen."
+
+#: components/reports/rollup-view.tsx
 msgid "Each project's share of planned work done in the period. The band, 80–100%, is on target."
 msgstr "Het aandeel gepland werk dat elk project in de periode heeft afgerond. De band van 80–100% is op koers."
 
@@ -3147,6 +3161,14 @@ msgstr "Iedereen staat als afwezig op de hele-dag-afspraken. Je eigen gedeelde a
 msgid "Everyone who can read this roadmap sees the update, with your name. It can’t be edited or deleted once posted."
 msgstr "Iedereen die deze roadmap kan lezen, ziet de update met je naam. Na het plaatsen kan hij niet meer worden bewerkt of verwijderd."
 
+#: components/reports/report-view.tsx
+msgid "Everything finished in the period, by type, in points."
+msgstr "Alles wat in de periode is afgerond, per type, in punten."
+
+#: components/reports/report-view.tsx
+msgid "Everything finished in the period, by type, in tickets."
+msgstr "Alles wat in de periode is afgerond, per type, in tickets."
+
 #: components/settings/api-keys.tsx
 msgid "expired: make a new key"
 msgstr "verlopen: maak een nieuwe sleutel"
@@ -3286,6 +3308,10 @@ msgstr "Afgerond per sprint, en het gemiddelde van de laatste drie (de lijn), in
 #: components/reports/report-view.tsx
 msgid "Finished per sprint, and the average of the last three (the line), in tickets."
 msgstr "Afgerond per sprint, en het gemiddelde van de laatste drie (de lijn), in tickets."
+
+#: components/reports/report-view.tsx
+msgid "Finished sprints that set a goal: met or not."
+msgstr "Afgeronde sprints met een doel: gehaald of niet."
 
 #: components/board/column-list.tsx
 msgid "first: new tickets start here"
@@ -4262,6 +4288,7 @@ msgid "Merged"
 msgstr "Gemerged"
 
 #: components/reports/report-view.tsx
+#: components/reports/rollup-view.tsx
 msgid "Met"
 msgstr "Gehaald"
 
@@ -4851,6 +4878,7 @@ msgid "Not linked"
 msgstr "Niet gekoppeld"
 
 #: components/reports/report-view.tsx
+#: components/reports/rollup-view.tsx
 msgid "Not met"
 msgstr "Niet gehaald"
 
@@ -5544,6 +5572,14 @@ msgstr "Punten afgerond"
 #: components/reports/rollup-view.tsx
 msgid "Points delivered"
 msgstr "Punten geleverd"
+
+#: components/reports/rollup-view.tsx
+msgid "Points delivered by board"
+msgstr "Opgeleverde punten per bord"
+
+#: components/reports/rollup-view.tsx
+msgid "Points delivered by project"
+msgstr "Opgeleverde punten per project"
 
 #: components/board/velocity.tsx
 msgid "points done"
@@ -6533,6 +6569,7 @@ msgid "Sprint goal:"
 msgstr "Sprintdoel:"
 
 #: components/reports/report-view.tsx
+#: components/reports/rollup-view.tsx
 msgid "Sprint goals"
 msgstr "Sprintdoelen"
 
@@ -6567,6 +6604,10 @@ msgstr "Sprints"
 #: components/reports/rollup-view.tsx
 msgid "sprints that set a goal"
 msgstr "sprints met een doel"
+
+#: components/reports/rollup-view.tsx
+msgid "Sprints that set a goal: met or not."
+msgstr "Sprints met een doel: gehaald of niet."
 
 #: app/boards/[id]/edit/page.tsx
 msgid "Sprints: time boxes. Kanban: continuous flow."
@@ -7250,6 +7291,14 @@ msgstr "Tickets afgerond per week"
 msgid "Tickets delivered"
 msgstr "Tickets opgeleverd"
 
+#: components/reports/rollup-view.tsx
+msgid "Tickets delivered by board"
+msgstr "Opgeleverde tickets per bord"
+
+#: components/reports/rollup-view.tsx
+msgid "Tickets delivered by project"
+msgstr "Opgeleverde tickets per project"
+
 #: components/board/velocity.tsx
 msgid "tickets done"
 msgstr "tickets klaar"
@@ -7361,6 +7410,11 @@ msgstr "Te veel embed-origins voor deze organisatie."
 #: lib/error-codes.ts
 msgid "too many requests from you; please try again later"
 msgstr "Te veel verzoeken van jou; probeer het later opnieuw."
+
+#. placeholder {0}: num(total)
+#: components/reports/donut.tsx
+msgid "Total: {0}"
+msgstr "Totaal: {0}"
 
 #: components/mcp-connect.tsx
 msgid "TrackLin.es has a built-in MCP server, so agents can read boards, claim tickets, move them and comment."
@@ -7805,6 +7859,10 @@ msgstr "Wordt niet gedaan"
 #: components/reports/report-view.tsx
 msgid "Work mix"
 msgstr "Werkverdeling"
+
+#: components/reports/report-view.tsx
+msgid "Work mix, whole period"
+msgstr "Werkverdeling, hele periode"
 
 #: components/settings/google-calendar.tsx
 msgid "Workspace domain"

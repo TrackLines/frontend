@@ -142,6 +142,12 @@ msgstr "{0, plural, one {DavIHmoHchugh 'echletvamDaq ticket puq poSbogh vIHmoHlu
 msgid "{0, plural, one {Sending it to the backlog also moves its open sub-ticket on this board: {names}.} other {Sending it to the backlog also moves its # open sub-tickets on this board: {names}.}}"
 msgstr "{0, plural, one {backlog DangeHchugh 'echletvamDaq ticket puq poSbogh vIHmoHlu' je: {names}.} other {backlog DangeHchugh 'echletvamDaq # ticket puq poSbogh vIHmoHlu' je: {names}.}}"
 
+#. placeholder {0}: num(s.value)
+#. placeholder {1}: Math.round((s.value / total) * 100)
+#: components/reports/donut.tsx
+msgid "{0} ({1}%)"
+msgstr "{0} ({1}%)"
+
 #. placeholder {0}: column.name
 #: components/board/column.tsx
 msgid "{0} column"
@@ -2912,6 +2918,14 @@ msgid "Each board's share of planned work done in the period. The band, 80–100
 msgstr "poHDaq Qu' nablu'pu'bogh 'echlet Hoch 'ay' rInbogh. 80–100% 'oHchugh, ngoQ qIp."
 
 #: components/reports/rollup-view.tsx
+msgid "Each one's share of the points finished, on boards that estimate."
+msgstr "'echlet Hoch ghajbogh mI'mey rIntaHbogh. Qapla'!"
+
+#: components/reports/rollup-view.tsx
+msgid "Each one's share of the tickets finished, on boards that count tickets."
+msgstr "'echlet Hoch ghajbogh ticketmey rIntaHbogh. Qapla'!"
+
+#: components/reports/rollup-view.tsx
 msgid "Each project's share of planned work done in the period. The band, 80–100%, is on target."
 msgstr "poHDaq Qu' nablu'pu'bogh jInmol Hoch 'ay' rInbogh. 80–100% 'oHchugh, ngoQ qIp."
 
@@ -3147,6 +3161,14 @@ msgstr "jaj naQ wanI'meyDaq Hoch ghot leSpoH. poH nav ghomlIj, pagh poH nav Hoch
 msgid "Everyone who can read this roadmap sees the update, with your name. It can’t be edited or deleted once posted."
 msgstr "He navvam laDlaHbogh Hoch ghot chu'ghach legh, ponglIj je. ngeHlu'DI' choHlu'laHbe' Qaw'lu'laHbe' je."
 
+#: components/reports/report-view.tsx
+msgid "Everything finished in the period, by type, in points."
+msgstr "poHvam rInpu'bogh Hoch, Segh, mI'mey."
+
+#: components/reports/report-view.tsx
+msgid "Everything finished in the period, by type, in tickets."
+msgstr "poHvam rInpu'bogh Hoch, Segh, ticketmey."
+
 #: components/settings/api-keys.tsx
 msgid "expired: make a new key"
 msgstr "Dotlh ngI'pu': ngaQHa'moHwI' chu' yIchenmoH"
@@ -3286,6 +3308,10 @@ msgstr "Hoch sprint rInpu'bogh, Qav wej motlh je (tlhegh), pointmey."
 #: components/reports/report-view.tsx
 msgid "Finished per sprint, and the average of the last three (the line), in tickets."
 msgstr "Hoch sprint rInpu'bogh, Qav wej motlh je (tlhegh), ticketmey."
+
+#: components/reports/report-view.tsx
+msgid "Finished sprints that set a goal: met or not."
+msgstr "ngoQ ghajbogh sprintmey rIntaHbogh: chav'a' pagh chavbe'?"
 
 #: components/board/column-list.tsx
 msgid "first: new tickets start here"
@@ -4262,6 +4288,7 @@ msgid "Merged"
 msgstr "mungpu'"
 
 #: components/reports/report-view.tsx
+#: components/reports/rollup-view.tsx
 msgid "Met"
 msgstr "qIplu'pu'"
 
@@ -4851,6 +4878,7 @@ msgid "Not linked"
 msgstr "rarlu'be'"
 
 #: components/reports/report-view.tsx
+#: components/reports/rollup-view.tsx
 msgid "Not met"
 msgstr "qIplu'be'"
 
@@ -5544,6 +5572,14 @@ msgstr "pointmey rInpu'bogh"
 #: components/reports/rollup-view.tsx
 msgid "Points delivered"
 msgstr "pointmey ngeHlu'pu'bogh"
+
+#: components/reports/rollup-view.tsx
+msgid "Points delivered by board"
+msgstr "'echlet mI'mey nobpu'bogh"
+
+#: components/reports/rollup-view.tsx
+msgid "Points delivered by project"
+msgstr "jInmol mI'mey nobpu'bogh"
 
 #: components/board/velocity.tsx
 msgid "points done"
@@ -6533,6 +6569,7 @@ msgid "Sprint goal:"
 msgstr "sprint ngoQ:"
 
 #: components/reports/report-view.tsx
+#: components/reports/rollup-view.tsx
 msgid "Sprint goals"
 msgstr "sprint ngoQmey"
 
@@ -6567,6 +6604,10 @@ msgstr "sprintmey"
 #: components/reports/rollup-view.tsx
 msgid "sprints that set a goal"
 msgstr "sprintmey ngoQ cherbogh"
+
+#: components/reports/rollup-view.tsx
+msgid "Sprints that set a goal: met or not."
+msgstr "ngoQ ghajbogh sprintmey: chav'a' pagh chavbe'?"
 
 #: app/boards/[id]/edit/page.tsx
 msgid "Sprints: time boxes. Kanban: continuous flow."
@@ -7250,6 +7291,14 @@ msgstr "Hoch Hogh ticketmey rInpu'bogh"
 msgid "Tickets delivered"
 msgstr "ticketmey ngeHlu'pu'bogh"
 
+#: components/reports/rollup-view.tsx
+msgid "Tickets delivered by board"
+msgstr "'echlet ticketmey nobpu'bogh"
+
+#: components/reports/rollup-view.tsx
+msgid "Tickets delivered by project"
+msgstr "jInmol ticketmey nobpu'bogh"
+
 #: components/board/velocity.tsx
 msgid "tickets done"
 msgstr "ticketmey rIn"
@@ -7361,6 +7410,11 @@ msgstr "ghom'a'vamvaD embed originmey law' law'qu'"
 #: lib/error-codes.ts
 msgid "too many requests from you; please try again later"
 msgstr "SoH vo' tlhobmey law' law'qu'! tugh yInIDqa'"
+
+#. placeholder {0}: num(total)
+#: components/reports/donut.tsx
+msgid "Total: {0}"
+msgstr "Hoch: {0}"
 
 #: components/mcp-connect.tsx
 msgid "TrackLin.es has a built-in MCP server, so agents can read boards, claim tickets, move them and comment."
@@ -7805,6 +7859,10 @@ msgstr "ta'be'lu'"
 #: components/reports/report-view.tsx
 msgid "Work mix"
 msgstr "Qu' DuD"
+
+#: components/reports/report-view.tsx
+msgid "Work mix, whole period"
+msgstr "Qu' Segh, poH naQ"
 
 #: components/settings/google-calendar.tsx
 msgid "Workspace domain"

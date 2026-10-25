@@ -12,6 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import type { ReportTotals, RollupReport } from '@/lib/api';
 import { num, pct, trend, writeQuery, type Range } from '@/lib/sprint-report';
 import { dates } from '@/lib/i18n';
+import { Donut, type Slice } from './donut';
 
 // RollupView: a project's sprint boards together, or every project in the organization (TL-400, on
 // TL-398). Points and tickets are never added together; predictability compares across both.
@@ -98,6 +99,15 @@ export function RollupView({ report, range }: { report: RollupReport; range: Ran
         </div>
       )}
 
+      {/* shares (TL-619): goals met, and where the delivered work came from. Points and tickets stay
+          apart, as everywhere in reports; boards and projects only, never people */}
+      <div className="grid gap-8 lg:grid-cols-3 print:grid-cols-3 print:break-after-page">
+        <Donut title={t`Sprint goals`} note={t`Sprints that set a goal: met or not.`}
+          data={[{ key: 'met', label: t`Met`, value: overall.goals_met }, { key: 'missed', label: t`Not met`, value: overall.goals_set - overall.goals_met }]} />
+        <Donut title={boards ? t`Points delivered by board` : t`Points delivered by project`} note={t`Each one's share of the points finished, on boards that estimate.`} data={shares(report, 'points')} />
+        <Donut title={boards ? t`Tickets delivered by board` : t`Tickets delivered by project`} note={t`Each one's share of the tickets finished, on boards that count tickets.`} data={shares(report, 'tickets')} />
+      </div>
+
       <section className="grid gap-3">
         <h2 className="text-lg font-semibold">{boards ? <Trans>Boards</Trans> : <Trans>Projects</Trans>}</h2>
         <div className="rounded-lg border">
@@ -156,4 +166,10 @@ function ChartCard({ title, note, children }: { title: string; note: string; chi
       <p className="text-sm text-muted-foreground">{note}</p>
     </section>
   );
+}
+
+// shares: what each board (or project) delivered in one unit, for the donuts (TL-619).
+export function shares(report: RollupReport, unit: 'points' | 'tickets'): Slice[] {
+  if (report.boards) return report.boards.filter((b) => b.unit === unit).map((b) => ({ key: b.board_id, label: b.board_name, value: b.totals.done }));
+  return (report.projects ?? []).map((p) => ({ key: p.id ?? p.name, label: p.name, value: p[unit]?.done ?? 0 }));
 }
