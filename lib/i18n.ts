@@ -11,11 +11,9 @@ import { messages as tlh } from '@/locales/tlh/messages';
 // useLingui()` and <Trans> from '@lingui/react/macro'; in lib helpers, take the I18n and use
 // i18n._(msg`…`) from '@lingui/core/macro'. `bun run i18n` extracts them into locales/<lang>/messages.po.
 
-// pt is Brazilian Portuguese; tlh is Klingon, an easter egg (TL-610): never picked from the browser,
-// and only offered once unlocked (components/settings/language.tsx).
+// pt is Brazilian Portuguese; tlh is Klingon, for fun (TL-610).
 export const LOCALES = ['en', 'nl', 'de', 'es', 'pt', 'fr', 'tlh'] as const;
 export type Locale = (typeof LOCALES)[number];
-export const HIDDEN_LOCALES: readonly Locale[] = ['tlh'];
 const catalogs: Record<Locale, typeof en> = { en, nl, de, es, pt, fr, tlh };
 
 // one instance per locale, never switched: a server render for one person can't change another's language
