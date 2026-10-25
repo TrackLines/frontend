@@ -44,6 +44,7 @@ export default function SettingsPage() {
         {/* embedding is behind the flags.gg "embedding" flag so it can be rolled out and tested (TL-494) */}
         {admin && is('embedding').enabled() && <SettingsCard icon={CodeIcon} title={t`Embedding`} href="/settings/embedding" description={t`Put a public roadmap or your request form on your own site.`} />}
         {admin && is('imports').enabled() && <SettingsCard icon={UploadIcon} title={t`Import`} href="/settings/import" description={t`Bring tickets in from a CSV (Trello, Asana, Linear, spreadsheets) as a new project.`} />}
+        {admin && is('imports').enabled() && <SettingsCard icon={UploadIcon} title={t`Import from Jira`} href="/settings/import/jira" description={t`Bring Jira Cloud projects across: boards, issues with their numbers, comments and attachments.`} />}
         {admin && is('webhooks').enabled() && <SettingsCard icon={WebhookIcon} title={t`Webhooks`} href="/settings/webhooks" description={t`Send ticket, sprint and roadmap events to your own tools as they happen.`} />}
         <SettingsCard icon={KeyRoundIcon} title={t`API keys`}
           description={<Trans>Service keys for servers and integrations. Your own keys and AI agents (Claude, Codex…) are in <Link href="/account/api-keys" className="underline">Your settings</Link>.</Trans>}>

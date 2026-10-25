@@ -109,20 +109,32 @@ export function CSVImport() {
       )}
 
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-      {job && token && <ImportStatus job={job} busy={busy} onRun={() => void act(async () => setJob(await importsApi.run(job.id, token)))}
-        onScrap={() => window.confirm(t`Scrap this import? Everything it made is deleted.`) && void act(async () => { await importsApi.scrap(job.id, token); setJob(await importsApi.get(job.id, token)); })}
-        blocked={blocked} />}
+      {job && token && <ImportStatus job={job} busy={busy} blocked={blocked} onRun={() => void act(async () => setJob(await importsApi.run(job.id, token)))}
+        {...importActions(job, token, act, setJob, t`Scrap this import? Everything it made is deleted.`)} />}
     </div>
   );
 }
 
-// ImportStatus: a preview (what it makes, what stops it, what it leaves out), a run's progress, or its report.
-export function ImportStatus({ job, busy, blocked, onRun, onScrap }: { job: ImportJob; busy: boolean; blocked: boolean; onRun: () => void; onScrap: () => void }) {
+// importActions: cancelling a running import and scrapping a finished one (asking first), for ImportStatus.
+export function importActions(job: ImportJob, token: string, act: (f: () => Promise<void>) => Promise<void>, setJob: (j: ImportJob) => void, confirmScrap: string) {
+  return {
+    onCancel: () => void act(async () => { await importsApi.cancel(job.id, token); setJob(await importsApi.get(job.id, token)); }),
+    onScrap: () => window.confirm(confirmScrap) && void act(async () => { await importsApi.scrap(job.id, token); setJob(await importsApi.get(job.id, token)); }),
+  };
+}
+
+// ImportStatus: a preview (what it makes, what stops it, what it leaves out), a run's progress (with
+// Cancel), or its report, with Scrap while nobody has worked on what it made (TL-544). summary false:
+// the caller shows what the preview makes itself (the Jira import's projects, boards and people).
+export function ImportStatus({ job, busy, blocked, onRun, onCancel, onScrap, summary = true }: {
+  job: ImportJob; busy: boolean; blocked: boolean; onRun: () => void; onCancel?: () => void; onScrap: () => void; summary?: boolean;
+}) {
   const { t } = useLingui();
   const skipped = job.report?.skipped ?? job.skipped ?? [];
+  const files = job.report?.created.attachments ?? 0;
   return (
     <section className="grid gap-3 rounded-lg border p-4 text-sm" aria-label={t`Import`} data-import-state={job.state}>
-      {job.state === 'previewing' && job.planned && (
+      {summary && job.state === 'previewing' && job.planned && (
         <p><Trans>This makes the project <strong>{job.projects?.[0]?.name}</strong> ({job.projects?.[0]?.prefix}) with {job.planned.tickets} tickets, {job.planned.boards} boards and {job.planned.columns} columns.</Trans></p>
       )}
       {(job.problems ?? []).length > 0 && (
@@ -138,8 +150,10 @@ export function ImportStatus({ job, busy, blocked, onRun, onScrap }: { job: Impo
         </div>
       )}
       {job.state === 'done' && job.report && (
-        <p><Badge variant="secondary"><Trans>Done</Trans></Badge> <Trans>Made {job.report.created.tickets} tickets on {job.report.created.boards} boards.</Trans> <Link href="/dashboard" className="underline"><Trans>Go to your projects</Trans></Link></p>
+        <p><Badge variant="secondary"><Trans>Done</Trans></Badge> <Trans>Made {job.report.created.tickets} tickets on {job.report.created.boards} boards.</Trans>
+          {files > 0 && <> <Trans>Copied {files} files.</Trans></>} <Link href="/dashboard" className="underline"><Trans>Go to your projects</Trans></Link></p>
       )}
+      {job.state === 'cancelled' && <p><Trans>Cancelled: nothing was imported.</Trans></p>}
       {job.state === 'failed' && <p role="alert" className="text-destructive"><Trans>The import failed, and nothing was kept: {job.error}</Trans></p>}
       {job.state === 'scrapped' && <p><Trans>Scrapped: everything the import made is gone.</Trans></p>}
       {skipped.length > 0 && (
@@ -148,9 +162,13 @@ export function ImportStatus({ job, busy, blocked, onRun, onScrap }: { job: Impo
           <ul className="mt-1 list-disc pl-5 text-muted-foreground">{skipped.map((s, i) => <li key={i}>{s.source_id}: {s.reason}</li>)}</ul>
         </details>
       )}
-      <div className="flex gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         {job.state === 'previewing' && <Button disabled={busy || blocked} onClick={onRun}><Trans>Import</Trans></Button>}
-        {job.state === 'done' && <Button variant="outline" disabled={busy} onClick={onScrap}><Trans>Scrap this import</Trans></Button>}
+        {job.state === 'running' && onCancel && <Button variant="outline" disabled={busy} onClick={onCancel}><Trans>Cancel</Trans></Button>}
+        {job.state === 'done' && job.scrappable !== false && <Button variant="outline" disabled={busy} onClick={onScrap}><Trans>Scrap this import</Trans></Button>}
+        {job.state === 'done' && job.scrappable === false && (
+          <p className="text-muted-foreground" data-scrap-closed><Trans>It can’t be scrapped any more: someone has worked on what it made (moved, edited, commented on or reviewed a ticket, or added one).</Trans></p>
+        )}
       </div>
     </section>
   );
