@@ -1,0 +1,800 @@
+{
+ "en": [
+  {
+   "slug": "add-board",
+   "question": "How do I add another board?",
+   "answer": "Boards are added by organization admins. While a project has one board, use New board on the project page; after that, it’s in Edit project → Boards.",
+   "href": "/projects/[project]/edit",
+   "fallback_href": "",
+   "pages": [
+    "project"
+   ],
+   "words": "new board create second third team"
+  },
+  {
+   "slug": "new-ticket",
+   "question": "How do I create a ticket?",
+   "answer": "On a board, use + Add ticket under a column. New ticket in the header (on the dashboard, project and board pages) adds one to the project’s backlog.",
+   "href": "/dashboard",
+   "fallback_href": "",
+   "pages": [
+    "board",
+    "project",
+    "dashboard"
+   ],
+   "words": "new ticket create add issue"
+  },
+  {
+   "slug": "backlog",
+   "question": "Where’s the backlog?",
+   "answer": "On the project page, in the Backlog tab.",
+   "href": "/projects/[project]",
+   "fallback_href": "",
+   "pages": [
+    "project"
+   ],
+   "words": "backlog"
+  },
+  {
+   "slug": "sprint",
+   "question": "How do I start or close a sprint?",
+   "answer": "On the board’s sprint bar: Start sprint, and Close sprint once it’s running. Admins and the board’s team leads can.",
+   "href": "/boards/[board]",
+   "fallback_href": "",
+   "pages": [
+    "board"
+   ],
+   "words": "sprint start close end"
+  },
+  {
+   "slug": "standup",
+   "question": "How do I run a standup?",
+   "answer": "On the board, click Standup, then Start once everyone has joined.",
+   "href": "/docs/standup",
+   "fallback_href": "",
+   "pages": [
+    "board"
+   ],
+   "words": "standup daily meeting"
+  },
+  {
+   "slug": "edit-board",
+   "question": "How do I change a board’s columns or WIP limits?",
+   "answer": "Open the board → Edit board. Drag columns to reorder them, set WIP limits, and change the estimate scale. Admins and the board’s team leads can edit it.",
+   "href": "/boards/[board]/edit",
+   "fallback_href": "",
+   "pages": [
+    "board"
+   ],
+   "words": "columns wip limit estimates scale settings rename"
+  },
+  {
+   "slug": "refine",
+   "question": "How do I plan the next sprints?",
+   "answer": "On the project page’s Backlog tab, use Refine. Each sprint holds the team’s velocity plus 10%; more needs approval from an admin or the team lead.",
+   "href": "/docs/refinement",
+   "fallback_href": "",
+   "pages": [
+    "project"
+   ],
+   "words": "plan refine refinement capacity approve"
+  },
+  {
+   "slug": "backlog-to-board",
+   "question": "How do I move a backlog ticket onto a board?",
+   "answer": "Open the ticket → Edit → Move to board…, or use Move to board… in Refine. Boards with estimates ask for one first. Admins and the project’s team leads can.",
+   "href": "/projects/[project]",
+   "fallback_href": "",
+   "pages": [
+    "project"
+   ],
+   "words": "move board backlog plan"
+  },
+  {
+   "slug": "other-board",
+   "question": "How do I move a ticket to another board?",
+   "answer": "Open the ticket → Edit → Move to board… and pick the board; open sub-tickets on this board go with it. Admins and the project’s team leads can.",
+   "href": "/projects/[project]",
+   "fallback_href": "",
+   "pages": [
+    "board"
+   ],
+   "words": "move transfer another board"
+  },
+  {
+   "slug": "next-sprints",
+   "question": "Where can I see what’s planned for the next sprint?",
+   "answer": "On the board, open Next sprints. Planned tickets join the board when their sprint starts; until then the backlog hides them unless you choose Planned.",
+   "href": "/boards/[board]?view=next",
+   "fallback_href": "",
+   "pages": [
+    "board",
+    "project"
+   ],
+   "words": "next sprint planned upcoming future"
+  },
+  {
+   "slug": "archived-boards",
+   "question": "Where are archived boards?",
+   "answer": "In Edit project → Archived boards. Restore one from its banner.",
+   "href": "/projects/[project]/archived",
+   "fallback_href": "",
+   "pages": [
+    "project"
+   ],
+   "words": "archived restore board"
+  },
+  {
+   "slug": "key-prefix",
+   "question": "How do I change the ticket key (like TL-)?",
+   "answer": "In Edit project → Ticket keys. Organization admins only.",
+   "href": "/projects/[project]/edit",
+   "fallback_href": "",
+   "pages": [
+    "project"
+   ],
+   "words": "prefix key ticket number"
+  },
+  {
+   "slug": "archive-board",
+   "question": "How do I archive or delete a board?",
+   "answer": "Open the board → Edit board → More. A board that’s been used can be archived (admins and its team leads); one that never was can be deleted (admins).",
+   "href": "/boards/[board]/edit",
+   "fallback_href": "",
+   "pages": [
+    "board"
+   ],
+   "words": "remove archive delete board"
+  },
+  {
+   "slug": "templates",
+   "question": "Can I reuse a board’s setup?",
+   "answer": "Yes: Edit board → More → Save as template (columns, WIP limits, style and estimates, not tickets). Pick it in the Template list when making a new board. Admins only.",
+   "href": "/boards/[board]/edit",
+   "fallback_href": "",
+   "pages": [
+    "board"
+   ],
+   "words": "template copy setup"
+  },
+  {
+   "slug": "new-project",
+   "question": "How do I create a project?",
+   "answer": "Use New project on the dashboard. Your plan sets how many projects you can have (Free 1, Pro 5).",
+   "href": "/dashboard",
+   "fallback_href": "",
+   "pages": [
+    "dashboard"
+   ],
+   "words": "new project create"
+  },
+  {
+   "slug": "my-work",
+   "question": "Where can I see all my tickets?",
+   "answer": "My work lists what’s assigned to you and what you raised, across every board.",
+   "href": "/my-work",
+   "fallback_href": "",
+   "pages": [
+    "dashboard"
+   ],
+   "words": "my tickets assigned mine"
+  },
+  {
+   "slug": "sub-tickets",
+   "question": "How do I add sub-tickets?",
+   "answer": "Open the ticket’s own page; under Sub-tickets use Add a sub-ticket… or New sub-ticket….",
+   "href": "/docs/epics",
+   "fallback_href": "",
+   "pages": [],
+   "words": "sub task subtask child parent"
+  },
+  {
+   "slug": "epics",
+   "question": "What’s an epic?",
+   "answer": "A large piece of work across boards. Set a ticket’s type to Epic; epics live in the backlog and have their own tab on the project page.",
+   "href": "/docs/epics",
+   "fallback_href": "",
+   "pages": [
+    "project"
+   ],
+   "words": "epic"
+  },
+  {
+   "slug": "blocked",
+   "question": "How do I mark a ticket as blocked?",
+   "answer": "On the ticket’s page, under Dependencies → Blocked by, use Add a blocker…. A blocked ticket can’t be claimed.",
+   "href": "",
+   "fallback_href": "",
+   "pages": [],
+   "words": "blocked blocker dependency depends"
+  },
+  {
+   "slug": "duplicate",
+   "question": "How do I mark a duplicate?",
+   "answer": "On the ticket’s page, use Mark as duplicate… and pick the original. You can copy its labels and comments across.",
+   "href": "",
+   "fallback_href": "",
+   "pages": [],
+   "words": "duplicate same copy"
+  },
+  {
+   "slug": "mention",
+   "question": "How do I mention someone?",
+   "answer": "Type @ in a comment and pick them. They’re notified, and it shows on their Mentions page.",
+   "href": "/mentions",
+   "fallback_href": "",
+   "pages": [],
+   "words": "mention tag @"
+  },
+  {
+   "slug": "watch",
+   "question": "How do I watch a ticket?",
+   "answer": "Mention yourself in a comment (type @ and your name). Anyone mentioned on a ticket hears about its comments, moves and finishing. To stop, press the mouth next to it on your Mentions page; press it again to watch again.",
+   "href": "/mentions",
+   "fallback_href": "",
+   "pages": [],
+   "words": "watch follow subscribe unsubscribe mute notify"
+  },
+  {
+   "slug": "attach",
+   "question": "How do I attach files?",
+   "answer": "Use Attach files on a ticket. Up to 10 files of 10 MB each, and not while it’s in Done.",
+   "href": "",
+   "fallback_href": "",
+   "pages": [],
+   "words": "attach file upload image screenshot"
+  },
+  {
+   "slug": "search",
+   "question": "How do I find a ticket?",
+   "answer": "Use the search in the header (Ctrl+K or Cmd+K). It searches titles, details and comments; type a key like TL-123 to jump to it.",
+   "href": "",
+   "fallback_href": "",
+   "pages": [],
+   "words": "search find"
+  },
+  {
+   "slug": "reports",
+   "question": "Where are sprint reports?",
+   "answer": "A board’s are under Past sprints → Sprint report; a project’s are in its header; the organization’s are in Settings (admins).",
+   "href": "/docs/sprint-reports",
+   "fallback_href": "",
+   "pages": [
+    "board",
+    "project"
+   ],
+   "words": "report velocity burndown chart pdf"
+  },
+  {
+   "slug": "invite",
+   "question": "How do I invite people?",
+   "answer": "Organization admins invite from Settings → Manage organization → Invite people. Free and Pro have up to 20 members; AI agents don’t count.",
+   "href": "/settings/organization",
+   "fallback_href": "",
+   "pages": [
+    "settings"
+   ],
+   "words": "invite member people add user"
+  },
+  {
+   "slug": "teams",
+   "question": "How do I set up teams and team leads?",
+   "answer": "In Settings → Manage organization → Teams: create a team, add members, Make leader, and link its boards. Organization admins only.",
+   "href": "/settings/organization",
+   "fallback_href": "",
+   "pages": [
+    "settings"
+   ],
+   "words": "team lead leader"
+  },
+  {
+   "slug": "holiday",
+   "question": "How does it know who’s on holiday?",
+   "answer": "An organization admin connects Google Calendar in Settings → Integrations → Calendars; people away are marked in assigning and standup.",
+   "href": "/docs/google-calendar",
+   "fallback_href": "",
+   "pages": [
+    "settings"
+   ],
+   "words": "holiday away leave vacation calendar"
+  },
+  {
+   "slug": "repos",
+   "question": "How do I link a GitHub repository?",
+   "answer": "An admin connects GitHub or Bitbucket in Settings → Integrations, then links repos in Edit project → Repositories. Pull requests that mention a ticket’s key show on it, and merging finishes it.",
+   "href": "/projects/[project]/edit",
+   "fallback_href": "/settings/integrations",
+   "pages": [
+    "project",
+    "settings"
+   ],
+   "words": "github bitbucket repo repository pull request pr git"
+  },
+  {
+   "slug": "api-keys",
+   "question": "Where do I get an API key?",
+   "answer": "Your own and AI agent keys are in Your settings → API keys. Service keys for integrations are in Settings → API keys, made by admins.",
+   "href": "/account/api-keys",
+   "fallback_href": "",
+   "pages": [
+    "account",
+    "settings"
+   ],
+   "words": "api key token"
+  },
+  {
+   "slug": "ai-agent",
+   "question": "How do I connect an AI agent?",
+   "answer": "Make an AI key in Your settings → API keys, then use Connect AI to set up Claude Code, Codex, Cursor or others over MCP.",
+   "href": "/docs/mcp",
+   "fallback_href": "",
+   "pages": [
+    "account"
+   ],
+   "words": "ai agent claude codex cursor mcp"
+  },
+  {
+   "slug": "roadmap",
+   "question": "How do I make a roadmap?",
+   "answer": "On the project page, open the Roadmaps tab → New roadmap. Admins publish it.",
+   "href": "/projects/[project]",
+   "fallback_href": "/roadmaps",
+   "pages": [
+    "project"
+   ],
+   "words": "roadmap publish public"
+  },
+  {
+   "slug": "requests",
+   "question": "Can customers send us requests?",
+   "answer": "Yes: an admin turns on the Request form in Edit project. Requests arrive behind the Requests button on the project page.",
+   "href": "/projects/[project]/edit",
+   "fallback_href": "",
+   "pages": [
+    "project"
+   ],
+   "words": "request form customer feedback feature bug"
+  },
+  {
+   "slug": "plan",
+   "question": "How do I upgrade or change plan?",
+   "answer": "Organization admins use the Plan card in Settings.",
+   "href": "/settings",
+   "fallback_href": "",
+   "pages": [
+    "settings"
+   ],
+   "words": "upgrade plan billing pro enterprise pay subscription"
+  },
+  {
+   "slug": "theme",
+   "question": "How do I switch to dark mode?",
+   "answer": "Use the appearance button in the header: Light, Dark or System.",
+   "href": "",
+   "fallback_href": "",
+   "pages": [],
+   "words": "dark light theme appearance"
+  },
+  {
+   "slug": "language",
+   "question": "Can I change the language?",
+   "answer": "When it’s available for you, choose it in Your settings → Language.",
+   "href": "/account",
+   "fallback_href": "",
+   "pages": [
+    "account"
+   ],
+   "words": "language dutch nederlands english"
+  },
+  {
+   "slug": "notifications",
+   "question": "How do I change my notifications?",
+   "answer": "Open the bell in the header → Notification settings.",
+   "href": "/account",
+   "fallback_href": "",
+   "pages": [
+    "account"
+   ],
+   "words": "notification email bell"
+  }
+ ],
+ "nl": [
+  {
+   "slug": "add-board",
+   "question": "Hoe voeg ik nog een bord toe?",
+   "answer": "Borden worden toegevoegd door organisatiebeheerders. Zolang een project één bord heeft, gebruik je Nieuw bord op de projectpagina; daarna zit het in Project bewerken → Borden.",
+   "href": "/projects/[project]/edit",
+   "fallback_href": "",
+   "pages": [
+    "project"
+   ],
+   "words": "new board create second third team"
+  },
+  {
+   "slug": "new-ticket",
+   "question": "Hoe maak ik een ticket aan?",
+   "answer": "Gebruik op een bord + Ticket toevoegen onder een kolom. Nieuw ticket bovenaan (op het dashboard en op project- en bordpagina’s) zet er een in de backlog van het project.",
+   "href": "/dashboard",
+   "fallback_href": "",
+   "pages": [
+    "board",
+    "project",
+    "dashboard"
+   ],
+   "words": "new ticket create add issue"
+  },
+  {
+   "slug": "backlog",
+   "question": "Waar is de backlog?",
+   "answer": "Op de projectpagina, in het tabblad Backlog.",
+   "href": "/projects/[project]",
+   "fallback_href": "",
+   "pages": [
+    "project"
+   ],
+   "words": "backlog"
+  },
+  {
+   "slug": "sprint",
+   "question": "Hoe start of sluit ik een sprint?",
+   "answer": "In de sprintbalk van het bord: Sprint starten, en Sprint afsluiten zodra hij loopt. Beheerders en de teamleiders van het bord kunnen dat.",
+   "href": "/boards/[board]",
+   "fallback_href": "",
+   "pages": [
+    "board"
+   ],
+   "words": "sprint start close end"
+  },
+  {
+   "slug": "standup",
+   "question": "Hoe houd ik een stand-up?",
+   "answer": "Klik op het bord op Stand-up en daarna op Starten zodra iedereen er is.",
+   "href": "/docs/standup",
+   "fallback_href": "",
+   "pages": [
+    "board"
+   ],
+   "words": "standup daily meeting"
+  },
+  {
+   "slug": "edit-board",
+   "question": "Hoe wijzig ik de kolommen of WIP-limieten van een bord?",
+   "answer": "Open het bord → Bord bewerken. Sleep kolommen om de volgorde te wijzigen, stel WIP-limieten in en wijzig de schattingsschaal. Beheerders en de teamleiders van het bord kunnen het bewerken.",
+   "href": "/boards/[board]/edit",
+   "fallback_href": "",
+   "pages": [
+    "board"
+   ],
+   "words": "columns wip limit estimates scale settings rename"
+  },
+  {
+   "slug": "refine",
+   "question": "Hoe plan ik de volgende sprints?",
+   "answer": "Start een refinement vanuit het tabblad Backlog op de projectpagina. Elke sprint bevat de velocity van het team plus 10%; meer heeft goedkeuring nodig van een beheerder of de teamleider.",
+   "href": "/docs/refinement",
+   "fallback_href": "",
+   "pages": [
+    "project"
+   ],
+   "words": "plan refine refinement capacity approve"
+  },
+  {
+   "slug": "backlog-to-board",
+   "question": "Hoe zet ik een backlogticket op een bord?",
+   "answer": "Open het ticket → Bewerken → Naar bord verplaatsen…, of gebruik Naar bord verplaatsen… tijdens refinement. Borden met schattingen vragen er eerst een. Beheerders en de teamleiders van het project kunnen dat.",
+   "href": "/projects/[project]",
+   "fallback_href": "",
+   "pages": [
+    "project"
+   ],
+   "words": "move board backlog plan"
+  },
+  {
+   "slug": "other-board",
+   "question": "Hoe verplaats ik een ticket naar een ander bord?",
+   "answer": "Open het ticket → Bewerken → Naar bord verplaatsen… en kies het bord; open subtickets op dit bord gaan mee. Beheerders en de teamleiders van het project kunnen dat.",
+   "href": "/projects/[project]",
+   "fallback_href": "",
+   "pages": [
+    "board"
+   ],
+   "words": "move transfer another board"
+  },
+  {
+   "slug": "next-sprints",
+   "question": "Waar zie ik wat er voor de volgende sprint gepland is?",
+   "answer": "Open op het bord Volgende sprints. Geplande tickets komen op het bord zodra hun sprint start; tot die tijd verbergt de backlog ze, tenzij je Gepland kiest.",
+   "href": "/boards/[board]?view=next",
+   "fallback_href": "",
+   "pages": [
+    "board",
+    "project"
+   ],
+   "words": "next sprint planned upcoming future"
+  },
+  {
+   "slug": "archived-boards",
+   "question": "Waar zijn gearchiveerde borden?",
+   "answer": "In Project bewerken → Gearchiveerde borden. Herstel er een via de balk bovenaan.",
+   "href": "/projects/[project]/archived",
+   "fallback_href": "",
+   "pages": [
+    "project"
+   ],
+   "words": "archived restore board"
+  },
+  {
+   "slug": "key-prefix",
+   "question": "Hoe wijzig ik de ticketcode (zoals TL-)?",
+   "answer": "In Project bewerken → Ticketcodes. Alleen organisatiebeheerders.",
+   "href": "/projects/[project]/edit",
+   "fallback_href": "",
+   "pages": [
+    "project"
+   ],
+   "words": "prefix key ticket number"
+  },
+  {
+   "slug": "archive-board",
+   "question": "Hoe archiveer of verwijder ik een bord?",
+   "answer": "Open het bord → Bord bewerken → Meer. Een gebruikt bord kun je archiveren (beheerders en de teamleiders); een ongebruikt bord kun je verwijderen (beheerders).",
+   "href": "/boards/[board]/edit",
+   "fallback_href": "",
+   "pages": [
+    "board"
+   ],
+   "words": "remove archive delete board"
+  },
+  {
+   "slug": "templates",
+   "question": "Kan ik de opzet van een bord hergebruiken?",
+   "answer": "Ja: Bord bewerken → Meer → Opslaan als sjabloon (kolommen, WIP-limieten, stijl en schattingen, geen tickets). Kies het in de lijst Sjabloon bij een nieuw bord. Alleen beheerders.",
+   "href": "/boards/[board]/edit",
+   "fallback_href": "",
+   "pages": [
+    "board"
+   ],
+   "words": "template copy setup"
+  },
+  {
+   "slug": "new-project",
+   "question": "Hoe maak ik een project aan?",
+   "answer": "Gebruik Nieuw project op het dashboard. Je abonnement bepaalt hoeveel projecten je kunt hebben (Free 1, Pro 5).",
+   "href": "/dashboard",
+   "fallback_href": "",
+   "pages": [
+    "dashboard"
+   ],
+   "words": "new project create"
+  },
+  {
+   "slug": "my-work",
+   "question": "Waar zie ik al mijn tickets?",
+   "answer": "Mijn werk toont wat aan jou is toegewezen en wat je hebt aangemaakt, over alle borden.",
+   "href": "/my-work",
+   "fallback_href": "",
+   "pages": [
+    "dashboard"
+   ],
+   "words": "my tickets assigned mine"
+  },
+  {
+   "slug": "sub-tickets",
+   "question": "Hoe voeg ik subtickets toe?",
+   "answer": "Open de pagina van het ticket; gebruik onder Subtickets Subticket toevoegen… of Nieuw subticket….",
+   "href": "/docs/epics",
+   "fallback_href": "",
+   "pages": [],
+   "words": "sub task subtask child parent"
+  },
+  {
+   "slug": "epics",
+   "question": "Wat is een epic?",
+   "answer": "Een groot stuk werk over meerdere borden. Zet het type van een ticket op Epic; epics staan in de backlog en hebben een eigen tabblad op de projectpagina.",
+   "href": "/docs/epics",
+   "fallback_href": "",
+   "pages": [
+    "project"
+   ],
+   "words": "epic"
+  },
+  {
+   "slug": "blocked",
+   "question": "Hoe markeer ik een ticket als geblokkeerd?",
+   "answer": "Gebruik op de ticketpagina, onder Afhankelijkheden → Geblokkeerd door, Blokkade toevoegen…. Een geblokkeerd ticket kan niet worden opgepakt.",
+   "href": "",
+   "fallback_href": "",
+   "pages": [],
+   "words": "blocked blocker dependency depends"
+  },
+  {
+   "slug": "duplicate",
+   "question": "Hoe markeer ik een duplicaat?",
+   "answer": "Gebruik op de ticketpagina Markeren als duplicaat… en kies het origineel. Je kunt de labels en reacties meekopiëren.",
+   "href": "",
+   "fallback_href": "",
+   "pages": [],
+   "words": "duplicate same copy"
+  },
+  {
+   "slug": "mention",
+   "question": "Hoe vermeld ik iemand?",
+   "answer": "Typ @ in een reactie en kies de persoon. Die krijgt een melding en ziet het op de pagina Vermeldingen.",
+   "href": "/mentions",
+   "fallback_href": "",
+   "pages": [],
+   "words": "mention tag @"
+  },
+  {
+   "slug": "watch",
+   "question": "Hoe volg ik een ticket?",
+   "answer": "Noem jezelf in een reactie (typ @ en je naam). Iedereen die op een ticket genoemd wordt, hoort over de reacties, verplaatsingen en afronding ervan. Om te stoppen druk je op de mond ernaast op je Vermeldingen-pagina; druk nog eens om weer te volgen.",
+   "href": "/mentions",
+   "fallback_href": "",
+   "pages": [],
+   "words": "watch follow subscribe unsubscribe mute notify"
+  },
+  {
+   "slug": "attach",
+   "question": "Hoe voeg ik bestanden bij?",
+   "answer": "Gebruik Bestanden bijvoegen op een ticket. Maximaal 10 bestanden van 10 MB, en niet terwijl het in Klaar staat.",
+   "href": "",
+   "fallback_href": "",
+   "pages": [],
+   "words": "attach file upload image screenshot"
+  },
+  {
+   "slug": "search",
+   "question": "Hoe vind ik een ticket?",
+   "answer": "Gebruik de zoekfunctie bovenaan (Ctrl+K of Cmd+K). Die doorzoekt titels, details en reacties; typ een code zoals TL-123 om er direct heen te gaan.",
+   "href": "",
+   "fallback_href": "",
+   "pages": [],
+   "words": "search find"
+  },
+  {
+   "slug": "reports",
+   "question": "Waar zijn de sprintrapporten?",
+   "answer": "Die van een bord staan onder Afgelopen sprints → Sprintrapport; die van een project bovenaan het project; die van de organisatie in Instellingen (beheerders).",
+   "href": "/docs/sprint-reports",
+   "fallback_href": "",
+   "pages": [
+    "board",
+    "project"
+   ],
+   "words": "report velocity burndown chart pdf"
+  },
+  {
+   "slug": "invite",
+   "question": "Hoe nodig ik mensen uit?",
+   "answer": "Organisatiebeheerders nodigen uit via Instellingen → Organisatie beheren → Mensen uitnodigen. Free en Pro hebben maximaal 20 leden; AI-agents tellen niet mee.",
+   "href": "/settings/organization",
+   "fallback_href": "",
+   "pages": [
+    "settings"
+   ],
+   "words": "invite member people add user"
+  },
+  {
+   "slug": "teams",
+   "question": "Hoe stel ik teams en teamleiders in?",
+   "answer": "In Instellingen → Organisatie beheren → Teams: maak een team, voeg leden toe, kies Leider maken en koppel de borden. Alleen organisatiebeheerders.",
+   "href": "/settings/organization",
+   "fallback_href": "",
+   "pages": [
+    "settings"
+   ],
+   "words": "team lead leader"
+  },
+  {
+   "slug": "holiday",
+   "question": "Hoe weet het wie er op vakantie is?",
+   "answer": "Een organisatiebeheerder koppelt Google Calendar in Instellingen → Integraties → Agenda’s; wie afwezig is, wordt aangegeven bij toewijzen en in de stand-up.",
+   "href": "/docs/google-calendar",
+   "fallback_href": "",
+   "pages": [
+    "settings"
+   ],
+   "words": "holiday away leave vacation calendar"
+  },
+  {
+   "slug": "repos",
+   "question": "Hoe koppel ik een GitHub-repository?",
+   "answer": "Een beheerder koppelt GitHub of Bitbucket in Instellingen → Integraties en koppelt daarna repository’s in Project bewerken → Repository’s. Pull requests die de ticketcode noemen staan bij het ticket, en mergen rondt het af.",
+   "href": "/projects/[project]/edit",
+   "fallback_href": "/settings/integrations",
+   "pages": [
+    "project",
+    "settings"
+   ],
+   "words": "github bitbucket repo repository pull request pr git"
+  },
+  {
+   "slug": "api-keys",
+   "question": "Waar krijg ik een API-sleutel?",
+   "answer": "Je eigen sleutels en die van AI-agents staan in Jouw instellingen → API-sleutels. Servicesleutels voor integraties staan in Instellingen → API-sleutels en worden door beheerders gemaakt.",
+   "href": "/account/api-keys",
+   "fallback_href": "",
+   "pages": [
+    "account",
+    "settings"
+   ],
+   "words": "api key token"
+  },
+  {
+   "slug": "ai-agent",
+   "question": "Hoe koppel ik een AI-agent?",
+   "answer": "Maak een AI-sleutel in Jouw instellingen → API-sleutels en gebruik daarna AI koppelen om Claude Code, Codex, Cursor of andere via MCP in te stellen.",
+   "href": "/docs/mcp",
+   "fallback_href": "",
+   "pages": [
+    "account"
+   ],
+   "words": "ai agent claude codex cursor mcp"
+  },
+  {
+   "slug": "roadmap",
+   "question": "Hoe maak ik een roadmap?",
+   "answer": "Open op de projectpagina het tabblad Roadmaps → Nieuwe roadmap. Beheerders publiceren hem.",
+   "href": "/projects/[project]",
+   "fallback_href": "/roadmaps",
+   "pages": [
+    "project"
+   ],
+   "words": "roadmap publish public"
+  },
+  {
+   "slug": "requests",
+   "question": "Kunnen klanten ons aanvragen sturen?",
+   "answer": "Ja: een beheerder zet het Aanvraagformulier aan in Project bewerken. Aanvragen komen binnen achter de knop Aanvragen op de projectpagina.",
+   "href": "/projects/[project]/edit",
+   "fallback_href": "",
+   "pages": [
+    "project"
+   ],
+   "words": "request form customer feedback feature bug"
+  },
+  {
+   "slug": "plan",
+   "question": "Hoe upgrade ik of wijzig ik mijn abonnement?",
+   "answer": "Organisatiebeheerders gebruiken de kaart Plan in Instellingen.",
+   "href": "/settings",
+   "fallback_href": "",
+   "pages": [
+    "settings"
+   ],
+   "words": "upgrade plan billing pro enterprise pay subscription"
+  },
+  {
+   "slug": "theme",
+   "question": "Hoe schakel ik over naar donkere modus?",
+   "answer": "Gebruik de weergaveknop bovenaan: Licht, Donker of Systeem.",
+   "href": "",
+   "fallback_href": "",
+   "pages": [],
+   "words": "dark light theme appearance"
+  },
+  {
+   "slug": "language",
+   "question": "Kan ik de taal wijzigen?",
+   "answer": "Als het voor jou beschikbaar is, kies je het in Jouw instellingen → Taal.",
+   "href": "/account",
+   "fallback_href": "",
+   "pages": [
+    "account"
+   ],
+   "words": "language dutch nederlands english"
+  },
+  {
+   "slug": "notifications",
+   "question": "Hoe wijzig ik mijn meldingen?",
+   "answer": "Open de bel bovenaan → Meldingsinstellingen.",
+   "href": "/account",
+   "fallback_href": "",
+   "pages": [
+    "account"
+   ],
+   "words": "notification email bell"
+  }
+ ]
+}

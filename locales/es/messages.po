@@ -707,10 +707,6 @@ msgstr "Un tablero en TrackLin.es"
 msgid "a board plans at most 2 sprints ahead"
 msgstr "un tablero planifica como máximo 2 sprints por adelantado"
 
-#: lib/help.ts
-msgid "A board’s are under Past sprints → Sprint report; a project’s are in its header; the organization’s are in Settings (admins)."
-msgstr "Los de un tablero están en Sprints anteriores → Informe del sprint; los de un proyecto, en su cabecera; los de la organización, en Ajustes (administradores)."
-
 #: components/ticket/history-panel.tsx
 msgid "a column"
 msgstr "una columna"
@@ -731,13 +727,17 @@ msgstr "un ticket duplicado ya está cerrado"
 msgid "A key labels an embed so you can see how often it’s used and on which sites. Add it to the snippet as<0>data-key</0>. It isn’t a secret and doesn’t grant access — a site still has to be in the allowed list above."
 msgstr "Una clave etiqueta una inserción para que veas con qué frecuencia se usa y en qué sitios. Añádela al fragmento como<0>data-key</0>. No es secreta ni da acceso: el sitio igualmente tiene que estar en la lista de permitidos de arriba."
 
-#: lib/help.ts
-msgid "A large piece of work across boards. Set a ticket’s type to Epic; epics live in the backlog and have their own tab on the project page."
-msgstr "Un trabajo grande que abarca varios tableros. Pon el tipo de un ticket en Épica; las épicas viven en el backlog y tienen su propia pestaña en la página del proyecto."
+#: lib/error-codes.ts
+msgid "a link must be an app route, starting with /"
+msgstr "un enlace debe ser una página de la app, empezando por /"
 
 #: components/roadmap/item-tickets.tsx
 msgid "A linked epic counts its sub-tickets, including ones added later."
 msgstr "Una épica vinculada cuenta sus sub-tickets, incluidos los que se añadan después."
+
+#: components/staff/help-editor.tsx
+msgid "A page in the app, starting with /. [project] and [board] are the reader’s current one."
+msgstr "Una página de la app, empezando por /. [project] y [board] son los actuales del lector."
 
 #: app/dashboard/page.tsx
 msgid "A project holds a board for each team, a shared backlog, and the roadmaps you send to customers."
@@ -876,6 +876,10 @@ msgstr "Añade un título a cada elemento de la hoja de ruta antes de guardar."
 #: components/settings/webhooks.tsx
 msgid "Add a webhook"
 msgstr "Añadir un webhook"
+
+#: components/staff/help-editor.tsx
+msgid "Add an answer"
+msgstr "Añadir una respuesta"
 
 #: components/settings/integrations.tsx
 msgid "Add another GitHub account"
@@ -1088,10 +1092,6 @@ msgstr "Sitios permitidos"
 msgid "already subscribed — manage it from the billing portal"
 msgstr "ya tienes una suscripción: gestiónala desde el portal de facturación"
 
-#: lib/help.ts
-msgid "An admin connects GitHub or Bitbucket in Settings → Integrations, then links repos in Edit project → Repositories. Pull requests that mention a ticket’s key show on it, and merging finishes it."
-msgstr "Un administrador conecta GitHub o Bitbucket en Ajustes → Integraciones y luego vincula repos en Editar proyecto → Repositorios. Las pull requests que mencionan la clave de un ticket aparecen en él, y al fusionarlas se termina."
-
 #: components/board/review.tsx
 msgid "An agent finished this; a person needs to approve it"
 msgstr "Un agente terminó esto; una persona tiene que aprobarlo"
@@ -1120,10 +1120,6 @@ msgstr "Un administrador de la organización puede conectar aquí un espacio de 
 msgid "An organization admin can connect your Google Workspace here."
 msgstr "Un administrador de la organización puede conectar aquí tu Google Workspace."
 
-#: lib/help.ts
-msgid "An organization admin connects Google Calendar in Settings → Integrations → Calendars; people away are marked in assigning and standup."
-msgstr "Un administrador de la organización conecta Google Calendar en Ajustes → Integraciones → Calendarios; las personas ausentes se marcan al asignar y en el standup."
-
 #: components/board/import-review.tsx
 msgid "An organization admin or this board’s team leader settles these."
 msgstr "Los resuelve un administrador de la organización o el líder del equipo de este tablero."
@@ -1144,6 +1140,10 @@ msgstr "una organización necesita al menos un administrador"
 msgid "an origin like https://example.com is required"
 msgstr "se requiere un origen como https://example.com"
 
+#: lib/error-codes.ts
+msgid "another answer has that slug"
+msgstr "otra respuesta tiene ese slug"
+
 #: components/ticket/other-org.tsx
 msgid "another organization"
 msgstr "otra organización"
@@ -1151,6 +1151,10 @@ msgstr "otra organización"
 #: lib/error-codes.ts
 msgid "another project in this organization already uses that key prefix"
 msgstr "otro proyecto de esta organización ya usa ese prefijo de clave"
+
+#: components/staff/help-editor.tsx
+msgid "Answer"
+msgstr "Respuesta"
 
 #: components/ticket-search.tsx
 msgid "Any assignee"
@@ -1411,6 +1415,7 @@ msgstr "tablero"
 #: app/boards/[id]/page.tsx
 #: components/project/move-to-board.tsx
 #: components/reports/rollup-view.tsx
+#: components/staff/help-editor.tsx
 msgid "Board"
 msgstr "Tablero"
 
@@ -1444,10 +1449,6 @@ msgstr "Vista de tablero"
 #: components/staff/stats.tsx
 msgid "Boards"
 msgstr "Tableros"
-
-#: lib/help.ts
-msgid "Boards are added by organization admins. While a project has one board, use New board on the project page; after that, it’s in Edit project → Boards."
-msgstr "Los tableros los añaden los administradores de la organización. Mientras un proyecto tenga un solo tablero, usa Nuevo tablero en la página del proyecto; después, está en Editar proyecto → Tableros."
 
 #: components/settings/organization.tsx
 msgid "Boards linked to this team are managed by its leaders."
@@ -1541,18 +1542,6 @@ msgstr "por {0}"
 msgid "Calendars"
 msgstr "Calendarios"
 
-#: lib/help.ts
-msgid "Can customers send us requests?"
-msgstr "¿Pueden los clientes enviarnos solicitudes?"
-
-#: lib/help.ts
-msgid "Can I change the language?"
-msgstr "¿Puedo cambiar el idioma?"
-
-#: lib/help.ts
-msgid "Can I reuse a board’s setup?"
-msgstr "¿Puedo reutilizar la configuración de un tablero?"
-
 #: app/boards/[id]/edit/page.tsx
 #: components/board/review.tsx
 #: components/board/sprint-bar.tsx
@@ -1561,6 +1550,7 @@ msgstr "¿Puedo reutilizar la configuración de un tablero?"
 #: components/project/key-prefix.tsx
 #: components/project/move-to-board.tsx
 #: components/settings/csv-import.tsx
+#: components/staff/help-editor.tsx
 #: components/ticket/duplicates.tsx
 msgid "Cancel"
 msgstr "Cancelar"
@@ -2146,6 +2136,10 @@ msgid "Could not delete this ticket. Try again."
 msgstr "No se pudo eliminar este ticket. Inténtalo de nuevo."
 
 #: lib/error-codes.ts
+msgid "could not load help answers"
+msgstr "no se pudieron cargar las respuestas de ayuda"
+
+#: lib/error-codes.ts
 msgid "could not load organization members"
 msgstr "no se pudieron cargar los miembros de la organización"
 
@@ -2403,6 +2397,10 @@ msgstr "No se pudieron cargar las épicas. Actualiza la página para intentarlo 
 #: app/settings/file-cleanup/page.tsx
 msgid "Couldn’t load the file clean-up. Please refresh to try again."
 msgstr "No se pudo cargar la limpieza de archivos. Actualiza la página para intentarlo de nuevo."
+
+#: components/staff/help-editor.tsx
+msgid "Couldn’t load the help answers."
+msgstr "No se pudieron cargar las respuestas de ayuda."
 
 #: components/project/repositories.tsx
 msgid "Couldn’t load the linked repositories."
@@ -2802,6 +2800,10 @@ msgstr "El tiempo de ciclo aparecerá cuando se complete un ticket con un inicio
 msgid "Dark"
 msgstr "Oscuro"
 
+#: components/staff/help-editor.tsx
+msgid "Dashboard"
+msgstr "Panel"
+
 #: components/board/velocity.tsx
 msgid "Dashed line: ideal pace."
 msgstr "Línea discontinua: ritmo ideal."
@@ -2834,6 +2836,7 @@ msgstr "Días"
 #: components/settings/linear-import.tsx
 #: components/settings/organization.tsx
 #: components/settings/webhooks.tsx
+#: components/staff/help-editor.tsx
 msgid "Delete"
 msgstr "Eliminar"
 
@@ -2841,6 +2844,11 @@ msgstr "Eliminar"
 #: components/project/backlog.tsx
 msgid "Delete “{0}”?"
 msgstr "¿Eliminar “{0}”?"
+
+#. placeholder {0}: a.question.en
+#: components/staff/help-editor.tsx
+msgid "Delete “{0}”? It’s gone from the help panel at once."
+msgstr "¿Eliminar «{0}»? Desaparece de la ayuda al momento."
 
 #: components/board/board-lifecycle.tsx
 msgid "Delete “{name}”? It has never been used, so nothing is lost."
@@ -3261,6 +3269,7 @@ msgstr "La parte del trabajo planificado que cada proyecto completó en el perio
 #: components/board/ticket-view.tsx
 #: components/project/backlog.tsx
 #: components/project/roadmap-row.tsx
+#: components/staff/help-editor.tsx
 msgid "Edit"
 msgstr "Editar"
 
@@ -3556,9 +3565,17 @@ msgstr "external lo establecen las integraciones (claves de API)"
 msgid "external needs source (bugfixes), project and id; url must be http(s)"
 msgstr "external necesita source (bugfixes), project e id; url debe ser http(s)"
 
+#: components/staff/help-editor.tsx
+msgid "Extra search words"
+msgstr "Palabras de búsqueda extra"
+
 #: components/settings/webhooks.tsx
 msgid "Failed"
 msgstr "Fallida"
+
+#: components/staff/help-editor.tsx
+msgid "Fallback link"
+msgstr "Enlace alternativo"
 
 #: components/ticket-type.tsx
 msgid "feature"
@@ -3864,9 +3881,21 @@ msgstr "Estado a lo largo del tiempo"
 msgid "Help"
 msgstr "Ayuda"
 
+#: lib/error-codes.ts
+msgid "help answer not found"
+msgstr "respuesta de ayuda no encontrada"
+
 #: components/staff/staff-shell.tsx
 msgid "Help answers"
 msgstr "Respuestas de ayuda"
+
+#: components/help-bot.tsx
+msgid "Help couldn’t load. Try the <0>docs</0>."
+msgstr "La ayuda no pudo cargar. Prueba la <0>documentación</0>."
+
+#: components/staff/help-editor.tsx
+msgid "Hidden"
+msgstr "Oculta"
 
 #: components/settings/webhooks.tsx
 msgid "Hide deliveries"
@@ -3902,114 +3931,6 @@ msgstr "¿Cómo podemos ayudarte?"
 #: components/intake/request-form.tsx
 msgid "How can we reach you? <0>(optional, seen by the team only)</0>"
 msgstr "¿Cómo podemos contactarte? <0>(opcional, solo lo ve el equipo)</0>"
-
-#: lib/help.ts
-msgid "How do I add another board?"
-msgstr "¿Cómo añado otro tablero?"
-
-#: lib/help.ts
-msgid "How do I add sub-tickets?"
-msgstr "¿Cómo añado subtickets?"
-
-#: lib/help.ts
-msgid "How do I archive or delete a board?"
-msgstr "¿Cómo archivo o elimino un tablero?"
-
-#: lib/help.ts
-msgid "How do I attach files?"
-msgstr "¿Cómo adjunto archivos?"
-
-#: lib/help.ts
-msgid "How do I change a board’s columns or WIP limits?"
-msgstr "¿Cómo cambio las columnas o los límites WIP de un tablero?"
-
-#: lib/help.ts
-msgid "How do I change my notifications?"
-msgstr "¿Cómo cambio mis notificaciones?"
-
-#: lib/help.ts
-msgid "How do I change the ticket key (like TL-)?"
-msgstr "¿Cómo cambio la clave de los tickets (como TL-)?"
-
-#: lib/help.ts
-msgid "How do I connect an AI agent?"
-msgstr "¿Cómo conecto un agente de IA?"
-
-#: lib/help.ts
-msgid "How do I create a project?"
-msgstr "¿Cómo creo un proyecto?"
-
-#: lib/help.ts
-msgid "How do I create a ticket?"
-msgstr "¿Cómo creo un ticket?"
-
-#: lib/help.ts
-msgid "How do I find a ticket?"
-msgstr "¿Cómo encuentro un ticket?"
-
-#: lib/help.ts
-msgid "How do I invite people?"
-msgstr "¿Cómo invito a gente?"
-
-#: lib/help.ts
-msgid "How do I link a GitHub repository?"
-msgstr "¿Cómo vinculo un repositorio de GitHub?"
-
-#: lib/help.ts
-msgid "How do I make a roadmap?"
-msgstr "¿Cómo hago una hoja de ruta?"
-
-#: lib/help.ts
-msgid "How do I mark a duplicate?"
-msgstr "¿Cómo marco un duplicado?"
-
-#: lib/help.ts
-msgid "How do I mark a ticket as blocked?"
-msgstr "¿Cómo marco un ticket como bloqueado?"
-
-#: lib/help.ts
-msgid "How do I mention someone?"
-msgstr "¿Cómo menciono a alguien?"
-
-#: lib/help.ts
-msgid "How do I move a backlog ticket onto a board?"
-msgstr "¿Cómo muevo un ticket del backlog a un tablero?"
-
-#: lib/help.ts
-msgid "How do I move a ticket to another board?"
-msgstr "¿Cómo muevo un ticket a otro tablero?"
-
-#: lib/help.ts
-msgid "How do I plan the next sprints?"
-msgstr "¿Cómo planifico los próximos sprints?"
-
-#: lib/help.ts
-msgid "How do I run a standup?"
-msgstr "¿Cómo dirijo un standup?"
-
-#: lib/help.ts
-msgid "How do I set up teams and team leads?"
-msgstr "¿Cómo configuro equipos y líderes de equipo?"
-
-#: lib/help.ts
-msgid "How do I start or close a sprint?"
-msgstr "¿Cómo inicio o cierro un sprint?"
-
-#: lib/help.ts
-msgid "How do I switch to dark mode?"
-msgstr "¿Cómo cambio al modo oscuro?"
-
-#: lib/help.ts
-msgid "How do I upgrade or change plan?"
-msgstr "¿Cómo mejoro o cambio de plan?"
-
-#: lib/help.ts
-msgid "How do I watch a ticket?"
-msgstr "¿Cómo sigo un ticket?"
-
-#: lib/help.ts
-msgid "How does it know who’s on holiday?"
-msgstr "¿Cómo sabe quién está de vacaciones?"
 
 #: components/reports/report-links.tsx
 msgid "How every project’s sprints went, to share with leadership."
@@ -4049,14 +3970,6 @@ msgstr "Tickets importados que revisar"
 msgid "Importing isn’t turned on for your organization yet."
 msgstr "La importación aún no está activada para tu organización."
 
-#: lib/help.ts
-msgid "In Edit project → Archived boards. Restore one from its banner."
-msgstr "En Editar proyecto → Tableros archivados. Restaura uno desde su banner."
-
-#: lib/help.ts
-msgid "In Edit project → Ticket keys. Organization admins only."
-msgstr "En Editar proyecto → Claves de ticket. Solo administradores de la organización."
-
 #: components/settings/google-calendar.tsx
 msgid "In Google, as a Workspace admin, open <0>Security → Access and data control → API controls → Manage Domain Wide Delegation</0> (you need to be a super admin), choose <1>Add new</1> and paste:"
 msgstr "En Google, como administrador de Workspace, abre <0>Seguridad → Control de acceso y datos → Controles de API → Gestionar la delegación de todo el dominio</0> (tienes que ser superadministrador), elige <1>Añadir nuevo</1> y pega:"
@@ -4066,10 +3979,6 @@ msgstr "En Google, como administrador de Workspace, abre <0>Seguridad → Contro
 #: components/roadmap/timeline.tsx
 msgid "In progress"
 msgstr "En curso"
-
-#: lib/help.ts
-msgid "In Settings → Manage organization → Teams: create a team, add members, Make leader, and link its boards. Organization admins only."
-msgstr "En Ajustes → Gestionar organización → Equipos: crea un equipo, añade miembros, Nombrar líder y vincula sus tableros. Solo administradores de la organización."
 
 #: components/settings/google-chat.tsx
 msgid "In the Google Chat space: Apps & integrations → Webhooks → Add webhook, then copy its URL. It’s stored encrypted and never shown again."
@@ -4431,6 +4340,10 @@ msgstr "limit debe estar entre 1 y 500"
 msgid "Linear connection"
 msgstr "Conexión con Linear"
 
+#: components/staff/help-editor.tsx
+msgid "Link"
+msgstr "Enlace"
+
 #: components/roadmap/item-tickets.tsx
 msgid "Link a ticket or epic…"
 msgstr "Vincular un ticket o una épica…"
@@ -4646,6 +4559,7 @@ msgstr "Cargando tu trabajo…"
 #: components/board/import-review.tsx
 #: components/board/next-sprints.tsx
 #: components/dashboard-work.tsx
+#: components/help-bot.tsx
 #: components/intake/intake-settings.tsx
 #: components/intake/request-form.tsx
 #: components/notifications-bell.tsx
@@ -4659,6 +4573,7 @@ msgstr "Cargando tu trabajo…"
 #: components/settings/jira-import.tsx
 #: components/settings/linear-import.tsx
 #: components/settings/webhooks.tsx
+#: components/staff/help-editor.tsx
 #: components/staff/staff-shell.tsx
 #: components/staff/stats.tsx
 msgid "Loading…"
@@ -4673,6 +4588,10 @@ msgstr "Explora por tu cuenta; los tickets del anfitrión dejan de abrirse para 
 #: components/board/priority-select.tsx
 msgid "Low"
 msgstr "Baja"
+
+#: components/staff/help-editor.tsx
+msgid "Lower-case letters, digits and dashes."
+msgstr "Minúsculas, dígitos y guiones."
 
 #. placeholder {0}: job.report.created.tickets
 #. placeholder {1}: job.report.created.boards
@@ -4691,10 +4610,6 @@ msgstr "¿Crear un enlace nuevo? El actual dejará de funcionar, así que quien 
 #: app/settings/organization/page.tsx
 msgid "Make admin"
 msgstr "Hacer administrador"
-
-#: lib/help.ts
-msgid "Make an AI key in Your settings → API keys, then use Connect AI to set up Claude Code, Codex, Cursor or others over MCP."
-msgstr "Crea una clave de IA en Tus ajustes → Claves de API y luego usa Conectar IA para configurar Claude Code, Codex, Cursor u otros mediante MCP."
 
 #: components/hosted-bar.tsx
 msgid "Make host"
@@ -4786,10 +4701,6 @@ msgstr "Miembro quitado del equipo."
 msgid "Members"
 msgstr "Miembros"
 
-#: lib/help.ts
-msgid "Mention yourself in a comment (type @ and your name). Anyone mentioned on a ticket hears about its comments, moves and finishing. To stop, press the mouth next to it on your Mentions page; press it again to watch again."
-msgstr "Menciónate en un comentario (escribe @ y tu nombre). Cualquiera mencionado en un ticket se entera de sus comentarios, movimientos y de cuándo se termina. Para dejar de seguirlo, pulsa la boca que hay al lado en tu página de Menciones; púlsala de nuevo para volver a seguirlo."
-
 #: components/notification-icon.tsx
 msgid "Mentioned you"
 msgstr "Te ha mencionado"
@@ -4856,6 +4767,7 @@ msgid "Move anyway"
 msgstr "Mover de todos modos"
 
 #: components/roadmap/item-editor.tsx
+#: components/staff/help-editor.tsx
 msgid "Move down"
 msgstr "Bajar"
 
@@ -4898,6 +4810,7 @@ msgid "Move to board…"
 msgstr "Mover al tablero…"
 
 #: components/roadmap/item-editor.tsx
+#: components/staff/help-editor.tsx
 msgid "Move up"
 msgstr "Subir"
 
@@ -4921,10 +4834,6 @@ msgstr "Mis tickets"
 #: app/my-work/page.tsx
 msgid "My work"
 msgstr "Mi trabajo"
-
-#: lib/help.ts
-msgid "My work lists what’s assigned to you and what you raised, across every board."
-msgstr "Mi trabajo muestra lo que tienes asignado y lo que has creado, en todos los tableros."
 
 #: app/boards/[id]/edit/page.tsx
 #: app/projects/[id]/edit/page.tsx
@@ -5068,6 +4977,10 @@ msgstr "next_starts_at debe estar en el futuro"
 #: components/settings/api-keys.tsx
 msgid "No AI agent keys yet."
 msgstr "Aún no hay claves de agentes de IA."
+
+#: components/staff/help-editor.tsx
+msgid "No answers yet."
+msgstr "Aún no hay respuestas."
 
 #: components/project/archived-boards.tsx
 msgid "No archived boards."
@@ -5381,6 +5294,10 @@ msgstr "Ninguna todavía"
 msgid "None yet. Add the work this epic is made of; it can sit on any board."
 msgstr "Aún nada. Añade el trabajo del que consta esta épica; puede estar en cualquier tablero."
 
+#: components/staff/help-editor.tsx
+msgid "None: suggested on other pages, like a ticket or My work."
+msgstr "Ninguna: se sugiere en otras páginas, como un ticket o Mi trabajo."
+
 #: components/ticket/sub-tickets.tsx
 msgid "None."
 msgstr "Nada."
@@ -5448,6 +5365,16 @@ msgstr "Sin configurar"
 #: components/roadmap/timeline.tsx
 msgid "Not started"
 msgstr "Sin empezar"
+
+#. placeholder {0}: gaps.map((l) => LANGUAGE_NAMES[l]).join(', ')
+#: components/staff/help-editor.tsx
+msgid "Not translated yet: {0}. People reading those see the English."
+msgstr "Aún sin traducir: {0}. Quien lea esos idiomas ve el inglés."
+
+#. placeholder {0}: gaps.join(', ')
+#: components/staff/help-editor.tsx
+msgid "Not translated: {0}"
+msgstr "Sin traducir: {0}"
 
 #: components/settings/csv-import.tsx
 msgid "Not used"
@@ -5618,10 +5545,6 @@ msgstr "Más antiguos primero"
 msgid "On"
 msgstr "Activado"
 
-#: lib/help.ts
-msgid "On a board, use + Add ticket under a column. New ticket in the header (on the dashboard, project and board pages) adds one to the project’s backlog."
-msgstr "En un tablero, usa + Añadir ticket debajo de una columna. Nuevo ticket en la cabecera (en el panel, y en las páginas de proyecto y tablero) añade uno al backlog del proyecto."
-
 #: components/board/standup.tsx
 msgid "On holiday"
 msgstr "De vacaciones"
@@ -5637,38 +5560,6 @@ msgstr "Al fusionar"
 #: app/boards/[id]/edit/page.tsx
 msgid "On merge: a merged pull request moves its tickets to Done. Pick a column and they go there instead, then to Done once a GitHub release ships them."
 msgstr "Al fusionar: una pull request fusionada mueve sus tickets a Hecho. Elige una columna y en su lugar irán allí, y luego a Hecho cuando una release de GitHub los publique."
-
-#: lib/help.ts
-msgid "On the board, click Standup, then Start once everyone has joined."
-msgstr "En el tablero, haz clic en Standup y luego en Empezar cuando todos se hayan unido."
-
-#: lib/help.ts
-msgid "On the board, open Next sprints. Planned tickets join the board when their sprint starts; until then the backlog hides them unless you choose Planned."
-msgstr "En el tablero, abre Próximos sprints. Los tickets planificados se incorporan al tablero cuando empieza su sprint; hasta entonces el backlog los oculta salvo que elijas Planificados."
-
-#: lib/help.ts
-msgid "On the board’s sprint bar: Start sprint, and Close sprint once it’s running. Admins and the board’s team leads can."
-msgstr "En la barra de sprint del tablero: Empezar sprint, y Cerrar sprint cuando esté en curso. Pueden hacerlo los administradores y los líderes de equipo del tablero."
-
-#: lib/help.ts
-msgid "On the project page, in the Backlog tab."
-msgstr "En la página del proyecto, en la pestaña Backlog."
-
-#: lib/help.ts
-msgid "On the project page, open the Roadmaps tab → New roadmap. Admins publish it."
-msgstr "En la página del proyecto, abre la pestaña Hojas de ruta → Nueva hoja de ruta. Los administradores la publican."
-
-#: lib/help.ts
-msgid "On the project page’s Backlog tab, use Refine. Each sprint holds the team’s velocity plus 10%; more needs approval from an admin or the team lead."
-msgstr "En la pestaña Backlog de la página del proyecto, usa Refinar. Cada sprint admite la velocidad del equipo más un 10 %; más requiere la aprobación de un administrador o del líder del equipo."
-
-#: lib/help.ts
-msgid "On the ticket’s page, under Dependencies → Blocked by, use Add a blocker…. A blocked ticket can’t be claimed."
-msgstr "En la página del ticket, en Dependencias → Bloqueado por, usa Añadir un bloqueo…. Un ticket bloqueado no se puede reclamar."
-
-#: lib/help.ts
-msgid "On the ticket’s page, use Mark as duplicate… and pick the original. You can copy its labels and comments across."
-msgstr "En la página del ticket, usa Marcar como duplicado… y elige el original. Puedes copiar sus etiquetas y comentarios."
 
 #: components/roadmap/updates.tsx
 msgid "On track"
@@ -5880,18 +5771,6 @@ msgstr "Abrir invitación"
 msgid "Open project"
 msgstr "Abrir proyecto"
 
-#: lib/help.ts
-msgid "Open the bell in the header → Notification settings."
-msgstr "Abre la campana de la cabecera → Ajustes de notificaciones."
-
-#: lib/help.ts
-msgid "Open the board → Edit board → More. A board that’s been used can be archived (admins and its team leads); one that never was can be deleted (admins)."
-msgstr "Abre el tablero → Editar tablero → Más. Un tablero que se ha usado se puede archivar (administradores y sus líderes de equipo); uno que nunca se usó se puede eliminar (administradores)."
-
-#: lib/help.ts
-msgid "Open the board → Edit board. Drag columns to reorder them, set WIP limits, and change the estimate scale. Admins and the board’s team leads can edit it."
-msgstr "Abre el tablero → Editar tablero. Arrastra las columnas para reordenarlas, define límites WIP y cambia la escala de estimación. Pueden editarlo los administradores y los líderes de equipo del tablero."
-
 #: components/intake/intake-settings.tsx
 msgid "Open the form"
 msgstr "Abrir el formulario"
@@ -5907,18 +5786,6 @@ msgstr "Abrir el ticket completo"
 #: app/boards/[id]/page.tsx
 msgid "Open the ticket"
 msgstr "Abrir el ticket"
-
-#: lib/help.ts
-msgid "Open the ticket → Edit → Move to board… and pick the board; open sub-tickets on this board go with it. Admins and the project’s team leads can."
-msgstr "Abre el ticket → Editar → Mover al tablero… y elige el tablero; los subtickets abiertos de este tablero se van con él. Pueden hacerlo los administradores y los líderes de equipo del proyecto."
-
-#: lib/help.ts
-msgid "Open the ticket → Edit → Move to board…, or use Move to board… in Refine. Boards with estimates ask for one first. Admins and the project’s team leads can."
-msgstr "Abre el ticket → Editar → Mover al tablero…, o usa Mover al tablero… en Refinar. Los tableros con estimaciones piden una primero. Pueden hacerlo los administradores y los líderes de equipo del proyecto."
-
-#: lib/help.ts
-msgid "Open the ticket’s own page; under Sub-tickets use Add a sub-ticket… or New sub-ticket…."
-msgstr "Abre la página propia del ticket; en Subtickets usa Añadir un subticket… o Nuevo subticket…."
 
 #: components/intake/intake-settings.tsx
 #: components/settings/integrations.tsx
@@ -5953,14 +5820,6 @@ msgstr "Administradores de la organización"
 msgid "Organization admins connect integrations. You can see what's connected."
 msgstr "Los administradores de la organización conectan las integraciones. Tú puedes ver qué está conectado."
 
-#: lib/help.ts
-msgid "Organization admins invite from Settings → Manage organization → Invite people. Free and Pro have up to 20 members; AI agents don’t count."
-msgstr "Los administradores de la organización invitan desde Ajustes → Gestionar organización → Invitar personas. Free y Pro admiten hasta 20 miembros; los agentes de IA no cuentan."
-
-#: lib/help.ts
-msgid "Organization admins use the Plan card in Settings."
-msgstr "Los administradores de la organización usan la tarjeta Plan en Ajustes."
-
 #: lib/error-codes.ts
 msgid "organization has no members to make admin"
 msgstr "la organización no tiene miembros que hacer administradores"
@@ -5969,6 +5828,7 @@ msgstr "la organización no tiene miembros que hacer administradores"
 msgid "organization membership is not active yet"
 msgstr "la membresía de la organización aún no está activa"
 
+#: components/staff/help-editor.tsx
 #: components/user-menu.tsx
 msgid "Organization settings"
 msgstr "Ajustes de la organización"
@@ -6265,9 +6125,15 @@ msgstr "Previsibilidad por mes"
 #: components/settings/csv-import.tsx
 #: components/settings/jira-import.tsx
 #: components/settings/linear-import.tsx
+#: components/staff/help-editor.tsx
 #: components/ticket/attachments.tsx
 msgid "Preview"
 msgstr "Vista previa"
+
+#. placeholder {0}: LANGUAGE_NAMES[lang]
+#: components/staff/help-editor.tsx
+msgid "Preview ({0})"
+msgstr "Vista previa ({0})"
 
 #: components/ticket/attachments.tsx
 msgid "Preview {name}"
@@ -6314,6 +6180,7 @@ msgstr "proyecto"
 #: app/settings/organization/page.tsx
 #: components/quick-add-ticket.tsx
 #: components/reports/rollup-view.tsx
+#: components/staff/help-editor.tsx
 msgid "Project"
 msgstr "Proyecto"
 
@@ -6358,6 +6225,10 @@ msgstr "Público"
 msgid "Public roadmaps are readable by anyone you send the link to."
 msgstr "Cualquier persona a la que envíes el enlace puede leer las hojas de ruta públicas."
 
+#: components/staff/help-editor.tsx
+msgid "Published: shown in the help panel"
+msgstr "Publicada: se muestra en la ayuda"
+
 #: components/ticket/pull-requests-panel.tsx
 msgid "Pull requests"
 msgstr "Pull requests"
@@ -6382,6 +6253,10 @@ msgstr "Pon una hoja de ruta pública o tu formulario de solicitudes en tu propi
 #: components/settings/embedding.tsx
 msgid "Put a public roadmap or your request form on your own site. A widget runs on your page and calls TrackLin.es, so every site it runs on must be listed here first — otherwise the browser blocks it. Adding a site is what turns embedding on."
 msgstr "Pon una hoja de ruta pública o tu formulario de solicitudes en tu propio sitio. Un widget se ejecuta en tu página y llama a TrackLin.es, así que cada sitio donde se ejecute debe estar antes en esta lista; si no, el navegador lo bloquea. Añadir un sitio es lo que activa la inserción."
+
+#: components/staff/help-editor.tsx
+msgid "Question"
+msgstr "Pregunta"
 
 #: app/boards/[id]/page.tsx
 msgid "Quick filter by assignee"
@@ -6690,6 +6565,7 @@ msgstr "Cómo llevar el standup"
 #: app/boards/[id]/edit/page.tsx
 #: components/settings/google-chat.tsx
 #: components/settings/organization.tsx
+#: components/staff/help-editor.tsx
 msgid "Save"
 msgstr "Guardar"
 
@@ -6876,6 +6752,10 @@ msgstr "Enviar otra"
 #: components/board/review.tsx
 msgid "Send back"
 msgstr "Devolver"
+
+#: lib/error-codes.ts
+msgid "send every answer's id, once each"
+msgstr "envía el id de cada respuesta, una vez cada uno"
 
 #: app/settings/organization/page.tsx
 msgid "Send invite"
@@ -7117,6 +6997,10 @@ msgstr "Simple"
 #: components/settings/embedding.tsx
 msgid "Site origin"
 msgstr "Origen del sitio"
+
+#: components/staff/help-editor.tsx
+msgid "Slug"
+msgstr "Slug"
 
 #: lib/notifications.ts
 msgid "Someone"
@@ -7429,6 +7313,10 @@ msgstr "Subtickets"
 msgid "Suggested labels"
 msgstr "Etiquetas sugeridas"
 
+#: components/staff/help-editor.tsx
+msgid "Suggested on"
+msgstr "Sugerida en"
+
 #: components/ticket/other-org.tsx
 msgid "Switch to {orgName}"
 msgstr "Cambiar a {orgName}"
@@ -7643,6 +7531,10 @@ msgstr "Ese prefijo de ticket ya lo usa otro proyecto."
 msgid "that would make tickets block each other in a loop"
 msgstr "eso haría que los tickets se bloquearan entre sí en un bucle"
 
+#: components/staff/help-editor.tsx
+msgid "The answers in the help panel, in this order: the first ones for a page are suggested there before anyone types."
+msgstr "Las respuestas de la ayuda, en este orden: las primeras de una página se sugieren allí antes de que alguien escriba."
+
 #: components/settings/linear-import.tsx
 msgid "The API key is kept, encrypted, until {until}, then deleted. Extend it if you need longer."
 msgstr "La clave de API se guarda, cifrada, hasta el {until} y luego se elimina. Amplíala si necesitas más tiempo."
@@ -7678,6 +7570,14 @@ msgstr "la conexión no puede ver ese repositorio"
 #: lib/error-codes.ts
 msgid "the Dev complete column must be one of this board's columns, other than To do and Done"
 msgstr "la columna de Desarrollo completo debe ser una de las columnas de este tablero, distinta de Por hacer y Hecho"
+
+#: components/staff/help-editor.tsx
+msgid "The English question and answer are needed."
+msgstr "Se necesitan la pregunta y la respuesta en inglés."
+
+#: lib/error-codes.ts
+msgid "the English question and answer are required"
+msgstr "la pregunta y la respuesta en inglés son obligatorias"
 
 #: lib/error-codes.ts
 msgid "the first column (To do) stays first"
@@ -7756,6 +7656,10 @@ msgstr "igual que el periodo anterior"
 #: components/mcp-connect.tsx
 msgid "The server is stateless and answers with JSON, so no session handling is needed. Tools mirror the REST API, with the same permissions."
 msgstr "El servidor no tiene estado y responde con JSON, así que no hace falta gestionar sesiones. Las herramientas reflejan la API REST, con los mismos permisos."
+
+#: lib/error-codes.ts
+msgid "the slug is lower-case letters, digits and dashes"
+msgstr "el slug son minúsculas, dígitos y guiones"
 
 #. placeholder {0}: toBacklog.title
 #: app/boards/[id]/page.tsx
@@ -8223,10 +8127,6 @@ msgstr "Desactivado tras varias entregas fallidas. Arregla el endpoint y vuelve 
 msgid "Type"
 msgstr "Tipo"
 
-#: lib/help.ts
-msgid "Type @ in a comment and pick them. They’re notified, and it shows on their Mentions page."
-msgstr "Escribe @ en un comentario y elígelos. Reciben una notificación y aparece en su página de Menciones."
-
 #: components/ticket/labels.tsx
 msgid "Type a label and press Enter or comma"
 msgstr "Escribe una etiqueta y pulsa Enter o coma"
@@ -8259,6 +8159,14 @@ msgstr "Elementos de la hoja de ruta sin fecha"
 #: app/settings/integrations/[provider]/page.tsx
 msgid "Unknown integration."
 msgstr "Integración desconocida."
+
+#: lib/error-codes.ts
+msgid "unknown language"
+msgstr "idioma desconocido"
+
+#: lib/error-codes.ts
+msgid "unknown page kind"
+msgstr "tipo de página desconocido"
 
 #: lib/error-codes.ts
 msgid "unknown provider"
@@ -8379,29 +8287,17 @@ msgstr "Urgente"
 msgid "Use a personal API key: <0>create one in Linear</0> under Security & access. TrackLin.es keeps it, encrypted, for 30 days."
 msgstr "Usa una clave de API personal: <0>crea una en Linear</0> en Security & access. TrackLin.es la guarda, cifrada, durante 30 días."
 
-#: lib/help.ts
-msgid "Use Attach files on a ticket. Up to 10 files of 10 MB each, and not while it’s in Done."
-msgstr "Usa Adjuntar archivos en un ticket. Hasta 10 archivos de 10 MB cada uno, y no mientras esté en Hecho."
-
 #: components/settings/webhooks.tsx
 msgid "Use it to check that requests really come from TrackLin.es: see <0>verifying webhooks</0>."
 msgstr "Úsalo para comprobar que las solicitudes vienen de verdad de TrackLin.es: consulta <0>verificar webhooks</0>."
 
-#: lib/help.ts
-msgid "Use New project on the dashboard. Your plan sets how many projects you can have (Free 1, Pro 5)."
-msgstr "Usa Nuevo proyecto en el panel. Tu plan determina cuántos proyectos puedes tener (Free 1, Pro 5)."
-
-#: lib/help.ts
-msgid "Use the appearance button in the header: Light, Dark or System."
-msgstr "Usa el botón de apariencia de la cabecera: Claro, Oscuro o Sistema."
-
-#: lib/help.ts
-msgid "Use the search in the header (Ctrl+K or Cmd+K). It searches titles, details and comments; type a key like TL-123 to jump to it."
-msgstr "Usa la búsqueda de la cabecera (Ctrl+K o Cmd+K). Busca en títulos, detalles y comentarios; escribe una clave como TL-123 para ir directamente a él."
-
 #: components/settings/jira-import.tsx
 msgid "Use your Jira email and an API token. <0>Create a token at Atlassian</0>. TrackLin.es keeps it, encrypted, for 30 days."
 msgstr "Usa tu correo de Jira y un token de API. <0>Crea un token en Atlassian</0>. TrackLin.es lo guarda, cifrado, durante 30 días."
+
+#: components/staff/help-editor.tsx
+msgid "Used when they aren’t on a project or board."
+msgstr "Se usa cuando no están en un proyecto o tablero."
 
 #: lib/error-codes.ts
 msgid "user is already an organization member; add them to the team directly"
@@ -8568,10 +8464,6 @@ msgstr "¿Qué se incluirá en este hito?"
 msgid "What would it help you do?"
 msgstr "¿Qué te ayudaría a hacer?"
 
-#: lib/help.ts
-msgid "What’s an epic?"
-msgstr "¿Qué es una épica?"
-
 #: components/roadmap/updates.tsx
 msgid "What's changed since the last update?"
 msgstr "¿Qué ha cambiado desde la última actualización?"
@@ -8589,10 +8481,6 @@ msgstr "¿De qué trata esta hoja de ruta? (opcional)"
 msgid "What's wrong / what's needed?"
 msgstr "¿Qué falla / qué se necesita?"
 
-#: lib/help.ts
-msgid "When it’s available for you, choose it in Your settings → Language."
-msgstr "Cuando esté disponible para ti, elígelo en Tus ajustes → Idioma."
-
 #: components/ticket/bugfixes-panel.tsx
 msgid "Where"
 msgstr "Dónde"
@@ -8600,30 +8488,6 @@ msgstr "Dónde"
 #: app/boards/[id]/edit/page.tsx
 msgid "Where an agent’s finished ticket waits for a person’s review."
 msgstr "Donde el ticket terminado de un agente espera la revisión de una persona."
-
-#: lib/help.ts
-msgid "Where are archived boards?"
-msgstr "¿Dónde están los tableros archivados?"
-
-#: lib/help.ts
-msgid "Where are sprint reports?"
-msgstr "¿Dónde están los informes de sprint?"
-
-#: lib/help.ts
-msgid "Where can I see all my tickets?"
-msgstr "¿Dónde puedo ver todos mis tickets?"
-
-#: lib/help.ts
-msgid "Where can I see what’s planned for the next sprint?"
-msgstr "¿Dónde puedo ver lo planificado para el próximo sprint?"
-
-#: lib/help.ts
-msgid "Where do I get an API key?"
-msgstr "¿Dónde consigo una clave de API?"
-
-#: lib/help.ts
-msgid "Where’s the backlog?"
-msgstr "¿Dónde está el backlog?"
 
 #: components/settings/api-keys.tsx
 msgid "Which agent"
@@ -8695,14 +8559,6 @@ msgstr "Escribe una respuesta…"
 #: components/settings/file-cleanup.tsx
 msgid "Year-old files the clean-up has deleted."
 msgstr "Archivos de hace un año que la limpieza ha eliminado."
-
-#: lib/help.ts
-msgid "Yes: an admin turns on the Request form in Edit project. Requests arrive behind the Requests button on the project page."
-msgstr "Sí: un administrador activa el formulario de solicitudes en Editar proyecto. Las solicitudes llegan tras el botón Solicitudes de la página del proyecto."
-
-#: lib/help.ts
-msgid "Yes: Edit board → More → Save as template (columns, WIP limits, style and estimates, not tickets). Pick it in the Template list when making a new board. Admins only."
-msgstr "Sí: Editar tablero → Más → Guardar como plantilla (columnas, límites WIP, estilo y estimaciones, no tickets). Elígela en la lista Plantilla al crear un tablero nuevo. Solo administradores."
 
 #: components/board/person-face.tsx
 #: lib/notifications.ts
@@ -8804,10 +8660,6 @@ msgstr "El plan {name} de tu organización incluye {projects}"
 msgid "Your organization’s plan, people and connections."
 msgstr "El plan, las personas y las conexiones de tu organización."
 
-#: lib/help.ts
-msgid "Your own and AI agent keys are in Your settings → API keys. Service keys for integrations are in Settings → API keys, made by admins."
-msgstr "Tus claves propias y las de agentes de IA están en Tus ajustes → Claves de API. Las claves de servicio para integraciones están en Ajustes → Claves de API, y las crean los administradores."
-
 #: app/settings/api-keys/page.tsx
 msgid "Your own keys and AI agents are in <0>Your settings</0>."
 msgstr "Tus claves propias y de agentes de IA están en <0>Tus ajustes</0>."
@@ -8830,6 +8682,7 @@ msgstr "Tus hojas de ruta de todos los proyectos. Las hojas de ruta públicas so
 
 #: app/account/api-keys/page.tsx
 #: app/account/page.tsx
+#: components/staff/help-editor.tsx
 #: components/user-menu.tsx
 msgid "Your settings"
 msgstr "Tus ajustes"

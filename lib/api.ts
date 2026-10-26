@@ -7,6 +7,7 @@ import { i18nFor, type Locale } from './i18n';
 import { isLocale, LANG_COOKIE } from './locale';
 import { reportClient, reportServer } from './report';
 import type { EstimateScale } from './estimates';
+import type { HelpEntry, PageKind } from './help';
 
 export type Visibility = 'public' | 'login_only' | 'team';
 
@@ -875,9 +876,23 @@ export type SystemStats = {
   attachments: StaffCount; attachment_bytes: number; api_keys: Record<string, number>;
   open_sprints: number; live_sessions: number; database_bytes: number;
 };
+// The help panel's answers (TL-575/579): published ones in a language, or every one for staff to edit.
+export type HelpAnswer = {
+  id: string; slug: string; question: Record<string, string>; answer: Record<string, string>; href: string; fallback_href: string;
+  pages: PageKind[]; words: string; position: number; published: boolean; updated_by: string; updated_at: string;
+};
+export type HelpAnswerInput = Omit<HelpAnswer, 'id' | 'position' | 'updated_by' | 'updated_at'>;
+export const help = {
+  list: (locale: string, t: T) => api<HelpEntry[]>(`/help?locale=${encodeURIComponent(locale)}`, { token: t }),
+};
 export const staff = {
   me: (t: T) => api<{ staff: boolean }>('/staff/me', { token: t }),
   stats: (t: T) => api<SystemStats>('/staff/stats', { token: t }), // counts only (TL-574)
+  help: (t: T) => api<HelpAnswer[]>('/staff/help', { token: t }),
+  addHelp: (a: HelpAnswerInput, t: T) => api<HelpAnswer>('/staff/help', { method: 'POST', body: a, token: t }),
+  updateHelp: (id: string, a: HelpAnswerInput, t: T) => api<HelpAnswer>(`/staff/help/${encodeURIComponent(id)}`, { method: 'PUT', body: a, token: t }),
+  deleteHelp: (id: string, t: T) => api<void>(`/staff/help/${encodeURIComponent(id)}`, { method: 'DELETE', token: t }),
+  orderHelp: (ids: string[], t: T) => api<void>('/staff/help/order', { method: 'PUT', body: { ids }, token: t }),
 };
 // exportCSV: a project's tickets as CSV text (TL-637), for the browser to save.
 export const exportCSV = (projectId: string, t: T) => api<string>(`/projects/${encodeURIComponent(projectId)}/export.csv`, { token: t });
