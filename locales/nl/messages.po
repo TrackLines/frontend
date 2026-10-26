@@ -5092,6 +5092,10 @@ msgid "No AI agent keys yet."
 msgstr "Nog geen AI-agentsleutels."
 
 #: components/staff/help-editor.tsx
+msgid "No answers match."
+msgstr "Geen antwoorden gevonden."
+
+#: components/staff/help-editor.tsx
 msgid "No answers yet."
 msgstr "Nog geen antwoorden."
 
@@ -6844,6 +6848,14 @@ msgstr "Hulp doorzoeken"
 #: components/project/repositories.tsx
 msgid "Search repositories…"
 msgstr "Repository’s zoeken…"
+
+#: components/staff/help-editor.tsx
+msgid "Search the answers"
+msgstr "Zoek in de antwoorden"
+
+#: components/staff/help-editor.tsx
+msgid "Search the answers, in any language"
+msgstr "Zoek in de antwoorden, in elke taal"
 
 #: components/ticket-search.tsx
 msgid "Search tickets"
