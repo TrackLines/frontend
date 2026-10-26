@@ -18,9 +18,11 @@ const PUBLISHED: Record<LegalDoc, Record<string, string>> = {
   terms: { '2026-10-17': '6caee2edf71a32e2134fb5dbdae8711c2539377823f7c227e2b3c5b4007b69a2' },
   // privacy 2026-10-17: pre-launch correction (owner, 2026-10-17): links to each provider (and ChewedFeed HQ), "Flags.gg", "BugFix.es"
   // privacy 2026-10-25: every cookie and item of device storage; what deleting your account erases (TL-595)
+  // privacy 2026-10-26: ticket history and the audit log, who sees them, how long they're kept (TL-672)
   privacy: {
     '2026-10-17': '953aec79535ae87943f85f5ab66e7f63d7f4fb1b6104f7dd1f2c5c46d01e6aad',
     '2026-10-25': '0b333b88d7b224e568da39770307367a172961fa1e3299db06eaacdf704fa9b6',
+    '2026-10-26': '3acadb349fd15e7d93142b74348f65acb848d140287b18abb406e73f1dee95f5',
   },
 };
 const sha = (s: string) => new Bun.CryptoHasher('sha256').update(s).digest('hex');
@@ -74,7 +76,8 @@ test('the pages: Last updated links to every version; each version shows itself 
 test('the backend’s list of versions, and the bell’s notice', async () => {
   const list = await GET().json();
   expect(list).toEqual([{ doc: 'terms', version: '2026-10-17', summary: 'First published version.' }, { doc: 'privacy', version: '2026-10-17', summary: 'First published version.' },
-    { doc: 'privacy', version: '2026-10-25', summary: 'Lists every cookie and item of device storage, and says what deleting your account erases.' }]);
+    { doc: 'privacy', version: '2026-10-25', summary: 'Lists every cookie and item of device storage, and says what deleting your account erases.' },
+    { doc: 'privacy', version: '2026-10-26', summary: 'Adds ticket history and the audit log on Pro and Enterprise: what they record, who can see them and how long they’re kept.' }]);
   const notice = { kind: 'legal', actor: '', text: 'We’ve updated our Terms of service (from 2026-11-20): Downtime credit now counts short outages.', ticket_id: null, ticket_key: null, board_id: null, link: '/terms/2026-11-20' };
   expect(notificationLine(i18nFor('en'), notice, [])).toBe(notice.text); // not "Someone We've updated…"
   expect(notificationHref(notice)).toBe('/terms/2026-11-20');
@@ -93,4 +96,16 @@ test('the privacy policy lists every cookie and item of device storage the code 
     if (/localStorage|sessionStorage|document\.cookie|indexedDB|cookies\(\)\.set/.test(src)) storing.add(file);
   }
   expect([...storing].sort()).toEqual(['components/language-sync.tsx', 'components/roadmap/timeline.tsx', 'lib/api.ts', 'lib/push.ts']);
+});
+
+test('the policy says what the audit log holds, who sees it and how long it’s kept, as the auditor enforces (TL-672)', () => {
+  const p = current('privacy').body;
+  for (const s of [
+    'Only your organization\'s admins can see the audit log',
+    'never holds ticket content, comments, secrets or network addresses',
+    'Free organizations have no audit log',
+    '**The audit log** for 1 year on the Pro plan, and for as long as your organization exists on the Enterprise plan',
+    '**Ticket history** for as long as the ticket exists',
+    'such as tickets, comments, ticket history and audit log entries, stays with your organization',
+  ]) expect(p).toContain(s);
 });

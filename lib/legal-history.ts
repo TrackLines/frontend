@@ -1,5 +1,6 @@
 import privacy20261017 from './legal-versions/privacy-2026-10-17';
 import privacy20261025 from './legal-versions/privacy-2026-10-25';
+import privacy20261026 from './legal-versions/privacy-2026-10-26';
 import terms20261017 from './legal-versions/terms-2026-10-17';
 
 // Every published version of the Terms of service and the Privacy policy (TL-424), oldest first.
@@ -16,6 +17,7 @@ export const HISTORY: Record<LegalDoc, LegalVersion[]> = {
   privacy: [
     { version: '2026-10-17', summary: 'First published version.', body: privacy20261017 },
     { version: '2026-10-25', summary: 'Lists every cookie and item of device storage, and says what deleting your account erases.', body: privacy20261025 },
+    { version: '2026-10-26', summary: 'Adds ticket history and the audit log on Pro and Enterprise: what they record, who can see them and how long they’re kept.', body: privacy20261026 },
   ],
 };
 
