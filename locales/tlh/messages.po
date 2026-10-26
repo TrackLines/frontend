@@ -5712,6 +5712,14 @@ msgid "Only an organization admin or whoever uploaded it can keep this file."
 msgstr "ghom'a' loHwI' pagh lI'bogh ghot neH ghItlhvam pollaH."
 
 #: lib/error-codes.ts
+msgid "only an organization admin or whoever uploaded it can remove this file"
+msgstr "ghom'a' loHwI' pagh lI'bogh ghot neH ghItlhvam teqlaH"
+
+#: components/ticket/attachments.tsx
+msgid "Only an organization admin or whoever uploaded it can remove this file."
+msgstr "ghom'a' loHwI' pagh lI'bogh ghot neH ghItlhvam teqlaH."
+
+#: lib/error-codes.ts
 msgid "only an organization admin, signed in, can change embed origins"
 msgstr "ghom'a' loHwI', 'elpu'bogh, neH embed originmey choHlaH"
 

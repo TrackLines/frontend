@@ -111,6 +111,7 @@ export const ERROR_MESSAGES: Record<string, MessageDescriptor> = {
   calendar_not_configured: msg`Google Calendar isn't set up on this server`,
   calendar_not_connected: msg`Google Calendar isn't connected`,
   cant_keep_file: msg`only an organization admin or whoever uploaded it can keep this file`,
+  cant_remove_file: msg`only an organization admin or whoever uploaded it can remove this file`,
   chat_app_not_configured: msg`the Google Chat app isn't set up on this server`,
   chat_url_required: msg`paste the space's webhook URL first`,
   check_admins_failed: msg`could not check organization admins`,
