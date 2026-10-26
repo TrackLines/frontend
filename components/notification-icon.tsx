@@ -1,4 +1,4 @@
-import { AtSignIcon, BanIcon, BellIcon, CircleCheckIcon, ClockIcon, EyeIcon, GaugeIcon, ScaleIcon, ShieldAlertIcon, Undo2Icon, UserPlusIcon, type LucideIcon } from 'lucide-react';
+import { AtSignIcon, BadgePercentIcon, BanIcon, BellIcon, CircleCheckIcon, ClockIcon, EyeIcon, GaugeIcon, ScaleIcon, ShieldAlertIcon, Undo2Icon, UserPlusIcon, type LucideIcon } from 'lucide-react';
 import type { MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
@@ -18,6 +18,7 @@ export const NOTIFICATION_ICONS: Record<NotificationKind, { icon: LucideIcon; la
   retention: { icon: ClockIcon, label: msg`Files due for deletion` },
   over_capacity: { icon: GaugeIcon, label: msg`Sprint over capacity`, urgent: true },
   legal: { icon: ScaleIcon, label: msg`Terms or Privacy policy updated` }, // TL-424
+  downtime_credit: { icon: BadgePercentIcon, label: msg`Downtime credited` }, // TL-576
 };
 
 export function NotificationIcon({ kind, className }: { kind: string; className?: string }) {

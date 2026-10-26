@@ -24,6 +24,10 @@ msgstr "“{name}”: een WIP-limiet is een geheel getal van 1 tot 999, of geen.
 msgid "({key} is taken here, so a number was added)"
 msgstr "({key} is hier al in gebruik, dus er is een nummer toegevoegd)"
 
+#: components/staff/downtime.tsx
+msgid "(already credited)"
+msgstr "(al gecrediteerd)"
+
 #: components/reports/report-view.tsx
 msgid "(in progress)"
 msgstr "(bezig)"
@@ -157,6 +161,11 @@ msgstr "{0, plural, one {Als je het naar de backlog stuurt, gaat ook de open sub
 msgid "{0} ({1}%)"
 msgstr "{0} ({1}%)"
 
+#. placeholder {0}: n(stats.archived_boards)
+#: components/staff/stats.tsx
+msgid "{0} archived"
+msgstr "{0} gearchiveerd"
+
 #. placeholder {0}: column.name
 #: components/board/column.tsx
 msgid "{0} column"
@@ -172,10 +181,22 @@ msgstr "{0} dagen"
 msgid "{0} description"
 msgstr "Beschrijving van {0}"
 
+#. placeholder {0}: n(stats.done_tickets)
+#. placeholder {1}: n(stats.tickets.total - stats.done_tickets)
+#: components/staff/stats.tsx
+msgid "{0} done · {1} open"
+msgstr "{0} klaar · {1} open"
+
 #. placeholder {0}: board.name
 #: components/project/backlog.tsx
 msgid "{0} estimates every ticket, so size this one before it joins the board."
 msgstr "{0} schat elk ticket, dus geef dit ticket een schatting voordat het op het bord komt."
+
+#. placeholder {0}: Math.floor(o.minutes / 60)
+#. placeholder {1}: o.minutes % 60
+#: components/staff/downtime.tsx
+msgid "{0} h {1} min"
+msgstr "{0} u {1} min"
 
 #. placeholder {0}: b.to_review
 #: components/project/refinement.tsx
@@ -202,6 +223,16 @@ msgstr "Uitnodiging voor {0}"
 msgid "{0} leader"
 msgstr "Leider van {0}"
 
+#. placeholder {0}: n(stats.live_sessions)
+#: components/staff/stats.tsx
+msgid "{0} live sessions"
+msgstr "{0} live sessies"
+
+#. placeholder {0}: o.minutes
+#: components/staff/downtime.tsx
+msgid "{0} min"
+msgstr "{0} min"
+
 #. placeholder {0}: progress.done
 #. placeholder {1}: progress.total
 #. placeholder {2}: Math.round((progress.done / progress.total) * 100)
@@ -226,16 +257,32 @@ msgstr "{0} van {1} tickets…"
 msgid "{0} open"
 msgstr "{0} open"
 
+#. placeholder {0}: n(stats.open_sprints)
+#: components/staff/stats.tsx
+msgid "{0} open sprints"
+msgstr "{0} open sprints"
+
 #. placeholder {0}: PROVIDER_NAMES.github
 #. placeholder {1}: PROVIDER_NAMES.bitbucket
 #: lib/integrations.ts
 msgid "{0} or {1}"
 msgstr "{0} of {1}"
 
+#. placeholder {0}: due.orgs
+#. placeholder {1}: moneyList(i18n, due.totals)
+#: components/staff/downtime.tsx
+msgid "{0} organizations, {1} in total"
+msgstr "{0} organisaties, {1} in totaal"
+
 #. placeholder {0}: skipped.length
 #: components/settings/csv-import.tsx
 msgid "{0} rows or values left out"
 msgstr "{0} rijen of waarden weggelaten"
+
+#. placeholder {0}: size(i18n, stats.attachment_bytes)
+#: components/staff/stats.tsx
+msgid "{0} stored"
+msgstr "{0} opgeslagen"
 
 #. placeholder {0}: team.name
 #: components/settings/organization.tsx
@@ -593,6 +640,12 @@ msgstr "↑↓ om te bewegen · Enter om te openen · Esc om te sluiten"
 msgid "+ Add ticket"
 msgstr "+ Ticket toevoegen"
 
+#. placeholder {0}: n(count.day)
+#. placeholder {1}: n(count.week)
+#: components/staff/stats.tsx
+msgid "+{0} in 24 hours · +{1} in 7 days"
+msgstr "+{0} in 24 uur · +{1} in 7 dagen"
+
 #: components/settings/jira-import.tsx
 msgid "<0>Change your plan</0> to import it."
 msgstr "<0>Wijzig je abonnement</0> om het te importeren."
@@ -675,10 +728,6 @@ msgstr "Een bord op TrackLin.es"
 msgid "a board plans at most 2 sprints ahead"
 msgstr "Een bord plant maximaal 2 sprints vooruit."
 
-#: lib/help.ts
-msgid "A board’s are under Past sprints → Sprint report; a project’s are in its header; the organization’s are in Settings (admins)."
-msgstr "Die van een bord staan onder Afgelopen sprints → Sprintrapport; die van een project bovenaan het project; die van de organisatie in Instellingen (beheerders)."
-
 #: components/ticket/history-panel.tsx
 msgid "a column"
 msgstr "een kolom"
@@ -699,13 +748,17 @@ msgstr "Een duplicaatticket is al gesloten."
 msgid "A key labels an embed so you can see how often it’s used and on which sites. Add it to the snippet as<0>data-key</0>. It isn’t a secret and doesn’t grant access — a site still has to be in the allowed list above."
 msgstr "Een key labelt een embed, zodat je ziet hoe vaak hij wordt gebruikt en op welke sites. Voeg hem toe aan het snippet als<0>data-key</0>. Hij is niet geheim en geeft geen toegang — een site moet nog steeds in de lijst met toegestane sites hierboven staan."
 
-#: lib/help.ts
-msgid "A large piece of work across boards. Set a ticket’s type to Epic; epics live in the backlog and have their own tab on the project page."
-msgstr "Een groot stuk werk over meerdere borden. Zet het type van een ticket op Epic; epics staan in de backlog en hebben een eigen tabblad op de projectpagina."
+#: lib/error-codes.ts
+msgid "a link must be an app route, starting with /"
+msgstr "een link moet een pagina in de app zijn, beginnend met /"
 
 #: components/roadmap/item-tickets.tsx
 msgid "A linked epic counts its sub-tickets, including ones added later."
 msgstr "Een gekoppelde epic telt zijn subtickets mee, ook die later worden toegevoegd."
+
+#: components/staff/help-editor.tsx
+msgid "A page in the app, starting with /. [project] and [board] are the reader’s current one."
+msgstr "Een pagina in de app, beginnend met /. [project] en [board] zijn die van de lezer."
 
 #: app/dashboard/page.tsx
 msgid "A project holds a board for each team, a shared backlog, and the roadmaps you send to customers."
@@ -845,6 +898,10 @@ msgstr "Geef elk roadmap-item een titel voordat je opslaat."
 msgid "Add a webhook"
 msgstr "Een webhook toevoegen"
 
+#: components/staff/help-editor.tsx
+msgid "Add an answer"
+msgstr "Antwoord toevoegen"
+
 #: components/settings/integrations.tsx
 msgid "Add another GitHub account"
 msgstr "Nog een GitHub-account toevoegen"
@@ -976,6 +1033,11 @@ msgstr "Beheerder"
 msgid "Admin email <0>(a user in that domain, to check access with)</0>"
 msgstr "E-mailadres van beheerder <0>(een gebruiker in dat domein, om de toegang mee te controleren)</0>"
 
+#: components/staff/staff-shell.tsx
+#: components/user-menu.tsx
+msgid "Admin panel"
+msgstr "Beheerpaneel"
+
 #: components/settings/api-keys.tsx
 msgid "After that the key stops working and you make a new one."
 msgstr "Daarna werkt de sleutel niet meer en maak je een nieuwe."
@@ -1051,10 +1113,6 @@ msgstr "Toegestane sites"
 msgid "already subscribed — manage it from the billing portal"
 msgstr "Je hebt al een abonnement; beheer het via het factureringsportaal."
 
-#: lib/help.ts
-msgid "An admin connects GitHub or Bitbucket in Settings → Integrations, then links repos in Edit project → Repositories. Pull requests that mention a ticket’s key show on it, and merging finishes it."
-msgstr "Een beheerder koppelt GitHub of Bitbucket in Instellingen → Integraties en koppelt daarna repository’s in Project bewerken → Repository’s. Pull requests die de ticketcode noemen staan bij het ticket, en mergen rondt het af."
-
 #: components/board/review.tsx
 msgid "An agent finished this; a person needs to approve it"
 msgstr "Een agent heeft dit afgerond; een persoon moet het goedkeuren"
@@ -1071,6 +1129,10 @@ msgstr "Een ticket van een AI-agent dat naar Klaar is verplaatst, wacht tot een 
 msgid "an epic can't be inside another epic"
 msgstr "Een epic kan niet in een andere epic zitten."
 
+#: components/staff/downtime.tsx
+msgid "An hour or less"
+msgstr "Een uur of korter"
+
 #: lib/error-codes.ts
 msgid "an item's start date must be on or before its target date"
 msgstr "De startdatum van een item moet op of vóór de streefdatum liggen."
@@ -1082,10 +1144,6 @@ msgstr "Een organisatiebeheerder kan hier een Google Chat-ruimte koppelen."
 #: components/settings/google-calendar.tsx
 msgid "An organization admin can connect your Google Workspace here."
 msgstr "Een organisatiebeheerder kan hier je Google Workspace koppelen."
-
-#: lib/help.ts
-msgid "An organization admin connects Google Calendar in Settings → Integrations → Calendars; people away are marked in assigning and standup."
-msgstr "Een organisatiebeheerder koppelt Google Calendar in Instellingen → Integraties → Agenda’s; wie afwezig is, wordt aangegeven bij toewijzen en in de stand-up."
 
 #: components/board/import-review.tsx
 msgid "An organization admin or this board’s team leader settles these."
@@ -1107,6 +1165,14 @@ msgstr "Een organisatie heeft minstens één beheerder nodig."
 msgid "an origin like https://example.com is required"
 msgstr "Een origin zoals https://example.com is verplicht."
 
+#: lib/error-codes.ts
+msgid "an outage ends after it starts, and not in the future"
+msgstr "een storing eindigt na het begin, en niet in de toekomst"
+
+#: lib/error-codes.ts
+msgid "another answer has that slug"
+msgstr "een ander antwoord heeft die slug"
+
 #: components/ticket/other-org.tsx
 msgid "another organization"
 msgstr "een andere organisatie"
@@ -1114,6 +1180,10 @@ msgstr "een andere organisatie"
 #: lib/error-codes.ts
 msgid "another project in this organization already uses that key prefix"
 msgstr "Een ander project in deze organisatie gebruikt die prefix al."
+
+#: components/staff/help-editor.tsx
+msgid "Answer"
+msgstr "Antwoord"
 
 #: components/ticket-search.tsx
 msgid "Any assignee"
@@ -1146,6 +1216,7 @@ msgstr "API-sleutel verlopen: maak een nieuwe aan via Instellingen → API-sleut
 #: app/account/page.tsx
 #: app/settings/page.tsx
 #: components/settings/api-keys.tsx
+#: components/staff/stats.tsx
 msgid "API keys"
 msgstr "API-sleutels"
 
@@ -1160,6 +1231,10 @@ msgstr "API-URL <0>(optioneel)</0>"
 #: components/theme-chooser.tsx
 msgid "Appearance"
 msgstr "Weergave"
+
+#: components/staff/downtime.tsx
+msgid "Apply credits"
+msgstr "Credits toepassen"
 
 #: components/board/review.tsx
 msgid "Approve"
@@ -1248,6 +1323,7 @@ msgstr "Risico"
 msgid "Attach files"
 msgstr "Bestanden bijvoegen"
 
+#: components/staff/stats.tsx
 #: components/ticket/attachments.tsx
 msgid "Attachments"
 msgstr "Bijlagen"
@@ -1372,6 +1448,7 @@ msgstr "bord"
 #: app/boards/[id]/page.tsx
 #: components/project/move-to-board.tsx
 #: components/reports/rollup-view.tsx
+#: components/staff/help-editor.tsx
 msgid "Board"
 msgstr "Bord"
 
@@ -1402,12 +1479,9 @@ msgstr "Bordweergave"
 #: app/projects/[id]/edit/page.tsx
 #: app/projects/[id]/page.tsx
 #: components/reports/rollup-view.tsx
+#: components/staff/stats.tsx
 msgid "Boards"
 msgstr "Borden"
-
-#: lib/help.ts
-msgid "Boards are added by organization admins. While a project has one board, use New board on the project page; after that, it’s in Edit project → Boards."
-msgstr "Borden worden toegevoegd door organisatiebeheerders. Zolang een project één bord heeft, gebruik je Nieuw bord op de projectpagina; daarna zit het in Project bewerken → Borden."
 
 #: components/settings/organization.tsx
 msgid "Boards linked to this team are managed by its leaders."
@@ -1501,18 +1575,6 @@ msgstr "door {0}"
 msgid "Calendars"
 msgstr "Agenda's"
 
-#: lib/help.ts
-msgid "Can customers send us requests?"
-msgstr "Kunnen klanten ons aanvragen sturen?"
-
-#: lib/help.ts
-msgid "Can I change the language?"
-msgstr "Kan ik de taal wijzigen?"
-
-#: lib/help.ts
-msgid "Can I reuse a board’s setup?"
-msgstr "Kan ik de opzet van een bord hergebruiken?"
-
 #: app/boards/[id]/edit/page.tsx
 #: components/board/review.tsx
 #: components/board/sprint-bar.tsx
@@ -1521,6 +1583,8 @@ msgstr "Kan ik de opzet van een bord hergebruiken?"
 #: components/project/key-prefix.tsx
 #: components/project/move-to-board.tsx
 #: components/settings/csv-import.tsx
+#: components/staff/downtime.tsx
+#: components/staff/help-editor.tsx
 #: components/ticket/duplicates.tsx
 msgid "Cancel"
 msgstr "Annuleren"
@@ -1809,6 +1873,11 @@ msgstr "Nu sluiten:"
 msgid "Closing…"
 msgstr "Sluiten…"
 
+#. placeholder {0}: day(i18n, d)
+#: components/staff/downtime.tsx
+msgid "Cluster on {0}: you decide"
+msgstr "Cluster op {0}: jij beslist"
+
 #: app/boards/[id]/edit/page.tsx
 msgid "Column before Done"
 msgstr "Kolom vóór Klaar"
@@ -1845,6 +1914,10 @@ msgstr "Een opmerking mag niet leeg zijn of langer dan 10000 tekens."
 #: lib/error-codes.ts
 msgid "comment is too long"
 msgstr "De opmerking is te lang."
+
+#: components/staff/stats.tsx
+msgid "Comments"
+msgstr "Reacties"
 
 #: components/settings/integrations.tsx
 msgid "Communication"
@@ -2089,6 +2162,10 @@ msgstr "Kan dit ticket niet sluiten. Probeer het opnieuw."
 msgid "Could not copy"
 msgstr "Kopiëren mislukt"
 
+#: lib/error-codes.ts
+msgid "could not count"
+msgstr "kon niet tellen"
+
 #: app/roadmaps/page.tsx
 msgid "Could not delete “{name}”. Please try again."
 msgstr "Kan “{name}” niet verwijderen. Probeer het opnieuw."
@@ -2102,8 +2179,16 @@ msgid "Could not delete this ticket. Try again."
 msgstr "Kan dit ticket niet verwijderen. Probeer het opnieuw."
 
 #: lib/error-codes.ts
+msgid "could not load help answers"
+msgstr "help-antwoorden konden niet worden geladen"
+
+#: lib/error-codes.ts
 msgid "could not load organization members"
 msgstr "Kon de leden van de organisatie niet laden."
+
+#: lib/error-codes.ts
+msgid "could not load outages"
+msgstr "storingen konden niet worden geladen"
 
 #: components/board/ticket-dialog.tsx
 msgid "Could not move this ticket to the backlog. Try again."
@@ -2360,6 +2445,10 @@ msgstr "Kan de epics niet laden. Vernieuw de pagina om het opnieuw te proberen."
 msgid "Couldn’t load the file clean-up. Please refresh to try again."
 msgstr "Kan de bestandsopschoning niet laden. Vernieuw de pagina om het opnieuw te proberen."
 
+#: components/staff/help-editor.tsx
+msgid "Couldn’t load the help answers."
+msgstr "De help-antwoorden konden niet worden geladen."
+
 #: components/project/repositories.tsx
 msgid "Couldn’t load the linked repositories."
 msgstr "Kan de gelinkte repositories niet laden."
@@ -2367,6 +2456,10 @@ msgstr "Kan de gelinkte repositories niet laden."
 #: components/board/next-sprints.tsx
 msgid "Couldn’t load the next sprints. Please try again."
 msgstr "Kon de volgende sprints niet laden. Probeer het opnieuw."
+
+#: components/staff/downtime.tsx
+msgid "Couldn’t load the outages."
+msgstr "De storingen konden niet worden geladen."
 
 #: components/roadmap/item-tickets.tsx
 #: components/ticket/dependencies.tsx
@@ -2377,6 +2470,10 @@ msgstr "Kan de tickets van het project niet laden."
 #: components/intake/intake-settings.tsx
 msgid "Couldn’t load the request form settings."
 msgstr "Kan de instellingen van het aanvraagformulier niet laden."
+
+#: components/staff/stats.tsx
+msgid "Couldn’t load the stats."
+msgstr "De statistieken konden niet worden geladen."
 
 #: components/roadmap/updates.tsx
 msgid "Couldn’t load the updates. Please refresh to try again."
@@ -2650,6 +2747,14 @@ msgstr "Kan het ticketprefix niet bijwerken. Probeer het opnieuw."
 msgid "Couldn’t verify board permissions. Board settings are hidden until permissions can be checked."
 msgstr "Kan de rechten voor het bord niet controleren. Bordinstellingen blijven verborgen tot de rechten gecontroleerd kunnen worden."
 
+#: components/staff/downtime.tsx
+msgid "Couldn’t work out the credits."
+msgstr "De credits konden niet worden berekend."
+
+#: components/staff/downtime.tsx
+msgid "Couldn’t work these out"
+msgstr "Deze konden niet worden berekend"
+
 #: components/board/velocity.tsx
 msgid "Counted in estimate points."
 msgstr "Geteld in schattingspunten."
@@ -2725,6 +2830,33 @@ msgstr "heeft het aangemaakt in {where}"
 msgid "Creating…"
 msgstr "Aanmaken…"
 
+#: components/staff/downtime.tsx
+msgid "Credit"
+msgstr "Credit"
+
+#. placeholder {0}: due.orgs
+#. placeholder {1}: moneyList(i18n, due.totals)
+#: components/staff/downtime.tsx
+msgid "Credit {0} organizations {1} in total?"
+msgstr "{0} organisaties in totaal {1} crediteren?"
+
+#: components/staff/downtime.tsx
+msgid "Credit them"
+msgstr "Crediteren"
+
+#. placeholder {0}: result.credited.length
+#: components/staff/downtime.tsx
+msgid "Credited {0} organization-days."
+msgstr "{0} organisatie-dagen gecrediteerd."
+
+#: components/staff/downtime.tsx
+msgid "Credits"
+msgstr "Credits"
+
+#: components/staff/downtime.tsx
+msgid "Credits for {days}"
+msgstr "Credits voor {days}"
+
 #: components/settings/csv-import.tsx
 #: components/settings/import-page.tsx
 msgid "CSV file"
@@ -2754,6 +2886,10 @@ msgstr "Doorlooptijd verschijnt zodra een ticket met een geregistreerde start is
 msgid "Dark"
 msgstr "Donker"
 
+#: components/staff/help-editor.tsx
+msgid "Dashboard"
+msgstr "Dashboard"
+
 #: components/board/velocity.tsx
 msgid "Dashed line: ideal pace."
 msgstr "Stippellijn: ideaal tempo."
@@ -2762,9 +2898,17 @@ msgstr "Stippellijn: ideaal tempo."
 msgid "Dashed line: scope."
 msgstr "Stippellijn: scope."
 
+#: components/staff/stats.tsx
+msgid "Database"
+msgstr "Database"
+
 #: components/reports/report-view.tsx
 msgid "Dates"
 msgstr "Datums"
+
+#: components/staff/downtime.tsx
+msgid "Day (UTC)"
+msgstr "Dag (UTC)"
 
 #: components/board/sprint-bar.tsx
 msgid "days"
@@ -2782,6 +2926,8 @@ msgstr "Dagen"
 #: components/settings/linear-import.tsx
 #: components/settings/organization.tsx
 #: components/settings/webhooks.tsx
+#: components/staff/downtime.tsx
+#: components/staff/help-editor.tsx
 msgid "Delete"
 msgstr "Verwijderen"
 
@@ -2789,6 +2935,11 @@ msgstr "Verwijderen"
 #: components/project/backlog.tsx
 msgid "Delete “{0}”?"
 msgstr "“{0}” verwijderen?"
+
+#. placeholder {0}: a.question.en
+#: components/staff/help-editor.tsx
+msgid "Delete “{0}”? It’s gone from the help panel at once."
+msgstr "“{0}” verwijderen? Het verdwijnt meteen uit het helppaneel."
 
 #: components/board/board-lifecycle.tsx
 msgid "Delete “{name}”? It has never been used, so nothing is lost."
@@ -2828,6 +2979,10 @@ msgstr "De Linear-koppeling verwijderen? De API-sleutel wordt vergeten."
 #: components/settings/webhooks.tsx
 msgid "Delete the webhook to {0}? Nothing more will be sent to it."
 msgstr "De webhook naar {0} verwijderen? Er wordt niets meer naartoe gestuurd."
+
+#: components/staff/downtime.tsx
+msgid "Delete this outage? Only for one recorded by mistake."
+msgstr "Deze storing verwijderen? Alleen voor een die per ongeluk is vastgelegd."
 
 #: components/board/ticket-dialog.tsx
 msgid "Delete this ticket? It’s kept for 30 days in case it was a mistake (contact us to get it back), then permanently deleted with its comments and files."
@@ -3035,6 +3190,14 @@ msgstr "Markdown downloaden"
 msgid "Downloaded."
 msgstr "Gedownload."
 
+#: components/staff/staff-shell.tsx
+msgid "Downtime"
+msgstr "Storingen"
+
+#: components/notification-icon.tsx
+msgid "Downtime credited"
+msgstr "Storing gecrediteerd"
+
 #: components/ticket/pull-requests-panel.tsx
 msgid "Draft"
 msgstr "Concept"
@@ -3184,6 +3347,10 @@ msgstr "Elke agent heeft een eigen API-sleutel nodig: maak er een aan in <0>API-
 msgid "Each board's share of planned work done in the period. The band, 80–100%, is on target."
 msgstr "Het aandeel gepland werk dat elk bord in de periode heeft afgerond. De band van 80–100% is op koers."
 
+#: components/staff/downtime.tsx
+msgid "Each gets a credit on their next Stripe bill for {days}, and their admins are told. A day is never credited twice."
+msgstr "Elk krijgt een credit op de volgende Stripe-factuur voor {days}, en hun beheerders horen het. Een dag wordt nooit twee keer gecrediteerd."
+
 #: components/settings/import-page.tsx
 msgid "Each Jira Cloud project becomes a project here, keeping its key and ticket numbers, with its boards, comments and attachments."
 msgstr "Elk Jira Cloud-project wordt hier een project, met zijn sleutel en ticketnummers, borden, reacties en bijlagen."
@@ -3205,6 +3372,7 @@ msgstr "Het aandeel gepland werk dat elk project in de periode heeft afgerond. D
 #: components/board/ticket-view.tsx
 #: components/project/backlog.tsx
 #: components/project/roadmap-row.tsx
+#: components/staff/help-editor.tsx
 msgid "Edit"
 msgstr "Bewerken"
 
@@ -3290,6 +3458,10 @@ msgstr "Refinement beëindigen"
 #: components/hosted-bar.tsx
 msgid "End standup"
 msgstr "Stand-up beëindigen"
+
+#: components/staff/downtime.tsx
+msgid "Ended (UTC)"
+msgstr "Geëindigd (UTC)"
 
 #: components/mcp-connect.tsx
 msgid "Endpoint"
@@ -3500,9 +3672,17 @@ msgstr "External wordt ingesteld door integraties (API-sleutels)."
 msgid "external needs source (bugfixes), project and id; url must be http(s)"
 msgstr "External heeft source (bugfixes), project en id nodig; url moet http(s) zijn."
 
+#: components/staff/help-editor.tsx
+msgid "Extra search words"
+msgstr "Extra zoekwoorden"
+
 #: components/settings/webhooks.tsx
 msgid "Failed"
 msgstr "Mislukt"
+
+#: components/staff/help-editor.tsx
+msgid "Fallback link"
+msgstr "Reservelink"
 
 #: components/ticket-type.tsx
 msgid "feature"
@@ -3638,6 +3818,10 @@ msgstr "Volgend"
 msgid "Following ({following})"
 msgstr "Volgend ({following})"
 
+#: components/staff/staff-shell.tsx
+msgid "For ChewedFeed staff: the whole of TrackLin.es, not one organization."
+msgstr "Voor ChewedFeed-medewerkers: heel TrackLin.es, niet één organisatie."
+
 #: components/mcp-connect.tsx
 msgid "For GitHub Copilot agent mode, add to <0>.vscode/mcp.json</0>; VS Code asks for the key once and stores it securely:"
 msgstr "Voor de agentmodus van GitHub Copilot voeg je dit toe aan <0>.vscode/mcp.json</0>; VS Code vraagt één keer om de sleutel en bewaart die veilig:"
@@ -3654,6 +3838,13 @@ msgstr "Voormalig lid"
 msgid "Free"
 msgstr "Gratis"
 
+#. placeholder {0}: n(plans.free ?? 0)
+#. placeholder {1}: n(plans.pro ?? 0)
+#. placeholder {2}: n(plans.enterprise ?? 0)
+#: components/staff/stats.tsx
+msgid "Free {0} · Pro {1} · Enterprise {2}"
+msgstr "Free {0} · Pro {1} · Enterprise {2}"
+
 #: components/settings/jira-import.tsx
 msgid "Free to use: preview again to apply it."
 msgstr "Vrij te gebruiken: bekijk het voorbeeld opnieuw om het toe te passen."
@@ -3661,6 +3852,10 @@ msgstr "Vrij te gebruiken: bekijk het voorbeeld opnieuw om het toe te passen."
 #: app/reports/page.tsx
 msgid "From"
 msgstr "Van"
+
+#: components/staff/downtime.tsx
+msgid "From (UTC)"
+msgstr "Van (UTC)"
 
 #: lib/error-codes.ts
 msgid "from and to are dates (YYYY-MM-DD), from before to, at most two years apart"
@@ -3797,6 +3992,22 @@ msgstr "Gezondheid door de tijd"
 msgid "Help"
 msgstr "Help"
 
+#: lib/error-codes.ts
+msgid "help answer not found"
+msgstr "help-antwoord niet gevonden"
+
+#: components/staff/staff-shell.tsx
+msgid "Help answers"
+msgstr "Help-antwoorden"
+
+#: components/help-bot.tsx
+msgid "Help couldn’t load. Try the <0>docs</0>."
+msgstr "Help kon niet laden. Probeer de <0>documentatie</0>."
+
+#: components/staff/help-editor.tsx
+msgid "Hidden"
+msgstr "Verborgen"
+
 #: components/settings/webhooks.tsx
 msgid "Hide deliveries"
 msgstr "Leveringen verbergen"
@@ -3831,114 +4042,6 @@ msgstr "Waarmee kunnen we helpen?"
 #: components/intake/request-form.tsx
 msgid "How can we reach you? <0>(optional, seen by the team only)</0>"
 msgstr "Hoe kunnen we je bereiken? <0>(optioneel, alleen zichtbaar voor het team)</0>"
-
-#: lib/help.ts
-msgid "How do I add another board?"
-msgstr "Hoe voeg ik nog een bord toe?"
-
-#: lib/help.ts
-msgid "How do I add sub-tickets?"
-msgstr "Hoe voeg ik subtickets toe?"
-
-#: lib/help.ts
-msgid "How do I archive or delete a board?"
-msgstr "Hoe archiveer of verwijder ik een bord?"
-
-#: lib/help.ts
-msgid "How do I attach files?"
-msgstr "Hoe voeg ik bestanden bij?"
-
-#: lib/help.ts
-msgid "How do I change a board’s columns or WIP limits?"
-msgstr "Hoe wijzig ik de kolommen of WIP-limieten van een bord?"
-
-#: lib/help.ts
-msgid "How do I change my notifications?"
-msgstr "Hoe wijzig ik mijn meldingen?"
-
-#: lib/help.ts
-msgid "How do I change the ticket key (like TL-)?"
-msgstr "Hoe wijzig ik de ticketcode (zoals TL-)?"
-
-#: lib/help.ts
-msgid "How do I connect an AI agent?"
-msgstr "Hoe koppel ik een AI-agent?"
-
-#: lib/help.ts
-msgid "How do I create a project?"
-msgstr "Hoe maak ik een project aan?"
-
-#: lib/help.ts
-msgid "How do I create a ticket?"
-msgstr "Hoe maak ik een ticket aan?"
-
-#: lib/help.ts
-msgid "How do I find a ticket?"
-msgstr "Hoe vind ik een ticket?"
-
-#: lib/help.ts
-msgid "How do I invite people?"
-msgstr "Hoe nodig ik mensen uit?"
-
-#: lib/help.ts
-msgid "How do I link a GitHub repository?"
-msgstr "Hoe koppel ik een GitHub-repository?"
-
-#: lib/help.ts
-msgid "How do I make a roadmap?"
-msgstr "Hoe maak ik een roadmap?"
-
-#: lib/help.ts
-msgid "How do I mark a duplicate?"
-msgstr "Hoe markeer ik een duplicaat?"
-
-#: lib/help.ts
-msgid "How do I mark a ticket as blocked?"
-msgstr "Hoe markeer ik een ticket als geblokkeerd?"
-
-#: lib/help.ts
-msgid "How do I mention someone?"
-msgstr "Hoe vermeld ik iemand?"
-
-#: lib/help.ts
-msgid "How do I move a backlog ticket onto a board?"
-msgstr "Hoe zet ik een backlogticket op een bord?"
-
-#: lib/help.ts
-msgid "How do I move a ticket to another board?"
-msgstr "Hoe verplaats ik een ticket naar een ander bord?"
-
-#: lib/help.ts
-msgid "How do I plan the next sprints?"
-msgstr "Hoe plan ik de volgende sprints?"
-
-#: lib/help.ts
-msgid "How do I run a standup?"
-msgstr "Hoe houd ik een stand-up?"
-
-#: lib/help.ts
-msgid "How do I set up teams and team leads?"
-msgstr "Hoe stel ik teams en teamleiders in?"
-
-#: lib/help.ts
-msgid "How do I start or close a sprint?"
-msgstr "Hoe start of sluit ik een sprint?"
-
-#: lib/help.ts
-msgid "How do I switch to dark mode?"
-msgstr "Hoe schakel ik over naar donkere modus?"
-
-#: lib/help.ts
-msgid "How do I upgrade or change plan?"
-msgstr "Hoe upgrade ik of wijzig ik mijn abonnement?"
-
-#: lib/help.ts
-msgid "How do I watch a ticket?"
-msgstr "Hoe volg ik een ticket?"
-
-#: lib/help.ts
-msgid "How does it know who’s on holiday?"
-msgstr "Hoe weet het wie er op vakantie is?"
 
 #: components/reports/report-links.tsx
 msgid "How every project’s sprints went, to share with leadership."
@@ -3978,14 +4081,6 @@ msgstr "Geïmporteerde tickets om te beoordelen"
 msgid "Importing isn’t turned on for your organization yet."
 msgstr "Importeren staat nog niet aan voor je organisatie."
 
-#: lib/help.ts
-msgid "In Edit project → Archived boards. Restore one from its banner."
-msgstr "In Project bewerken → Gearchiveerde borden. Herstel er een via de balk bovenaan."
-
-#: lib/help.ts
-msgid "In Edit project → Ticket keys. Organization admins only."
-msgstr "In Project bewerken → Ticketcodes. Alleen organisatiebeheerders."
-
 #: components/settings/google-calendar.tsx
 msgid "In Google, as a Workspace admin, open <0>Security → Access and data control → API controls → Manage Domain Wide Delegation</0> (you need to be a super admin), choose <1>Add new</1> and paste:"
 msgstr "Open in Google als Workspace-beheerder <0>Security → Access and data control → API controls → Manage Domain Wide Delegation</0> (je moet superbeheerder zijn), kies <1>Add new</1> en plak:"
@@ -3995,10 +4090,6 @@ msgstr "Open in Google als Workspace-beheerder <0>Security → Access and data c
 #: components/roadmap/timeline.tsx
 msgid "In progress"
 msgstr "Bezig"
-
-#: lib/help.ts
-msgid "In Settings → Manage organization → Teams: create a team, add members, Make leader, and link its boards. Organization admins only."
-msgstr "In Instellingen → Organisatie beheren → Teams: maak een team, voeg leden toe, kies Leider maken en koppel de borden. Alleen organisatiebeheerders."
 
 #: components/settings/google-chat.tsx
 msgid "In the Google Chat space: Apps & integrations → Webhooks → Add webhook, then copy its URL. It’s stored encrypted and never shown again."
@@ -4329,6 +4420,7 @@ msgid "Leave without saving your changes?"
 msgstr "Verlaten zonder je wijzigingen op te slaan?"
 
 #: components/board/sprint-bar.tsx
+#: components/staff/downtime.tsx
 msgid "Length"
 msgstr "Lengte"
 
@@ -4359,6 +4451,10 @@ msgstr "Limit moet tussen 1 en 500 liggen."
 #: components/settings/linear-import.tsx
 msgid "Linear connection"
 msgstr "Linear-koppeling"
+
+#: components/staff/help-editor.tsx
+msgid "Link"
+msgstr "Link"
 
 #: components/roadmap/item-tickets.tsx
 msgid "Link a ticket or epic…"
@@ -4575,6 +4671,7 @@ msgstr "Je werk laden…"
 #: components/board/import-review.tsx
 #: components/board/next-sprints.tsx
 #: components/dashboard-work.tsx
+#: components/help-bot.tsx
 #: components/intake/intake-settings.tsx
 #: components/intake/request-form.tsx
 #: components/notifications-bell.tsx
@@ -4588,6 +4685,10 @@ msgstr "Je werk laden…"
 #: components/settings/jira-import.tsx
 #: components/settings/linear-import.tsx
 #: components/settings/webhooks.tsx
+#: components/staff/downtime.tsx
+#: components/staff/help-editor.tsx
+#: components/staff/staff-shell.tsx
+#: components/staff/stats.tsx
 msgid "Loading…"
 msgstr "Laden…"
 
@@ -4600,6 +4701,10 @@ msgstr "Zelf rondkijken; de tickets van de host openen niet meer voor je"
 #: components/board/priority-select.tsx
 msgid "Low"
 msgstr "Laag"
+
+#: components/staff/help-editor.tsx
+msgid "Lower-case letters, digits and dashes."
+msgstr "Kleine letters, cijfers en streepjes."
 
 #. placeholder {0}: job.report.created.tickets
 #. placeholder {1}: job.report.created.boards
@@ -4618,10 +4723,6 @@ msgstr "Een nieuwe link maken? De huidige werkt dan niet meer, dus iedereen die 
 #: app/settings/organization/page.tsx
 msgid "Make admin"
 msgstr "Beheerder maken"
-
-#: lib/help.ts
-msgid "Make an AI key in Your settings → API keys, then use Connect AI to set up Claude Code, Codex, Cursor or others over MCP."
-msgstr "Maak een AI-sleutel in Jouw instellingen → API-sleutels en gebruik daarna AI koppelen om Claude Code, Codex, Cursor of andere via MCP in te stellen."
 
 #: components/hosted-bar.tsx
 msgid "Make host"
@@ -4709,12 +4810,9 @@ msgstr "Lid verwijderd uit team."
 
 #: app/settings/organization/page.tsx
 #: components/settings/organization.tsx
+#: components/staff/stats.tsx
 msgid "Members"
 msgstr "Leden"
-
-#: lib/help.ts
-msgid "Mention yourself in a comment (type @ and your name). Anyone mentioned on a ticket hears about its comments, moves and finishing. To stop, press the mouth next to it on your Mentions page; press it again to watch again."
-msgstr "Noem jezelf in een reactie (typ @ en je naam). Iedereen die op een ticket genoemd wordt, hoort over de reacties, verplaatsingen en afronding ervan. Om te stoppen druk je op de mond ernaast op je Vermeldingen-pagina; druk nog eens om weer te volgen."
 
 #: components/notification-icon.tsx
 msgid "Mentioned you"
@@ -4782,6 +4880,7 @@ msgid "Move anyway"
 msgstr "Toch verplaatsen"
 
 #: components/roadmap/item-editor.tsx
+#: components/staff/help-editor.tsx
 msgid "Move down"
 msgstr "Omlaag"
 
@@ -4824,6 +4923,7 @@ msgid "Move to board…"
 msgstr "Naar bord verplaatsen…"
 
 #: components/roadmap/item-editor.tsx
+#: components/staff/help-editor.tsx
 msgid "Move up"
 msgstr "Omhoog"
 
@@ -4847,10 +4947,6 @@ msgstr "Mijn tickets"
 #: app/my-work/page.tsx
 msgid "My work"
 msgstr "Mijn werk"
-
-#: lib/help.ts
-msgid "My work lists what’s assigned to you and what you raised, across every board."
-msgstr "Mijn werk toont wat aan jou is toegewezen en wat je hebt aangemaakt, over alle borden."
 
 #: app/boards/[id]/edit/page.tsx
 #: app/projects/[id]/edit/page.tsx
@@ -4995,6 +5091,10 @@ msgstr "next_starts_at moet in de toekomst liggen."
 msgid "No AI agent keys yet."
 msgstr "Nog geen AI-agentsleutels."
 
+#: components/staff/help-editor.tsx
+msgid "No answers yet."
+msgstr "Nog geen antwoorden."
+
 #: components/project/archived-boards.tsx
 msgid "No archived boards."
 msgstr "Geen gearchiveerde borden."
@@ -5125,9 +5225,17 @@ msgstr "Geen andere repository’s om te koppelen."
 msgid "No other tickets in this project"
 msgstr "Geen andere tickets in dit project"
 
+#: components/staff/downtime.tsx
+msgid "No outages recorded."
+msgstr "Geen storingen vastgelegd."
+
 #: components/board/past-sprints.tsx
 msgid "No past sprints yet."
 msgstr "Nog geen afgelopen sprints."
+
+#: components/staff/downtime.tsx
+msgid "No paying organizations to credit."
+msgstr "Geen betalende organisaties om te crediteren."
 
 #: components/settings/api-keys.tsx
 msgid "No personal keys yet."
@@ -5299,9 +5407,17 @@ msgstr "Geen — splits groter werk hier op in subtickets."
 msgid "None closed yet."
 msgstr "Nog niets gesloten."
 
+#: components/staff/stats.tsx
+msgid "None yet"
+msgstr "Nog geen"
+
 #: components/ticket/sub-tickets.tsx
 msgid "None yet. Add the work this epic is made of; it can sit on any board."
 msgstr "Nog niets. Voeg het werk toe waaruit deze epic bestaat; het kan op elk bord staan."
+
+#: components/staff/help-editor.tsx
+msgid "None: suggested on other pages, like a ticket or My work."
+msgstr "Geen: voorgesteld op andere pagina’s, zoals een ticket of Mijn werk."
 
 #: components/ticket/sub-tickets.tsx
 msgid "None."
@@ -5371,6 +5487,16 @@ msgstr "Niet ingesteld"
 msgid "Not started"
 msgstr "Niet gestart"
 
+#. placeholder {0}: gaps.map((l) => LANGUAGE_NAMES[l]).join(', ')
+#: components/staff/help-editor.tsx
+msgid "Not translated yet: {0}. People reading those see the English."
+msgstr "Nog niet vertaald: {0}. Wie die taal leest, ziet het Engels."
+
+#. placeholder {0}: gaps.join(', ')
+#: components/staff/help-editor.tsx
+msgid "Not translated: {0}"
+msgstr "Niet vertaald: {0}"
+
 #: components/settings/csv-import.tsx
 msgid "Not used"
 msgstr "Niet gebruikt"
@@ -5380,6 +5506,7 @@ msgid "not yet"
 msgstr "nog niet"
 
 #: components/roadmap/updates.tsx
+#: components/staff/downtime.tsx
 msgid "Note"
 msgstr "Notitie"
 
@@ -5540,10 +5667,6 @@ msgstr "Oudste eerst"
 msgid "On"
 msgstr "Aan"
 
-#: lib/help.ts
-msgid "On a board, use + Add ticket under a column. New ticket in the header (on the dashboard, project and board pages) adds one to the project’s backlog."
-msgstr "Gebruik op een bord + Ticket toevoegen onder een kolom. Nieuw ticket bovenaan (op het dashboard en op project- en bordpagina’s) zet er een in de backlog van het project."
-
 #: components/board/standup.tsx
 msgid "On holiday"
 msgstr "Op vakantie"
@@ -5559,38 +5682,6 @@ msgstr "Bij merge"
 #: app/boards/[id]/edit/page.tsx
 msgid "On merge: a merged pull request moves its tickets to Done. Pick a column and they go there instead, then to Done once a GitHub release ships them."
 msgstr "Bij merge: een gemergede pull request verplaatst zijn tickets naar Klaar. Kies een kolom en ze gaan daarheen, en daarna naar Klaar zodra een GitHub-release ze uitbrengt."
-
-#: lib/help.ts
-msgid "On the board, click Standup, then Start once everyone has joined."
-msgstr "Klik op het bord op Stand-up en daarna op Starten zodra iedereen er is."
-
-#: lib/help.ts
-msgid "On the board, open Next sprints. Planned tickets join the board when their sprint starts; until then the backlog hides them unless you choose Planned."
-msgstr "Open op het bord Volgende sprints. Geplande tickets komen op het bord zodra hun sprint start; tot die tijd verbergt de backlog ze, tenzij je Gepland kiest."
-
-#: lib/help.ts
-msgid "On the board’s sprint bar: Start sprint, and Close sprint once it’s running. Admins and the board’s team leads can."
-msgstr "In de sprintbalk van het bord: Sprint starten, en Sprint afsluiten zodra hij loopt. Beheerders en de teamleiders van het bord kunnen dat."
-
-#: lib/help.ts
-msgid "On the project page, in the Backlog tab."
-msgstr "Op de projectpagina, in het tabblad Backlog."
-
-#: lib/help.ts
-msgid "On the project page, open the Roadmaps tab → New roadmap. Admins publish it."
-msgstr "Open op de projectpagina het tabblad Roadmaps → Nieuwe roadmap. Beheerders publiceren hem."
-
-#: lib/help.ts
-msgid "On the project page’s Backlog tab, use Refine. Each sprint holds the team’s velocity plus 10%; more needs approval from an admin or the team lead."
-msgstr "Start een refinement vanuit het tabblad Backlog op de projectpagina. Elke sprint bevat de velocity van het team plus 10%; meer heeft goedkeuring nodig van een beheerder of de teamleider."
-
-#: lib/help.ts
-msgid "On the ticket’s page, under Dependencies → Blocked by, use Add a blocker…. A blocked ticket can’t be claimed."
-msgstr "Gebruik op de ticketpagina, onder Afhankelijkheden → Geblokkeerd door, Blokkade toevoegen…. Een geblokkeerd ticket kan niet worden opgepakt."
-
-#: lib/help.ts
-msgid "On the ticket’s page, use Mark as duplicate… and pick the original. You can copy its labels and comments across."
-msgstr "Gebruik op de ticketpagina Markeren als duplicaat… en kies het origineel. Je kunt de labels en reacties meekopiëren."
 
 #: components/roadmap/updates.tsx
 msgid "On track"
@@ -5802,18 +5893,6 @@ msgstr "Uitnodiging openen"
 msgid "Open project"
 msgstr "Project openen"
 
-#: lib/help.ts
-msgid "Open the bell in the header → Notification settings."
-msgstr "Open de bel bovenaan → Meldingsinstellingen."
-
-#: lib/help.ts
-msgid "Open the board → Edit board → More. A board that’s been used can be archived (admins and its team leads); one that never was can be deleted (admins)."
-msgstr "Open het bord → Bord bewerken → Meer. Een gebruikt bord kun je archiveren (beheerders en de teamleiders); een ongebruikt bord kun je verwijderen (beheerders)."
-
-#: lib/help.ts
-msgid "Open the board → Edit board. Drag columns to reorder them, set WIP limits, and change the estimate scale. Admins and the board’s team leads can edit it."
-msgstr "Open het bord → Bord bewerken. Sleep kolommen om de volgorde te wijzigen, stel WIP-limieten in en wijzig de schattingsschaal. Beheerders en de teamleiders van het bord kunnen het bewerken."
-
 #: components/intake/intake-settings.tsx
 msgid "Open the form"
 msgstr "Formulier openen"
@@ -5830,18 +5909,6 @@ msgstr "Volledig ticket openen"
 msgid "Open the ticket"
 msgstr "Ticket openen"
 
-#: lib/help.ts
-msgid "Open the ticket → Edit → Move to board… and pick the board; open sub-tickets on this board go with it. Admins and the project’s team leads can."
-msgstr "Open het ticket → Bewerken → Naar bord verplaatsen… en kies het bord; open subtickets op dit bord gaan mee. Beheerders en de teamleiders van het project kunnen dat."
-
-#: lib/help.ts
-msgid "Open the ticket → Edit → Move to board…, or use Move to board… in Refine. Boards with estimates ask for one first. Admins and the project’s team leads can."
-msgstr "Open het ticket → Bewerken → Naar bord verplaatsen…, of gebruik Naar bord verplaatsen… tijdens refinement. Borden met schattingen vragen er eerst een. Beheerders en de teamleiders van het project kunnen dat."
-
-#: lib/help.ts
-msgid "Open the ticket’s own page; under Sub-tickets use Add a sub-ticket… or New sub-ticket…."
-msgstr "Open de pagina van het ticket; gebruik onder Subtickets Subticket toevoegen… of Nieuw subticket…."
-
 #: components/intake/intake-settings.tsx
 #: components/settings/integrations.tsx
 msgid "Opening…"
@@ -5852,6 +5919,7 @@ msgid "organization"
 msgstr "organisatie"
 
 #: app/settings/organization/page.tsx
+#: components/staff/downtime.tsx
 msgid "Organization"
 msgstr "Organisatie"
 
@@ -5875,14 +5943,6 @@ msgstr "Beheerders van de organisatie"
 msgid "Organization admins connect integrations. You can see what's connected."
 msgstr "Beheerders van de organisatie koppelen integraties. Jij kunt zien wat er gekoppeld is."
 
-#: lib/help.ts
-msgid "Organization admins invite from Settings → Manage organization → Invite people. Free and Pro have up to 20 members; AI agents don’t count."
-msgstr "Organisatiebeheerders nodigen uit via Instellingen → Organisatie beheren → Mensen uitnodigen. Free en Pro hebben maximaal 20 leden; AI-agents tellen niet mee."
-
-#: lib/help.ts
-msgid "Organization admins use the Plan card in Settings."
-msgstr "Organisatiebeheerders gebruiken de kaart Plan in Instellingen."
-
 #: lib/error-codes.ts
 msgid "organization has no members to make admin"
 msgstr "De organisatie heeft geen leden om beheerder te maken."
@@ -5891,9 +5951,14 @@ msgstr "De organisatie heeft geen leden om beheerder te maken."
 msgid "organization membership is not active yet"
 msgstr "Het lidmaatschap van de organisatie is nog niet actief."
 
+#: components/staff/help-editor.tsx
 #: components/user-menu.tsx
 msgid "Organization settings"
 msgstr "Organisatie-instellingen"
+
+#: components/staff/stats.tsx
+msgid "Organizations"
+msgstr "Organisaties"
 
 #: components/board/import-review.tsx
 msgid "original"
@@ -5902,6 +5967,18 @@ msgstr "origineel"
 #: components/board/ticket-view.tsx
 msgid "Original:"
 msgstr "Origineel:"
+
+#: lib/error-codes.ts
+msgid "outage not found"
+msgstr "storing niet gevonden"
+
+#: components/staff/downtime.tsx
+msgid "Outages"
+msgstr "Storingen"
+
+#: components/staff/downtime.tsx
+msgid "Over an hour: credited"
+msgstr "Langer dan een uur: gecrediteerd"
 
 #: lib/standup.ts
 msgid "over by {text}"
@@ -6013,6 +6090,7 @@ msgid "pick at least one known event"
 msgstr "kies minstens één bekende gebeurtenis"
 
 #: components/billing/plan-card.tsx
+#: components/staff/downtime.tsx
 msgid "Plan"
 msgstr "Plannen"
 
@@ -6124,6 +6202,10 @@ msgstr "punten gepland, over {0, plural, one {# sprint} other {# sprints}}"
 msgid "points unfinished at the end"
 msgstr "punten onafgerond aan het einde"
 
+#: components/staff/downtime.tsx
+msgid "Policy"
+msgstr "Beleid"
+
 #: components/roadmap/updates.tsx
 msgid "Post an update"
 msgstr "Een update plaatsen"
@@ -6183,9 +6265,16 @@ msgstr "Voorspelbaarheid per maand"
 #: components/settings/csv-import.tsx
 #: components/settings/jira-import.tsx
 #: components/settings/linear-import.tsx
+#: components/staff/downtime.tsx
+#: components/staff/help-editor.tsx
 #: components/ticket/attachments.tsx
 msgid "Preview"
 msgstr "Voorbeeld"
+
+#. placeholder {0}: LANGUAGE_NAMES[lang]
+#: components/staff/help-editor.tsx
+msgid "Preview ({0})"
+msgstr "Voorbeeld ({0})"
 
 #: components/ticket/attachments.tsx
 msgid "Preview {name}"
@@ -6232,6 +6321,7 @@ msgstr "project"
 #: app/settings/organization/page.tsx
 #: components/quick-add-ticket.tsx
 #: components/reports/rollup-view.tsx
+#: components/staff/help-editor.tsx
 msgid "Project"
 msgstr "Project"
 
@@ -6252,6 +6342,7 @@ msgstr "Project niet gevonden"
 #: app/error.tsx
 #: app/settings/page.tsx
 #: components/reports/rollup-view.tsx
+#: components/staff/stats.tsx
 msgid "Projects"
 msgstr "Projecten"
 
@@ -6274,6 +6365,10 @@ msgstr "Openbaar"
 #: app/projects/[id]/page.tsx
 msgid "Public roadmaps are readable by anyone you send the link to."
 msgstr "Openbare roadmaps zijn leesbaar voor iedereen naar wie je de link stuurt."
+
+#: components/staff/help-editor.tsx
+msgid "Published: shown in the help panel"
+msgstr "Gepubliceerd: zichtbaar in het helppaneel"
 
 #: components/ticket/pull-requests-panel.tsx
 msgid "Pull requests"
@@ -6299,6 +6394,10 @@ msgstr "Zet een openbare roadmap of je aanvraagformulier op je eigen site."
 #: components/settings/embedding.tsx
 msgid "Put a public roadmap or your request form on your own site. A widget runs on your page and calls TrackLin.es, so every site it runs on must be listed here first — otherwise the browser blocks it. Adding a site is what turns embedding on."
 msgstr "Zet een openbare roadmap of je aanvraagformulier op je eigen site. Een widget draait op je pagina en roept TrackLin.es aan, dus elke site waarop hij draait moet hier eerst staan — anders blokkeert de browser hem. Door een site toe te voegen zet je insluiten aan."
+
+#: components/staff/help-editor.tsx
+msgid "Question"
+msgstr "Vraag"
 
 #: app/boards/[id]/page.tsx
 msgid "Quick filter by assignee"
@@ -6335,6 +6434,14 @@ msgstr "Onlangs gesloten"
 #: lib/live-status.ts
 msgid "Reconnecting…"
 msgstr "Opnieuw verbinden…"
+
+#: components/staff/downtime.tsx
+msgid "Record"
+msgstr "Vastleggen"
+
+#: components/staff/downtime.tsx
+msgid "Record an outage"
+msgstr "Storing vastleggen"
 
 #. placeholder {0}: k.name
 #: components/settings/api-keys.tsx
@@ -6537,6 +6644,10 @@ msgstr "Intrekken"
 msgid "Revoke \"{name}\"? Anything using it stops working immediately."
 msgstr "\"{name}\" intrekken? Alles wat hem gebruikt, werkt meteen niet meer."
 
+#: components/staff/stats.tsx
+msgid "Right now"
+msgstr "Op dit moment"
+
 #: app/r/[id]/page.tsx
 #: components/settings/embedding.tsx
 msgid "Roadmap"
@@ -6603,6 +6714,7 @@ msgstr "De stand-up leiden"
 #: app/boards/[id]/edit/page.tsx
 #: components/settings/google-chat.tsx
 #: components/settings/organization.tsx
+#: components/staff/help-editor.tsx
 msgid "Save"
 msgstr "Opslaan"
 
@@ -6789,6 +6901,10 @@ msgstr "Nog een sturen"
 #: components/board/review.tsx
 msgid "Send back"
 msgstr "Terugsturen"
+
+#: lib/error-codes.ts
+msgid "send every answer's id, once each"
+msgstr "stuur de id van elk antwoord, elk één keer"
 
 #: app/settings/organization/page.tsx
 msgid "Send invite"
@@ -7031,6 +7147,10 @@ msgstr "Eenvoudig"
 msgid "Site origin"
 msgstr "Site-origin"
 
+#: components/staff/help-editor.tsx
+msgid "Slug"
+msgstr "Slug"
+
 #: lib/notifications.ts
 msgid "Someone"
 msgstr "Iemand"
@@ -7256,6 +7376,10 @@ msgstr "Start de klok zodra iedereen er is"
 msgid "Start your first project"
 msgstr "Start je eerste project"
 
+#: components/staff/downtime.tsx
+msgid "Started (UTC)"
+msgstr "Begonnen (UTC)"
+
 #: app/boards/[id]/page.tsx
 #: components/board/sprint-bar.tsx
 msgid "Starting…"
@@ -7273,6 +7397,10 @@ msgstr "Standaard openbaar — iedereen met de link kan het lezen."
 #: components/roadmap-editor-form.tsx
 msgid "Starts visible to your organization; an organization admin can make it public."
 msgstr "Standaard zichtbaar voor je organisatie; een organisatiebeheerder kan het openbaar maken."
+
+#: components/staff/staff-shell.tsx
+msgid "Stats"
+msgstr "Statistieken"
 
 #: components/board/ticket-view.tsx
 msgid "Status"
@@ -7322,6 +7450,10 @@ msgstr "Niet meer wachten op {title}"
 msgid "Stop watching"
 msgstr "Niet meer volgen"
 
+#: lib/error-codes.ts
+msgid "Stripe isn't configured"
+msgstr "Stripe is niet ingesteld"
+
 #: app/boards/[id]/edit/page.tsx
 msgid "Style"
 msgstr "Stijl"
@@ -7337,6 +7469,10 @@ msgstr "Subtickets"
 #: components/ticket/labels.tsx
 msgid "Suggested labels"
 msgstr "Voorgestelde labels"
+
+#: components/staff/help-editor.tsx
+msgid "Suggested on"
+msgstr "Voorgesteld op"
 
 #: components/ticket/other-org.tsx
 msgid "Switch to {orgName}"
@@ -7552,6 +7688,10 @@ msgstr "Dat ticketprefix wordt al door een ander project gebruikt."
 msgid "that would make tickets block each other in a loop"
 msgstr "Daardoor zouden tickets elkaar in een kringloop blokkeren."
 
+#: components/staff/help-editor.tsx
+msgid "The answers in the help panel, in this order: the first ones for a page are suggested there before anyone types."
+msgstr "De antwoorden in het helppaneel, in deze volgorde: de eerste voor een pagina worden daar voorgesteld voordat iemand typt."
+
 #: components/settings/linear-import.tsx
 msgid "The API key is kept, encrypted, until {until}, then deleted. Extend it if you need longer."
 msgstr "De API-sleutel wordt versleuteld bewaard tot {until} en daarna verwijderd. Verleng hem als je langer nodig hebt."
@@ -7587,6 +7727,14 @@ msgstr "De koppeling kan die repository niet zien."
 #: lib/error-codes.ts
 msgid "the Dev complete column must be one of this board's columns, other than To do and Done"
 msgstr "De Dev complete-kolom moet een van de kolommen van dit bord zijn, behalve Te doen en Klaar."
+
+#: components/staff/help-editor.tsx
+msgid "The English question and answer are needed."
+msgstr "De Engelse vraag en het antwoord zijn nodig."
+
+#: lib/error-codes.ts
+msgid "the English question and answer are required"
+msgstr "de Engelse vraag en het antwoord zijn verplicht"
 
 #: lib/error-codes.ts
 msgid "the first column (To do) stays first"
@@ -7666,6 +7814,10 @@ msgstr "hetzelfde als de periode ervoor"
 msgid "The server is stateless and answers with JSON, so no session handling is needed. Tools mirror the REST API, with the same permissions."
 msgstr "De server is stateless en antwoordt met JSON, dus sessiebeheer is niet nodig. Tools volgen de REST API, met dezelfde rechten."
 
+#: lib/error-codes.ts
+msgid "the slug is lower-case letters, digits and dashes"
+msgstr "de slug bestaat uit kleine letters, cijfers en streepjes"
+
 #. placeholder {0}: toBacklog.title
 #: app/boards/[id]/page.tsx
 msgid "The sprint ends today, so “{0}” went to the backlog."
@@ -7710,6 +7862,10 @@ msgstr "Er is nog geen abonnement om te beheren — upgrade eerst."
 #: app/boards/[id]/edit/page.tsx
 msgid "These act straight away."
 msgstr "Deze worden meteen uitgevoerd."
+
+#: components/staff/downtime.tsx
+msgid "These failed: apply again to retry them"
+msgstr "Deze zijn mislukt: pas opnieuw toe om ze nog eens te proberen"
 
 #: lib/error-codes.ts
 msgid "they haven't joined the session"
@@ -7795,6 +7951,22 @@ msgstr "Dit maakt {0} projecten, {1} borden en {2} tickets, met {3} reacties."
 #: components/settings/csv-import.tsx
 msgid "This makes the project <0>{0}</0> ({1}) with {2} tickets, {3} boards and {4} columns."
 msgstr "Dit maakt het project <0>{0}</0> ({1}) met {2} tickets, {3} borden en {4} kolommen."
+
+#: lib/error-codes.ts
+msgid "this outage has credits, so it stays on record"
+msgstr "deze storing heeft credits, dus blijft vastgelegd"
+
+#: components/staff/downtime.tsx
+msgid "This outage was an hour or less, but it’s part of a cluster. Credit it only if you decide the cluster counts."
+msgstr "Deze storing duurde een uur of korter, maar hoort bij een cluster. Crediteer alleen als je besluit dat het cluster telt."
+
+#: components/staff/downtime.tsx
+msgid "This outage was an hour or less, so the Terms don’t credit it."
+msgstr "Deze storing duurde een uur of korter, dus de voorwaarden crediteren hem niet."
+
+#: lib/error-codes.ts
+msgid "this outage was an hour or less: only a cluster staff decide on is credited"
+msgstr "deze storing duurde een uur of korter: alleen een cluster waarover medewerkers beslissen wordt gecrediteerd"
 
 #: app/global-not-found.tsx
 msgid "This page doesn’t exist"
@@ -7932,6 +8104,7 @@ msgstr "Zoekresultaten tickets"
 #: components/board/column.tsx
 #: components/board/velocity.tsx
 #: components/reports/rollup-view.tsx
+#: components/staff/stats.tsx
 msgid "Tickets"
 msgstr "Tickets"
 
@@ -8049,6 +8222,10 @@ msgstr "Timeboxes tellen werkuren, maandag tot en met vrijdag, 9:00 tot 17:00."
 msgid "Timeline"
 msgstr "Tijdlijn"
 
+#: components/staff/downtime.tsx
+msgid "Times are UTC, as on the <0>status page</0>. Over an hour makes every UTC day it touched free for every paying organization."
+msgstr "Tijden zijn UTC, zoals op de <0>statuspagina</0>. Langer dan een uur maakt elke UTC-dag die het raakte gratis voor elke betalende organisatie."
+
 #: app/roadmaps/[id]/edit/page.tsx
 #: components/board/ticket-dialog.tsx
 #: components/intake/request-form.tsx
@@ -8064,6 +8241,10 @@ msgstr "Titel is verplicht."
 #: app/reports/page.tsx
 msgid "To"
 msgstr "Aan"
+
+#: components/staff/downtime.tsx
+msgid "To (UTC)"
+msgstr "Tot (UTC)"
 
 #: components/project/refinement.tsx
 msgid "To plan"
@@ -8104,6 +8285,7 @@ msgstr "TrackLin.es wordt beheerd door {company}."
 
 #: app/error.tsx
 #: app/global-error.tsx
+#: components/staff/stats.tsx
 #: components/ticket-search.tsx
 #: components/ticket/comments.tsx
 msgid "Try again"
@@ -8129,10 +8311,6 @@ msgstr "Uitgezet na herhaaldelijk mislukte leveringen. Repareer het endpoint en 
 #: components/ticket-type.tsx
 msgid "Type"
 msgstr "Type"
-
-#: lib/help.ts
-msgid "Type @ in a comment and pick them. They’re notified, and it shows on their Mentions page."
-msgstr "Typ @ in een reactie en kies de persoon. Die krijgt een melding en ziet het op de pagina Vermeldingen."
 
 #: components/ticket/labels.tsx
 msgid "Type a label and press Enter or comma"
@@ -8166,6 +8344,14 @@ msgstr "Roadmapitems zonder datum"
 #: app/settings/integrations/[provider]/page.tsx
 msgid "Unknown integration."
 msgstr "Onbekende integratie."
+
+#: lib/error-codes.ts
+msgid "unknown language"
+msgstr "onbekende taal"
+
+#: lib/error-codes.ts
+msgid "unknown page kind"
+msgstr "onbekend soort pagina"
 
 #: lib/error-codes.ts
 msgid "unknown provider"
@@ -8286,29 +8472,17 @@ msgstr "Urgent"
 msgid "Use a personal API key: <0>create one in Linear</0> under Security & access. TrackLin.es keeps it, encrypted, for 30 days."
 msgstr "Gebruik een persoonlijke API-sleutel: <0>maak er een aan in Linear</0> onder Security & access. TrackLin.es bewaart hem 30 dagen, versleuteld."
 
-#: lib/help.ts
-msgid "Use Attach files on a ticket. Up to 10 files of 10 MB each, and not while it’s in Done."
-msgstr "Gebruik Bestanden bijvoegen op een ticket. Maximaal 10 bestanden van 10 MB, en niet terwijl het in Klaar staat."
-
 #: components/settings/webhooks.tsx
 msgid "Use it to check that requests really come from TrackLin.es: see <0>verifying webhooks</0>."
 msgstr "Gebruik het om te controleren dat verzoeken echt van TrackLin.es komen: zie <0>webhooks controleren</0>."
 
-#: lib/help.ts
-msgid "Use New project on the dashboard. Your plan sets how many projects you can have (Free 1, Pro 5)."
-msgstr "Gebruik Nieuw project op het dashboard. Je abonnement bepaalt hoeveel projecten je kunt hebben (Free 1, Pro 5)."
-
-#: lib/help.ts
-msgid "Use the appearance button in the header: Light, Dark or System."
-msgstr "Gebruik de weergaveknop bovenaan: Licht, Donker of Systeem."
-
-#: lib/help.ts
-msgid "Use the search in the header (Ctrl+K or Cmd+K). It searches titles, details and comments; type a key like TL-123 to jump to it."
-msgstr "Gebruik de zoekfunctie bovenaan (Ctrl+K of Cmd+K). Die doorzoekt titels, details en reacties; typ een code zoals TL-123 om er direct heen te gaan."
-
 #: components/settings/jira-import.tsx
 msgid "Use your Jira email and an API token. <0>Create a token at Atlassian</0>. TrackLin.es keeps it, encrypted, for 30 days."
 msgstr "Gebruik je Jira-e-mail en een API-token. <0>Maak een token aan bij Atlassian</0>. TrackLin.es bewaart het 30 dagen, versleuteld."
+
+#: components/staff/help-editor.tsx
+msgid "Used when they aren’t on a project or board."
+msgstr "Gebruikt als ze niet op een project of bord zijn."
 
 #: lib/error-codes.ts
 msgid "user is already an organization member; add them to the team directly"
@@ -8475,10 +8649,6 @@ msgstr "Wat valt er onder deze mijlpaal?"
 msgid "What would it help you do?"
 msgstr "Waarmee zou het je helpen?"
 
-#: lib/help.ts
-msgid "What’s an epic?"
-msgstr "Wat is een epic?"
-
 #: components/roadmap/updates.tsx
 msgid "What's changed since the last update?"
 msgstr "Wat is er veranderd sinds de laatste update?"
@@ -8496,10 +8666,6 @@ msgstr "Waar gaat deze roadmap over? (optioneel)"
 msgid "What's wrong / what's needed?"
 msgstr "Wat is er mis / wat is er nodig?"
 
-#: lib/help.ts
-msgid "When it’s available for you, choose it in Your settings → Language."
-msgstr "Als het voor jou beschikbaar is, kies je het in Jouw instellingen → Taal."
-
 #: components/ticket/bugfixes-panel.tsx
 msgid "Where"
 msgstr "Waar"
@@ -8507,30 +8673,6 @@ msgstr "Waar"
 #: app/boards/[id]/edit/page.tsx
 msgid "Where an agent’s finished ticket waits for a person’s review."
 msgstr "Waar het afgeronde ticket van een agent wacht op de review van een persoon."
-
-#: lib/help.ts
-msgid "Where are archived boards?"
-msgstr "Waar zijn gearchiveerde borden?"
-
-#: lib/help.ts
-msgid "Where are sprint reports?"
-msgstr "Waar zijn de sprintrapporten?"
-
-#: lib/help.ts
-msgid "Where can I see all my tickets?"
-msgstr "Waar zie ik al mijn tickets?"
-
-#: lib/help.ts
-msgid "Where can I see what’s planned for the next sprint?"
-msgstr "Waar zie ik wat er voor de volgende sprint gepland is?"
-
-#: lib/help.ts
-msgid "Where do I get an API key?"
-msgstr "Waar krijg ik een API-sleutel?"
-
-#: lib/help.ts
-msgid "Where’s the backlog?"
-msgstr "Waar is de backlog?"
 
 #: components/settings/api-keys.tsx
 msgid "Which agent"
@@ -8591,6 +8733,10 @@ msgstr "Werkverdeling"
 msgid "Work mix, whole period"
 msgstr "Werkverdeling, hele periode"
 
+#: components/staff/downtime.tsx
+msgid "Working out the credits…"
+msgstr "Credits worden berekend…"
+
 #: components/settings/google-calendar.tsx
 msgid "Workspace domain"
 msgstr "Workspace-domein"
@@ -8602,14 +8748,6 @@ msgstr "Schrijf een reactie…"
 #: components/settings/file-cleanup.tsx
 msgid "Year-old files the clean-up has deleted."
 msgstr "Bestanden van een jaar oud die door de opschoning zijn verwijderd."
-
-#: lib/help.ts
-msgid "Yes: an admin turns on the Request form in Edit project. Requests arrive behind the Requests button on the project page."
-msgstr "Ja: een beheerder zet het Aanvraagformulier aan in Project bewerken. Aanvragen komen binnen achter de knop Aanvragen op de projectpagina."
-
-#: lib/help.ts
-msgid "Yes: Edit board → More → Save as template (columns, WIP limits, style and estimates, not tickets). Pick it in the Template list when making a new board. Admins only."
-msgstr "Ja: Bord bewerken → Meer → Opslaan als sjabloon (kolommen, WIP-limieten, stijl en schattingen, geen tickets). Kies het in de lijst Sjabloon bij een nieuw bord. Alleen beheerders."
 
 #: components/board/person-face.tsx
 #: lib/notifications.ts
@@ -8711,10 +8849,6 @@ msgstr "Het {name}-abonnement van je organisatie bevat {projects}"
 msgid "Your organization’s plan, people and connections."
 msgstr "Het abonnement, de mensen en de koppelingen van je organisatie."
 
-#: lib/help.ts
-msgid "Your own and AI agent keys are in Your settings → API keys. Service keys for integrations are in Settings → API keys, made by admins."
-msgstr "Je eigen sleutels en die van AI-agents staan in Jouw instellingen → API-sleutels. Servicesleutels voor integraties staan in Instellingen → API-sleutels en worden door beheerders gemaakt."
-
 #: app/settings/api-keys/page.tsx
 msgid "Your own keys and AI agents are in <0>Your settings</0>."
 msgstr "Je eigen sleutels en AI-agents staan in <0>Jouw instellingen</0>."
@@ -8737,6 +8871,7 @@ msgstr "Je roadmaps in alle projecten. Openbare roadmaps zijn voor anderen allee
 
 #: app/account/api-keys/page.tsx
 #: app/account/page.tsx
+#: components/staff/help-editor.tsx
 #: components/user-menu.tsx
 msgid "Your settings"
 msgstr "Jouw instellingen"

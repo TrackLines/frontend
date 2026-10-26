@@ -7,6 +7,7 @@ import { i18nFor, type Locale } from './i18n';
 import { isLocale, LANG_COOKIE } from './locale';
 import { reportClient, reportServer } from './report';
 import type { EstimateScale } from './estimates';
+import type { HelpEntry, PageKind } from './help';
 
 export type Visibility = 'public' | 'login_only' | 'team';
 
@@ -722,7 +723,7 @@ export const projectRepos = {
 };
 
 // Notifications: the signed-in user's inbox (internal; external channels later).
-export type NotificationKind = 'assigned' | 'mention' | 'finished' | 'wont_do' | 'review' | 'sent_back' | 'approval' | 'retention' | 'over_capacity' | 'legal'; // retention: TL-259; over_capacity: a sprint started over capacity (TL-149)
+export type NotificationKind = 'assigned' | 'mention' | 'finished' | 'wont_do' | 'review' | 'sent_back' | 'approval' | 'retention' | 'over_capacity' | 'legal' | 'downtime_credit'; // retention: TL-259; over_capacity: a sprint started over capacity (TL-149)
 export type AppNotification = {
   id: string; kind: NotificationKind; text: string; actor: string;
   ticket_id: string | null; ticket_key: string | null; board_id: string | null; link?: string | null; // link: a page, e.g. a new Terms version (TL-424)
@@ -867,6 +868,45 @@ export const linear = {
   disconnect: (t: T) => api<void>('/imports/linear/connection', { method: 'DELETE', token: t }),
   preview: (o: LinearOptions, t: T) => api<ImportJob>('/imports', { method: 'POST', body: { source: 'linear', options: o }, token: t }),
 };
+// The admin panel (TL-570), for ChewedFeed staff: everyone else gets 404 from every /staff route.
+export type StaffCount = { total: number; day: number; week: number };
+export type SystemStats = {
+  organizations: StaffCount; plans: Record<string, number>; members: StaffCount; projects: StaffCount;
+  boards: StaffCount; archived_boards: number; tickets: StaffCount; done_tickets: number; comments: StaffCount;
+  attachments: StaffCount; attachment_bytes: number; api_keys: Record<string, number>;
+  open_sprints: number; live_sessions: number; database_bytes: number;
+};
+// The help panel's answers (TL-575/579): published ones in a language, or every one for staff to edit.
+export type HelpAnswer = {
+  id: string; slug: string; question: Record<string, string>; answer: Record<string, string>; href: string; fallback_href: string;
+  pages: PageKind[]; words: string; position: number; published: boolean; updated_by: string; updated_at: string;
+};
+export type HelpAnswerInput = Omit<HelpAnswer, 'id' | 'position' | 'updated_by' | 'updated_at'>;
+export const help = {
+  list: (locale: string, t: T) => api<HelpEntry[]>(`/help?locale=${encodeURIComponent(locale)}`, { token: t }),
+};
+export const staff = {
+  me: (t: T) => api<{ staff: boolean }>('/staff/me', { token: t }),
+  stats: (t: T) => api<SystemStats>('/staff/stats', { token: t }), // counts only (TL-574)
+  help: (t: T) => api<HelpAnswer[]>('/staff/help', { token: t }),
+  addHelp: (a: HelpAnswerInput, t: T) => api<HelpAnswer>('/staff/help', { method: 'POST', body: a, token: t }),
+  updateHelp: (id: string, a: HelpAnswerInput, t: T) => api<HelpAnswer>(`/staff/help/${encodeURIComponent(id)}`, { method: 'PUT', body: a, token: t }),
+  deleteHelp: (id: string, t: T) => api<void>(`/staff/help/${encodeURIComponent(id)}`, { method: 'DELETE', token: t }),
+  orderHelp: (ids: string[], t: T) => api<void>('/staff/help/order', { method: 'PUT', body: { ids }, token: t }),
+  outages: (t: T) => api<Outage[]>('/staff/outages', { token: t }),
+  addOutage: (o: { starts_at: string; ends_at: string; note: string }, t: T) => api<Outage>('/staff/outages', { method: 'POST', body: o, token: t }),
+  deleteOutage: (id: string, t: T) => api<void>(`/staff/outages/${encodeURIComponent(id)}`, { method: 'DELETE', token: t }),
+  previewCredits: (id: string, t: T) => api<CreditPreview>(`/staff/outages/${encodeURIComponent(id)}/preview`, { token: t }),
+  applyCredits: (id: string, includeShort: boolean, t: T) =>
+    api<CreditResult>(`/staff/outages/${encodeURIComponent(id)}/apply`, { method: 'POST', body: { include_short: includeShort }, token: t }),
+};
+
+// The downtime resolver, phase 1 (TL-576/580): outages and the Terms' credits for them.
+export type Outage = { id: string; starts_at: string; ends_at: string; note: string; minutes: number; qualifies: boolean; days: string[]; clusters: string[]; credited: number };
+export type DowntimeCredit = { org_id: string; plan: string; day: string; amount: number; currency: string; credited: boolean };
+export type DowntimeProblem = { org_id: string; error: string };
+export type CreditPreview = { outage: Outage; credits: DowntimeCredit[]; problems: DowntimeProblem[] };
+export type CreditResult = { credited: DowntimeCredit[]; problems: DowntimeProblem[] };
 // exportCSV: a project's tickets as CSV text (TL-637), for the browser to save.
 export const exportCSV = (projectId: string, t: T) => api<string>(`/projects/${encodeURIComponent(projectId)}/export.csv`, { token: t });
 
