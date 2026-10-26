@@ -812,13 +812,18 @@ export const webhooks = {
 };
 
 // Imports (TL-536, the CSV source TL-637/638): a preview, then a run in the background, a report, and scrap.
-export type ImportCounts = { projects: number; boards: number; columns: number; tickets: number; comments: number };
+export type ImportCounts = { projects: number; boards: number; columns: number; tickets: number; comments: number; attachments?: number };
 export type ImportSkip = { kind: string; source_id: string; reason: string };
+export type ImportProblem = { code: string; source_id?: string; message: string };
+export type ImportBoard = { source_id: string; name: string; team_id: string | null; columns: string[] };
+export type ImportProject = { source_id?: string; name: string; prefix: string; tickets: number; boards?: ImportBoard[] };
+export type ImportPerson = { name: string; matched: boolean; tickets: number };
 export type ImportJob = {
   id: string; source: string; state: 'previewing' | 'running' | 'cancelling' | 'done' | 'failed' | 'cancelled' | 'scrapped';
-  problems?: { code: string; source_id?: string; message: string }[]; skipped?: ImportSkip[];
-  planned?: ImportCounts; projects?: { name: string; prefix: string; tickets: number }[];
+  problems?: ImportProblem[]; skipped?: ImportSkip[];
+  planned?: ImportCounts; projects?: ImportProject[]; people?: ImportPerson[];
   progress: number; total: number; report: { created: ImportCounts; skipped: ImportSkip[] } | null; error?: string;
+  scrappable?: boolean; // finished: false once anyone has worked on what it made
 };
 export type CSVField = 'title' | 'description' | 'type' | 'priority' | 'labels' | 'status' | 'due' | 'created';
 export const importsApi = {
@@ -828,6 +833,18 @@ export const importsApi = {
   run: (id: string, t: T) => api<ImportJob>(`/imports/${encodeURIComponent(id)}/run`, { method: 'POST', token: t }),
   cancel: (id: string, t: T) => api<void>(`/imports/${encodeURIComponent(id)}/cancel`, { method: 'POST', token: t }),
   scrap: (id: string, t: T) => api<void>(`/imports/${encodeURIComponent(id)}/scrap`, { method: 'POST', token: t }),
+};
+// Jira Cloud (TL-537/538): the connection an admin imports with (kept 30 days), its projects, and a preview.
+export type JiraConnection = { site: string; email: string; account: string; created_by: string; created_at: string; expires_at: string };
+export type JiraProject = { id: string; key: string; name: string };
+export type JiraOptions = { projects: string[]; prefixes?: Record<string, string>; teams?: Record<string, string> };
+export const jira = {
+  connection: (t: T) => api<JiraConnection | null>('/imports/jira/connection', { token: t }),
+  connect: (c: { site: string; email: string; token: string }, t: T) => api<JiraConnection>('/imports/jira/connection', { method: 'PUT', body: c, token: t }),
+  extend: (t: T) => api<JiraConnection>('/imports/jira/connection/extend', { method: 'POST', token: t }),
+  disconnect: (t: T) => api<void>('/imports/jira/connection', { method: 'DELETE', token: t }),
+  projects: (t: T) => api<JiraProject[]>('/imports/jira/projects', { token: t }),
+  preview: (o: JiraOptions, t: T) => api<ImportJob>('/imports', { method: 'POST', body: { source: 'jira', options: o }, token: t }),
 };
 // exportCSV: a project's tickets as CSV text (TL-637), for the browser to save.
 export const exportCSV = (projectId: string, t: T) => api<string>(`/projects/${encodeURIComponent(projectId)}/export.csv`, { token: t });
