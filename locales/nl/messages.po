@@ -976,6 +976,11 @@ msgstr "Beheerder"
 msgid "Admin email <0>(a user in that domain, to check access with)</0>"
 msgstr "E-mailadres van beheerder <0>(een gebruiker in dat domein, om de toegang mee te controleren)</0>"
 
+#: components/staff/staff-shell.tsx
+#: components/user-menu.tsx
+msgid "Admin panel"
+msgstr "Beheerpaneel"
+
 #: components/settings/api-keys.tsx
 msgid "After that the key stops working and you make a new one."
 msgstr "Daarna werkt de sleutel niet meer en maak je een nieuwe."
@@ -3035,6 +3040,10 @@ msgstr "Markdown downloaden"
 msgid "Downloaded."
 msgstr "Gedownload."
 
+#: components/staff/staff-shell.tsx
+msgid "Downtime"
+msgstr "Storingen"
+
 #: components/ticket/pull-requests-panel.tsx
 msgid "Draft"
 msgstr "Concept"
@@ -3638,6 +3647,10 @@ msgstr "Volgend"
 msgid "Following ({following})"
 msgstr "Volgend ({following})"
 
+#: components/staff/staff-shell.tsx
+msgid "For ChewedFeed staff: the whole of TrackLin.es, not one organization."
+msgstr "Voor ChewedFeed-medewerkers: heel TrackLin.es, niet één organisatie."
+
 #: components/mcp-connect.tsx
 msgid "For GitHub Copilot agent mode, add to <0>.vscode/mcp.json</0>; VS Code asks for the key once and stores it securely:"
 msgstr "Voor de agentmodus van GitHub Copilot voeg je dit toe aan <0>.vscode/mcp.json</0>; VS Code vraagt één keer om de sleutel en bewaart die veilig:"
@@ -3796,6 +3809,10 @@ msgstr "Gezondheid door de tijd"
 #: components/help-bot.tsx
 msgid "Help"
 msgstr "Help"
+
+#: components/staff/staff-shell.tsx
+msgid "Help answers"
+msgstr "Help-antwoorden"
 
 #: components/settings/webhooks.tsx
 msgid "Hide deliveries"
@@ -4588,6 +4605,7 @@ msgstr "Je werk laden…"
 #: components/settings/jira-import.tsx
 #: components/settings/linear-import.tsx
 #: components/settings/webhooks.tsx
+#: components/staff/staff-shell.tsx
 msgid "Loading…"
 msgstr "Laden…"
 
@@ -7273,6 +7291,10 @@ msgstr "Standaard openbaar — iedereen met de link kan het lezen."
 #: components/roadmap-editor-form.tsx
 msgid "Starts visible to your organization; an organization admin can make it public."
 msgstr "Standaard zichtbaar voor je organisatie; een organisatiebeheerder kan het openbaar maken."
+
+#: components/staff/staff-shell.tsx
+msgid "Stats"
+msgstr "Statistieken"
 
 #: components/board/ticket-view.tsx
 msgid "Status"

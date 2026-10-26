@@ -976,6 +976,11 @@ msgstr "Admin"
 msgid "Admin email <0>(a user in that domain, to check access with)</0>"
 msgstr "E-mail do admin <0>(um usuário desse domínio, para verificar o acesso)</0>"
 
+#: components/staff/staff-shell.tsx
+#: components/user-menu.tsx
+msgid "Admin panel"
+msgstr "Painel de administração"
+
 #: components/settings/api-keys.tsx
 msgid "After that the key stops working and you make a new one."
 msgstr "Depois disso a chave para de funcionar e você cria uma nova."
@@ -3035,6 +3040,10 @@ msgstr "Baixar Markdown"
 msgid "Downloaded."
 msgstr "Baixado."
 
+#: components/staff/staff-shell.tsx
+msgid "Downtime"
+msgstr "Indisponibilidade"
+
 #: components/ticket/pull-requests-panel.tsx
 msgid "Draft"
 msgstr "Rascunho"
@@ -3638,6 +3647,10 @@ msgstr "Seguindo"
 msgid "Following ({following})"
 msgstr "Seguindo ({following})"
 
+#: components/staff/staff-shell.tsx
+msgid "For ChewedFeed staff: the whole of TrackLin.es, not one organization."
+msgstr "Para a equipe da ChewedFeed: todo o TrackLin.es, não uma organização."
+
 #: components/mcp-connect.tsx
 msgid "For GitHub Copilot agent mode, add to <0>.vscode/mcp.json</0>; VS Code asks for the key once and stores it securely:"
 msgstr "Para o modo agente do GitHub Copilot, adicione a <0>.vscode/mcp.json</0>; o VS Code pede a chave uma vez e a guarda com segurança:"
@@ -3796,6 +3809,10 @@ msgstr "Saúde ao longo do tempo"
 #: components/help-bot.tsx
 msgid "Help"
 msgstr "Ajuda"
+
+#: components/staff/staff-shell.tsx
+msgid "Help answers"
+msgstr "Respostas de ajuda"
 
 #: components/settings/webhooks.tsx
 msgid "Hide deliveries"
@@ -4588,6 +4605,7 @@ msgstr "Carregando seu trabalho…"
 #: components/settings/jira-import.tsx
 #: components/settings/linear-import.tsx
 #: components/settings/webhooks.tsx
+#: components/staff/staff-shell.tsx
 msgid "Loading…"
 msgstr "Carregando…"
 
@@ -7273,6 +7291,10 @@ msgstr "Começa público por padrão — qualquer pessoa com o link pode lê-lo.
 #: components/roadmap-editor-form.tsx
 msgid "Starts visible to your organization; an organization admin can make it public."
 msgstr "Começa visível para sua organização; um admin da organização pode torná-lo público."
+
+#: components/staff/staff-shell.tsx
+msgid "Stats"
+msgstr "Estatísticas"
 
 #: components/board/ticket-view.tsx
 msgid "Status"

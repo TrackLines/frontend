@@ -976,6 +976,11 @@ msgstr "loHwI'"
 msgid "Admin email <0>(a user in that domain, to check access with)</0>"
 msgstr "loHwI' email <0>(Daqvetlh lo'wI', 'el nuDmeH)</0>"
 
+#: components/staff/staff-shell.tsx
+#: components/user-menu.tsx
+msgid "Admin panel"
+msgstr "loHwI' SeHlaw"
+
 #: components/settings/api-keys.tsx
 msgid "After that the key stops working and you make a new one."
 msgstr "ghIq ngaQHa'moHwI' Qapbe'choH 'ej chu' DachenmoH."
@@ -3035,6 +3040,10 @@ msgstr "Markdown yIHev"
 msgid "Downloaded."
 msgstr "Hevlu'pu'."
 
+#: components/staff/staff-shell.tsx
+msgid "Downtime"
+msgstr "Qagh poH"
+
 #: components/ticket/pull-requests-panel.tsx
 msgid "Draft"
 msgstr "ghItlh wa'DIch"
@@ -3638,6 +3647,10 @@ msgstr "tlha'lI'"
 msgid "Following ({following})"
 msgstr "tlha'lI' ({following})"
 
+#: components/staff/staff-shell.tsx
+msgid "For ChewedFeed staff: the whole of TrackLin.es, not one organization."
+msgstr "ChewedFeed beqpu' neH: TrackLin.es Hoch, wa' ghom'a' ghobe'."
+
 #: components/mcp-connect.tsx
 msgid "For GitHub Copilot agent mode, add to <0>.vscode/mcp.json</0>; VS Code asks for the key once and stores it securely:"
 msgstr "GitHub Copilot agent modevaD, <0>.vscode/mcp.json</0>Daq yIchel; wa'logh ngaQHa'moHwI' tlhob VS Code 'ej QanmeH pol:"
@@ -3796,6 +3809,10 @@ msgstr "poH Dotlh"
 #: components/help-bot.tsx
 msgid "Help"
 msgstr "QaH"
+
+#: components/staff/staff-shell.tsx
+msgid "Help answers"
+msgstr "QaH jangmey"
 
 #: components/settings/webhooks.tsx
 msgid "Hide deliveries"
@@ -4588,6 +4605,7 @@ msgstr "Qu'meylIj Hevlu'lI'…"
 #: components/settings/jira-import.tsx
 #: components/settings/linear-import.tsx
 #: components/settings/webhooks.tsx
+#: components/staff/staff-shell.tsx
 msgid "Loading…"
 msgstr "yIloS…"
 
@@ -7273,6 +7291,10 @@ msgstr "motlh Hoch ghotvaD poS — rarwI' ghajbogh Hoch laDlaH."
 #: components/roadmap-editor-form.tsx
 msgid "Starts visible to your organization; an organization admin can make it public."
 msgstr "ghom'a'lIjvaD neH 'anglu' wa'DIch; Hoch ghotvaD poSmoHlaH ghom'a' loHwI'."
+
+#: components/staff/staff-shell.tsx
+msgid "Stats"
+msgstr "mI'mey"
 
 #: components/board/ticket-view.tsx
 msgid "Status"
