@@ -11,3 +11,5 @@ coverage/
 .DS_Store
 *.swp
 tsconfig.tsbuildinfo
+# compiled from locales/*/messages.po by dev, build and the test preload (TL-652): never edited by hand
+locales/*/messages.ts
