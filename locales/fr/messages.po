@@ -278,8 +278,8 @@ msgstr "{0} : du {startLabel} au {endLabel}"
 
 #. placeholder {0}: project.name
 #: app/projects/[id]/edit/page.tsx
-msgid "{0}’s name, ticket keys, boards, request form and repositories."
-msgstr "Nom, clés de ticket, tableaux, formulaire de demande et dépôts de {0}."
+msgid "{0}’s name, ticket keys, boards, export, request form and repositories."
+msgstr "Nom, clés de tickets, tableaux, export, formulaire de demandes et dépôts de {0}."
 
 #: components/board/sprint-bar.tsx
 msgid "{carry, plural, one {unfinished ticket stays on the board} other {unfinished tickets stay on the board}}"
@@ -3424,6 +3424,10 @@ msgstr "Chaque colonne a besoin d’un nom."
 msgid "Every project’s events go to this space."
 msgstr "Les événements de tous les projets sont envoyés dans cet espace."
 
+#: app/projects/[id]/edit/page.tsx
+msgid "Every ticket in the project, open and closed, as a CSV file for a spreadsheet or another tool."
+msgstr "Tous les tickets du projet, ouverts et fermés, dans un fichier CSV pour un tableur ou un autre outil."
+
 #: app/mentions/page.tsx
 msgid "Every ticket where someone @mentioned you, newest first."
 msgstr "Tous les tickets où quelqu’un vous a @mentionné, les plus récents en premier."
@@ -3478,6 +3482,7 @@ msgstr "Expire après"
 msgid "expires in {days, plural, one {# day} other {# days}}"
 msgstr "expire dans {days, plural, one {# jour} other {# jours}}"
 
+#: app/projects/[id]/edit/page.tsx
 #: components/reports/export-menu.tsx
 #: components/roadmap/report.tsx
 msgid "Export"
