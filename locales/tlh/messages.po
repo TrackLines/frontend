@@ -594,6 +594,10 @@ msgid "+ Add ticket"
 msgstr "+ ticket yIchel"
 
 #: components/settings/jira-import.tsx
+msgid "<0>Change your plan</0> to import it."
+msgstr "qemmeH <0>Dochvetlh yIchoH</0>."
+
+#: components/settings/jira-import.tsx
 msgid "<0>Change your plan</0>, or untick some projects and preview again."
 msgstr "<0>Dochvetlh yIchoH</0>, pagh jInmolmey yIteq 'ej yIleghqa'."
 
@@ -1130,6 +1134,10 @@ msgstr "rarwI' ghajbogh Hoch ghewmey pagh laHmey tlhoblaH, mab Hutlhbogh. jInmol
 #: components/roadmap/visibility.tsx
 msgid "Anyone with the link, no sign-in"
 msgstr "rarwI' ghajbogh Hoch, 'elbe'lu'"
+
+#: components/settings/linear-import.tsx
+msgid "API key"
+msgstr "API ngaQHa'moHwI'"
 
 #: lib/error-codes.ts
 msgid "api key expired: create a new one in Settings → API keys"
@@ -1869,6 +1877,7 @@ msgstr "ticketmey rInpu'bogh, rIn jaj tlhoy poH je ghItlhlu'"
 #: components/settings/google-calendar.tsx
 #: components/settings/integrations.tsx
 #: components/settings/jira-import.tsx
+#: components/settings/linear-import.tsx
 msgid "Connect"
 msgstr "yIrar"
 
@@ -1902,6 +1911,10 @@ msgstr "wa'DIch yIrar."
 msgid "Connect Jira Cloud"
 msgstr "Jira Cloud yIrar"
 
+#: components/settings/linear-import.tsx
+msgid "Connect Linear"
+msgstr "Linear yIrar"
+
 #: app/settings/integrations/page.tsx
 msgid "Connect your organization to the tools it uses. Link repositories to a project from the project's page."
 msgstr "ghom'a'lIj lo'bogh jan tIrar. jInmol nach vo' jInmolvaD repositorymey tIrar."
@@ -1931,6 +1944,12 @@ msgstr "{0}Daq rarlu'pu'"
 #: components/settings/jira-import.tsx
 msgid "Connected to <0>{0}</0> as {1} ({2})."
 msgstr "<0>{0}</0> rarlu'pu', {1} ({2}) rur."
+
+#. placeholder {0}: conn.workspace
+#. placeholder {1}: conn.account
+#: components/settings/linear-import.tsx
+msgid "Connected to the <0>{0}</0> workspace with {1}’s key."
+msgstr "<0>{0}</0> vummeH Daq rarlu'pu', {1} ngaQHa'moHwI' lo'."
 
 #: components/settings/google-calendar.tsx
 msgid "Connected. People’s time away is syncing now."
@@ -2158,6 +2177,10 @@ msgstr "email Daqmeylij nuDlu'laHbe'; wa' tup ret yInIDqa'"
 #: components/settings/jira-import.tsx
 msgid "Couldn’t check your Jira connection. Please try again."
 msgstr "Jira rarmeH ngaQHa'moHwI' nuDlu'laHbe'. yInIDqa'."
+
+#: components/settings/linear-import.tsx
+msgid "Couldn’t check your Linear connection. Please try again."
+msgstr "Linear rarmeH ngaQHa'moHwI' nuDlu'laHbe'. yInIDqa'."
 
 #: components/board/sprint-bar.tsx
 msgid "Couldn’t close the sprint. Please try again."
@@ -2756,6 +2779,7 @@ msgstr "jajmey"
 #: components/project/backlog.tsx
 #: components/settings/embedding.tsx
 #: components/settings/jira-import.tsx
+#: components/settings/linear-import.tsx
 #: components/settings/organization.tsx
 #: components/settings/webhooks.tsx
 msgid "Delete"
@@ -2795,6 +2819,10 @@ msgstr "{0} beq DaQaw''a'?"
 #: components/settings/jira-import.tsx
 msgid "Delete the Jira connection? Its API token is forgotten."
 msgstr "Jira rarmeH yIQaw'? API ngaQHa'moHwI' lIjlu'."
+
+#: components/settings/linear-import.tsx
+msgid "Delete the Linear connection? Its API key is forgotten."
+msgstr "Linear rarmeH yIQaw'? API ngaQHa'moHwI' lIjlu'."
 
 #. placeholder {0}: host(w.url)
 #: components/settings/webhooks.tsx
@@ -4159,6 +4187,7 @@ msgid "Keep"
 msgstr "yIpol"
 
 #: components/settings/jira-import.tsx
+#: components/settings/linear-import.tsx
 msgid "Keep it 30 more days"
 msgstr "wejmaH jaj yIpolqa'"
 
@@ -4321,6 +4350,10 @@ msgstr "limit'e' 1–50 'oHnIS"
 #: lib/error-codes.ts
 msgid "limit must be between 1 and 500"
 msgstr "limit'e' 1 vo' 500 ghoS 'oHnIS"
+
+#: components/settings/linear-import.tsx
+msgid "Linear connection"
+msgstr "Linear rarmeH"
 
 #: components/roadmap/item-tickets.tsx
 msgid "Link a ticket or epic…"
@@ -4548,6 +4581,7 @@ msgstr "Qu'meylIj Hevlu'lI'…"
 #: components/quick-add-ticket.tsx
 #: components/settings/embedding.tsx
 #: components/settings/jira-import.tsx
+#: components/settings/linear-import.tsx
 #: components/settings/webhooks.tsx
 msgid "Loading…"
 msgstr "yIloS…"
@@ -6143,6 +6177,7 @@ msgstr "jar pIHlaHghach"
 #: components/markdown.tsx
 #: components/settings/csv-import.tsx
 #: components/settings/jira-import.tsx
+#: components/settings/linear-import.tsx
 #: components/ticket/attachments.tsx
 msgid "Preview"
 msgstr "wa'DIch legh"
@@ -6152,6 +6187,7 @@ msgid "Preview {name}"
 msgstr "{name} wa'DIch legh"
 
 #: components/settings/jira-import.tsx
+#: components/settings/linear-import.tsx
 msgid "Preview again"
 msgstr "yIleghqa'"
 
@@ -6672,6 +6708,7 @@ msgstr "qemvam yIQaw'"
 
 #: components/settings/csv-import.tsx
 #: components/settings/jira-import.tsx
+#: components/settings/linear-import.tsx
 msgid "Scrap this import? Everything it made is deleted."
 msgstr "qemvam yIQaw'? chenmoHbogh Hoch Qaw'lu'."
 
@@ -7510,6 +7547,10 @@ msgstr "latlh jInmol ticket moHaqvetlh lo'pu'."
 msgid "that would make tickets block each other in a loop"
 msgstr "rIntaHvIS ticketmey bot'eghchuq ghet"
 
+#: components/settings/linear-import.tsx
+msgid "The API key is kept, encrypted, until {until}, then deleted. Extend it if you need longer."
+msgstr "API ngaQHa'moHwI' So'lu' 'ej pollu' {until} jaj, ghIq Qaw'lu'. nI'qu'meH yItaH."
+
 #: components/settings/jira-import.tsx
 msgid "The API token is kept, encrypted, until {until}, then deleted. Extend it if you need longer."
 msgstr "API ngaQHa'moHwI' So'lu' 'ej pollu' {until} jaj, ghIq Qaw'lu'. nI'qu'meH yItaH."
@@ -7640,6 +7681,10 @@ msgstr "ticket SoHvaD noblu'DI', SoH ponglu'DI', pagh nuDghachlIj poQ vay'DI', G
 #: lib/error-codes.ts
 msgid "the URL must be https and not a private address"
 msgstr "URL https 'oHnIS, pagh pegh Daq"
+
+#: components/settings/linear-import.tsx
+msgid "The whole {workspace} workspace becomes one project: each team a board, each Linear project an epic. The team with the most issues keeps its key and numbers; the others are numbered after it."
+msgstr "{workspace} vummeH Daq Hoch wa' jInmol moj: ghom Hoch Som moj, Linear jInmol Hoch epic moj. law'qu' Seghmey ghajbogh ghom ngaQHa'moHwI' mI'mey je pol; latlhpu' ghIq mI'mey Hevlu'."
 
 #: components/mcp-connect.tsx
 msgid "Then enable it under Settings → MCP."
@@ -8231,6 +8276,10 @@ msgstr "lI'lI'…"
 #: components/board/priority-select.tsx
 msgid "Urgent"
 msgstr "SIbI' ta'nIS"
+
+#: components/settings/linear-import.tsx
+msgid "Use a personal API key: <0>create one in Linear</0> under Security & access. TrackLin.es keeps it, encrypted, for 30 days."
+msgstr "nIteb API ngaQHa'moHwI' yIlo': <0>Linear Daq wa' yIchenmoH</0> Security & access bIng. wejmaH jaj So' 'ej pol TrackLin.es."
 
 #: lib/help.ts
 msgid "Use Attach files on a ticket. Up to 10 files of 10 MB each, and not while it’s in Done."

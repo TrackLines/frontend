@@ -594,6 +594,10 @@ msgid "+ Add ticket"
 msgstr "+ Añadir ticket"
 
 #: components/settings/jira-import.tsx
+msgid "<0>Change your plan</0> to import it."
+msgstr "<0>Cambia tu plan</0> para importarlo."
+
+#: components/settings/jira-import.tsx
 msgid "<0>Change your plan</0>, or untick some projects and preview again."
 msgstr "<0>Cambia tu plan</0>, o desmarca algunos proyectos y vuelve a ver la vista previa."
 
@@ -1130,6 +1134,10 @@ msgstr "Cualquiera con el enlace puede enviar un informe de bug o una solicitud 
 #: components/roadmap/visibility.tsx
 msgid "Anyone with the link, no sign-in"
 msgstr "Cualquiera con el enlace, sin iniciar sesión"
+
+#: components/settings/linear-import.tsx
+msgid "API key"
+msgstr "Clave de API"
 
 #: lib/error-codes.ts
 msgid "api key expired: create a new one in Settings → API keys"
@@ -1869,6 +1877,7 @@ msgstr "Tickets completados según fecha de finalización y tiempo de ciclo"
 #: components/settings/google-calendar.tsx
 #: components/settings/integrations.tsx
 #: components/settings/jira-import.tsx
+#: components/settings/linear-import.tsx
 msgid "Connect"
 msgstr "Conectar"
 
@@ -1902,6 +1911,10 @@ msgstr "Conéctalo primero."
 msgid "Connect Jira Cloud"
 msgstr "Conectar Jira Cloud"
 
+#: components/settings/linear-import.tsx
+msgid "Connect Linear"
+msgstr "Conectar Linear"
+
 #: app/settings/integrations/page.tsx
 msgid "Connect your organization to the tools it uses. Link repositories to a project from the project's page."
 msgstr "Conecta tu organización a las herramientas que usa. Vincula repositorios a un proyecto desde la página del proyecto."
@@ -1931,6 +1944,12 @@ msgstr "Conectado a {0}"
 #: components/settings/jira-import.tsx
 msgid "Connected to <0>{0}</0> as {1} ({2})."
 msgstr "Conectado a <0>{0}</0> como {1} ({2})."
+
+#. placeholder {0}: conn.workspace
+#. placeholder {1}: conn.account
+#: components/settings/linear-import.tsx
+msgid "Connected to the <0>{0}</0> workspace with {1}’s key."
+msgstr "Conectado al espacio de trabajo <0>{0}</0> con la clave de {1}."
 
 #: components/settings/google-calendar.tsx
 msgid "Connected. People’s time away is syncing now."
@@ -2158,6 +2177,10 @@ msgstr "no se pudieron comprobar tus direcciones de correo; inténtalo de nuevo 
 #: components/settings/jira-import.tsx
 msgid "Couldn’t check your Jira connection. Please try again."
 msgstr "No se pudo comprobar tu conexión con Jira. Inténtalo de nuevo."
+
+#: components/settings/linear-import.tsx
+msgid "Couldn’t check your Linear connection. Please try again."
+msgstr "No se pudo comprobar tu conexión con Linear. Inténtalo de nuevo."
 
 #: components/board/sprint-bar.tsx
 msgid "Couldn’t close the sprint. Please try again."
@@ -2756,6 +2779,7 @@ msgstr "Días"
 #: components/project/backlog.tsx
 #: components/settings/embedding.tsx
 #: components/settings/jira-import.tsx
+#: components/settings/linear-import.tsx
 #: components/settings/organization.tsx
 #: components/settings/webhooks.tsx
 msgid "Delete"
@@ -2795,6 +2819,10 @@ msgstr "¿Eliminar el equipo {0}?"
 #: components/settings/jira-import.tsx
 msgid "Delete the Jira connection? Its API token is forgotten."
 msgstr "¿Eliminar la conexión con Jira? Su token de API se olvida."
+
+#: components/settings/linear-import.tsx
+msgid "Delete the Linear connection? Its API key is forgotten."
+msgstr "¿Eliminar la conexión con Linear? Su clave de API se olvida."
 
 #. placeholder {0}: host(w.url)
 #: components/settings/webhooks.tsx
@@ -4159,6 +4187,7 @@ msgid "Keep"
 msgstr "Mantener"
 
 #: components/settings/jira-import.tsx
+#: components/settings/linear-import.tsx
 msgid "Keep it 30 more days"
 msgstr "Guardarlo 30 días más"
 
@@ -4321,6 +4350,10 @@ msgstr "limit debe ser 1–50"
 #: lib/error-codes.ts
 msgid "limit must be between 1 and 500"
 msgstr "limit debe estar entre 1 y 500"
+
+#: components/settings/linear-import.tsx
+msgid "Linear connection"
+msgstr "Conexión con Linear"
 
 #: components/roadmap/item-tickets.tsx
 msgid "Link a ticket or epic…"
@@ -4548,6 +4581,7 @@ msgstr "Cargando tu trabajo…"
 #: components/quick-add-ticket.tsx
 #: components/settings/embedding.tsx
 #: components/settings/jira-import.tsx
+#: components/settings/linear-import.tsx
 #: components/settings/webhooks.tsx
 msgid "Loading…"
 msgstr "Cargando…"
@@ -6143,6 +6177,7 @@ msgstr "Previsibilidad por mes"
 #: components/markdown.tsx
 #: components/settings/csv-import.tsx
 #: components/settings/jira-import.tsx
+#: components/settings/linear-import.tsx
 #: components/ticket/attachments.tsx
 msgid "Preview"
 msgstr "Vista previa"
@@ -6152,6 +6187,7 @@ msgid "Preview {name}"
 msgstr "Vista previa de {name}"
 
 #: components/settings/jira-import.tsx
+#: components/settings/linear-import.tsx
 msgid "Preview again"
 msgstr "Volver a ver"
 
@@ -6672,6 +6708,7 @@ msgstr "Descartar esta importación"
 
 #: components/settings/csv-import.tsx
 #: components/settings/jira-import.tsx
+#: components/settings/linear-import.tsx
 msgid "Scrap this import? Everything it made is deleted."
 msgstr "¿Descartar esta importación? Se borrará todo lo que creó."
 
@@ -7510,6 +7547,10 @@ msgstr "Ese prefijo de ticket ya lo usa otro proyecto."
 msgid "that would make tickets block each other in a loop"
 msgstr "eso haría que los tickets se bloquearan entre sí en un bucle"
 
+#: components/settings/linear-import.tsx
+msgid "The API key is kept, encrypted, until {until}, then deleted. Extend it if you need longer."
+msgstr "La clave de API se guarda, cifrada, hasta el {until} y luego se elimina. Amplíala si necesitas más tiempo."
+
 #: components/settings/jira-import.tsx
 msgid "The API token is kept, encrypted, until {until}, then deleted. Extend it if you need longer."
 msgstr "El token de API se guarda, cifrado, hasta el {until} y luego se elimina. Amplíalo si necesitas más tiempo."
@@ -7640,6 +7681,10 @@ msgstr "La app de TrackLin.es te envía mensajes en Google Chat cuando te asigna
 #: lib/error-codes.ts
 msgid "the URL must be https and not a private address"
 msgstr "la URL debe ser https y no una dirección privada"
+
+#: components/settings/linear-import.tsx
+msgid "The whole {workspace} workspace becomes one project: each team a board, each Linear project an epic. The team with the most issues keeps its key and numbers; the others are numbered after it."
+msgstr "Todo el espacio de trabajo {workspace} se convierte en un proyecto: cada equipo, un tablero; cada proyecto de Linear, un épico. El equipo con más incidencias conserva su clave y sus números; los demás se numeran a continuación."
 
 #: components/mcp-connect.tsx
 msgid "Then enable it under Settings → MCP."
@@ -8231,6 +8276,10 @@ msgstr "Subiendo…"
 #: components/board/priority-select.tsx
 msgid "Urgent"
 msgstr "Urgente"
+
+#: components/settings/linear-import.tsx
+msgid "Use a personal API key: <0>create one in Linear</0> under Security & access. TrackLin.es keeps it, encrypted, for 30 days."
+msgstr "Usa una clave de API personal: <0>crea una en Linear</0> en Security & access. TrackLin.es la guarda, cifrada, durante 30 días."
 
 #: lib/help.ts
 msgid "Use Attach files on a ticket. Up to 10 files of 10 MB each, and not while it’s in Done."

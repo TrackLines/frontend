@@ -16,7 +16,7 @@ import { useToken } from '@/lib/use-token';
 
 const NO_TEAM = '-';
 
-function useAct() {
+export function useAct() {
   const { t } = useLingui();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -154,7 +154,7 @@ function JiraPicker({ token }: { token: string }) {
       <Button className="w-fit" disabled={busy || picked.length === 0} onClick={preview}>{job ? <Trans>Preview again</Trans> : <Trans>Preview</Trans>}</Button>
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       {previewing && job && (
-        <JiraPreview job={job} keyOf={keyOf} teams={teamList} taken={taken} prefixes={prefixes} teamOf={teamOf} stale={stale}
+        <ImportPreview job={job} keyOf={keyOf} teams={teamList} taken={taken} prefixes={prefixes} teamOf={teamOf} stale={stale}
           setPrefix={change(setPrefixes)} setTeam={change(setTeamOf)} />
       )}
       {job && <ImportStatus job={job} busy={busy} summary={false} blocked={stale || (job.problems?.length ?? 0) > 0}
@@ -164,11 +164,13 @@ function JiraPicker({ token }: { token: string }) {
   );
 }
 
-// JiraPreview: what the import makes (TL-543): each project with its prefix (and an input, checked as
-// you type, when its own can't be used), each board's columns and team, plan limits, and who matched.
-export function JiraPreview({ job, keyOf, teams, taken, prefixes, teamOf, stale, setPrefix, setTeam }: {
+// ImportPreview: what an import makes (TL-543, Linear TL-655): each project with its prefix (and an
+// input, checked as you type, when its own can't be used), each board's columns and team, plan limits,
+// notes (Linear's renumbered teams) and who matched. single: one project from one source (Linear),
+// so there's nothing to untick, and its prefix is chosen, not numbered from a key of its own.
+export function ImportPreview({ job, keyOf, teams, taken, prefixes, teamOf, stale, setPrefix, setTeam, single = false }: {
   job: ImportJob; keyOf: Record<string, string>; teams: Team[]; taken: string[]; prefixes: Record<string, string>; teamOf: Record<string, string>;
-  stale: boolean; setPrefix: (key: string, v: string) => void; setTeam: (board: string, team: string) => void;
+  stale: boolean; setPrefix: (key: string, v: string) => void; setTeam: (board: string, team: string) => void; single?: boolean;
 }) {
   const { t } = useLingui();
   const needs = prefixNeeded(job.problems);
@@ -183,7 +185,9 @@ export function JiraPreview({ job, keyOf, teams, taken, prefixes, teamOf, stale,
       {limit && (
         <div role="alert" className="grid gap-1 rounded-lg border border-destructive/50 p-3" data-limit>
           <p className="text-destructive">{limit.message}</p>
-          <p><Trans><Link href="/settings" className="font-medium underline">Change your plan</Link>, or untick some projects and preview again.</Trans></p>
+          {single
+            ? <p><Trans><Link href="/settings" className="font-medium underline">Change your plan</Link> to import it.</Trans></p>
+            : <p><Trans><Link href="/settings" className="font-medium underline">Change your plan</Link>, or untick some projects and preview again.</Trans></p>}
         </div>
       )}
       {(job.projects ?? []).map((p) => {
@@ -195,7 +199,7 @@ export function JiraPreview({ job, keyOf, teams, taken, prefixes, teamOf, stale,
           <div key={p.source_id} className="grid gap-3 rounded-lg border p-4" data-project={key}>
             <p className="flex flex-wrap items-center gap-2"><strong>{p.name}</strong> <Badge variant="outline" className="font-mono">{p.prefix}</Badge>
               <span className="text-muted-foreground"><Trans>{p.tickets} tickets</Trans></span>
-              {p.prefix !== key && !prefixes[key] && !needs.has(p.source_id ?? '') && <span className="text-muted-foreground"><Trans>({key} is taken here, so a number was added)</Trans></span>}
+              {!single && p.prefix !== key && !prefixes[key] && !needs.has(p.source_id ?? '') && <span className="text-muted-foreground"><Trans>({key} is taken here, so a number was added)</Trans></span>}
             </p>
             {needs.has(p.source_id ?? '') && (
               <label className="grid gap-1.5 font-medium" data-prefix-input>
@@ -226,6 +230,7 @@ export function JiraPreview({ job, keyOf, teams, taken, prefixes, teamOf, stale,
           </div>
         );
       })}
+      {(job.notes ?? []).map((n) => <p key={n.source_id ?? n.message} role="note" className="text-muted-foreground" data-note={n.kind}>{n.message}</p>)}
       {(matched.length > 0 || unmatched.length > 0) && (
         <div className="grid gap-1" data-people>
           <p className="font-medium"><Trans>People</Trans></p>

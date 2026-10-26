@@ -834,6 +834,7 @@ export type ImportJob = {
   planned?: ImportCounts; projects?: ImportProject[]; people?: ImportPerson[];
   progress: number; total: number; report: { created: ImportCounts; skipped: ImportSkip[] } | null; error?: string;
   scrappable?: boolean; // finished: false once anyone has worked on what it made
+  notes?: { kind: string; source_id?: string; message: string }[]; // preview: worth knowing first (Linear's renumbered teams)
 };
 export type CSVField = 'title' | 'description' | 'type' | 'priority' | 'labels' | 'status' | 'due' | 'created';
 export const importsApi = {
@@ -855,6 +856,16 @@ export const jira = {
   disconnect: (t: T) => api<void>('/imports/jira/connection', { method: 'DELETE', token: t }),
   projects: (t: T) => api<JiraProject[]>('/imports/jira/projects', { token: t }),
   preview: (o: JiraOptions, t: T) => api<ImportJob>('/imports', { method: 'POST', body: { source: 'jira', options: o }, token: t }),
+};
+// Linear (TL-654): the personal API key an admin imports a workspace with (kept 30 days), and a preview.
+export type LinearConnection = { workspace: string; account: string; created_by: string; created_at: string; expires_at: string };
+export type LinearOptions = { prefix?: string; teams?: Record<string, string> };
+export const linear = {
+  connection: (t: T) => api<LinearConnection | null>('/imports/linear/connection', { token: t }),
+  connect: (key: string, t: T) => api<LinearConnection>('/imports/linear/connection', { method: 'PUT', body: { key }, token: t }),
+  extend: (t: T) => api<LinearConnection>('/imports/linear/connection/extend', { method: 'POST', token: t }),
+  disconnect: (t: T) => api<void>('/imports/linear/connection', { method: 'DELETE', token: t }),
+  preview: (o: LinearOptions, t: T) => api<ImportJob>('/imports', { method: 'POST', body: { source: 'linear', options: o }, token: t }),
 };
 // exportCSV: a project's tickets as CSV text (TL-637), for the browser to save.
 export const exportCSV = (projectId: string, t: T) => api<string>(`/projects/${encodeURIComponent(projectId)}/export.csv`, { token: t });
