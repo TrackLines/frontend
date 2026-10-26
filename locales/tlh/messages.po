@@ -177,6 +177,11 @@ msgstr "{0} Del"
 msgid "{0} estimates every ticket, so size this one before it joins the board."
 msgstr "Hoch ticket pIH {0}, vaj 'echletDaq muv pa' ticketvam yIpIH."
 
+#. placeholder {0}: b.to_review
+#: components/project/refinement.tsx
+msgid "{0} imported tickets wait for review: <0>settle them on the board</0> before planning its first sprint."
+msgstr "{0} qemlu'pu'bogh ticketmey nuDlu'meH loS: <0>Som Daq yIrIn</0> wa'DIch sprint DaHech pa'."
+
 #. placeholder {0}: st.backlog
 #: components/project/project-card.tsx
 msgid "{0} in backlog"
@@ -432,6 +437,10 @@ msgstr "{members, plural, one {# beqpu'} other {# beqpu'}}, nablIjDaq {limit} ve
 #: lib/timebox.ts
 msgid "{mm}m"
 msgstr "{mm}m"
+
+#: components/board/import-review.tsx
+msgid "{n, plural, one {# imported ticket to review before the first sprint} other {# imported tickets to review before the first sprint}}"
+msgstr "{n, plural, one {wa'DIch sprint pa' # qemlu'pu'bogh ticket yInuD} other {wa'DIch sprint pa' # qemlu'pu'bogh ticketmey yInuD}}"
 
 #: components/reports/rollup-view.tsx
 msgid "{n} of {total}"
@@ -1026,6 +1035,10 @@ msgstr "Hoch jInmolmey"
 msgid "All roadmaps"
 msgstr "Hoch He navmey"
 
+#: components/board/import-review.tsx
+msgid "All settled: the board can start its first sprint."
+msgstr "Hoch rInpu': wa'DIch sprint taghlaH Som."
+
 #: components/settings/embedding.tsx
 msgid "Allowed sites"
 msgstr "Daqmey chaw'lu'bogh"
@@ -1069,6 +1082,10 @@ msgstr "naDev Google Workspace rarlaH ghom'a' loHwI'."
 #: lib/help.ts
 msgid "An organization admin connects Google Calendar in Settings → Integrations → Calendars; people away are marked in assigning and standup."
 msgstr "SeHlaw → rarghachmey → poH nav Daq Google Calendar rar ghom'a' loHwI'; Qu' nobmeH Qam ghomDaq je naDev ghobe'bogh ghotpu' tu'lu'."
+
+#: components/board/import-review.tsx
+msgid "An organization admin or this board’s team leader settles these."
+msgstr "chaH rInmoH DIvI' loH pagh Somvam ghom DevwI'."
 
 #: lib/error-codes.ts
 msgid "an organization can have up to 10 webhook endpoints"
@@ -1725,6 +1742,7 @@ msgstr "client'e' claude-code, claude-desktop, codex, cursor, vscode, gemini pag
 msgid "Close"
 msgstr "yISoQmoH"
 
+#: components/board/import-review.tsx
 #: components/board/ticket-dialog.tsx
 msgid "Close as won’t do"
 msgstr "ta'be'lu'meH yISoQmoH"
@@ -1761,6 +1779,10 @@ msgstr "ta'be'lu'meH SoQmoHlu'pu'"
 #: lib/google-chat.ts
 msgid "Closed as won’t do"
 msgstr "ta'be'lu'meH SoQmoHlu'pu'"
+
+#: components/board/import-review.tsx
+msgid "Closed in the review after importing: untouched for over 6 months."
+msgstr "qempu'DI' nuDlu'taHvIS SoQlu': jav jar law' choHbe'."
 
 #: components/ticket/history-panel.tsx
 msgid "closed it as a duplicate"
@@ -3919,6 +3941,10 @@ msgstr "Jira vo' yIqem"
 msgid "Imported"
 msgstr "Hevlu'pu'"
 
+#: components/board/import-review.tsx
+msgid "Imported tickets to review"
+msgstr "nuDmeH qemlu'pu'bogh ticketmey"
+
 #: app/settings/import/jira/page.tsx
 #: app/settings/import/page.tsx
 msgid "Importing isn’t turned on for your organization yet."
@@ -4131,6 +4157,7 @@ msgstr "kanban 'echletmey sprintmey luDevbe'"
 msgid "Kanban charts"
 msgstr "Kanban chartmey"
 
+#: components/board/import-review.tsx
 #: components/settings/file-cleanup.tsx
 #: components/ticket/attachments.tsx
 msgid "Keep"
@@ -4218,6 +4245,10 @@ msgstr "Qav 30 jaj"
 #: lib/sprint-report.ts
 msgid "Last 90 days"
 msgstr "Qav 90 jaj"
+
+#: components/board/import-review.tsx
+msgid "last changed <0/>"
+msgstr "Qav choHlu'pu' <0/>"
 
 #: lib/sprint-report.ts
 msgid "Last quarter"
@@ -4508,6 +4539,7 @@ msgid "Loading your work…"
 msgstr "Qu'meylIj Hevlu'lI'…"
 
 #: app/account/page.tsx
+#: components/board/import-review.tsx
 #: components/board/next-sprints.tsx
 #: components/dashboard-work.tsx
 #: components/intake/intake-settings.tsx
@@ -5338,6 +5370,10 @@ msgstr "DaH SoHvaD pagh noblu'."
 msgid "Nothing dismissed."
 msgstr "pagh woDlu'pu'."
 
+#: components/board/import-review.tsx
+msgid "Nothing happened to these for over 6 months before the import. Keep each one in the backlog, or close it as won’t do. The first sprint can start once they’re all settled."
+msgstr "qempa' jav jar law' vaj pagh qaS. wa' Hoch yIpol backlog Daq, pagh yISoQ. Hoch rInDI' wa'DIch sprint taghlaH."
+
 #: components/settings/file-cleanup.tsx
 msgid "Nothing is due to be deleted."
 msgstr "pagh Qaw'lu'nIS."
@@ -5824,6 +5860,10 @@ msgstr "ghom'a' beq vangbe' DaH"
 #: components/user-menu.tsx
 msgid "Organization settings"
 msgstr "ghom'a' SeHlaw"
+
+#: components/board/import-review.tsx
+msgid "original"
+msgstr "wa'DIch"
 
 #: components/board/ticket-view.tsx
 msgid "Original:"
@@ -6443,6 +6483,14 @@ msgstr "nuDghach"
 #: app/boards/[id]/edit/page.tsx
 msgid "Review column"
 msgstr "nuDghach tut"
+
+#: components/board/sprint-bar.tsx
+msgid "Review the imported tickets first"
+msgstr "wa'DIch qemlu'pu'bogh ticketmey yInuD"
+
+#: components/board/import-review.tsx
+msgid "Review them"
+msgstr "yInuD"
 
 #: app/settings/organization/page.tsx
 #: components/settings/api-keys.tsx
@@ -7409,6 +7457,7 @@ msgstr "qatlho', wIHevpu'"
 msgid "That account isn’t in any Bitbucket workspaces."
 msgstr "Bitbucket workspaceDaq mabvetlh tu'lu'be'."
 
+#: components/board/import-review.tsx
 #: components/settings/csv-import.tsx
 #: components/settings/jira-import.tsx
 #: components/settings/webhooks.tsx

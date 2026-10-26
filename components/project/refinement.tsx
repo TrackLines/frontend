@@ -163,10 +163,15 @@ export function RefinementMode({ projectId, boards, token, onClose, version = 0,
                       onOpen={onOpen && ((tk) => onOpen(tk, b.estimate_scale ?? 'none'))} />
                   ))}
                   {canManage && boardPlans.length < MAX_PLANNED && (
-                    <Button size="sm" variant="outline" className="justify-self-start" disabled={busy}
+                    <Button size="sm" variant="outline" className="justify-self-start" disabled={busy || (b.to_review ?? 0) > 0}
                       onClick={() => act(() => plannedSprints.plan(b.id, 14, token), t`Couldn’t plan a sprint. Please try again.`)}>
                       <Trans>Plan sprint {nextNumber}</Trans>
                     </Button>
+                  )}
+                  {(b.to_review ?? 0) > 0 && ( // an imported board settles its set-aside tickets first (TL-545)
+                    <p role="note" className="text-sm text-muted-foreground" data-to-review={b.to_review}>
+                      <Trans>{b.to_review} imported tickets wait for review: <Link href={`/boards/${b.id}`} className="underline">settle them on the board</Link> before planning its first sprint.</Trans>
+                    </p>
                   )}
                 </div>
               );
