@@ -1050,6 +1050,15 @@ msgstr "AI Qu' nuDnIS"
 msgid "agents cannot bypass human review"
 msgstr "ghot nuDghach Dojlaw'be'laH AI"
 
+#: components/board/column-list.tsx
+msgid "Agents’ finished work waits here for review"
+msgstr "naDev bot Qu' rInbogh loS"
+
+#. placeholder {0}: column.name
+#: components/board/column-list.tsx
+msgid "Agents’ finished work waits in {0}"
+msgstr "{0} Daq bot Qu' rInbogh loS"
+
 #: components/settings/api-keys.tsx
 #: lib/people.ts
 msgid "AI agent"
@@ -1877,10 +1886,6 @@ msgstr "SoQmoHlI'…"
 #: components/staff/downtime.tsx
 msgid "Cluster on {0}: you decide"
 msgstr "{0} ghom: SoH wIv"
-
-#: app/boards/[id]/edit/page.tsx
-msgid "Column before Done"
-msgstr "rIn tut wa'DIch"
 
 #. placeholder {0}: column.name
 #: components/board/column-list.tsx
@@ -4712,6 +4717,11 @@ msgstr "machbogh ngutlhmey, mI'mey, tlheghmey je."
 msgid "Made {0} tickets on {1} boards."
 msgstr "{0} ticketmey, {1} 'echletmey chenmoHpu'."
 
+#. placeholder {0}: column.name
+#: components/board/column-list.tsx
+msgid "Make {0} the review column"
+msgstr "{0} yIbuSmoH ghov tut"
+
 #: components/hosted-bar.tsx
 msgid "Make {name} the host"
 msgstr "pa' DevwI' {name} yIchenmoH"
@@ -4731,6 +4741,10 @@ msgstr "pa' DevwI' yIchenmoH"
 #: components/settings/organization.tsx
 msgid "Make leader"
 msgstr "DevwI' yIchenmoH"
+
+#: components/board/column-list.tsx
+msgid "Make this the review column"
+msgstr "ghov tut DaH yIchenmoH"
 
 #: components/board/ticket-dialog.tsx
 msgid "Making it an epic moves it to the backlog and clears its estimate. Its sub-tickets stay where they are."
@@ -6635,10 +6649,6 @@ msgstr "yItaH"
 msgid "Review"
 msgstr "nuDghach"
 
-#: app/boards/[id]/edit/page.tsx
-msgid "Review column"
-msgstr "nuDghach tut"
-
 #: components/board/sprint-bar.tsx
 msgid "Review the imported tickets first"
 msgstr "wa'DIch qemlu'pu'bogh ticketmey yInuD"
@@ -6778,6 +6788,10 @@ msgstr "moHaq yIpol"
 #: app/boards/[id]/edit/page.tsx
 msgid "Save template"
 msgstr "mIllogh yIpol"
+
+#: components/board/column-list.tsx
+msgid "Save the board first to pick a new column"
+msgstr "tut chu' DawIvmeH Hoch yIpol wa'DIch"
 
 #: components/settings/google-chat.tsx
 msgid "Saved."
@@ -7825,6 +7839,10 @@ msgstr "jan lajQo' pagh Suchlu'laHbe'. yInIDqa'."
 msgid "the review column must be one of this board's columns, other than To do and Done"
 msgstr "nuDghach tut'e' 'echletvam tut 'oHnIS, ta'nIS rIn je 'oHbe'nIS"
 
+#: app/boards/[id]/edit/page.tsx
+msgid "The robot marks the column where an agent’s finished ticket waits for a person’s review. Pick another column with its crossed-out robot."
+msgstr "ghov tut 'agh bot: Qu' rInbogh loS, ghot ghov. latlh tut yIwIv bot QIHbogh."
+
 #: components/reports/report-view.tsx
 #: components/reports/rollup-view.tsx
 msgid "the same as the period before"
@@ -8689,10 +8707,6 @@ msgstr "nuq lughbe' / nuq poQlu'?"
 #: components/ticket/bugfixes-panel.tsx
 msgid "Where"
 msgstr "nuqDaq"
-
-#: app/boards/[id]/edit/page.tsx
-msgid "Where an agent’s finished ticket waits for a person’s review."
-msgstr "AI vumwI' ticket rInpu'bogh ghot nuDghach loSmeH Daq."
 
 #: components/settings/api-keys.tsx
 msgid "Which agent"

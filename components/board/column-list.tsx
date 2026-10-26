@@ -3,20 +3,23 @@
 import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { ArrowDownIcon, ArrowUpIcon, GripVerticalIcon, LockIcon, Trash2Icon } from 'lucide-react';
+import { ArrowDownIcon, ArrowUpIcon, BotIcon, BotOffIcon, GripVerticalIcon, LockIcon, Trash2Icon } from 'lucide-react';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { addColumn, changeColumn, MAX_COLUMN_NAME, movable, moveColumn, removeColumn, type Draft, type DraftColumn } from '@/lib/board-edit';
+import { addColumn, changeColumn, MAX_COLUMN_NAME, movable, moveColumn, pickReview, removeColumn, reviewKey, type Draft, type DraftColumn } from '@/lib/board-edit';
 
 // ColumnList: the edit board page's columns, as a sortable list (TL-470). Drag the handle (or use the
 // arrows, or the keyboard) to reorder; rename; set a WIP limit; add (before Done); remove an empty
-// one. To do stays first and Done last. Every change is to the draft: the page saves it.
+// one. To do stays first and Done last. With agent review on, a robot marks the column agents' finished
+// work waits in, and the others' crossed-out robot picks them instead (TL-673). Every change is to the
+// draft: the page saves it.
 export function ColumnList({ draft, onChange }: { draft: Draft; onChange: (d: Draft) => void }) {
   const { t } = useLingui();
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
   const middle = draft.columns.filter((_, i) => movable(draft, i));
+  const review = reviewKey(draft);
   const [adding, setAdding] = useState('');
   const [next, setNext] = useState(1);
 
@@ -41,7 +44,7 @@ export function ColumnList({ draft, onChange }: { draft: Draft; onChange: (d: Dr
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={dropped}>
           <SortableContext items={middle.map((c) => c.key)} strategy={verticalListSortingStrategy}>
             {middle.map((c, i) => (
-              <SortableRow key={c.key} column={c} upFirst={i === 0} downLast={i === middle.length - 1}
+              <SortableRow key={c.key} column={c} review={review ? review === c.key : undefined} onReview={() => onChange(pickReview(draft, c.key))} upFirst={i === 0} downLast={i === middle.length - 1}
                 onChange={(change) => onChange(changeColumn(draft, c.key, change))}
                 onMove={(d) => onChange(moveColumn(draft, c.key, draft.columns.findIndex((x) => x.key === c.key) + d))}
                 onRemove={() => onChange(removeColumn(draft, c.key))} />
@@ -70,8 +73,8 @@ function PinnedRow({ column, note, onRename }: { column: DraftColumn; note: stri
   );
 }
 
-function SortableRow({ column, upFirst, downLast, onChange, onMove, onRemove }: {
-  column: DraftColumn; upFirst: boolean; downLast: boolean;
+function SortableRow({ column, review, onReview, upFirst, downLast, onChange, onMove, onRemove }: {
+  column: DraftColumn; review?: boolean; onReview: () => void; upFirst: boolean; downLast: boolean;
   onChange: (c: Partial<Pick<DraftColumn, 'name' | 'wip'>>) => void; onMove: (d: number) => void; onRemove: () => void;
 }) {
   const { t } = useLingui();
@@ -90,6 +93,14 @@ function SortableRow({ column, upFirst, downLast, onChange, onMove, onRemove }: 
           onChange={(e) => onChange({ wip: e.target.value === '' ? null : Number(e.target.value) })} />
       </label>
       <span className="ml-auto flex gap-1">
+        {review === true && (
+          <Button type="button" size="icon-sm" variant="ghost" aria-pressed aria-label={t`Agents’ finished work waits in ${column.name}`}
+            title={t`Agents’ finished work waits here for review`}><BotIcon /></Button>
+        )}
+        {review === false && (
+          <Button type="button" size="icon-sm" variant="ghost" className="text-muted-foreground" aria-pressed={false} aria-label={t`Make ${column.name} the review column`}
+            disabled={!column.id} title={column.id ? t`Make this the review column` : t`Save the board first to pick a new column`} onClick={onReview}><BotOffIcon /></Button>
+        )}
         <Button type="button" size="icon-sm" variant="ghost" aria-label={t`Move ${column.name} earlier`} disabled={upFirst} onClick={() => onMove(-1)}><ArrowUpIcon /></Button>
         <Button type="button" size="icon-sm" variant="ghost" aria-label={t`Move ${column.name} later`} disabled={downLast} onClick={() => onMove(1)}><ArrowDownIcon /></Button>
         <Button type="button" size="icon-sm" variant="ghost" className="text-destructive" aria-label={t`Remove ${column.name}`} disabled={column.tickets > 0}
