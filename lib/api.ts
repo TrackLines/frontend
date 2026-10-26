@@ -723,7 +723,7 @@ export const projectRepos = {
 };
 
 // Notifications: the signed-in user's inbox (internal; external channels later).
-export type NotificationKind = 'assigned' | 'mention' | 'finished' | 'wont_do' | 'review' | 'sent_back' | 'approval' | 'retention' | 'over_capacity' | 'legal'; // retention: TL-259; over_capacity: a sprint started over capacity (TL-149)
+export type NotificationKind = 'assigned' | 'mention' | 'finished' | 'wont_do' | 'review' | 'sent_back' | 'approval' | 'retention' | 'over_capacity' | 'legal' | 'downtime_credit'; // retention: TL-259; over_capacity: a sprint started over capacity (TL-149)
 export type AppNotification = {
   id: string; kind: NotificationKind; text: string; actor: string;
   ticket_id: string | null; ticket_key: string | null; board_id: string | null; link?: string | null; // link: a page, e.g. a new Terms version (TL-424)
@@ -893,7 +893,20 @@ export const staff = {
   updateHelp: (id: string, a: HelpAnswerInput, t: T) => api<HelpAnswer>(`/staff/help/${encodeURIComponent(id)}`, { method: 'PUT', body: a, token: t }),
   deleteHelp: (id: string, t: T) => api<void>(`/staff/help/${encodeURIComponent(id)}`, { method: 'DELETE', token: t }),
   orderHelp: (ids: string[], t: T) => api<void>('/staff/help/order', { method: 'PUT', body: { ids }, token: t }),
+  outages: (t: T) => api<Outage[]>('/staff/outages', { token: t }),
+  addOutage: (o: { starts_at: string; ends_at: string; note: string }, t: T) => api<Outage>('/staff/outages', { method: 'POST', body: o, token: t }),
+  deleteOutage: (id: string, t: T) => api<void>(`/staff/outages/${encodeURIComponent(id)}`, { method: 'DELETE', token: t }),
+  previewCredits: (id: string, t: T) => api<CreditPreview>(`/staff/outages/${encodeURIComponent(id)}/preview`, { token: t }),
+  applyCredits: (id: string, includeShort: boolean, t: T) =>
+    api<CreditResult>(`/staff/outages/${encodeURIComponent(id)}/apply`, { method: 'POST', body: { include_short: includeShort }, token: t }),
 };
+
+// The downtime resolver, phase 1 (TL-576/580): outages and the Terms' credits for them.
+export type Outage = { id: string; starts_at: string; ends_at: string; note: string; minutes: number; qualifies: boolean; days: string[]; clusters: string[]; credited: number };
+export type DowntimeCredit = { org_id: string; plan: string; day: string; amount: number; currency: string; credited: boolean };
+export type DowntimeProblem = { org_id: string; error: string };
+export type CreditPreview = { outage: Outage; credits: DowntimeCredit[]; problems: DowntimeProblem[] };
+export type CreditResult = { credited: DowntimeCredit[]; problems: DowntimeProblem[] };
 // exportCSV: a project's tickets as CSV text (TL-637), for the browser to save.
 export const exportCSV = (projectId: string, t: T) => api<string>(`/projects/${encodeURIComponent(projectId)}/export.csv`, { token: t });
 

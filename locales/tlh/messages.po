@@ -24,6 +24,10 @@ msgstr "“{name}”: WIP veH'e' mI' naQ 'oH, 1 vo' 999 ghoS, pagh pagh."
 msgid "({key} is taken here, so a number was added)"
 msgstr "({key} lo'lu'taH naDev, mI' chel'lu')"
 
+#: components/staff/downtime.tsx
+msgid "(already credited)"
+msgstr "(DIch'ta')"
+
 #: components/reports/report-view.tsx
 msgid "(in progress)"
 msgstr "(ta'lI')"
@@ -188,6 +192,12 @@ msgstr "{0} rIn · {1} poSmoH"
 msgid "{0} estimates every ticket, so size this one before it joins the board."
 msgstr "Hoch ticket pIH {0}, vaj 'echletDaq muv pa' ticketvam yIpIH."
 
+#. placeholder {0}: Math.floor(o.minutes / 60)
+#. placeholder {1}: o.minutes % 60
+#: components/staff/downtime.tsx
+msgid "{0} h {1} min"
+msgstr "{0} rep {1} tup"
+
 #. placeholder {0}: b.to_review
 #: components/project/refinement.tsx
 msgid "{0} imported tickets wait for review: <0>settle them on the board</0> before planning its first sprint."
@@ -217,6 +227,11 @@ msgstr "{0} DevwI'"
 #: components/staff/stats.tsx
 msgid "{0} live sessions"
 msgstr "{0} DaH ghommey"
+
+#. placeholder {0}: o.minutes
+#: components/staff/downtime.tsx
+msgid "{0} min"
+msgstr "{0} tup"
 
 #. placeholder {0}: progress.done
 #. placeholder {1}: progress.total
@@ -252,6 +267,12 @@ msgstr "{0} poSmoH sprint"
 #: lib/integrations.ts
 msgid "{0} or {1}"
 msgstr "{0} pagh {1}"
+
+#. placeholder {0}: due.orgs
+#. placeholder {1}: moneyList(i18n, due.totals)
+#: components/staff/downtime.tsx
+msgid "{0} organizations, {1} in total"
+msgstr "{0} ghom'a'mey, {1} Hoch"
 
 #. placeholder {0}: skipped.length
 #: components/settings/csv-import.tsx
@@ -1108,6 +1129,10 @@ msgstr "rInDaq AI ticket vIHmoHlu'DI', ghot chaw' loS."
 msgid "an epic can't be inside another epic"
 msgstr "latlh lut'a' qoDDaq lut'a' tu'lu'laHbe'"
 
+#: components/staff/downtime.tsx
+msgid "An hour or less"
+msgstr "wa' rep pagh puS"
+
 #: lib/error-codes.ts
 msgid "an item's start date must be on or before its target date"
 msgstr "Doch tagh jaj Qav jaj nIDnIS pagh rap"
@@ -1139,6 +1164,10 @@ msgstr "wa' loHwI' poQ ghom'a'"
 #: lib/error-codes.ts
 msgid "an origin like https://example.com is required"
 msgstr "https://example.com rur origin poQlu'"
+
+#: lib/error-codes.ts
+msgid "an outage ends after it starts, and not in the future"
+msgstr "Qagh poH: taghDI' rInmeH, ghIq pIq ghobe'"
 
 #: lib/error-codes.ts
 msgid "another answer has that slug"
@@ -1202,6 +1231,10 @@ msgstr "API URL <0>(DaneHchugh)</0>"
 #: components/theme-chooser.tsx
 msgid "Appearance"
 msgstr "narghghach"
+
+#: components/staff/downtime.tsx
+msgid "Apply credits"
+msgstr "DIch lo'"
 
 #: components/board/review.tsx
 msgid "Approve"
@@ -1550,6 +1583,7 @@ msgstr "poH navmey"
 #: components/project/key-prefix.tsx
 #: components/project/move-to-board.tsx
 #: components/settings/csv-import.tsx
+#: components/staff/downtime.tsx
 #: components/staff/help-editor.tsx
 #: components/ticket/duplicates.tsx
 msgid "Cancel"
@@ -1839,6 +1873,11 @@ msgstr "DaH SoQmoHlI':"
 msgid "Closing…"
 msgstr "SoQmoHlI'…"
 
+#. placeholder {0}: day(i18n, d)
+#: components/staff/downtime.tsx
+msgid "Cluster on {0}: you decide"
+msgstr "{0} ghom: SoH wIv"
+
 #: app/boards/[id]/edit/page.tsx
 msgid "Column before Done"
 msgstr "rIn tut wa'DIch"
@@ -2123,6 +2162,10 @@ msgstr "ticketvam SoQmoHlu'laHbe'. yInIDqa'."
 msgid "Could not copy"
 msgstr "velqa'moHlu'laHbe'"
 
+#: lib/error-codes.ts
+msgid "could not count"
+msgstr "toghlaHbe'"
+
 #: app/roadmaps/page.tsx
 msgid "Could not delete “{name}”. Please try again."
 msgstr "“{name}” Qaw'lu'laHbe'. yInIDqa'."
@@ -2142,6 +2185,10 @@ msgstr "QaH jangmey laHbe'"
 #: lib/error-codes.ts
 msgid "could not load organization members"
 msgstr "ghom'a' beqpu' Hevlu'laHbe'"
+
+#: lib/error-codes.ts
+msgid "could not load outages"
+msgstr "Qagh poHmey laHbe'"
 
 #: components/board/ticket-dialog.tsx
 msgid "Could not move this ticket to the backlog. Try again."
@@ -2409,6 +2456,10 @@ msgstr "repositorymey rarlu'pu'bogh Hevlu'laHbe'."
 #: components/board/next-sprints.tsx
 msgid "Couldn’t load the next sprints. Please try again."
 msgstr "sprintmey veb Hevlu'laHbe'. yInIDqa'."
+
+#: components/staff/downtime.tsx
+msgid "Couldn’t load the outages."
+msgstr "Qagh poHmey laHbe'."
 
 #: components/roadmap/item-tickets.tsx
 #: components/ticket/dependencies.tsx
@@ -2696,6 +2747,14 @@ msgstr "ticket moHaq chu'moHlu'laHbe'. yInIDqa'."
 msgid "Couldn’t verify board permissions. Board settings are hidden until permissions can be checked."
 msgstr "'echlet chaw'mey tob'eghlu'laHbe'. chaw'mey nuDlu'laHpa' 'echlet SeHlaw So'lu'."
 
+#: components/staff/downtime.tsx
+msgid "Couldn’t work out the credits."
+msgstr "DIch toghlaHbe'."
+
+#: components/staff/downtime.tsx
+msgid "Couldn’t work these out"
+msgstr "toghlaHbe'"
+
 #: components/board/velocity.tsx
 msgid "Counted in estimate points."
 msgstr "pIHghach pointmey toghlu'."
@@ -2771,6 +2830,33 @@ msgstr "{where}Daq chenmoH"
 msgid "Creating…"
 msgstr "chenmoHlI'…"
 
+#: components/staff/downtime.tsx
+msgid "Credit"
+msgstr "DIch"
+
+#. placeholder {0}: due.orgs
+#. placeholder {1}: moneyList(i18n, due.totals)
+#: components/staff/downtime.tsx
+msgid "Credit {0} organizations {1} in total?"
+msgstr "{0} ghom'a'mey {1} DIch?"
+
+#: components/staff/downtime.tsx
+msgid "Credit them"
+msgstr "DIch"
+
+#. placeholder {0}: result.credited.length
+#: components/staff/downtime.tsx
+msgid "Credited {0} organization-days."
+msgstr "{0} ghom'a' jajmey DIch'ta'."
+
+#: components/staff/downtime.tsx
+msgid "Credits"
+msgstr "DIchmey"
+
+#: components/staff/downtime.tsx
+msgid "Credits for {days}"
+msgstr "{days} DIchmey"
+
 #: components/settings/csv-import.tsx
 #: components/settings/import-page.tsx
 msgid "CSV file"
@@ -2820,6 +2906,10 @@ msgstr "De' pol"
 msgid "Dates"
 msgstr "jajmey"
 
+#: components/staff/downtime.tsx
+msgid "Day (UTC)"
+msgstr "jaj (UTC)"
+
 #: components/board/sprint-bar.tsx
 msgid "days"
 msgstr "jaj"
@@ -2836,6 +2926,7 @@ msgstr "jajmey"
 #: components/settings/linear-import.tsx
 #: components/settings/organization.tsx
 #: components/settings/webhooks.tsx
+#: components/staff/downtime.tsx
 #: components/staff/help-editor.tsx
 msgid "Delete"
 msgstr "yIQaw'"
@@ -2888,6 +2979,10 @@ msgstr "Linear rarmeH yIQaw'? API ngaQHa'moHwI' lIjlu'."
 #: components/settings/webhooks.tsx
 msgid "Delete the webhook to {0}? Nothing more will be sent to it."
 msgstr "{0} webhook yIQaw'? latlh Doch ngeHlu'be'."
+
+#: components/staff/downtime.tsx
+msgid "Delete this outage? Only for one recorded by mistake."
+msgstr "Qagh poH Qaw'? Qagh neH."
 
 #: components/board/ticket-dialog.tsx
 msgid "Delete this ticket? It’s kept for 30 days in case it was a mistake (contact us to get it back), then permanently deleted with its comments and files."
@@ -3099,6 +3194,10 @@ msgstr "Hevlu'pu'."
 msgid "Downtime"
 msgstr "Qagh poH"
 
+#: components/notification-icon.tsx
+msgid "Downtime credited"
+msgstr "Qagh poH DIch'ta'"
+
 #: components/ticket/pull-requests-panel.tsx
 msgid "Draft"
 msgstr "ghItlh wa'DIch"
@@ -3248,6 +3347,10 @@ msgstr "API ngaQHa'moHwI' ghajnIS Hoch AI vumwI': <0>API ngaQHa'moHwI'mey</0>Daq
 msgid "Each board's share of planned work done in the period. The band, 80–100%, is on target."
 msgstr "poHDaq Qu' nablu'pu'bogh 'echlet Hoch 'ay' rInbogh. 80–100% 'oHchugh, ngoQ qIp."
 
+#: components/staff/downtime.tsx
+msgid "Each gets a credit on their next Stripe bill for {days}, and their admins are told. A day is never credited twice."
+msgstr "Hoch Stripe Huch nav DIch Hev {days}, loHwI'pu' lu'Ilta'. jaj cha'logh DIchbe'lu'."
+
 #: components/settings/import-page.tsx
 msgid "Each Jira Cloud project becomes a project here, keeping its key and ticket numbers, with its boards, comments and attachments."
 msgstr "naDev Jira Cloud jInmol Hoch jInmol moj, ngaQHa'moHwI' ticket mI'mey Sommey ja'chuqmey ngaSwI'mey je pol."
@@ -3355,6 +3458,10 @@ msgstr "Dubghach yIrInmoH"
 #: components/hosted-bar.tsx
 msgid "End standup"
 msgstr "Qam ghom yIrInmoH"
+
+#: components/staff/downtime.tsx
+msgid "Ended (UTC)"
+msgstr "rIn (UTC)"
 
 #: components/mcp-connect.tsx
 msgid "Endpoint"
@@ -3745,6 +3852,10 @@ msgstr "lo'laH: yIleghqa' 'ej lo'."
 #: app/reports/page.tsx
 msgid "From"
 msgstr "vo'"
+
+#: components/staff/downtime.tsx
+msgid "From (UTC)"
+msgstr "vo' (UTC)"
 
 #: lib/error-codes.ts
 msgid "from and to are dates (YYYY-MM-DD), from before to, at most two years apart"
@@ -4309,6 +4420,7 @@ msgid "Leave without saving your changes?"
 msgstr "choHmeylIj Dapolbe'taHvIS bImej'a'?"
 
 #: components/board/sprint-bar.tsx
+#: components/staff/downtime.tsx
 msgid "Length"
 msgstr "tIqghach"
 
@@ -4573,6 +4685,7 @@ msgstr "Qu'meylIj Hevlu'lI'…"
 #: components/settings/jira-import.tsx
 #: components/settings/linear-import.tsx
 #: components/settings/webhooks.tsx
+#: components/staff/downtime.tsx
 #: components/staff/help-editor.tsx
 #: components/staff/staff-shell.tsx
 #: components/staff/stats.tsx
@@ -5112,9 +5225,17 @@ msgstr "rarmeH latlh repositorymey tu'lu'be'."
 msgid "No other tickets in this project"
 msgstr "jInmolvamDaq latlh ticketmey tu'lu'be'"
 
+#: components/staff/downtime.tsx
+msgid "No outages recorded."
+msgstr "Qagh poH ghItlhbe'lu'."
+
 #: components/board/past-sprints.tsx
 msgid "No past sprints yet."
 msgstr "sprintmey ret tu'lu'be' DaH."
+
+#: components/staff/downtime.tsx
+msgid "No paying organizations to credit."
+msgstr "DIchmeH ghom'a'mey DIlwI' tu'lu'be'."
 
 #: components/settings/api-keys.tsx
 msgid "No personal keys yet."
@@ -5385,6 +5506,7 @@ msgid "not yet"
 msgstr "DaHbe'"
 
 #: components/roadmap/updates.tsx
+#: components/staff/downtime.tsx
 msgid "Note"
 msgstr "QIn"
 
@@ -5797,6 +5919,7 @@ msgid "organization"
 msgstr "ghom'a'"
 
 #: app/settings/organization/page.tsx
+#: components/staff/downtime.tsx
 msgid "Organization"
 msgstr "ghom'a'"
 
@@ -5844,6 +5967,18 @@ msgstr "wa'DIch"
 #: components/board/ticket-view.tsx
 msgid "Original:"
 msgstr "wa'DIch:"
+
+#: lib/error-codes.ts
+msgid "outage not found"
+msgstr "Qagh poH tu'lu'be'"
+
+#: components/staff/downtime.tsx
+msgid "Outages"
+msgstr "Qagh poHmey"
+
+#: components/staff/downtime.tsx
+msgid "Over an hour: credited"
+msgstr "wa' rep law': DIch"
 
 #: lib/standup.ts
 msgid "over by {text}"
@@ -5955,6 +6090,7 @@ msgid "pick at least one known event"
 msgstr "wa' wanI' Sovlu'bogh yIwIv"
 
 #: components/billing/plan-card.tsx
+#: components/staff/downtime.tsx
 msgid "Plan"
 msgstr "nab"
 
@@ -6066,6 +6202,10 @@ msgstr "pointmey nablu'pu'bogh, {0, plural, one {# sprint} other {# sprintmey}}"
 msgid "points unfinished at the end"
 msgstr "Qav pointmey rInbe'bogh"
 
+#: components/staff/downtime.tsx
+msgid "Policy"
+msgstr "chut"
+
 #: components/roadmap/updates.tsx
 msgid "Post an update"
 msgstr "chu'ghach yIngeH"
@@ -6125,6 +6265,7 @@ msgstr "jar pIHlaHghach"
 #: components/settings/csv-import.tsx
 #: components/settings/jira-import.tsx
 #: components/settings/linear-import.tsx
+#: components/staff/downtime.tsx
 #: components/staff/help-editor.tsx
 #: components/ticket/attachments.tsx
 msgid "Preview"
@@ -6293,6 +6434,14 @@ msgstr "tugh SoQmoHlu'pu'"
 #: lib/live-status.ts
 msgid "Reconnecting…"
 msgstr "rarqa'lI'…"
+
+#: components/staff/downtime.tsx
+msgid "Record"
+msgstr "ghItlh"
+
+#: components/staff/downtime.tsx
+msgid "Record an outage"
+msgstr "Qagh poH ghItlh"
 
 #. placeholder {0}: k.name
 #: components/settings/api-keys.tsx
@@ -7227,6 +7376,10 @@ msgstr "Hoch ghot muvDI' tlhaq yItagh"
 msgid "Start your first project"
 msgstr "jInmol wa'DIchlIj yItagh"
 
+#: components/staff/downtime.tsx
+msgid "Started (UTC)"
+msgstr "tagh (UTC)"
+
 #: app/boards/[id]/page.tsx
 #: components/board/sprint-bar.tsx
 msgid "Starting…"
@@ -7296,6 +7449,10 @@ msgstr "{title} yIloSQo'"
 #: components/mentions.tsx
 msgid "Stop watching"
 msgstr "yIbejQo'"
+
+#: lib/error-codes.ts
+msgid "Stripe isn't configured"
+msgstr "Stripe ghItlhbe'lu'"
 
 #: app/boards/[id]/edit/page.tsx
 msgid "Style"
@@ -7706,6 +7863,10 @@ msgstr "loHmeH nab tu'lu'be' DaH — yIDub wa'DIch."
 msgid "These act straight away."
 msgstr "SIbI' Qap Dochmeyvam."
 
+#: components/staff/downtime.tsx
+msgid "These failed: apply again to retry them"
+msgstr "luQaghpu': nIDqa'meH DIch lo'qa'"
+
 #: lib/error-codes.ts
 msgid "they haven't joined the session"
 msgstr "ghom muvbe' chaH"
@@ -7790,6 +7951,22 @@ msgstr "{0} jInmolmey, {1} Sommey, {2} ticketmey, {3} ja'chuqmey je chenmoH."
 #: components/settings/csv-import.tsx
 msgid "This makes the project <0>{0}</0> ({1}) with {2} tickets, {3} boards and {4} columns."
 msgstr "jInmol <0>{0}</0> ({1}) chenmoH: {2} ticketmey, {3} 'echletmey, {4} tutmey."
+
+#: lib/error-codes.ts
+msgid "this outage has credits, so it stays on record"
+msgstr "Qagh poH DIch ghaj, ghItlhtaH"
+
+#: components/staff/downtime.tsx
+msgid "This outage was an hour or less, but it’s part of a cluster. Credit it only if you decide the cluster counts."
+msgstr "wa' rep pagh puS Qagh poH, 'ach ghom Dol. ghom lo'chugh neH DIch."
+
+#: components/staff/downtime.tsx
+msgid "This outage was an hour or less, so the Terms don’t credit it."
+msgstr "wa' rep pagh puS Qagh poH, chut DIchbe'."
+
+#: lib/error-codes.ts
+msgid "this outage was an hour or less: only a cluster staff decide on is credited"
+msgstr "wa' rep pagh puS: beqpu' wIvbogh ghom neH DIch"
 
 #: app/global-not-found.tsx
 msgid "This page doesn’t exist"
@@ -8045,6 +8222,10 @@ msgstr "vum repmey togh poH veHmey, jupjaj vo' ghItlhjaj ghoS, 9:00 vo' 17:00 gh
 msgid "Timeline"
 msgstr "poH tlhegh"
 
+#: components/staff/downtime.tsx
+msgid "Times are UTC, as on the <0>status page</0>. Over an hour makes every UTC day it touched free for every paying organization."
+msgstr "UTC poHmey, <0>Dotlh ruch</0> rur. wa' rep law' Qagh: Hoch UTC jaj DIlbe' Hoch DIlwI' ghom'a'."
+
 #: app/roadmaps/[id]/edit/page.tsx
 #: components/board/ticket-dialog.tsx
 #: components/intake/request-form.tsx
@@ -8060,6 +8241,10 @@ msgstr "pong poQlu'"
 #: app/reports/page.tsx
 msgid "To"
 msgstr "ghoS"
+
+#: components/staff/downtime.tsx
+msgid "To (UTC)"
+msgstr "(UTC) ghIq"
 
 #: components/project/refinement.tsx
 msgid "To plan"
@@ -8547,6 +8732,10 @@ msgstr "Qu' DuD"
 #: components/reports/report-view.tsx
 msgid "Work mix, whole period"
 msgstr "Qu' Segh, poH naQ"
+
+#: components/staff/downtime.tsx
+msgid "Working out the credits…"
+msgstr "DIch toghlI'…"
 
 #: components/settings/google-calendar.tsx
 msgid "Workspace domain"

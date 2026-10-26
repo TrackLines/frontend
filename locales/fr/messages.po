@@ -24,6 +24,10 @@ msgstr "« {name} » : une limite WIP est un nombre entier de 1 à 999, ou aucun
 msgid "({key} is taken here, so a number was added)"
 msgstr "({key} est déjà utilisé ici, un numéro a donc été ajouté)"
 
+#: components/staff/downtime.tsx
+msgid "(already credited)"
+msgstr "(déjà crédité)"
+
 #: components/reports/report-view.tsx
 msgid "(in progress)"
 msgstr "(en cours)"
@@ -188,6 +192,12 @@ msgstr "{0} terminés · {1} ouverts"
 msgid "{0} estimates every ticket, so size this one before it joins the board."
 msgstr "{0} estime chaque ticket, donc dimensionnez celui-ci avant qu’il rejoigne le tableau."
 
+#. placeholder {0}: Math.floor(o.minutes / 60)
+#. placeholder {1}: o.minutes % 60
+#: components/staff/downtime.tsx
+msgid "{0} h {1} min"
+msgstr "{0} h {1} min"
+
 #. placeholder {0}: b.to_review
 #: components/project/refinement.tsx
 msgid "{0} imported tickets wait for review: <0>settle them on the board</0> before planning its first sprint."
@@ -217,6 +227,11 @@ msgstr "Responsable {0}"
 #: components/staff/stats.tsx
 msgid "{0} live sessions"
 msgstr "{0} sessions en direct"
+
+#. placeholder {0}: o.minutes
+#: components/staff/downtime.tsx
+msgid "{0} min"
+msgstr "{0} min"
 
 #. placeholder {0}: progress.done
 #. placeholder {1}: progress.total
@@ -252,6 +267,12 @@ msgstr "{0} sprints ouverts"
 #: lib/integrations.ts
 msgid "{0} or {1}"
 msgstr "{0} ou {1}"
+
+#. placeholder {0}: due.orgs
+#. placeholder {1}: moneyList(i18n, due.totals)
+#: components/staff/downtime.tsx
+msgid "{0} organizations, {1} in total"
+msgstr "{0} organisations, {1} au total"
 
 #. placeholder {0}: skipped.length
 #: components/settings/csv-import.tsx
@@ -1108,6 +1129,10 @@ msgstr "Un ticket d’agent IA passé en Terminé attend qu’une personne l’a
 msgid "an epic can't be inside another epic"
 msgstr "une epic ne peut pas se trouver dans une autre epic"
 
+#: components/staff/downtime.tsx
+msgid "An hour or less"
+msgstr "Une heure ou moins"
+
 #: lib/error-codes.ts
 msgid "an item's start date must be on or before its target date"
 msgstr "la date de début d’un élément doit être antérieure ou égale à sa date cible"
@@ -1139,6 +1164,10 @@ msgstr "une organisation nécessite au moins un administrateur"
 #: lib/error-codes.ts
 msgid "an origin like https://example.com is required"
 msgstr "une origine comme https://example.com est requise"
+
+#: lib/error-codes.ts
+msgid "an outage ends after it starts, and not in the future"
+msgstr "une panne se termine après son début, et pas dans le futur"
 
 #: lib/error-codes.ts
 msgid "another answer has that slug"
@@ -1202,6 +1231,10 @@ msgstr "URL de l’API <0>(facultatif)</0>"
 #: components/theme-chooser.tsx
 msgid "Appearance"
 msgstr "Apparence"
+
+#: components/staff/downtime.tsx
+msgid "Apply credits"
+msgstr "Appliquer les crédits"
 
 #: components/board/review.tsx
 msgid "Approve"
@@ -1550,6 +1583,7 @@ msgstr "Agendas"
 #: components/project/key-prefix.tsx
 #: components/project/move-to-board.tsx
 #: components/settings/csv-import.tsx
+#: components/staff/downtime.tsx
 #: components/staff/help-editor.tsx
 #: components/ticket/duplicates.tsx
 msgid "Cancel"
@@ -1839,6 +1873,11 @@ msgstr "Fermeture immédiate :"
 msgid "Closing…"
 msgstr "Fermeture…"
 
+#. placeholder {0}: day(i18n, d)
+#: components/staff/downtime.tsx
+msgid "Cluster on {0}: you decide"
+msgstr "Série le {0} : à vous de décider"
+
 #: app/boards/[id]/edit/page.tsx
 msgid "Column before Done"
 msgstr "Colonne avant Terminé"
@@ -2123,6 +2162,10 @@ msgstr "Impossible de fermer ce ticket. Veuillez réessayer."
 msgid "Could not copy"
 msgstr "Copie impossible"
 
+#: lib/error-codes.ts
+msgid "could not count"
+msgstr "impossible de compter"
+
 #: app/roadmaps/page.tsx
 msgid "Could not delete “{name}”. Please try again."
 msgstr "Impossible de supprimer « {name} ». Veuillez réessayer."
@@ -2142,6 +2185,10 @@ msgstr "impossible de charger les réponses d’aide"
 #: lib/error-codes.ts
 msgid "could not load organization members"
 msgstr "impossible de charger les membres de l’organisation"
+
+#: lib/error-codes.ts
+msgid "could not load outages"
+msgstr "impossible de charger les pannes"
 
 #: components/board/ticket-dialog.tsx
 msgid "Could not move this ticket to the backlog. Try again."
@@ -2409,6 +2456,10 @@ msgstr "Impossible de charger les dépôts liés."
 #: components/board/next-sprints.tsx
 msgid "Couldn’t load the next sprints. Please try again."
 msgstr "Impossible de charger les prochains sprints. Veuillez réessayer."
+
+#: components/staff/downtime.tsx
+msgid "Couldn’t load the outages."
+msgstr "Impossible de charger les pannes."
 
 #: components/roadmap/item-tickets.tsx
 #: components/ticket/dependencies.tsx
@@ -2696,6 +2747,14 @@ msgstr "Impossible de mettre à jour le préfixe des tickets. Veuillez réessaye
 msgid "Couldn’t verify board permissions. Board settings are hidden until permissions can be checked."
 msgstr "Impossible de vérifier les autorisations du tableau. Les paramètres du tableau sont masqués tant que les autorisations ne peuvent pas être vérifiées."
 
+#: components/staff/downtime.tsx
+msgid "Couldn’t work out the credits."
+msgstr "Impossible de calculer les crédits."
+
+#: components/staff/downtime.tsx
+msgid "Couldn’t work these out"
+msgstr "Impossible de calculer ceux-ci"
+
 #: components/board/velocity.tsx
 msgid "Counted in estimate points."
 msgstr "Compté en points d’estimation."
@@ -2771,6 +2830,33 @@ msgstr "l’a créé dans {where}"
 msgid "Creating…"
 msgstr "Création…"
 
+#: components/staff/downtime.tsx
+msgid "Credit"
+msgstr "Crédit"
+
+#. placeholder {0}: due.orgs
+#. placeholder {1}: moneyList(i18n, due.totals)
+#: components/staff/downtime.tsx
+msgid "Credit {0} organizations {1} in total?"
+msgstr "Créditer {0} organisations de {1} au total ?"
+
+#: components/staff/downtime.tsx
+msgid "Credit them"
+msgstr "Les créditer"
+
+#. placeholder {0}: result.credited.length
+#: components/staff/downtime.tsx
+msgid "Credited {0} organization-days."
+msgstr "{0} jours-organisation crédités."
+
+#: components/staff/downtime.tsx
+msgid "Credits"
+msgstr "Crédits"
+
+#: components/staff/downtime.tsx
+msgid "Credits for {days}"
+msgstr "Crédits pour {days}"
+
 #: components/settings/csv-import.tsx
 #: components/settings/import-page.tsx
 msgid "CSV file"
@@ -2820,6 +2906,10 @@ msgstr "Base de données"
 msgid "Dates"
 msgstr "Dates"
 
+#: components/staff/downtime.tsx
+msgid "Day (UTC)"
+msgstr "Jour (UTC)"
+
 #: components/board/sprint-bar.tsx
 msgid "days"
 msgstr "jours"
@@ -2836,6 +2926,7 @@ msgstr "Jours"
 #: components/settings/linear-import.tsx
 #: components/settings/organization.tsx
 #: components/settings/webhooks.tsx
+#: components/staff/downtime.tsx
 #: components/staff/help-editor.tsx
 msgid "Delete"
 msgstr "Supprimer"
@@ -2888,6 +2979,10 @@ msgstr "Supprimer la connexion Linear ? Sa clé d’API est oubliée."
 #: components/settings/webhooks.tsx
 msgid "Delete the webhook to {0}? Nothing more will be sent to it."
 msgstr "Supprimer le webhook vers {0} ? Plus rien ne lui sera envoyé."
+
+#: components/staff/downtime.tsx
+msgid "Delete this outage? Only for one recorded by mistake."
+msgstr "Supprimer cette panne ? Seulement pour une saisie par erreur."
 
 #: components/board/ticket-dialog.tsx
 msgid "Delete this ticket? It’s kept for 30 days in case it was a mistake (contact us to get it back), then permanently deleted with its comments and files."
@@ -3099,6 +3194,10 @@ msgstr "Téléchargé."
 msgid "Downtime"
 msgstr "Pannes"
 
+#: components/notification-icon.tsx
+msgid "Downtime credited"
+msgstr "Panne créditée"
+
 #: components/ticket/pull-requests-panel.tsx
 msgid "Draft"
 msgstr "Brouillon"
@@ -3248,6 +3347,10 @@ msgstr "Chaque agent a besoin de sa propre clé API : créez-en une dans <0>Clé
 msgid "Each board's share of planned work done in the period. The band, 80–100%, is on target."
 msgstr "Part du travail planifié réalisée par chaque tableau sur la période. La bande, 80–100 %, correspond à l’objectif."
 
+#: components/staff/downtime.tsx
+msgid "Each gets a credit on their next Stripe bill for {days}, and their admins are told. A day is never credited twice."
+msgstr "Chacune reçoit un crédit sur sa prochaine facture Stripe pour {days}, et ses admins sont prévenus. Un jour n’est jamais crédité deux fois."
+
 #: components/settings/import-page.tsx
 msgid "Each Jira Cloud project becomes a project here, keeping its key and ticket numbers, with its boards, comments and attachments."
 msgstr "Chaque projet Jira Cloud devient ici un projet, avec sa clé et ses numéros de tickets, ses tableaux, commentaires et pièces jointes."
@@ -3355,6 +3458,10 @@ msgstr "Terminer l’affinage"
 #: components/hosted-bar.tsx
 msgid "End standup"
 msgstr "Terminer le standup"
+
+#: components/staff/downtime.tsx
+msgid "Ended (UTC)"
+msgstr "Fin (UTC)"
 
 #: components/mcp-connect.tsx
 msgid "Endpoint"
@@ -3745,6 +3852,10 @@ msgstr "Disponible : relancez l’aperçu pour l’appliquer."
 #: app/reports/page.tsx
 msgid "From"
 msgstr "De"
+
+#: components/staff/downtime.tsx
+msgid "From (UTC)"
+msgstr "De (UTC)"
 
 #: lib/error-codes.ts
 msgid "from and to are dates (YYYY-MM-DD), from before to, at most two years apart"
@@ -4309,6 +4420,7 @@ msgid "Leave without saving your changes?"
 msgstr "Quitter sans enregistrer vos modifications ?"
 
 #: components/board/sprint-bar.tsx
+#: components/staff/downtime.tsx
 msgid "Length"
 msgstr "Durée"
 
@@ -4573,6 +4685,7 @@ msgstr "Chargement de votre travail…"
 #: components/settings/jira-import.tsx
 #: components/settings/linear-import.tsx
 #: components/settings/webhooks.tsx
+#: components/staff/downtime.tsx
 #: components/staff/help-editor.tsx
 #: components/staff/staff-shell.tsx
 #: components/staff/stats.tsx
@@ -5112,9 +5225,17 @@ msgstr "Aucun autre dépôt à lier."
 msgid "No other tickets in this project"
 msgstr "Aucun autre ticket dans ce projet"
 
+#: components/staff/downtime.tsx
+msgid "No outages recorded."
+msgstr "Aucune panne enregistrée."
+
 #: components/board/past-sprints.tsx
 msgid "No past sprints yet."
 msgstr "Aucun sprint passé pour le moment."
+
+#: components/staff/downtime.tsx
+msgid "No paying organizations to credit."
+msgstr "Aucune organisation payante à créditer."
 
 #: components/settings/api-keys.tsx
 msgid "No personal keys yet."
@@ -5385,6 +5506,7 @@ msgid "not yet"
 msgstr "pas encore"
 
 #: components/roadmap/updates.tsx
+#: components/staff/downtime.tsx
 msgid "Note"
 msgstr "Note"
 
@@ -5797,6 +5919,7 @@ msgid "organization"
 msgstr "organisation"
 
 #: app/settings/organization/page.tsx
+#: components/staff/downtime.tsx
 msgid "Organization"
 msgstr "Organisation"
 
@@ -5844,6 +5967,18 @@ msgstr "original"
 #: components/board/ticket-view.tsx
 msgid "Original:"
 msgstr "Original :"
+
+#: lib/error-codes.ts
+msgid "outage not found"
+msgstr "panne introuvable"
+
+#: components/staff/downtime.tsx
+msgid "Outages"
+msgstr "Pannes"
+
+#: components/staff/downtime.tsx
+msgid "Over an hour: credited"
+msgstr "Plus d’une heure : créditée"
 
 #: lib/standup.ts
 msgid "over by {text}"
@@ -5955,6 +6090,7 @@ msgid "pick at least one known event"
 msgstr "choisissez au moins un événement connu"
 
 #: components/billing/plan-card.tsx
+#: components/staff/downtime.tsx
 msgid "Plan"
 msgstr "Offre"
 
@@ -6066,6 +6202,10 @@ msgstr "points planifiés, sur {0, plural, one {# sprint} other {# sprints}}"
 msgid "points unfinished at the end"
 msgstr "points non terminés à la fin"
 
+#: components/staff/downtime.tsx
+msgid "Policy"
+msgstr "Règle"
+
 #: components/roadmap/updates.tsx
 msgid "Post an update"
 msgstr "Publier une mise à jour"
@@ -6125,6 +6265,7 @@ msgstr "Prévisibilité par mois"
 #: components/settings/csv-import.tsx
 #: components/settings/jira-import.tsx
 #: components/settings/linear-import.tsx
+#: components/staff/downtime.tsx
 #: components/staff/help-editor.tsx
 #: components/ticket/attachments.tsx
 msgid "Preview"
@@ -6293,6 +6434,14 @@ msgstr "Récemment fermés"
 #: lib/live-status.ts
 msgid "Reconnecting…"
 msgstr "Reconnexion…"
+
+#: components/staff/downtime.tsx
+msgid "Record"
+msgstr "Enregistrer"
+
+#: components/staff/downtime.tsx
+msgid "Record an outage"
+msgstr "Enregistrer une panne"
 
 #. placeholder {0}: k.name
 #: components/settings/api-keys.tsx
@@ -7227,6 +7376,10 @@ msgstr "Lancez le chrono une fois que tout le monde a rejoint"
 msgid "Start your first project"
 msgstr "Lancez votre premier projet"
 
+#: components/staff/downtime.tsx
+msgid "Started (UTC)"
+msgstr "Début (UTC)"
+
 #: app/boards/[id]/page.tsx
 #: components/board/sprint-bar.tsx
 msgid "Starting…"
@@ -7296,6 +7449,10 @@ msgstr "Ne plus attendre {title}"
 #: components/mentions.tsx
 msgid "Stop watching"
 msgstr "Ne plus suivre"
+
+#: lib/error-codes.ts
+msgid "Stripe isn't configured"
+msgstr "Stripe n’est pas configuré"
 
 #: app/boards/[id]/edit/page.tsx
 msgid "Style"
@@ -7706,6 +7863,10 @@ msgstr "Il n’y a pas encore d’abonnement à gérer — passez d’abord à u
 msgid "These act straight away."
 msgstr "Ces actions s’appliquent immédiatement."
 
+#: components/staff/downtime.tsx
+msgid "These failed: apply again to retry them"
+msgstr "Ceux-ci ont échoué : appliquez à nouveau pour réessayer"
+
 #: lib/error-codes.ts
 msgid "they haven't joined the session"
 msgstr "ils n’ont pas rejoint la session"
@@ -7790,6 +7951,22 @@ msgstr "Cela crée {0} projets, {1} tableaux et {2} tickets, avec {3} commentair
 #: components/settings/csv-import.tsx
 msgid "This makes the project <0>{0}</0> ({1}) with {2} tickets, {3} boards and {4} columns."
 msgstr "Cela crée le projet <0>{0}</0> ({1}) avec {2} tickets, {3} tableaux et {4} colonnes."
+
+#: lib/error-codes.ts
+msgid "this outage has credits, so it stays on record"
+msgstr "cette panne a des crédits, elle reste donc enregistrée"
+
+#: components/staff/downtime.tsx
+msgid "This outage was an hour or less, but it’s part of a cluster. Credit it only if you decide the cluster counts."
+msgstr "Cette panne a duré une heure ou moins, mais fait partie d’une série. Créditez seulement si vous décidez que la série compte."
+
+#: components/staff/downtime.tsx
+msgid "This outage was an hour or less, so the Terms don’t credit it."
+msgstr "Cette panne a duré une heure ou moins, les Conditions ne la créditent donc pas."
+
+#: lib/error-codes.ts
+msgid "this outage was an hour or less: only a cluster staff decide on is credited"
+msgstr "cette panne a duré une heure ou moins : seule une série décidée par l’équipe est créditée"
 
 #: app/global-not-found.tsx
 msgid "This page doesn’t exist"
@@ -8045,6 +8222,10 @@ msgstr "Les timebox comptent les heures ouvrées, du lundi au vendredi, de 9 h 0
 msgid "Timeline"
 msgstr "Chronologie"
 
+#: components/staff/downtime.tsx
+msgid "Times are UTC, as on the <0>status page</0>. Over an hour makes every UTC day it touched free for every paying organization."
+msgstr "Les heures sont en UTC, comme sur la <0>page d’état</0>. Plus d’une heure rend gratuit chaque jour UTC touché pour chaque organisation payante."
+
 #: app/roadmaps/[id]/edit/page.tsx
 #: components/board/ticket-dialog.tsx
 #: components/intake/request-form.tsx
@@ -8060,6 +8241,10 @@ msgstr "le titre est requis"
 #: app/reports/page.tsx
 msgid "To"
 msgstr "À"
+
+#: components/staff/downtime.tsx
+msgid "To (UTC)"
+msgstr "À (UTC)"
 
 #: components/project/refinement.tsx
 msgid "To plan"
@@ -8547,6 +8732,10 @@ msgstr "Répartition du travail"
 #: components/reports/report-view.tsx
 msgid "Work mix, whole period"
 msgstr "Répartition du travail, toute la période"
+
+#: components/staff/downtime.tsx
+msgid "Working out the credits…"
+msgstr "Calcul des crédits…"
 
 #: components/settings/google-calendar.tsx
 msgid "Workspace domain"
