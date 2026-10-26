@@ -157,6 +157,11 @@ msgstr "{0, plural, one {Sending it to the backlog also moves its open sub-ticke
 msgid "{0} ({1}%)"
 msgstr "{0} ({1}%)"
 
+#. placeholder {0}: n(stats.archived_boards)
+#: components/staff/stats.tsx
+msgid "{0} archived"
+msgstr "{0} archived"
+
 #. placeholder {0}: column.name
 #: components/board/column.tsx
 msgid "{0} column"
@@ -171,6 +176,12 @@ msgstr "{0} days"
 #: components/settings/organization.tsx
 msgid "{0} description"
 msgstr "{0} description"
+
+#. placeholder {0}: n(stats.done_tickets)
+#. placeholder {1}: n(stats.tickets.total - stats.done_tickets)
+#: components/staff/stats.tsx
+msgid "{0} done · {1} open"
+msgstr "{0} done · {1} open"
 
 #. placeholder {0}: board.name
 #: components/project/backlog.tsx
@@ -202,6 +213,11 @@ msgstr "{0} invitation"
 msgid "{0} leader"
 msgstr "{0} leader"
 
+#. placeholder {0}: n(stats.live_sessions)
+#: components/staff/stats.tsx
+msgid "{0} live sessions"
+msgstr "{0} live sessions"
+
 #. placeholder {0}: progress.done
 #. placeholder {1}: progress.total
 #. placeholder {2}: Math.round((progress.done / progress.total) * 100)
@@ -226,6 +242,11 @@ msgstr "{0} of {1} tickets…"
 msgid "{0} open"
 msgstr "{0} open"
 
+#. placeholder {0}: n(stats.open_sprints)
+#: components/staff/stats.tsx
+msgid "{0} open sprints"
+msgstr "{0} open sprints"
+
 #. placeholder {0}: PROVIDER_NAMES.github
 #. placeholder {1}: PROVIDER_NAMES.bitbucket
 #: lib/integrations.ts
@@ -236,6 +257,11 @@ msgstr "{0} or {1}"
 #: components/settings/csv-import.tsx
 msgid "{0} rows or values left out"
 msgstr "{0} rows or values left out"
+
+#. placeholder {0}: size(i18n, stats.attachment_bytes)
+#: components/staff/stats.tsx
+msgid "{0} stored"
+msgstr "{0} stored"
 
 #. placeholder {0}: team.name
 #: components/settings/organization.tsx
@@ -592,6 +618,12 @@ msgstr "↑↓ to move · Enter to open · Esc to close"
 #: app/boards/[id]/page.tsx
 msgid "+ Add ticket"
 msgstr "+ Add ticket"
+
+#. placeholder {0}: n(count.day)
+#. placeholder {1}: n(count.week)
+#: components/staff/stats.tsx
+msgid "+{0} in 24 hours · +{1} in 7 days"
+msgstr "+{0} in 24 hours · +{1} in 7 days"
 
 #: components/settings/jira-import.tsx
 msgid "<0>Change your plan</0> to import it."
@@ -1151,6 +1183,7 @@ msgstr "api key expired: create a new one in Settings → API keys"
 #: app/account/page.tsx
 #: app/settings/page.tsx
 #: components/settings/api-keys.tsx
+#: components/staff/stats.tsx
 msgid "API keys"
 msgstr "API keys"
 
@@ -1253,6 +1286,7 @@ msgstr "At risk"
 msgid "Attach files"
 msgstr "Attach files"
 
+#: components/staff/stats.tsx
 #: components/ticket/attachments.tsx
 msgid "Attachments"
 msgstr "Attachments"
@@ -1407,6 +1441,7 @@ msgstr "Board view"
 #: app/projects/[id]/edit/page.tsx
 #: app/projects/[id]/page.tsx
 #: components/reports/rollup-view.tsx
+#: components/staff/stats.tsx
 msgid "Boards"
 msgstr "Boards"
 
@@ -1850,6 +1885,10 @@ msgstr "comment can't be empty or longer than 10000 characters"
 #: lib/error-codes.ts
 msgid "comment is too long"
 msgstr "comment is too long"
+
+#: components/staff/stats.tsx
+msgid "Comments"
+msgstr "Comments"
 
 #: components/settings/integrations.tsx
 msgid "Communication"
@@ -2383,6 +2422,10 @@ msgstr "Couldn’t load the project’s tickets."
 msgid "Couldn’t load the request form settings."
 msgstr "Couldn’t load the request form settings."
 
+#: components/staff/stats.tsx
+msgid "Couldn’t load the stats."
+msgstr "Couldn’t load the stats."
+
 #: components/roadmap/updates.tsx
 msgid "Couldn’t load the updates. Please refresh to try again."
 msgstr "Couldn’t load the updates. Please refresh to try again."
@@ -2766,6 +2809,10 @@ msgstr "Dashed line: ideal pace."
 #: components/board/velocity.tsx
 msgid "Dashed line: scope."
 msgstr "Dashed line: scope."
+
+#: components/staff/stats.tsx
+msgid "Database"
+msgstr "Database"
 
 #: components/reports/report-view.tsx
 msgid "Dates"
@@ -3666,6 +3713,13 @@ msgstr "Former member"
 #: lib/plans.ts
 msgid "Free"
 msgstr "Free"
+
+#. placeholder {0}: n(plans.free ?? 0)
+#. placeholder {1}: n(plans.pro ?? 0)
+#. placeholder {2}: n(plans.enterprise ?? 0)
+#: components/staff/stats.tsx
+msgid "Free {0} · Pro {1} · Enterprise {2}"
+msgstr "Free {0} · Pro {1} · Enterprise {2}"
 
 #: components/settings/jira-import.tsx
 msgid "Free to use: preview again to apply it."
@@ -4606,6 +4660,7 @@ msgstr "Loading your work…"
 #: components/settings/linear-import.tsx
 #: components/settings/webhooks.tsx
 #: components/staff/staff-shell.tsx
+#: components/staff/stats.tsx
 msgid "Loading…"
 msgstr "Loading…"
 
@@ -4727,6 +4782,7 @@ msgstr "Member removed from team."
 
 #: app/settings/organization/page.tsx
 #: components/settings/organization.tsx
+#: components/staff/stats.tsx
 msgid "Members"
 msgstr "Members"
 
@@ -5316,6 +5372,10 @@ msgstr "None — split bigger work into sub-tickets here."
 #: components/board/velocity.tsx
 msgid "None closed yet."
 msgstr "None closed yet."
+
+#: components/staff/stats.tsx
+msgid "None yet"
+msgstr "None yet"
 
 #: components/ticket/sub-tickets.tsx
 msgid "None yet. Add the work this epic is made of; it can sit on any board."
@@ -5913,6 +5973,10 @@ msgstr "organization membership is not active yet"
 msgid "Organization settings"
 msgstr "Organization settings"
 
+#: components/staff/stats.tsx
+msgid "Organizations"
+msgstr "Organizations"
+
 #: components/board/import-review.tsx
 msgid "original"
 msgstr "original"
@@ -6270,6 +6334,7 @@ msgstr "Project not found"
 #: app/error.tsx
 #: app/settings/page.tsx
 #: components/reports/rollup-view.tsx
+#: components/staff/stats.tsx
 msgid "Projects"
 msgstr "Projects"
 
@@ -6554,6 +6619,10 @@ msgstr "Revoke"
 #: components/settings/api-keys.tsx
 msgid "Revoke \"{name}\"? Anything using it stops working immediately."
 msgstr "Revoke \"{name}\"? Anything using it stops working immediately."
+
+#: components/staff/stats.tsx
+msgid "Right now"
+msgstr "Right now"
 
 #: app/r/[id]/page.tsx
 #: components/settings/embedding.tsx
@@ -7954,6 +8023,7 @@ msgstr "Ticket search results"
 #: components/board/column.tsx
 #: components/board/velocity.tsx
 #: components/reports/rollup-view.tsx
+#: components/staff/stats.tsx
 msgid "Tickets"
 msgstr "Tickets"
 
@@ -8126,6 +8196,7 @@ msgstr "TrackLin.es is run by {company}."
 
 #: app/error.tsx
 #: app/global-error.tsx
+#: components/staff/stats.tsx
 #: components/ticket-search.tsx
 #: components/ticket/comments.tsx
 msgid "Try again"

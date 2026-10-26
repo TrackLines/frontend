@@ -868,8 +868,16 @@ export const linear = {
   preview: (o: LinearOptions, t: T) => api<ImportJob>('/imports', { method: 'POST', body: { source: 'linear', options: o }, token: t }),
 };
 // The admin panel (TL-570), for ChewedFeed staff: everyone else gets 404 from every /staff route.
+export type StaffCount = { total: number; day: number; week: number };
+export type SystemStats = {
+  organizations: StaffCount; plans: Record<string, number>; members: StaffCount; projects: StaffCount;
+  boards: StaffCount; archived_boards: number; tickets: StaffCount; done_tickets: number; comments: StaffCount;
+  attachments: StaffCount; attachment_bytes: number; api_keys: Record<string, number>;
+  open_sprints: number; live_sessions: number; database_bytes: number;
+};
 export const staff = {
   me: (t: T) => api<{ staff: boolean }>('/staff/me', { token: t }),
+  stats: (t: T) => api<SystemStats>('/staff/stats', { token: t }), // counts only (TL-574)
 };
 // exportCSV: a project's tickets as CSV text (TL-637), for the browser to save.
 export const exportCSV = (projectId: string, t: T) => api<string>(`/projects/${encodeURIComponent(projectId)}/export.csv`, { token: t });

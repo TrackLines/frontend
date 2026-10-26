@@ -157,6 +157,11 @@ msgstr "{0, plural, one {Wenn du es ins Backlog schickst, wird auch sein offenes
 msgid "{0} ({1}%)"
 msgstr "{0} ({1} %)"
 
+#. placeholder {0}: n(stats.archived_boards)
+#: components/staff/stats.tsx
+msgid "{0} archived"
+msgstr "{0} archiviert"
+
 #. placeholder {0}: column.name
 #: components/board/column.tsx
 msgid "{0} column"
@@ -171,6 +176,12 @@ msgstr "{0} Tage"
 #: components/settings/organization.tsx
 msgid "{0} description"
 msgstr "Beschreibung von {0}"
+
+#. placeholder {0}: n(stats.done_tickets)
+#. placeholder {1}: n(stats.tickets.total - stats.done_tickets)
+#: components/staff/stats.tsx
+msgid "{0} done · {1} open"
+msgstr "{0} erledigt · {1} offen"
 
 #. placeholder {0}: board.name
 #: components/project/backlog.tsx
@@ -202,6 +213,11 @@ msgstr "Einladung zu {0}"
 msgid "{0} leader"
 msgstr "Leitung von {0}"
 
+#. placeholder {0}: n(stats.live_sessions)
+#: components/staff/stats.tsx
+msgid "{0} live sessions"
+msgstr "{0} Live-Sitzungen"
+
 #. placeholder {0}: progress.done
 #. placeholder {1}: progress.total
 #. placeholder {2}: Math.round((progress.done / progress.total) * 100)
@@ -226,6 +242,11 @@ msgstr "{0} von {1} Tickets…"
 msgid "{0} open"
 msgstr "{0} offen"
 
+#. placeholder {0}: n(stats.open_sprints)
+#: components/staff/stats.tsx
+msgid "{0} open sprints"
+msgstr "{0} offene Sprints"
+
 #. placeholder {0}: PROVIDER_NAMES.github
 #. placeholder {1}: PROVIDER_NAMES.bitbucket
 #: lib/integrations.ts
@@ -236,6 +257,11 @@ msgstr "{0} oder {1}"
 #: components/settings/csv-import.tsx
 msgid "{0} rows or values left out"
 msgstr "{0} Zeilen oder Werte ausgelassen"
+
+#. placeholder {0}: size(i18n, stats.attachment_bytes)
+#: components/staff/stats.tsx
+msgid "{0} stored"
+msgstr "{0} gespeichert"
 
 #. placeholder {0}: team.name
 #: components/settings/organization.tsx
@@ -592,6 +618,12 @@ msgstr "↑↓ zum Bewegen · Enter zum Öffnen · Esc zum Schließen"
 #: app/boards/[id]/page.tsx
 msgid "+ Add ticket"
 msgstr "+ Ticket hinzufügen"
+
+#. placeholder {0}: n(count.day)
+#. placeholder {1}: n(count.week)
+#: components/staff/stats.tsx
+msgid "+{0} in 24 hours · +{1} in 7 days"
+msgstr "+{0} in 24 Stunden · +{1} in 7 Tagen"
 
 #: components/settings/jira-import.tsx
 msgid "<0>Change your plan</0> to import it."
@@ -1151,6 +1183,7 @@ msgstr "API-Schlüssel abgelaufen: Erstelle unter Einstellungen → API-Schlüss
 #: app/account/page.tsx
 #: app/settings/page.tsx
 #: components/settings/api-keys.tsx
+#: components/staff/stats.tsx
 msgid "API keys"
 msgstr "API-Schlüssel"
 
@@ -1253,6 +1286,7 @@ msgstr "Gefährdet"
 msgid "Attach files"
 msgstr "Dateien anhängen"
 
+#: components/staff/stats.tsx
 #: components/ticket/attachments.tsx
 msgid "Attachments"
 msgstr "Anhänge"
@@ -1407,6 +1441,7 @@ msgstr "Board-Ansicht"
 #: app/projects/[id]/edit/page.tsx
 #: app/projects/[id]/page.tsx
 #: components/reports/rollup-view.tsx
+#: components/staff/stats.tsx
 msgid "Boards"
 msgstr "Boards"
 
@@ -1850,6 +1885,10 @@ msgstr "Ein Kommentar darf nicht leer oder länger als 10000 Zeichen sein."
 #: lib/error-codes.ts
 msgid "comment is too long"
 msgstr "Der Kommentar ist zu lang."
+
+#: components/staff/stats.tsx
+msgid "Comments"
+msgstr "Kommentare"
 
 #: components/settings/integrations.tsx
 msgid "Communication"
@@ -2383,6 +2422,10 @@ msgstr "Die Tickets des Projekts konnten nicht geladen werden."
 msgid "Couldn’t load the request form settings."
 msgstr "Die Einstellungen des Anfrageformulars konnten nicht geladen werden."
 
+#: components/staff/stats.tsx
+msgid "Couldn’t load the stats."
+msgstr "Die Statistiken konnten nicht geladen werden."
+
 #: components/roadmap/updates.tsx
 msgid "Couldn’t load the updates. Please refresh to try again."
 msgstr "Die Updates konnten nicht geladen werden. Lade die Seite neu, um es noch einmal zu versuchen."
@@ -2766,6 +2809,10 @@ msgstr "Gestrichelte Linie: ideales Tempo."
 #: components/board/velocity.tsx
 msgid "Dashed line: scope."
 msgstr "Gestrichelte Linie: Umfang."
+
+#: components/staff/stats.tsx
+msgid "Database"
+msgstr "Datenbank"
 
 #: components/reports/report-view.tsx
 msgid "Dates"
@@ -3666,6 +3713,13 @@ msgstr "Ehemaliges Mitglied"
 #: lib/plans.ts
 msgid "Free"
 msgstr "Kostenlos"
+
+#. placeholder {0}: n(plans.free ?? 0)
+#. placeholder {1}: n(plans.pro ?? 0)
+#. placeholder {2}: n(plans.enterprise ?? 0)
+#: components/staff/stats.tsx
+msgid "Free {0} · Pro {1} · Enterprise {2}"
+msgstr "Free {0} · Pro {1} · Enterprise {2}"
 
 #: components/settings/jira-import.tsx
 msgid "Free to use: preview again to apply it."
@@ -4606,6 +4660,7 @@ msgstr "Deine Arbeit wird geladen…"
 #: components/settings/linear-import.tsx
 #: components/settings/webhooks.tsx
 #: components/staff/staff-shell.tsx
+#: components/staff/stats.tsx
 msgid "Loading…"
 msgstr "Wird geladen…"
 
@@ -4727,6 +4782,7 @@ msgstr "Mitglied aus dem Team entfernt."
 
 #: app/settings/organization/page.tsx
 #: components/settings/organization.tsx
+#: components/staff/stats.tsx
 msgid "Members"
 msgstr "Mitglieder"
 
@@ -5316,6 +5372,10 @@ msgstr "Keine — teile größere Arbeit hier in Untertickets auf."
 #: components/board/velocity.tsx
 msgid "None closed yet."
 msgstr "Noch keine geschlossen."
+
+#: components/staff/stats.tsx
+msgid "None yet"
+msgstr "Noch keine"
 
 #: components/ticket/sub-tickets.tsx
 msgid "None yet. Add the work this epic is made of; it can sit on any board."
@@ -5913,6 +5973,10 @@ msgstr "Die Mitgliedschaft in der Organisation ist noch nicht aktiv."
 msgid "Organization settings"
 msgstr "Organisationseinstellungen"
 
+#: components/staff/stats.tsx
+msgid "Organizations"
+msgstr "Organisationen"
+
 #: components/board/import-review.tsx
 msgid "original"
 msgstr "Original"
@@ -6270,6 +6334,7 @@ msgstr "Projekt nicht gefunden"
 #: app/error.tsx
 #: app/settings/page.tsx
 #: components/reports/rollup-view.tsx
+#: components/staff/stats.tsx
 msgid "Projects"
 msgstr "Projekte"
 
@@ -6554,6 +6619,10 @@ msgstr "Widerrufen"
 #: components/settings/api-keys.tsx
 msgid "Revoke \"{name}\"? Anything using it stops working immediately."
 msgstr "„{name}“ widerrufen? Alles, was ihn nutzt, funktioniert sofort nicht mehr."
+
+#: components/staff/stats.tsx
+msgid "Right now"
+msgstr "Gerade jetzt"
 
 #: app/r/[id]/page.tsx
 #: components/settings/embedding.tsx
@@ -7954,6 +8023,7 @@ msgstr "Ticket-Suchergebnisse"
 #: components/board/column.tsx
 #: components/board/velocity.tsx
 #: components/reports/rollup-view.tsx
+#: components/staff/stats.tsx
 msgid "Tickets"
 msgstr "Tickets"
 
@@ -8126,6 +8196,7 @@ msgstr "TrackLin.es wird von {company} betrieben."
 
 #: app/error.tsx
 #: app/global-error.tsx
+#: components/staff/stats.tsx
 #: components/ticket-search.tsx
 #: components/ticket/comments.tsx
 msgid "Try again"
