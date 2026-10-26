@@ -1417,17 +1417,13 @@ msgstr "'echletmey lo'lu'pu'bogh ngaSlu' Qaw'lu'be', vaj qunchaj ratlh. jInmolDa
 msgid "Breadcrumb"
 msgstr "He mIllogh"
 
-#: app/settings/page.tsx
-msgid "Bring Jira Cloud projects across: boards, issues with their numbers, comments and attachments."
-msgstr "Jira Cloud jInmolmey yIqem: Sommey, Seghmey mI'chaj je, bIngDaq ja'chuqmey, ngaSwI'mey je. Qapla'!"
+#: components/settings/import-page.tsx
+msgid "Bring work in from another tool as new projects. You see what it will make before anything is created, and can scrap it afterwards while nobody has worked on it."
+msgstr "latlh jan vo' vum yIqem, jInmolmey chu'. chenmoHlu'pa' yIlegh; ghIq vay' vumbe'chugh DaQaw'laH."
 
 #: app/settings/page.tsx
-msgid "Bring tickets in from a CSV (Trello, Asana, Linear, spreadsheets) as a new project."
-msgstr "CSV vo' ticketmey yIqem (Trello, Asana, Linear), jInmol chu'. Qapla'!"
-
-#: app/settings/import/page.tsx
-msgid "Bring tickets in from a CSV as a new project. You see what it will make before anything is created, and can scrap it afterwards."
-msgstr "CSV vo' ticketmey yIqem, jInmol chu'. chenmoHlu'pa' yIlegh; ghIq DaQaw'laH."
+msgid "Bring work in from Jira, or from a CSV (Trello, Asana, Linear, spreadsheets), as new projects."
+msgstr "Jira vo' pagh CSV vo' (Trello, Asana, Linear) vum yIqem, jInmolmey chu'. Qapla'!"
 
 #: app/roadmaps/page.tsx
 msgid "Browse projects"
@@ -2707,6 +2703,7 @@ msgid "Creating…"
 msgstr "chenmoHlI'…"
 
 #: components/settings/csv-import.tsx
+#: components/settings/import-page.tsx
 msgid "CSV file"
 msgstr "CSV De'"
 
@@ -3159,9 +3156,9 @@ msgstr "API ngaQHa'moHwI' ghajnIS Hoch AI vumwI': <0>API ngaQHa'moHwI'mey</0>Daq
 msgid "Each board's share of planned work done in the period. The band, 80–100%, is on target."
 msgstr "poHDaq Qu' nablu'pu'bogh 'echlet Hoch 'ay' rInbogh. 80–100% 'oHchugh, ngoQ qIp."
 
-#: app/settings/import/jira/page.tsx
-msgid "Each Jira project becomes a project here, keeping its key and ticket numbers. You see what it will make before anything is created, and can scrap it afterwards while nobody has worked on it."
-msgstr "naDev Jira jInmol Hoch jInmol moj, ngaQHa'moHwI' ticket mI'mey je pol. chenmoHlu'pa' yIlegh; ghIq vay' vumbe'chugh DaQaw'laH."
+#: components/settings/import-page.tsx
+msgid "Each Jira Cloud project becomes a project here, keeping its key and ticket numbers, with its boards, comments and attachments."
+msgstr "naDev Jira Cloud jInmol Hoch jInmol moj, ngaQHa'moHwI' ticket mI'mey Sommey ja'chuqmey ngaSwI'mey je pol."
 
 #: components/reports/rollup-view.tsx
 msgid "Each one's share of the points finished, on boards that estimate."
@@ -3640,6 +3637,10 @@ msgstr "from to je jajmey (YYYY-MM-DD) 'oHnIS, to nIDpa' from, cha' DIS veH"
 msgid "From Bugfixes → Settings → Access tokens"
 msgstr "Bugfixes → SeHlaw → 'elmeH tokenmey vo'"
 
+#: components/settings/import-page.tsx
+msgid "From Trello, Asana, Linear, a spreadsheet, or another TrackLin.es project’s export: one CSV becomes one project."
+msgstr "Trello, Asana, Linear, pagh latlh TrackLin.es jInmol vo': wa' CSV wa' jInmol moj."
+
 #: components/settings/csv-import.tsx
 msgid "From Trello, Asana, Linear, Jira, a spreadsheet, or another TrackLin.es project’s export. Up to about 1 MB."
 msgstr "Trello, Asana, Linear, Jira, pagh latlh TrackLin.es jInmol vo'. 1 MB neH."
@@ -3926,16 +3927,11 @@ msgstr "vIpolpu'"
 msgid "image"
 msgstr "mIllogh"
 
-#: app/settings/import/page.tsx
 #: app/settings/page.tsx
 #: components/settings/csv-import.tsx
+#: components/settings/import-page.tsx
 msgid "Import"
 msgstr "yIqem"
-
-#: app/settings/import/jira/page.tsx
-#: app/settings/page.tsx
-msgid "Import from Jira"
-msgstr "Jira vo' yIqem"
 
 #: lib/people.ts
 msgid "Imported"
@@ -3945,8 +3941,7 @@ msgstr "Hevlu'pu'"
 msgid "Imported tickets to review"
 msgstr "nuDmeH qemlu'pu'bogh ticketmey"
 
-#: app/settings/import/jira/page.tsx
-#: app/settings/import/page.tsx
+#: components/settings/import-page.tsx
 msgid "Importing isn’t turned on for your organization yet."
 msgstr "ghom'a'lIj qemmeH chu'be'lu'."
 
@@ -6867,12 +6862,11 @@ msgstr "{0} yIcher"
 #: app/settings/api-keys/page.tsx
 #: app/settings/embedding/page.tsx
 #: app/settings/file-cleanup/page.tsx
-#: app/settings/import/jira/page.tsx
-#: app/settings/import/page.tsx
 #: app/settings/integrations/page.tsx
 #: app/settings/organization/page.tsx
 #: app/settings/page.tsx
 #: app/settings/webhooks/page.tsx
+#: components/settings/import-page.tsx
 msgid "Settings"
 msgstr "SeHlaw"
 

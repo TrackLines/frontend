@@ -100,8 +100,13 @@ test('running can be cancelled; scrap is offered only while nobody has worked on
   expect(status({ state: 'previewing', planned: { projects: 1, boards: 1, columns: 1, tickets: 1, comments: 0 }, projects: [shop] })).not.toContain('This makes the project'); // the Jira preview says it
 });
 
-test('the Jira page and card are behind the imports flag, for admins (source)', async () => {
+test('one Import card opens a page with CSV and Jira tabs, behind the imports flag, for admins (TL-653, source)', async () => {
   const read = (p: string) => Bun.file(new URL(p, import.meta.url)).text();
-  expect(await read('../app/settings/import/jira/page.tsx')).toContain("is('imports').enabled()");
-  expect(await read('../app/settings/page.tsx')).toContain("{admin && is('imports').enabled() && <SettingsCard icon={UploadIcon} title={t`Import from Jira`}");
+  const page = await read('../components/settings/import-page.tsx');
+  for (const s of ["is('imports').enabled()", '<TabsTrigger value="csv">', '<TabsTrigger value="jira">', '<CSVImport />', '<JiraImport />']) expect(page).toContain(s);
+  expect(await read('../app/settings/import/page.tsx')).toContain('<ImportSettings initial="csv" />');
+  expect(await read('../app/settings/import/jira/page.tsx')).toContain('<ImportSettings initial="jira" />');
+  const settings = await read('../app/settings/page.tsx');
+  expect(settings).toContain("{admin && is('imports').enabled() && <SettingsCard icon={UploadIcon} title={t`Import`} href=\"/settings/import\"");
+  expect(settings.match(/<SettingsCard icon=\{UploadIcon\}/g)?.length).toBe(1);
 });
