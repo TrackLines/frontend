@@ -278,8 +278,8 @@ msgstr "{0}: {startLabel} tot {endLabel}"
 
 #. placeholder {0}: project.name
 #: app/projects/[id]/edit/page.tsx
-msgid "{0}’s name, ticket keys, boards, request form and repositories."
-msgstr "Naam, ticketcodes, borden, aanvraagformulier en repositories van {0}."
+msgid "{0}’s name, ticket keys, boards, export, request form and repositories."
+msgstr "Naam, ticketsleutels, borden, export, aanvraagformulier en repositories van {0}."
 
 #: components/board/sprint-bar.tsx
 msgid "{carry, plural, one {unfinished ticket stays on the board} other {unfinished tickets stay on the board}}"
@@ -3424,6 +3424,10 @@ msgstr "Elke kolom heeft een naam nodig."
 msgid "Every project’s events go to this space."
 msgstr "De gebeurtenissen van elk project gaan naar deze space."
 
+#: app/projects/[id]/edit/page.tsx
+msgid "Every ticket in the project, open and closed, as a CSV file for a spreadsheet or another tool."
+msgstr "Elk ticket in het project, open en gesloten, als CSV-bestand voor een spreadsheet of een andere tool."
+
 #: app/mentions/page.tsx
 msgid "Every ticket where someone @mentioned you, newest first."
 msgstr "Elk ticket waarin iemand je heeft @vermeld, nieuwste eerst."
@@ -3478,6 +3482,7 @@ msgstr "Verloopt na"
 msgid "expires in {days, plural, one {# day} other {# days}}"
 msgstr "verloopt over {days, plural, one {# dag} other {# dagen}}"
 
+#: app/projects/[id]/edit/page.tsx
 #: components/reports/export-menu.tsx
 #: components/roadmap/report.tsx
 msgid "Export"

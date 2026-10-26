@@ -68,9 +68,11 @@ test('running shows progress; done offers scrap; failed says why', () => {
   expect(status(job({ state: 'failed', error: 'the prefix OPS is already used' }))).toContain('nothing was kept: the prefix OPS is already used');
 });
 
-test('the import page and card are behind the imports flag, for admins; export is on the project page (source)', async () => {
+test('the import page and card are behind the imports flag, for admins; export is on Edit project (source)', async () => {
   const read = (p: string) => Bun.file(new URL(p, import.meta.url)).text();
   expect(await read('../components/settings/import-page.tsx')).toContain("is('imports').enabled()");
   expect(await read('../app/settings/page.tsx')).toContain("{admin && is('imports').enabled() && <SettingsCard icon={UploadIcon}");
-  expect(await read('../app/projects/[id]/page.tsx')).toContain('<ExportCSVButton projectId={project.id} name={project.name} token={token} />');
+  // export is part of editing the project, not the project page's header (TL-656)
+  expect(await read('../app/projects/[id]/edit/page.tsx')).toContain('<ExportCSVButton projectId={project.id} name={project.name} token={token} />');
+  expect(await read('../app/projects/[id]/page.tsx')).not.toContain('ExportCSVButton');
 });
