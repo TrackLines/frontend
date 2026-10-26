@@ -1417,17 +1417,13 @@ msgstr "Boards, die schon genutzt wurden, werden archiviert statt gelöscht, dam
 msgid "Breadcrumb"
 msgstr "Brotkrümelnavigation"
 
-#: app/settings/page.tsx
-msgid "Bring Jira Cloud projects across: boards, issues with their numbers, comments and attachments."
-msgstr "Übernimm Jira-Cloud-Projekte: Boards, Vorgänge mit ihren Nummern, Kommentare und Anhänge."
+#: components/settings/import-page.tsx
+msgid "Bring work in from another tool as new projects. You see what it will make before anything is created, and can scrap it afterwards while nobody has worked on it."
+msgstr "Übernimm Arbeit aus einem anderen Tool als neue Projekte. Du siehst, was entsteht, bevor etwas angelegt wird, und kannst es danach verwerfen, solange niemand daran gearbeitet hat."
 
 #: app/settings/page.tsx
-msgid "Bring tickets in from a CSV (Trello, Asana, Linear, spreadsheets) as a new project."
-msgstr "Hol Tickets aus einer CSV (Trello, Asana, Linear, Tabellen) als neues Projekt herein."
-
-#: app/settings/import/page.tsx
-msgid "Bring tickets in from a CSV as a new project. You see what it will make before anything is created, and can scrap it afterwards."
-msgstr "Hol Tickets aus einer CSV als neues Projekt herein. Du siehst vorher, was angelegt wird, und kannst es danach wieder verwerfen."
+msgid "Bring work in from Jira, or from a CSV (Trello, Asana, Linear, spreadsheets), as new projects."
+msgstr "Übernimm Arbeit aus Jira oder aus einer CSV (Trello, Asana, Linear, Tabellen) als neue Projekte."
 
 #: app/roadmaps/page.tsx
 msgid "Browse projects"
@@ -2707,6 +2703,7 @@ msgid "Creating…"
 msgstr "Wird erstellt…"
 
 #: components/settings/csv-import.tsx
+#: components/settings/import-page.tsx
 msgid "CSV file"
 msgstr "CSV-Datei"
 
@@ -3159,9 +3156,9 @@ msgstr "Jeder Agent braucht einen eigenen API-Schlüssel: Erstelle einen unter <
 msgid "Each board's share of planned work done in the period. The band, 80–100%, is on target."
 msgstr "Anteil der geplanten Arbeit, den jedes Board im Zeitraum erledigt hat. Der Bereich von 80–100 % liegt im Ziel."
 
-#: app/settings/import/jira/page.tsx
-msgid "Each Jira project becomes a project here, keeping its key and ticket numbers. You see what it will make before anything is created, and can scrap it afterwards while nobody has worked on it."
-msgstr "Jedes Jira-Projekt wird hier zu einem Projekt und behält seinen Schlüssel und seine Ticketnummern. Du siehst, was entsteht, bevor etwas angelegt wird, und kannst es danach verwerfen, solange niemand daran gearbeitet hat."
+#: components/settings/import-page.tsx
+msgid "Each Jira Cloud project becomes a project here, keeping its key and ticket numbers, with its boards, comments and attachments."
+msgstr "Jedes Jira-Cloud-Projekt wird hier zu einem Projekt und behält Schlüssel und Ticketnummern, mit seinen Boards, Kommentaren und Anhängen."
 
 #: components/reports/rollup-view.tsx
 msgid "Each one's share of the points finished, on boards that estimate."
@@ -3640,6 +3637,10 @@ msgstr "from und to sind Daten (YYYY-MM-DD), from vor to, höchstens zwei Jahre 
 msgid "From Bugfixes → Settings → Access tokens"
 msgstr "Unter Bugfixes → Settings → Access tokens"
 
+#: components/settings/import-page.tsx
+msgid "From Trello, Asana, Linear, a spreadsheet, or another TrackLin.es project’s export: one CSV becomes one project."
+msgstr "Aus Trello, Asana, Linear, einer Tabelle oder dem Export eines anderen TrackLin.es-Projekts: Eine CSV wird zu einem Projekt."
+
 #: components/settings/csv-import.tsx
 msgid "From Trello, Asana, Linear, Jira, a spreadsheet, or another TrackLin.es project’s export. Up to about 1 MB."
 msgstr "Aus Trello, Asana, Linear, Jira, einer Tabelle oder dem Export eines anderen TrackLin.es-Projekts. Bis etwa 1 MB."
@@ -3926,16 +3927,11 @@ msgstr "Ich habe es gespeichert"
 msgid "image"
 msgstr "Bild"
 
-#: app/settings/import/page.tsx
 #: app/settings/page.tsx
 #: components/settings/csv-import.tsx
+#: components/settings/import-page.tsx
 msgid "Import"
 msgstr "Importieren"
-
-#: app/settings/import/jira/page.tsx
-#: app/settings/page.tsx
-msgid "Import from Jira"
-msgstr "Aus Jira importieren"
 
 #: lib/people.ts
 msgid "Imported"
@@ -3945,8 +3941,7 @@ msgstr "Importiert"
 msgid "Imported tickets to review"
 msgstr "Zu prüfende importierte Tickets"
 
-#: app/settings/import/jira/page.tsx
-#: app/settings/import/page.tsx
+#: components/settings/import-page.tsx
 msgid "Importing isn’t turned on for your organization yet."
 msgstr "Importieren ist für deine Organisation noch nicht aktiviert."
 
@@ -6867,12 +6862,11 @@ msgstr "{0} einrichten"
 #: app/settings/api-keys/page.tsx
 #: app/settings/embedding/page.tsx
 #: app/settings/file-cleanup/page.tsx
-#: app/settings/import/jira/page.tsx
-#: app/settings/import/page.tsx
 #: app/settings/integrations/page.tsx
 #: app/settings/organization/page.tsx
 #: app/settings/page.tsx
 #: app/settings/webhooks/page.tsx
+#: components/settings/import-page.tsx
 msgid "Settings"
 msgstr "Einstellungen"
 

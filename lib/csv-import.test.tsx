@@ -70,7 +70,7 @@ test('running shows progress; done offers scrap; failed says why', () => {
 
 test('the import page and card are behind the imports flag, for admins; export is on the project page (source)', async () => {
   const read = (p: string) => Bun.file(new URL(p, import.meta.url)).text();
-  expect(await read('../app/settings/import/page.tsx')).toContain("is('imports').enabled()");
+  expect(await read('../components/settings/import-page.tsx')).toContain("is('imports').enabled()");
   expect(await read('../app/settings/page.tsx')).toContain("{admin && is('imports').enabled() && <SettingsCard icon={UploadIcon}");
   expect(await read('../app/projects/[id]/page.tsx')).toContain('<ExportCSVButton projectId={project.id} name={project.name} token={token} />');
 });
