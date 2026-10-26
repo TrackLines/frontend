@@ -4,6 +4,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { HelpItem } from '@/components/help-bot';
+import { Pager } from '@/components/pager';
 import { useAct } from '@/components/settings/jira-import';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -40,6 +41,14 @@ export function moved<X>(list: X[], i: number, by: -1 | 1): X[] {
   return out;
 }
 
+// matches: whether an answer has the search in its slug, extra words, or a question or answer in any language.
+export function matches(a: HelpAnswerInput, query: string): boolean {
+  const q = query.trim().toLowerCase();
+  return !q || [a.slug, a.words, ...Object.values(a.question), ...Object.values(a.answer)].some((v) => v?.toLowerCase().includes(q));
+}
+
+const PER_PAGE = 10;
+
 const blank: HelpAnswerInput = { slug: '', question: { en: '' }, answer: { en: '' }, href: '', fallback_href: '', pages: [], words: '', published: true };
 
 // HelpEditor: the help panel's answers (TL-579): add, edit, reorder, publish and delete, in every language.
@@ -50,6 +59,8 @@ export function HelpEditor() {
   const [list, setList] = useState<HelpAnswer[] | null>(null);
   const [failed, setFailed] = useState(false);
   const [editing, setEditing] = useState<HelpAnswer | 'new' | null>(null);
+  const [query, setQuery] = useState('');
+  const [page, setPage] = useState(1);
   useEffect(() => {
     if (token) staff.help(token).then(setList, () => setFailed(true));
   }, [token !== null]);
@@ -77,6 +88,11 @@ export function HelpEditor() {
     setEditing(null);
   };
 
+  // i stays the answer's place in the whole list, so moving works across pages; not while searching
+  const found = list.map((a, i) => ({ a, i })).filter(({ a }) => matches(a, query));
+  const lastPage = Math.max(1, Math.ceil(found.length / PER_PAGE));
+  const current = Math.min(page, lastPage);
+
   if (editing) return <HelpForm initial={editing === 'new' ? blank : editing} onSave={save} onCancel={() => setEditing(null)} />;
   return (
     <div className="grid gap-4">
@@ -84,27 +100,36 @@ export function HelpEditor() {
         <p className="text-sm text-muted-foreground"><Trans>The answers in the help panel, in this order: the first ones for a page are suggested there before anyone types.</Trans></p>
         <Button size="sm" onClick={() => setEditing('new')}><Trans>Add an answer</Trans></Button>
       </div>
+      <Input type="search" value={query} onChange={(e) => { setQuery(e.target.value); setPage(1); }} placeholder={t`Search the answers, in any language`} aria-label={t`Search the answers`} className="max-w-sm" />
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-      <HelpList list={list} busy={busy} onMove={reorder} onEdit={setEditing} onDelete={remove} />
+      <div id="help-answers">
+        {query.trim() && found.length === 0
+          ? <p className="text-sm text-muted-foreground"><Trans>No answers match.</Trans></p>
+          : <HelpList items={found.slice((current - 1) * PER_PAGE, current * PER_PAGE)} total={list.length} reorder={!query.trim()} busy={busy} onMove={reorder} onEdit={setEditing} onDelete={remove} />}
+        <Pager page={current} lastPage={lastPage} onPage={setPage} anchor="#help-answers" />
+      </div>
     </div>
   );
 }
 
-export function HelpList({ list, busy, onMove, onEdit, onDelete }: {
-  list: HelpAnswer[]; busy: boolean; onMove: (i: number, by: -1 | 1) => void; onEdit: (a: HelpAnswer) => void; onDelete: (a: HelpAnswer) => void;
+// HelpList: one page of answers; i is each one's place in the whole list (total long), which moving uses.
+export function HelpList({ items, total, reorder, busy, onMove, onEdit, onDelete }: {
+  items: { a: HelpAnswer; i: number }[]; total: number; reorder: boolean; busy: boolean; onMove: (i: number, by: -1 | 1) => void; onEdit: (a: HelpAnswer) => void; onDelete: (a: HelpAnswer) => void;
 }) {
   const { t } = useLingui();
-  if (list.length === 0) return <p className="text-sm text-muted-foreground"><Trans>No answers yet.</Trans></p>;
+  if (items.length === 0) return <p className="text-sm text-muted-foreground"><Trans>No answers yet.</Trans></p>;
   return (
-    <ol className="divide-y rounded-xl border">
-      {list.map((a, i) => {
+    <ol className="divide-y rounded-xl border" start={items[0].i + 1}>
+      {items.map(({ a, i }) => {
         const gaps = missing(a);
         return (
           <li key={a.id} className="flex flex-wrap items-center gap-3 p-3 text-sm">
-            <div className="flex flex-col">
-              <Button size="icon-xs" variant="ghost" aria-label={t`Move up`} disabled={busy || i === 0} onClick={() => onMove(i, -1)}><ArrowUpIcon /></Button>
-              <Button size="icon-xs" variant="ghost" aria-label={t`Move down`} disabled={busy || i === list.length - 1} onClick={() => onMove(i, 1)}><ArrowDownIcon /></Button>
-            </div>
+            {reorder && (
+              <div className="flex flex-col">
+                <Button size="icon-xs" variant="ghost" aria-label={t`Move up`} disabled={busy || i === 0} onClick={() => onMove(i, -1)}><ArrowUpIcon /></Button>
+                <Button size="icon-xs" variant="ghost" aria-label={t`Move down`} disabled={busy || i === total - 1} onClick={() => onMove(i, 1)}><ArrowDownIcon /></Button>
+              </div>
+            )}
             <div className="grid min-w-0 flex-1 gap-1">
               <p className="font-medium">{a.question.en}</p>
               <p className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">

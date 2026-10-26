@@ -1,6 +1,6 @@
 import { afterEach, expect, test } from 'bun:test';
 import { render } from '@/test/i18n';
-import { HelpForm, HelpList, missing, moved, problems } from './help-editor';
+import { HelpForm, HelpList, matches, missing, moved, problems } from './help-editor';
 import { staff, type HelpAnswer, type HelpAnswerInput } from '@/lib/api';
 
 const realFetch = globalThis.fetch;
@@ -31,8 +31,9 @@ test('the languages still missing, and moving an answer', () => {
 });
 
 test('the list: hidden and untranslated answers say so; the first can’t go up', () => {
-  const html = render(<HelpList busy={false} onMove={() => {}} onEdit={() => {}} onDelete={() => {}}
-    list={[answer(), answer({ id: 'h2', slug: 'theme', published: false, question: { en: 'Dark mode?' }, answer: { en: 'Yes' } })]} />).replace(/<!-- -->/g, '');
+  const list = [answer(), answer({ id: 'h2', slug: 'theme', published: false, question: { en: 'Dark mode?' }, answer: { en: 'Yes' } })];
+  const html = render(<HelpList busy={false} onMove={() => {}} onEdit={() => {}} onDelete={() => {}} total={2} reorder
+    items={list.map((a, i) => ({ a, i }))} />).replace(/<!-- -->/g, '');
   for (const s of ['How?', 'add-board', 'Dark mode?', 'Hidden', 'Not translated: nl, de, es, pt, fr, tlh', '>Edit<', '>Delete<']) expect(html).toContain(s);
   expect(html.match(/<button[^>]* disabled=""[^>]*aria-label="Move up"/g)?.length).toBe(1); // the first
   expect(html.match(/<button[^>]* disabled=""[^>]*aria-label="Move down"/g)?.length).toBe(1); // the last
@@ -60,4 +61,16 @@ test('staff edits go to the staff routes', async () => {
   await staff.deleteHelp('h1', 't');
   expect(asked.map((a) => a.split(' {')[0])).toEqual(['GET /staff/help', 'POST /staff/help', 'PUT /staff/help/h1', 'PUT /staff/help/order', 'DELETE /staff/help/h1']);
   expect(asked[3]).toContain('{"ids":["h2","h1"]}');
+});
+
+test('search finds an answer by slug, extra words, or its text in any language; a page of a search can’t be reordered (TL-658)', () => {
+  const a = answer();
+  for (const q of ['', 'ADD-BOARD', 'new board', 'how', 'Comment ?', 'chay’']) expect(matches(a, q)).toBe(true);
+  expect(matches(a, 'invoice')).toBe(false);
+  const html = render(<HelpList busy={false} onMove={() => {}} onEdit={() => {}} onDelete={() => {}} total={30} reorder={false}
+    items={[{ a, i: 12 }]} />);
+  expect(html).toContain('start="13"');
+  expect(html).not.toContain('Move up');
+  const page2 = render(<HelpList busy={false} onMove={() => {}} onEdit={() => {}} onDelete={() => {}} total={30} reorder items={[{ a, i: 10 }]} />);
+  expect(page2.match(/<button[^>]* disabled=""[^>]*aria-label="Move/g)).toBeNull(); // the first on page 2 can still go up
 });
