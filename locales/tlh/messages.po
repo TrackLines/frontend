@@ -20,6 +20,10 @@ msgstr "“{name}” tIn law'qu': {mb} MB tIn law' ghItlhmey 'e' chaw'lu'be'."
 msgid "“{name}”: a WIP limit is a whole number from 1 to 999, or none."
 msgstr "“{name}”: WIP veH'e' mI' naQ 'oH, 1 vo' 999 ghoS, pagh pagh."
 
+#: components/settings/jira-import.tsx
+msgid "({key} is taken here, so a number was added)"
+msgstr "({key} lo'lu'taH naDev, mI' chel'lu')"
+
 #: components/reports/report-view.tsx
 msgid "(in progress)"
 msgstr "(ta'lI')"
@@ -238,6 +242,11 @@ msgstr "{0} tlhegh pagh lo'laHghach Dalpu'"
 msgid "{0} team name"
 msgstr "{0} beq pong"
 
+#. placeholder {0}: p.tickets
+#: components/settings/jira-import.tsx
+msgid "{0} tickets"
+msgstr "{0} ticketmey"
+
 #. placeholder {0}: range.from
 #. placeholder {1}: range.to
 #: app/reports/page.tsx
@@ -383,6 +392,10 @@ msgstr "{hours, plural, one {# rep} other {# rep}}"
 #: components/ticket-type.tsx
 msgid "{hours}h"
 msgstr "{hours}h"
+
+#: components/settings/jira-import.tsx
+msgid "{key} can’t be used as a key prefix here. Choose one:"
+msgstr "naDev {key} lo'laHbe' ngaQHa'moHwI' moHaq. wa' yIwIv:"
 
 #. placeholder {0}: fresh.name
 #: components/settings/api-keys.tsx
@@ -580,6 +593,10 @@ msgstr "↑↓ yIvIH · Enter yIpoSmoH · Esc yISoQmoH"
 msgid "+ Add ticket"
 msgstr "+ ticket yIchel"
 
+#: components/settings/jira-import.tsx
+msgid "<0>Change your plan</0>, or untick some projects and preview again."
+msgstr "<0>Dochvetlh yIchoH</0>, pagh jInmolmey yIteq 'ej yIleghqa'."
+
 #: components/board/review.tsx
 msgid "<0>Needs review.</0> An agent finished this. Approve it to move it to Done, or send it back with what's missing."
 msgstr "<0>nuDnIS.</0> Qu'vam rInmoHpu' AI. rInDaq yIvIHmoHmeH yIchaw', pagh chegh yIngeH 'ej chovnatlh ngabbogh yIja'."
@@ -612,6 +629,10 @@ msgstr "wa' DIS wa' jaj je"
 #: components/settings/api-keys.tsx
 msgid "180 days"
 msgstr "180 jaj"
+
+#: components/settings/jira-import.tsx
+msgid "2 to 6 capital letters or digits, starting with a letter."
+msgstr "cha' vagh javDIch: DeghHom tIn pagh mI'; DeghHom tIn wa'DIch."
 
 #: components/board/sprint-status.ts
 msgid "2 weeks"
@@ -1120,6 +1141,10 @@ msgstr "api ngaQHa'moHwI' Dotlh ngI'pu': SeHlaw → API ngaQHa'moHwI'meyDaq chu'
 msgid "API keys"
 msgstr "API ngaQHa'moHwI'mey"
 
+#: components/settings/jira-import.tsx
+msgid "API token"
+msgstr "API ngaQHa'moHwI'"
+
 #: components/settings/integrations.tsx
 msgid "API URL <0>(optional)</0>"
 msgstr "API URL <0>(DaneHchugh)</0>"
@@ -1393,6 +1418,10 @@ msgid "Breadcrumb"
 msgstr "He mIllogh"
 
 #: app/settings/page.tsx
+msgid "Bring Jira Cloud projects across: boards, issues with their numbers, comments and attachments."
+msgstr "Jira Cloud jInmolmey yIqem: Sommey, Seghmey mI'chaj je, bIngDaq ja'chuqmey, ngaSwI'mey je. Qapla'!"
+
+#: app/settings/page.tsx
 msgid "Bring tickets in from a CSV (Trello, Asana, Linear, spreadsheets) as a new project."
 msgstr "CSV vo' ticketmey yIqem (Trello, Asana, Linear), jInmol chu'. Qapla'!"
 
@@ -1487,6 +1516,7 @@ msgstr "'echlet mIw vIlo'qa'laH'a'?"
 #: components/project/backlog.tsx
 #: components/project/key-prefix.tsx
 #: components/project/move-to-board.tsx
+#: components/settings/csv-import.tsx
 #: components/ticket/duplicates.tsx
 msgid "Cancel"
 msgstr "yIqIl"
@@ -1498,6 +1528,10 @@ msgstr "pong choHghach yIqIl"
 #: components/ticket/comments.tsx
 msgid "Cancel reply"
 msgstr "jang yIqIl"
+
+#: components/settings/csv-import.tsx
+msgid "Cancelled: nothing was imported."
+msgstr "mevlu'pu': pagh qemlu'."
 
 #: components/reports/report-view.tsx
 msgid "Carried"
@@ -1838,6 +1872,7 @@ msgstr "ticketmey rInpu'bogh, rIn jaj tlhoy poH je ghItlhlu'"
 
 #: components/settings/google-calendar.tsx
 #: components/settings/integrations.tsx
+#: components/settings/jira-import.tsx
 msgid "Connect"
 msgstr "yIrar"
 
@@ -1867,6 +1902,10 @@ msgstr "GitHub, Bitbucket, Google Chat, Bugfixes je tIrar."
 msgid "Connect it first."
 msgstr "wa'DIch yIrar."
 
+#: components/settings/jira-import.tsx
+msgid "Connect Jira Cloud"
+msgstr "Jira Cloud yIrar"
+
 #: app/settings/integrations/page.tsx
 msgid "Connect your organization to the tools it uses. Link repositories to a project from the project's page."
 msgstr "ghom'a'lIj lo'bogh jan tIrar. jInmol nach vo' jInmolvaD repositorymey tIrar."
@@ -1889,6 +1928,13 @@ msgstr "GitHub mabmey rarlu'pu'bogh"
 #: components/settings/google-calendar.tsx
 msgid "Connected to {0}"
 msgstr "{0}Daq rarlu'pu'"
+
+#. placeholder {0}: conn.site
+#. placeholder {1}: conn.account
+#. placeholder {2}: conn.email
+#: components/settings/jira-import.tsx
+msgid "Connected to <0>{0}</0> as {1} ({2})."
+msgstr "<0>{0}</0> rarlu'pu', {1} ({2}) rur."
 
 #: components/settings/google-calendar.tsx
 msgid "Connected. People’s time away is syncing now."
@@ -1921,6 +1967,10 @@ msgstr "ja'chuqghach"
 #: components/settings/api-keys.tsx
 msgid "Copied"
 msgstr "velqa'moHlu'pu'"
+
+#: components/settings/csv-import.tsx
+msgid "Copied {files} files."
+msgstr "{files} De'wI' ghItlh lI'lu'pu'."
 
 #: components/reports/export-menu.tsx
 #: components/roadmap/report.tsx
@@ -2108,6 +2158,10 @@ msgstr "rarwI' nuDlu'laHbe'."
 #: lib/error-codes.ts
 msgid "couldn't check your email addresses; try again in a minute"
 msgstr "email Daqmeylij nuDlu'laHbe'; wa' tup ret yInIDqa'"
+
+#: components/settings/jira-import.tsx
+msgid "Couldn’t check your Jira connection. Please try again."
+msgstr "Jira rarmeH ngaQHa'moHwI' nuDlu'laHbe'. yInIDqa'."
 
 #: components/board/sprint-bar.tsx
 msgid "Couldn’t close the sprint. Please try again."
@@ -2704,6 +2758,7 @@ msgstr "jajmey"
 #: components/board/ticket-dialog.tsx
 #: components/project/backlog.tsx
 #: components/settings/embedding.tsx
+#: components/settings/jira-import.tsx
 #: components/settings/organization.tsx
 #: components/settings/webhooks.tsx
 msgid "Delete"
@@ -2739,6 +2794,10 @@ msgstr "mIllogh yIQaw'"
 #: components/settings/organization.tsx
 msgid "Delete the {0} team?"
 msgstr "{0} beq DaQaw''a'?"
+
+#: components/settings/jira-import.tsx
+msgid "Delete the Jira connection? Its API token is forgotten."
+msgstr "Jira rarmeH yIQaw'? API ngaQHa'moHwI' lIjlu'."
 
 #. placeholder {0}: host(w.url)
 #: components/settings/webhooks.tsx
@@ -3100,6 +3159,10 @@ msgstr "API ngaQHa'moHwI' ghajnIS Hoch AI vumwI': <0>API ngaQHa'moHwI'mey</0>Daq
 msgid "Each board's share of planned work done in the period. The band, 80–100%, is on target."
 msgstr "poHDaq Qu' nablu'pu'bogh 'echlet Hoch 'ay' rInbogh. 80–100% 'oHchugh, ngoQ qIp."
 
+#: app/settings/import/jira/page.tsx
+msgid "Each Jira project becomes a project here, keeping its key and ticket numbers. You see what it will make before anything is created, and can scrap it afterwards while nobody has worked on it."
+msgstr "naDev Jira jInmol Hoch jInmol moj, ngaQHa'moHwI' ticket mI'mey je pol. chenmoHlu'pa' yIlegh; ghIq vay' vumbe'chugh DaQaw'laH."
+
 #: components/reports/rollup-view.tsx
 msgid "Each one's share of the points finished, on boards that estimate."
 msgstr "'echlet Hoch ghajbogh mI'mey rIntaHbogh. Qapla'!"
@@ -3157,6 +3220,10 @@ msgstr "ticket yIchoH"
 #: components/ticket/labels.tsx
 msgid "Edit ticket labels"
 msgstr "ticket permey tIchoH"
+
+#: components/settings/jira-import.tsx
+msgid "Email"
+msgstr "QIn"
 
 #: app/settings/organization/page.tsx
 msgid "Email address"
@@ -3557,6 +3624,10 @@ msgstr "beqpu' ret"
 msgid "Free"
 msgstr "Free"
 
+#: components/settings/jira-import.tsx
+msgid "Free to use: preview again to apply it."
+msgstr "lo'laH: yIleghqa' 'ej lo'."
+
 #: app/reports/page.tsx
 msgid "From"
 msgstr "vo'"
@@ -3861,6 +3932,11 @@ msgstr "mIllogh"
 msgid "Import"
 msgstr "yIqem"
 
+#: app/settings/import/jira/page.tsx
+#: app/settings/page.tsx
+msgid "Import from Jira"
+msgstr "Jira vo' yIqem"
+
 #: lib/people.ts
 msgid "Imported"
 msgstr "Hevlu'pu'"
@@ -3869,6 +3945,7 @@ msgstr "Hevlu'pu'"
 msgid "Imported tickets to review"
 msgstr "nuDmeH qemlu'pu'bogh ticketmey"
 
+#: app/settings/import/jira/page.tsx
 #: app/settings/import/page.tsx
 msgid "Importing isn’t turned on for your organization yet."
 msgstr "ghom'a'lIj qemmeH chu'be'lu'."
@@ -4001,6 +4078,10 @@ msgstr "ghotpu' tIrI'"
 msgid "Invite people, and manage members, teams, project access and leadership."
 msgstr "ghotpu' tIrI', 'ej beqpu', beqmey, jInmol 'elmeH chaw', DevwI'pu' je tIloH."
 
+#: components/settings/csv-import.tsx
+msgid "It can’t be scrapped any more: someone has worked on what it made (moved, edited, commented on or reviewed a ticket, or added one)."
+msgstr "DaH Qaw'lu'laHbe': chenmoHbogh Dochmey vum vay' (ticket vIHmoH, choH, ja', nuD, pagh chel)."
+
 #: components/intake/request-form.tsx
 msgid "It isn't taking requests right now, or the link has changed. Ask whoever shared it for a new one."
 msgstr "DaH tlhobmey laj'be', pagh choHlu'pu' rarwI'. ngeHbogh ghot yItlhob rarwI' chu'."
@@ -4039,6 +4120,18 @@ msgstr "Dotlh Doch"
 msgid "Items without target dates"
 msgstr "Dochmey Qav jaj ghajbe'bogh"
 
+#: components/settings/jira-import.tsx
+msgid "Jira connection"
+msgstr "Jira rarmeH"
+
+#: components/settings/jira-import.tsx
+msgid "Jira projects to import"
+msgstr "qemmeH Jira jInmolmey"
+
+#: components/settings/jira-import.tsx
+msgid "Jira site"
+msgstr "Jira Daq"
+
 #: app/boards/[id]/page.tsx
 msgid "Join standup"
 msgstr "Qam ghom yImuv"
@@ -4069,6 +4162,10 @@ msgstr "Kanban chartmey"
 #: components/ticket/attachments.tsx
 msgid "Keep"
 msgstr "yIpol"
+
+#: components/settings/jira-import.tsx
+msgid "Keep it 30 more days"
+msgstr "wejmaH jaj yIpolqa'"
 
 #: components/settings/file-cleanup.tsx
 #: components/ticket/attachments.tsx
@@ -4427,6 +4524,10 @@ msgstr "ticket Hevlu'lI'…"
 msgid "Loading updates…"
 msgstr "chu'ghachmey Hevlu'lI'…"
 
+#: components/settings/jira-import.tsx
+msgid "Loading your Jira projects…"
+msgstr "Jira jInmolmeylIj lI'lu'taH…"
+
 #: app/mentions/page.tsx
 #: components/mentions.tsx
 msgid "Loading your mentions…"
@@ -4451,6 +4552,7 @@ msgstr "Qu'meylIj Hevlu'lI'…"
 #: components/project/repositories.tsx
 #: components/quick-add-ticket.tsx
 #: components/settings/embedding.tsx
+#: components/settings/jira-import.tsx
 #: components/settings/webhooks.tsx
 msgid "Loading…"
 msgstr "yIloS…"
@@ -4543,6 +4645,10 @@ msgstr "velqa' perlu'"
 #: components/ticket/duplicates.tsx
 msgid "Marking…"
 msgstr "perlI'…"
+
+#: components/settings/jira-import.tsx
+msgid "Matched to members by email:"
+msgstr "QIn rur ghommeyDaq rarlu'pu':"
 
 #: components/board/flow-report.tsx
 msgid "Median cycle time"
@@ -5081,6 +5187,10 @@ msgstr "DaH nab Daghajbe' — yIDub wa'DIch"
 msgid "No target date"
 msgstr "Qav jaj tu'lu'be'"
 
+#: components/settings/jira-import.tsx
+msgid "No team yet"
+msgstr "ghom pagh"
+
 #: app/settings/organization/page.tsx
 msgid "No teams yet."
 msgstr "beqmey tu'lu'be' DaH."
@@ -5199,6 +5309,10 @@ msgstr "pIHlu'be'"
 #: components/settings/chat-dm.tsx
 msgid "Not linked"
 msgstr "rarlu'be'"
+
+#: components/settings/jira-import.tsx
+msgid "Not members here, so their tickets are left unassigned:"
+msgstr "naDev ghom ghotpu' ghaHbe', vaj ticketchajmey nobbe'lu':"
 
 #: components/reports/report-view.tsx
 #: components/reports/rollup-view.tsx
@@ -5832,6 +5946,7 @@ msgid "Pending"
 msgstr "loS"
 
 #: components/mention-textarea.tsx
+#: components/settings/jira-import.tsx
 msgid "People"
 msgstr "ghotpu'"
 
@@ -6032,6 +6147,7 @@ msgstr "jar pIHlaHghach"
 
 #: components/markdown.tsx
 #: components/settings/csv-import.tsx
+#: components/settings/jira-import.tsx
 #: components/ticket/attachments.tsx
 msgid "Preview"
 msgstr "wa'DIch legh"
@@ -6039,6 +6155,10 @@ msgstr "wa'DIch legh"
 #: components/ticket/attachments.tsx
 msgid "Preview {name}"
 msgstr "{name} wa'DIch legh"
+
+#: components/settings/jira-import.tsx
+msgid "Preview again"
+msgstr "yIleghqa'"
 
 #: components/board/standup.tsx
 #: components/ui/pagination.tsx
@@ -6556,6 +6676,7 @@ msgid "Scrap this import"
 msgstr "qemvam yIQaw'"
 
 #: components/settings/csv-import.tsx
+#: components/settings/jira-import.tsx
 msgid "Scrap this import? Everything it made is deleted."
 msgstr "qemvam yIQaw'? chenmoHbogh Hoch Qaw'lu'."
 
@@ -6746,6 +6867,7 @@ msgstr "{0} yIcher"
 #: app/settings/api-keys/page.tsx
 #: app/settings/embedding/page.tsx
 #: app/settings/file-cleanup/page.tsx
+#: app/settings/import/jira/page.tsx
 #: app/settings/import/page.tsx
 #: app/settings/integrations/page.tsx
 #: app/settings/organization/page.tsx
@@ -7254,6 +7376,11 @@ msgstr "beq Qaw'lu'pu'."
 msgid "Team description"
 msgstr "beq Del"
 
+#. placeholder {0}: b.name
+#: components/settings/jira-import.tsx
+msgid "Team for {0}"
+msgstr "{0} ghom"
+
 #: components/settings/organization.tsx
 msgid "Team leader assigned."
 msgstr "beq DevwI' wIvlu'pu'."
@@ -7332,6 +7459,7 @@ msgstr "Bitbucket workspaceDaq mabvetlh tu'lu'be'."
 
 #: components/board/import-review.tsx
 #: components/settings/csv-import.tsx
+#: components/settings/jira-import.tsx
 #: components/settings/webhooks.tsx
 msgid "That didn’t work. Please try again."
 msgstr "Qapbe'. yInIDqa'."
@@ -7364,6 +7492,10 @@ msgstr "originvetlh chaw'lu'pu'."
 msgid "that parent is already a sub-ticket of this ticket"
 msgstr "ticketvam ticket puq 'oH vavvetlh"
 
+#: components/settings/jira-import.tsx
+msgid "That prefix is already used."
+msgstr "ngaQHa'moHwI' moHaqvam lo'lu'taH."
+
 #: lib/error-codes.ts
 msgid "that repository is already linked to a project in this organization"
 msgstr "ghom'a'vamDaq jInmolDaq repositoryvetlh rarlu'pu'"
@@ -7383,6 +7515,10 @@ msgstr "latlh jInmol ticket moHaqvetlh lo'pu'."
 #: lib/error-codes.ts
 msgid "that would make tickets block each other in a loop"
 msgstr "rIntaHvIS ticketmey bot'eghchuq ghet"
+
+#: components/settings/jira-import.tsx
+msgid "The API token is kept, encrypted, until {until}, then deleted. Extend it if you need longer."
+msgstr "API ngaQHa'moHwI' So'lu' 'ej pollu' {until} jaj, ghIq Qaw'lu'. nI'qu'meH yItaH."
 
 #: components/ticket/history-panel.tsx
 msgid "the backlog"
@@ -7583,6 +7719,10 @@ msgstr "tlhobmey laj'be' navvam not."
 msgid "this integration isn't configured on the server"
 msgstr "serverDaq rarghachvam cherlu'be'"
 
+#: components/settings/jira-import.tsx
+msgid "This Jira token can’t see any projects."
+msgstr "Jira ngaQHa'moHwI'vam jInmol leghlaHbe'."
+
 #: components/settings/google-calendar.tsx
 msgid "This lets TrackLin.es read calendars, nothing else. It can take a few minutes to apply."
 msgstr "poH navmey laDlaH TrackLin.es 'e' chaw', pagh latlh. QapmeH tup 'op poQ net Sov."
@@ -7594,6 +7734,14 @@ msgstr "rarwI'vam ngI'pu' pagh lo'lu'pu': chu' DaHevmeH Google ChatDaq TrackLin.
 #: components/settings/chat-dm.tsx
 msgid "This link has expired or was already used. Send the TrackLin.es app a message in Google Chat for a new one."
 msgstr "rarwI'vam ngI'pu' pagh lo'lu'pu'. chu' DaHevmeH Google ChatDaq TrackLin.es appvaD QIn yIngeH."
+
+#. placeholder {0}: job.planned.projects
+#. placeholder {1}: job.planned.boards
+#. placeholder {2}: job.planned.tickets
+#. placeholder {3}: job.planned.comments
+#: components/settings/jira-import.tsx
+msgid "This makes {0} projects, {1} boards and {2} tickets, with {3} comments."
+msgstr "{0} jInmolmey, {1} Sommey, {2} ticketmey, {3} ja'chuqmey je chenmoH."
 
 #. placeholder {0}: job.projects?.[0]?.name
 #. placeholder {1}: job.projects?.[0]?.prefix
@@ -8110,6 +8258,10 @@ msgstr "nachDaq narghghach leQ yIlo': wov, Hurgh pagh mIw motlh."
 msgid "Use the search in the header (Ctrl+K or Cmd+K). It searches titles, details and comments; type a key like TL-123 to jump to it."
 msgstr "nachDaq nejmeH jan yIlo' (Ctrl+K pagh Cmd+K). pongmey, De'mey, QInmey nej; DaSupmeH TL-123 rur ngaQHa'moHwI' yIghItlh."
 
+#: components/settings/jira-import.tsx
+msgid "Use your Jira email and an API token. <0>Create a token at Atlassian</0>. TrackLin.es keeps it, encrypted, for 30 days."
+msgstr "Jira QInlIj, API ngaQHa'moHwI' je yIlo'. <0>Atlassian Daq ngaQHa'moHwI' yIchenmoH</0>. wejmaH jaj So' 'ej pol TrackLin.es."
+
 #: lib/error-codes.ts
 msgid "user is already an organization member; add them to the team directly"
 msgstr "ghom'a' beqpu' ghaH lo'wI'; SIbI' beqDaq yIchel"
@@ -8262,6 +8414,10 @@ msgstr "nuq ta'nIS?"
 #: components/board/sprint-bar.tsx
 msgid "What should this sprint achieve?"
 msgstr "nuq chav sprintvam?"
+
+#: components/settings/jira-import.tsx
+msgid "What the import makes"
+msgstr "qemmeH chenmoHbogh"
 
 #: components/roadmap/item-editor.tsx
 msgid "What will be included in this milestone?"
@@ -8473,6 +8629,10 @@ msgstr "rarlu'pu'. ticket SoHvaD noblu'DI', SoH ponglu'DI', pagh nuDghachlIj poQ
 #: components/ticket/other-org.tsx
 msgid "You're working in a different organization right now. Switch to {orgName} to open it."
 msgstr "DaH latlh ghom'a'Daq bIvum. DapoSmoHmeH {orgName}Daq yIleS."
+
+#: components/settings/jira-import.tsx
+msgid "You’ve changed the import: preview again before importing."
+msgstr "qemmeH DachoHpu': qempa' yIleghqa'."
 
 #: components/billing/upgrade-dialog.tsx
 msgid "You’ve reached your plan’s projects"

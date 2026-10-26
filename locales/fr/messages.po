@@ -20,6 +20,10 @@ msgstr "« {name} » est trop volumineux : les fichiers peuvent faire jusqu’à
 msgid "“{name}”: a WIP limit is a whole number from 1 to 999, or none."
 msgstr "« {name} » : une limite WIP est un nombre entier de 1 à 999, ou aucune."
 
+#: components/settings/jira-import.tsx
+msgid "({key} is taken here, so a number was added)"
+msgstr "({key} est déjà utilisé ici, un numéro a donc été ajouté)"
+
 #: components/reports/report-view.tsx
 msgid "(in progress)"
 msgstr "(en cours)"
@@ -238,6 +242,11 @@ msgstr "{0} lignes ou valeurs laissées de côté"
 msgid "{0} team name"
 msgstr "Nom de l’équipe {0}"
 
+#. placeholder {0}: p.tickets
+#: components/settings/jira-import.tsx
+msgid "{0} tickets"
+msgstr "{0} tickets"
+
 #. placeholder {0}: range.from
 #. placeholder {1}: range.to
 #: app/reports/page.tsx
@@ -383,6 +392,10 @@ msgstr "{hours, plural, one {# heure} other {# heures}}"
 #: components/ticket-type.tsx
 msgid "{hours}h"
 msgstr "{hours} h"
+
+#: components/settings/jira-import.tsx
+msgid "{key} can’t be used as a key prefix here. Choose one:"
+msgstr "{key} ne peut pas servir de préfixe de clé ici. Choisissez-en un :"
 
 #. placeholder {0}: fresh.name
 #: components/settings/api-keys.tsx
@@ -580,6 +593,10 @@ msgstr "↑↓ pour naviguer · Entrée pour ouvrir · Échap pour fermer"
 msgid "+ Add ticket"
 msgstr "+ Ajouter un ticket"
 
+#: components/settings/jira-import.tsx
+msgid "<0>Change your plan</0>, or untick some projects and preview again."
+msgstr "<0>Changez d’offre</0>, ou décochez des projets et relancez l’aperçu."
+
 #: components/board/review.tsx
 msgid "<0>Needs review.</0> An agent finished this. Approve it to move it to Done, or send it back with what's missing."
 msgstr "<0>À vérifier.</0> Un agent a terminé ceci. Approuvez-le pour le passer en Terminé, ou renvoyez-le en indiquant ce qui manque."
@@ -612,6 +629,10 @@ msgstr "1 an et un jour"
 #: components/settings/api-keys.tsx
 msgid "180 days"
 msgstr "180 jours"
+
+#: components/settings/jira-import.tsx
+msgid "2 to 6 capital letters or digits, starting with a letter."
+msgstr "De 2 à 6 lettres majuscules ou chiffres, en commençant par une lettre."
 
 #: components/board/sprint-status.ts
 msgid "2 weeks"
@@ -1120,6 +1141,10 @@ msgstr "clé API expirée : créez-en une nouvelle dans Paramètres → Clés AP
 msgid "API keys"
 msgstr "Clés API"
 
+#: components/settings/jira-import.tsx
+msgid "API token"
+msgstr "Jeton d’API"
+
 #: components/settings/integrations.tsx
 msgid "API URL <0>(optional)</0>"
 msgstr "URL de l’API <0>(facultatif)</0>"
@@ -1393,6 +1418,10 @@ msgid "Breadcrumb"
 msgstr "Fil d’Ariane"
 
 #: app/settings/page.tsx
+msgid "Bring Jira Cloud projects across: boards, issues with their numbers, comments and attachments."
+msgstr "Reprenez des projets Jira Cloud : tableaux, tickets avec leurs numéros, commentaires et pièces jointes."
+
+#: app/settings/page.tsx
 msgid "Bring tickets in from a CSV (Trello, Asana, Linear, spreadsheets) as a new project."
 msgstr "Importez des tickets depuis un CSV (Trello, Asana, Linear, tableurs) dans un nouveau projet."
 
@@ -1487,6 +1516,7 @@ msgstr "Puis-je réutiliser la configuration d’un tableau ?"
 #: components/project/backlog.tsx
 #: components/project/key-prefix.tsx
 #: components/project/move-to-board.tsx
+#: components/settings/csv-import.tsx
 #: components/ticket/duplicates.tsx
 msgid "Cancel"
 msgstr "Annuler"
@@ -1498,6 +1528,10 @@ msgstr "Annuler le renommage"
 #: components/ticket/comments.tsx
 msgid "Cancel reply"
 msgstr "Annuler la réponse"
+
+#: components/settings/csv-import.tsx
+msgid "Cancelled: nothing was imported."
+msgstr "Annulé : rien n’a été importé."
 
 #: components/reports/report-view.tsx
 msgid "Carried"
@@ -1838,6 +1872,7 @@ msgstr "Tickets terminés représentés selon leur date d’achèvement et leur 
 
 #: components/settings/google-calendar.tsx
 #: components/settings/integrations.tsx
+#: components/settings/jira-import.tsx
 msgid "Connect"
 msgstr "Connecter"
 
@@ -1867,6 +1902,10 @@ msgstr "Connectez GitHub, Bitbucket, Google Chat et Bugfixes."
 msgid "Connect it first."
 msgstr "Connectez-le d’abord."
 
+#: components/settings/jira-import.tsx
+msgid "Connect Jira Cloud"
+msgstr "Connecter Jira Cloud"
+
 #: app/settings/integrations/page.tsx
 msgid "Connect your organization to the tools it uses. Link repositories to a project from the project's page."
 msgstr "Connectez votre organisation aux outils qu’elle utilise. Liez des dépôts à un projet depuis la page du projet."
@@ -1889,6 +1928,13 @@ msgstr "Comptes GitHub connectés"
 #: components/settings/google-calendar.tsx
 msgid "Connected to {0}"
 msgstr "Connecté à {0}"
+
+#. placeholder {0}: conn.site
+#. placeholder {1}: conn.account
+#. placeholder {2}: conn.email
+#: components/settings/jira-import.tsx
+msgid "Connected to <0>{0}</0> as {1} ({2})."
+msgstr "Connecté à <0>{0}</0> en tant que {1} ({2})."
 
 #: components/settings/google-calendar.tsx
 msgid "Connected. People’s time away is syncing now."
@@ -1921,6 +1967,10 @@ msgstr "Conversation"
 #: components/settings/api-keys.tsx
 msgid "Copied"
 msgstr "Copié"
+
+#: components/settings/csv-import.tsx
+msgid "Copied {files} files."
+msgstr "{files} fichiers copiés."
 
 #: components/reports/export-menu.tsx
 #: components/roadmap/report.tsx
@@ -2108,6 +2158,10 @@ msgstr "Impossible de vérifier la connexion."
 #: lib/error-codes.ts
 msgid "couldn't check your email addresses; try again in a minute"
 msgstr "impossible de vérifier vos adresses e-mail ; réessayez dans une minute"
+
+#: components/settings/jira-import.tsx
+msgid "Couldn’t check your Jira connection. Please try again."
+msgstr "Impossible de vérifier votre connexion Jira. Veuillez réessayer."
 
 #: components/board/sprint-bar.tsx
 msgid "Couldn’t close the sprint. Please try again."
@@ -2704,6 +2758,7 @@ msgstr "Jours"
 #: components/board/ticket-dialog.tsx
 #: components/project/backlog.tsx
 #: components/settings/embedding.tsx
+#: components/settings/jira-import.tsx
 #: components/settings/organization.tsx
 #: components/settings/webhooks.tsx
 msgid "Delete"
@@ -2739,6 +2794,10 @@ msgstr "Supprimer le modèle"
 #: components/settings/organization.tsx
 msgid "Delete the {0} team?"
 msgstr "Supprimer l’équipe {0} ?"
+
+#: components/settings/jira-import.tsx
+msgid "Delete the Jira connection? Its API token is forgotten."
+msgstr "Supprimer la connexion Jira ? Son jeton d’API est oublié."
 
 #. placeholder {0}: host(w.url)
 #: components/settings/webhooks.tsx
@@ -3100,6 +3159,10 @@ msgstr "Chaque agent a besoin de sa propre clé API : créez-en une dans <0>Clé
 msgid "Each board's share of planned work done in the period. The band, 80–100%, is on target."
 msgstr "Part du travail planifié réalisée par chaque tableau sur la période. La bande, 80–100 %, correspond à l’objectif."
 
+#: app/settings/import/jira/page.tsx
+msgid "Each Jira project becomes a project here, keeping its key and ticket numbers. You see what it will make before anything is created, and can scrap it afterwards while nobody has worked on it."
+msgstr "Chaque projet Jira devient ici un projet, avec sa clé et ses numéros de tickets. Vous voyez ce qui sera créé avant que rien ne le soit, et pouvez l’annuler ensuite tant que personne n’y a travaillé."
+
 #: components/reports/rollup-view.tsx
 msgid "Each one's share of the points finished, on boards that estimate."
 msgstr "La part de chacun dans les points terminés, sur les tableaux qui estiment."
@@ -3157,6 +3220,10 @@ msgstr "Modifier le ticket"
 #: components/ticket/labels.tsx
 msgid "Edit ticket labels"
 msgstr "Modifier les étiquettes du ticket"
+
+#: components/settings/jira-import.tsx
+msgid "Email"
+msgstr "E-mail"
 
 #: app/settings/organization/page.tsx
 msgid "Email address"
@@ -3557,6 +3624,10 @@ msgstr "Ancien membre"
 msgid "Free"
 msgstr "Free"
 
+#: components/settings/jira-import.tsx
+msgid "Free to use: preview again to apply it."
+msgstr "Disponible : relancez l’aperçu pour l’appliquer."
+
 #: app/reports/page.tsx
 msgid "From"
 msgstr "De"
@@ -3861,6 +3932,11 @@ msgstr "image"
 msgid "Import"
 msgstr "Importer"
 
+#: app/settings/import/jira/page.tsx
+#: app/settings/page.tsx
+msgid "Import from Jira"
+msgstr "Importer depuis Jira"
+
 #: lib/people.ts
 msgid "Imported"
 msgstr "Importé"
@@ -3869,6 +3945,7 @@ msgstr "Importé"
 msgid "Imported tickets to review"
 msgstr "Tickets importés à revoir"
 
+#: app/settings/import/jira/page.tsx
 #: app/settings/import/page.tsx
 msgid "Importing isn’t turned on for your organization yet."
 msgstr "L’import n’est pas encore activé pour votre organisation."
@@ -4001,6 +4078,10 @@ msgstr "Inviter des personnes"
 msgid "Invite people, and manage members, teams, project access and leadership."
 msgstr "Invitez des personnes, et gérez les membres, les équipes, l’accès aux projets et les responsables."
 
+#: components/settings/csv-import.tsx
+msgid "It can’t be scrapped any more: someone has worked on what it made (moved, edited, commented on or reviewed a ticket, or added one)."
+msgstr "Elle ne peut plus être annulée : quelqu’un a travaillé sur ce qu’elle a créé (déplacé, modifié, commenté ou revu un ticket, ou en a ajouté un)."
+
 #: components/intake/request-form.tsx
 msgid "It isn't taking requests right now, or the link has changed. Ask whoever shared it for a new one."
 msgstr "Il n’accepte pas de demandes pour le moment, ou le lien a changé. Demandez-en un nouveau à la personne qui l’a partagé."
@@ -4039,6 +4120,18 @@ msgstr "Éléments par statut"
 msgid "Items without target dates"
 msgstr "Éléments sans date cible"
 
+#: components/settings/jira-import.tsx
+msgid "Jira connection"
+msgstr "Connexion Jira"
+
+#: components/settings/jira-import.tsx
+msgid "Jira projects to import"
+msgstr "Projets Jira à importer"
+
+#: components/settings/jira-import.tsx
+msgid "Jira site"
+msgstr "Site Jira"
+
 #: app/boards/[id]/page.tsx
 msgid "Join standup"
 msgstr "Rejoindre le standup"
@@ -4069,6 +4162,10 @@ msgstr "Graphiques Kanban"
 #: components/ticket/attachments.tsx
 msgid "Keep"
 msgstr "Conserver"
+
+#: components/settings/jira-import.tsx
+msgid "Keep it 30 more days"
+msgstr "Garder 30 jours de plus"
 
 #: components/settings/file-cleanup.tsx
 #: components/ticket/attachments.tsx
@@ -4427,6 +4524,10 @@ msgstr "Chargement du ticket…"
 msgid "Loading updates…"
 msgstr "Chargement des mises à jour…"
 
+#: components/settings/jira-import.tsx
+msgid "Loading your Jira projects…"
+msgstr "Chargement de vos projets Jira…"
+
 #: app/mentions/page.tsx
 #: components/mentions.tsx
 msgid "Loading your mentions…"
@@ -4451,6 +4552,7 @@ msgstr "Chargement de votre travail…"
 #: components/project/repositories.tsx
 #: components/quick-add-ticket.tsx
 #: components/settings/embedding.tsx
+#: components/settings/jira-import.tsx
 #: components/settings/webhooks.tsx
 msgid "Loading…"
 msgstr "Chargement…"
@@ -4543,6 +4645,10 @@ msgstr "marqué comme doublon"
 #: components/ticket/duplicates.tsx
 msgid "Marking…"
 msgstr "Marquage…"
+
+#: components/settings/jira-import.tsx
+msgid "Matched to members by email:"
+msgstr "Associés à des membres par e-mail :"
 
 #: components/board/flow-report.tsx
 msgid "Median cycle time"
@@ -5081,6 +5187,10 @@ msgstr "pas encore d’abonnement — passez d’abord à une offre supérieure"
 msgid "No target date"
 msgstr "Aucune date cible"
 
+#: components/settings/jira-import.tsx
+msgid "No team yet"
+msgstr "Pas encore d’équipe"
+
 #: app/settings/organization/page.tsx
 msgid "No teams yet."
 msgstr "Aucune équipe pour le moment."
@@ -5199,6 +5309,10 @@ msgstr "Non estimé"
 #: components/settings/chat-dm.tsx
 msgid "Not linked"
 msgstr "Non lié"
+
+#: components/settings/jira-import.tsx
+msgid "Not members here, so their tickets are left unassigned:"
+msgstr "Pas membres ici, leurs tickets restent donc non attribués :"
 
 #: components/reports/report-view.tsx
 #: components/reports/rollup-view.tsx
@@ -5832,6 +5946,7 @@ msgid "Pending"
 msgstr "En attente"
 
 #: components/mention-textarea.tsx
+#: components/settings/jira-import.tsx
 msgid "People"
 msgstr "Personnes"
 
@@ -6032,6 +6147,7 @@ msgstr "Prévisibilité par mois"
 
 #: components/markdown.tsx
 #: components/settings/csv-import.tsx
+#: components/settings/jira-import.tsx
 #: components/ticket/attachments.tsx
 msgid "Preview"
 msgstr "Aperçu"
@@ -6039,6 +6155,10 @@ msgstr "Aperçu"
 #: components/ticket/attachments.tsx
 msgid "Preview {name}"
 msgstr "Aperçu de {name}"
+
+#: components/settings/jira-import.tsx
+msgid "Preview again"
+msgstr "Relancer l’aperçu"
 
 #: components/board/standup.tsx
 #: components/ui/pagination.tsx
@@ -6556,6 +6676,7 @@ msgid "Scrap this import"
 msgstr "Annuler cet import"
 
 #: components/settings/csv-import.tsx
+#: components/settings/jira-import.tsx
 msgid "Scrap this import? Everything it made is deleted."
 msgstr "Annuler cet import ? Tout ce qu’il a créé sera supprimé."
 
@@ -6746,6 +6867,7 @@ msgstr "Configurer {0}"
 #: app/settings/api-keys/page.tsx
 #: app/settings/embedding/page.tsx
 #: app/settings/file-cleanup/page.tsx
+#: app/settings/import/jira/page.tsx
 #: app/settings/import/page.tsx
 #: app/settings/integrations/page.tsx
 #: app/settings/organization/page.tsx
@@ -7254,6 +7376,11 @@ msgstr "Équipe supprimée."
 msgid "Team description"
 msgstr "Description de l’équipe"
 
+#. placeholder {0}: b.name
+#: components/settings/jira-import.tsx
+msgid "Team for {0}"
+msgstr "Équipe de {0}"
+
 #: components/settings/organization.tsx
 msgid "Team leader assigned."
 msgstr "Responsable d’équipe nommé."
@@ -7332,6 +7459,7 @@ msgstr "Ce compte ne fait partie d’aucun espace de travail Bitbucket."
 
 #: components/board/import-review.tsx
 #: components/settings/csv-import.tsx
+#: components/settings/jira-import.tsx
 #: components/settings/webhooks.tsx
 msgid "That didn’t work. Please try again."
 msgstr "Cela n’a pas marché. Veuillez réessayer."
@@ -7364,6 +7492,10 @@ msgstr "Cette origine est déjà autorisée."
 msgid "that parent is already a sub-ticket of this ticket"
 msgstr "ce parent est déjà un sous-ticket de ce ticket"
 
+#: components/settings/jira-import.tsx
+msgid "That prefix is already used."
+msgstr "Ce préfixe est déjà utilisé."
+
 #: lib/error-codes.ts
 msgid "that repository is already linked to a project in this organization"
 msgstr "ce dépôt est déjà lié à un projet de cette organisation"
@@ -7383,6 +7515,10 @@ msgstr "Ce préfixe de ticket est déjà utilisé par un autre projet."
 #: lib/error-codes.ts
 msgid "that would make tickets block each other in a loop"
 msgstr "cela ferait se bloquer les tickets mutuellement en boucle"
+
+#: components/settings/jira-import.tsx
+msgid "The API token is kept, encrypted, until {until}, then deleted. Extend it if you need longer."
+msgstr "Le jeton d’API est conservé, chiffré, jusqu’au {until}, puis supprimé. Prolongez-le si vous avez besoin de plus de temps."
 
 #: components/ticket/history-panel.tsx
 msgid "the backlog"
@@ -7583,6 +7719,10 @@ msgstr "Ce formulaire n’accepte plus de demandes."
 msgid "this integration isn't configured on the server"
 msgstr "cette intégration n’est pas configurée sur le serveur"
 
+#: components/settings/jira-import.tsx
+msgid "This Jira token can’t see any projects."
+msgstr "Ce jeton Jira ne voit aucun projet."
+
 #: components/settings/google-calendar.tsx
 msgid "This lets TrackLin.es read calendars, nothing else. It can take a few minutes to apply."
 msgstr "Cela permet à TrackLin.es de lire les agendas, rien d’autre. La prise en compte peut prendre quelques minutes."
@@ -7594,6 +7734,14 @@ msgstr "ce lien a expiré ou a déjà été utilisé : envoyez un message à l�
 #: components/settings/chat-dm.tsx
 msgid "This link has expired or was already used. Send the TrackLin.es app a message in Google Chat for a new one."
 msgstr "Ce lien a expiré ou a déjà été utilisé. Envoyez un message à l’application TrackLin.es dans Google Chat pour en obtenir un nouveau."
+
+#. placeholder {0}: job.planned.projects
+#. placeholder {1}: job.planned.boards
+#. placeholder {2}: job.planned.tickets
+#. placeholder {3}: job.planned.comments
+#: components/settings/jira-import.tsx
+msgid "This makes {0} projects, {1} boards and {2} tickets, with {3} comments."
+msgstr "Cela crée {0} projets, {1} tableaux et {2} tickets, avec {3} commentaires."
 
 #. placeholder {0}: job.projects?.[0]?.name
 #. placeholder {1}: job.projects?.[0]?.prefix
@@ -8110,6 +8258,10 @@ msgstr "Utilisez le bouton d’apparence dans l’en-tête : Clair, Sombre ou Sy
 msgid "Use the search in the header (Ctrl+K or Cmd+K). It searches titles, details and comments; type a key like TL-123 to jump to it."
 msgstr "Utilisez la recherche dans l’en-tête (Ctrl+K ou Cmd+K). Elle porte sur les titres, détails et commentaires ; tapez une clé comme TL-123 pour y accéder directement."
 
+#: components/settings/jira-import.tsx
+msgid "Use your Jira email and an API token. <0>Create a token at Atlassian</0>. TrackLin.es keeps it, encrypted, for 30 days."
+msgstr "Utilisez votre e-mail Jira et un jeton d’API. <0>Créez un jeton chez Atlassian</0>. TrackLin.es le conserve, chiffré, pendant 30 jours."
+
 #: lib/error-codes.ts
 msgid "user is already an organization member; add them to the team directly"
 msgstr "l’utilisateur est déjà membre de l’organisation ; ajoutez-le directement à l’équipe"
@@ -8262,6 +8414,10 @@ msgstr "Que faut-il faire ?"
 #: components/board/sprint-bar.tsx
 msgid "What should this sprint achieve?"
 msgstr "Que doit accomplir ce sprint ?"
+
+#: components/settings/jira-import.tsx
+msgid "What the import makes"
+msgstr "Ce que l’import crée"
 
 #: components/roadmap/item-editor.tsx
 msgid "What will be included in this milestone?"
@@ -8473,6 +8629,10 @@ msgstr "Vous êtes lié. L’application TrackLin.es vous enverra un message dan
 #: components/ticket/other-org.tsx
 msgid "You're working in a different organization right now. Switch to {orgName} to open it."
 msgstr "Vous travaillez actuellement dans une autre organisation. Basculez vers {orgName} pour l’ouvrir."
+
+#: components/settings/jira-import.tsx
+msgid "You’ve changed the import: preview again before importing."
+msgstr "Vous avez modifié l’import : relancez l’aperçu avant d’importer."
 
 #: components/billing/upgrade-dialog.tsx
 msgid "You’ve reached your plan’s projects"
