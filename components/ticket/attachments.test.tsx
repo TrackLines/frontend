@@ -81,3 +81,8 @@ test('downloadAttachment saves under the file name, and opens the file when it c
     Object.assign(URL, { createObjectURL, revokeObjectURL });
   }
 });
+
+test('removing someone else’s file says who can, as keeping does (TL-659, source)', async () => {
+  const src = await Bun.file(new URL('./attachments.tsx', import.meta.url)).text();
+  expect(src).toContain('err.status === 403 ? t`Only an organization admin or whoever uploaded it can remove this file.`');
+});

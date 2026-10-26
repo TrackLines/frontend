@@ -5716,6 +5716,14 @@ msgid "Only an organization admin or whoever uploaded it can keep this file."
 msgstr "Only an organization admin or whoever uploaded it can keep this file."
 
 #: lib/error-codes.ts
+msgid "only an organization admin or whoever uploaded it can remove this file"
+msgstr "only an organization admin or whoever uploaded it can remove this file"
+
+#: components/ticket/attachments.tsx
+msgid "Only an organization admin or whoever uploaded it can remove this file."
+msgstr "Only an organization admin or whoever uploaded it can remove this file."
+
+#: lib/error-codes.ts
 msgid "only an organization admin, signed in, can change embed origins"
 msgstr "only an organization admin, signed in, can change embed origins"
 

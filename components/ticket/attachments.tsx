@@ -48,8 +48,8 @@ export function Attachments({ ticketId, token, locked = false }: { ticketId: str
     try {
       await attachments.remove(a.id, token);
       setList((l) => l && l.filter((x) => x.id !== a.id));
-    } catch {
-      setError(t`Couldn’t remove “${name}”.`);
+    } catch (err) {
+      setError(err instanceof ApiError && err.status === 403 ? t`Only an organization admin or whoever uploaded it can remove this file.` : t`Couldn’t remove “${name}”.`);
     }
   }
 
