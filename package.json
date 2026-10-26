@@ -4,9 +4,9 @@
   "private": true,
   "license": "FSL-1.1-ALv2",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "test": "bun test",
+    "dev": "lingui compile --typescript && next dev",
+    "build": "lingui compile --typescript && next build",
+    "test": "lingui compile --typescript && bun test",
     "start": "next start",
     "i18n": "lingui extract --clean && lingui compile --typescript"
   },
