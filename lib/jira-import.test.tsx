@@ -2,7 +2,7 @@ import { afterEach, expect, test } from 'bun:test';
 import { render } from '@/test/i18n';
 import { prefixNeeded, prefixProblem } from './jira-import';
 import { importsApi, jira, type ImportJob, type JiraConnection } from './api';
-import { JiraConnectionPanel, JiraPreview } from '@/components/settings/jira-import';
+import { JiraConnectionPanel, ImportPreview } from '@/components/settings/jira-import';
 import { ImportStatus } from '@/components/settings/csv-import';
 
 const realFetch = globalThis.fetch;
@@ -52,8 +52,8 @@ test('connecting: the form with Atlassian\'s token page; connected: whose, until
   for (const s of ['<strong>https://acme.atlassian.net</strong>', 'as Sam Doe (sam@acme.io)', 'until 24 Nov 2026', 'Keep it 30 more days', '>Delete<']) expect(on).toContain(s);
 });
 
-const preview = (o: Partial<ImportJob>, extra: Partial<Parameters<typeof JiraPreview>[0]> = {}) => render(
-  <JiraPreview job={{ id: 'i1', source: 'jira', state: 'previewing', progress: 0, total: 0, report: null, ...o }} keyOf={{ '10000': 'SHOP', '10001': 'LONGKEY' }}
+const preview = (o: Partial<ImportJob>, extra: Partial<Parameters<typeof ImportPreview>[0]> = {}) => render(
+  <ImportPreview job={{ id: 'i1', source: 'jira', state: 'previewing', progress: 0, total: 0, report: null, ...o }} keyOf={{ '10000': 'SHOP', '10001': 'LONGKEY' }}
     teams={[{ id: 'team1', org_id: 'o', name: 'Web team', description: '', created_at: '', updated_at: '' }]} taken={['TL']} prefixes={{}} teamOf={{}} stale={false}
     setPrefix={() => {}} setTeam={() => {}} {...extra} />,
 );

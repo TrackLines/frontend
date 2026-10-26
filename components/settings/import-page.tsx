@@ -6,8 +6,9 @@ import { useFlags } from '@flags-gg/react-library';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CSVImport } from '@/components/settings/csv-import';
 import { JiraImport } from '@/components/settings/jira-import';
+import { LinearImport } from '@/components/settings/linear-import';
 
-export type ImportSource = 'csv' | 'jira';
+export type ImportSource = 'csv' | 'jira' | 'linear';
 
 // ImportSettings: Settings → Import, one page with a tab per source (TL-653); more sources are more tabs.
 export function ImportSettings({ initial }: { initial: ImportSource }) {
@@ -24,6 +25,7 @@ export function ImportSettings({ initial }: { initial: ImportSource }) {
           <TabsList>
             <TabsTrigger value="csv"><Trans>CSV file</Trans></TabsTrigger>
             <TabsTrigger value="jira">Jira</TabsTrigger>
+            <TabsTrigger value="linear">Linear</TabsTrigger>
           </TabsList>
           <TabsContent value="csv" className="pt-4">
             <section className="rounded-xl border p-5">
@@ -35,6 +37,11 @@ export function ImportSettings({ initial }: { initial: ImportSource }) {
             <section className="rounded-xl border p-5">
               <p className="mb-5 text-sm text-muted-foreground"><Trans>Each Jira Cloud project becomes a project here, keeping its key and ticket numbers, with its boards, comments and attachments.</Trans></p>
               <JiraImport />
+            </section>
+          </TabsContent>
+          <TabsContent value="linear" className="pt-4">
+            <section className="rounded-xl border p-5">
+              <LinearImport />
             </section>
           </TabsContent>
         </Tabs>
