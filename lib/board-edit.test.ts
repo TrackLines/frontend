@@ -1,7 +1,7 @@
 import { expect, test } from 'bun:test';
 import type { Board } from './api';
 import { i18nFor } from './i18n';
-import { addColumn, changeColumn, devComplete, devCompleteOptions, reviewColumn, showReviewColumn, dirty, draftOf, layout, layoutChanged, moveColumn, problem, removeColumn, settingsPatch } from './board-edit';
+import { addColumn, changeColumn, devComplete, devCompleteOptions, pickReview, reviewColumn, reviewKey, dirty, draftOf, layout, layoutChanged, moveColumn, problem, removeColumn, settingsPatch } from './board-edit';
 
 const board = {
   id: 'b', project_id: 'p', owner_clerk_id: 'o', name: 'Web', description: '', created_at: '', updated_at: '', style: 'kanban', estimate_scale: 'none',
@@ -72,13 +72,31 @@ test('Dev complete (TL-532): only saved columns between To do and Done; a remove
   expect(settingsPatch(gone, d)).toEqual({ dev_complete_column_id: '' });
 });
 
-test('Review column (TL-593): offered with agent review on 4+ columns; saved middle columns only', () => {
-  const d = draftOf({ ...board, agent_review: true, review_column_id: 'review' } as Board);
-  expect(showReviewColumn(d)).toBe(true);
-  expect(showReviewColumn({ ...d, agentReview: false })).toBe(false); // only agents' work waits there
-  expect(showReviewColumn(removeColumn(d, 'review'))).toBe(false); // 3 columns: the column before Done is the only choice
-  expect(reviewColumn(d)).toBe('review');
-  expect(settingsPatch({ ...d, reviewColumn: 'doing' }, d)).toEqual({ review_column_id: 'doing' });
+test('Review column (TL-593, TL-673): the robot marks the picked column, or the one before Done; only saved middle columns can be picked', () => {
+  const d = draftOf({ ...board, agent_review: true, review_column_id: 'doing' } as Board);
+  const empty = changeEmpty(d); // Doing without its ticket, so it can be removed
+  expect(reviewKey(d)).toBe('doing');
+  expect(reviewKey({ ...d, agentReview: false })).toBe(''); // only agents' work waits there
+  expect(reviewKey({ ...d, reviewColumn: '' })).toBe('review'); // default: the column before Done
+  expect(reviewKey(removeColumn(empty, 'doing'))).toBe('review'); // the picked one's gone: back to the default
+  expect(reviewColumn(d)).toBe('doing');
+  // picking: another middle column; the column before Done is the default (''); To do, Done and unsaved columns aren't
+  const before = pickReview(d, 'review');
+  expect(before.reviewColumn).toBe('');
+  expect(settingsPatch(before, d)).toEqual({ review_column_id: '' });
+  expect(pickReview(before, 'doing').reviewColumn).toBe('doing');
+  expect(pickReview(d, 'todo')).toBe(d);
+  expect(pickReview(d, 'done')).toBe(d);
+  const added = addColumn(d, 'QA', 'new1');
+  expect(pickReview(added, 'new1')).toBe(added);
   expect(settingsPatch({ ...d, reviewColumn: 'done' }, d)).toEqual({ review_column_id: '' }); // Done isn't an option
-  expect(settingsPatch(removeColumn(d, 'review'), d)).toEqual({ review_column_id: '' });
+  // a board of three: its one middle column is the review column
+  const three = removeColumn({ ...empty, reviewColumn: '' }, 'doing');
+  expect(three.columns).toHaveLength(3);
+  expect(reviewKey(three)).toBe('review');
+  expect(settingsPatch(removeColumn(empty, 'doing'), d)).toEqual({ review_column_id: '' }); // the picked column removed
 });
+
+function changeEmpty(d: ReturnType<typeof draftOf>) {
+  return { ...d, columns: d.columns.map((c) => (c.id === 'doing' ? { ...c, tickets: 0 } : c)) };
+}

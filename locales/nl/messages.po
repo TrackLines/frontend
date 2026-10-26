@@ -1050,6 +1050,15 @@ msgstr "Werk van agent moet beoordeeld worden"
 msgid "agents cannot bypass human review"
 msgstr "Agents kunnen menselijke review niet omzeilen."
 
+#: components/board/column-list.tsx
+msgid "Agents’ finished work waits here for review"
+msgstr "Afgerond werk van agents wacht hier op een review"
+
+#. placeholder {0}: column.name
+#: components/board/column-list.tsx
+msgid "Agents’ finished work waits in {0}"
+msgstr "Afgerond werk van agents wacht in {0}"
+
 #: components/settings/api-keys.tsx
 #: lib/people.ts
 msgid "AI agent"
@@ -1877,10 +1886,6 @@ msgstr "Sluiten…"
 #: components/staff/downtime.tsx
 msgid "Cluster on {0}: you decide"
 msgstr "Cluster op {0}: jij beslist"
-
-#: app/boards/[id]/edit/page.tsx
-msgid "Column before Done"
-msgstr "Kolom vóór Klaar"
 
 #. placeholder {0}: column.name
 #: components/board/column-list.tsx
@@ -4712,6 +4717,11 @@ msgstr "Kleine letters, cijfers en streepjes."
 msgid "Made {0} tickets on {1} boards."
 msgstr "{0} tickets gemaakt op {1} borden."
 
+#. placeholder {0}: column.name
+#: components/board/column-list.tsx
+msgid "Make {0} the review column"
+msgstr "Maak {0} de reviewkolom"
+
 #: components/hosted-bar.tsx
 msgid "Make {name} the host"
 msgstr "{name} host maken"
@@ -4731,6 +4741,10 @@ msgstr "Host maken"
 #: components/settings/organization.tsx
 msgid "Make leader"
 msgstr "Leider maken"
+
+#: components/board/column-list.tsx
+msgid "Make this the review column"
+msgstr "Maak dit de reviewkolom"
 
 #: components/board/ticket-dialog.tsx
 msgid "Making it an epic moves it to the backlog and clears its estimate. Its sub-tickets stay where they are."
@@ -6635,10 +6649,6 @@ msgstr "Hervatten"
 msgid "Review"
 msgstr "Review"
 
-#: app/boards/[id]/edit/page.tsx
-msgid "Review column"
-msgstr "Reviewkolom"
-
 #: components/board/sprint-bar.tsx
 msgid "Review the imported tickets first"
 msgstr "Beoordeel eerst de geïmporteerde tickets"
@@ -6778,6 +6788,10 @@ msgstr "Prefix opslaan"
 #: app/boards/[id]/edit/page.tsx
 msgid "Save template"
 msgstr "Sjabloon opslaan"
+
+#: components/board/column-list.tsx
+msgid "Save the board first to pick a new column"
+msgstr "Sla het bord eerst op om een nieuwe kolom te kiezen"
 
 #: components/settings/google-chat.tsx
 msgid "Saved."
@@ -7825,6 +7839,10 @@ msgstr "De provider weigerde of was niet bereikbaar. Probeer het opnieuw."
 msgid "the review column must be one of this board's columns, other than To do and Done"
 msgstr "De reviewkolom moet een van de kolommen van dit bord zijn, behalve Te doen en Klaar."
 
+#: app/boards/[id]/edit/page.tsx
+msgid "The robot marks the column where an agent’s finished ticket waits for a person’s review. Pick another column with its crossed-out robot."
+msgstr "De robot markeert de kolom waar een afgerond ticket van een agent wacht op een review door een persoon. Kies een andere kolom met zijn doorgestreepte robot."
+
 #: components/reports/report-view.tsx
 #: components/reports/rollup-view.tsx
 msgid "the same as the period before"
@@ -8689,10 +8707,6 @@ msgstr "Wat is er mis / wat is er nodig?"
 #: components/ticket/bugfixes-panel.tsx
 msgid "Where"
 msgstr "Waar"
-
-#: app/boards/[id]/edit/page.tsx
-msgid "Where an agent’s finished ticket waits for a person’s review."
-msgstr "Waar het afgeronde ticket van een agent wacht op de review van een persoon."
 
 #: components/settings/api-keys.tsx
 msgid "Which agent"

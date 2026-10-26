@@ -38,10 +38,24 @@ export const devCompleteOptions = (d: Draft) => d.columns.filter((c, i) => c.id 
 export const devComplete = (d: Draft) => (devCompleteOptions(d).some((c) => c.id === d.devComplete) ? d.devComplete : '');
 
 // reviewColumn is the draft's review column, or '' once that column is removed; it's picked from the
-// same columns as Dev complete, and only offered with agent review on a board of 4+ columns, where
-// "the column before Done" may not be the review one (with 3 it's the only choice anyway).
+// same columns as Dev complete ('' = the column before Done).
 export const reviewColumn = (d: Draft) => (devCompleteOptions(d).some((c) => c.id === d.reviewColumn) ? d.reviewColumn : '');
-export const showReviewColumn = (d: Draft) => d.agentReview && d.columns.length >= 4;
+
+// reviewKey (TL-673): the column the robot marks in the column list, where agents' finished work waits:
+// the picked one, or else the column before Done. '' with agent review off or no column in between.
+export function reviewKey(d: Draft): string {
+  if (!d.agentReview || d.columns.length < 3) return '';
+  const picked = reviewColumn(d);
+  return (picked ? d.columns.find((c) => c.id === picked)! : d.columns[d.columns.length - 2]).key;
+}
+
+// pickReview makes a saved column between To do and Done the review column; the column before Done is
+// the default, so picking it saves '' (and the robot follows whichever column is there).
+export function pickReview(d: Draft, key: string): Draft {
+  const i = d.columns.findIndex((c) => c.key === key);
+  if (!movable(d, i) || !d.columns[i].id) return d;
+  return { ...d, reviewColumn: i === d.columns.length - 2 ? '' : d.columns[i].id! };
+}
 
 export function addColumn(d: Draft, name: string, key: string): Draft {
   const at = Math.max(d.columns.length - 1, 0); // before Done

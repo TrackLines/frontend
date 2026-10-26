@@ -17,7 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { ApiError, boards, boardTemplates, columns, organization, type Board, type BoardStyle } from '@/lib/api';
 import { canManageBoard } from '@/lib/board-access';
-import { devComplete, devCompleteOptions, reviewColumn, showReviewColumn, dirty, draftOf, layout, layoutChanged, problem, settingsPatch, type Draft } from '@/lib/board-edit';
+import { devComplete, devCompleteOptions, dirty, draftOf, layout, layoutChanged, problem, settingsPatch, type Draft } from '@/lib/board-edit';
 import { SCALES, type EstimateScale } from '@/lib/estimates';
 import { useToken } from '@/lib/use-token';
 
@@ -128,20 +128,6 @@ export default function EditBoardPage() {
         </div>
         <Choice label={t`Agent work needs review`} hint={t`An AI agent's ticket moved to Done waits for a person to approve it.`} value={draft.agentReview ? 'on' : 'off'}
           options={[['off', t`Off`], ['on', t`On`]]} onChange={(v) => setDraft({ ...draft, agentReview: v === 'on' })} />
-        {showReviewColumn(draft) && (
-          <div className="grid gap-1.5 text-sm">
-            <span className="font-medium"><Trans>Review column</Trans></span>
-            <Select items={{ before: t`Column before Done`, ...Object.fromEntries(devCompleteOptions(draft).map((c) => [c.id!, c.name])) }} value={reviewColumn(draft) || 'before'}
-              onValueChange={(v) => setDraft({ ...draft, reviewColumn: !v || v === 'before' ? '' : v })}>
-              <SelectTrigger aria-label={t`Review column`} className="w-48"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="before"><Trans>Column before Done</Trans></SelectItem>
-                {devCompleteOptions(draft).map((c) => <SelectItem key={c.id} value={c.id!}>{c.name}</SelectItem>)}
-              </SelectContent>
-            </Select>
-            <span className="text-xs text-muted-foreground"><Trans>Where an agent’s finished ticket waits for a person’s review.</Trans></span>
-          </div>
-        )}
         {is('release-done').enabled() && (
           <div className="grid gap-1.5 text-sm">
             <span className="font-medium"><Trans>Finish tickets on release</Trans></span>
@@ -161,6 +147,7 @@ export default function EditBoardPage() {
       <section aria-labelledby="columns" className="grid gap-3">
         <h2 id="columns" className="text-lg font-semibold"><Trans>Columns</Trans></h2>
         <p className="text-sm text-muted-foreground"><Trans>Drag to reorder. WIP limits are for the columns in between: the first is waiting work, and the last is Done.</Trans></p>
+        {draft.agentReview && <p className="text-sm text-muted-foreground"><Trans>The robot marks the column where an agent’s finished ticket waits for a person’s review. Pick another column with its crossed-out robot.</Trans></p>}
         <ColumnList draft={draft} onChange={setDraft} />
       </section>
 

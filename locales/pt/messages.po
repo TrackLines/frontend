@@ -1050,6 +1050,15 @@ msgstr "Trabalho de agente precisa de revisão"
 msgid "agents cannot bypass human review"
 msgstr "agentes não podem pular a revisão humana"
 
+#: components/board/column-list.tsx
+msgid "Agents’ finished work waits here for review"
+msgstr "O trabalho concluído dos agentes espera aqui pela revisão"
+
+#. placeholder {0}: column.name
+#: components/board/column-list.tsx
+msgid "Agents’ finished work waits in {0}"
+msgstr "O trabalho concluído dos agentes espera em {0}"
+
 #: components/settings/api-keys.tsx
 #: lib/people.ts
 msgid "AI agent"
@@ -1877,10 +1886,6 @@ msgstr "Fechando…"
 #: components/staff/downtime.tsx
 msgid "Cluster on {0}: you decide"
 msgstr "Agrupamento em {0}: você decide"
-
-#: app/boards/[id]/edit/page.tsx
-msgid "Column before Done"
-msgstr "Coluna antes de Concluído"
 
 #. placeholder {0}: column.name
 #: components/board/column-list.tsx
@@ -4712,6 +4717,11 @@ msgstr "Letras minúsculas, dígitos e hifens."
 msgid "Made {0} tickets on {1} boards."
 msgstr "{0} tickets criados em {1} quadros."
 
+#. placeholder {0}: column.name
+#: components/board/column-list.tsx
+msgid "Make {0} the review column"
+msgstr "Tornar {0} a coluna de revisão"
+
 #: components/hosted-bar.tsx
 msgid "Make {name} the host"
 msgstr "Tornar {name} o condutor"
@@ -4731,6 +4741,10 @@ msgstr "Tornar condutor"
 #: components/settings/organization.tsx
 msgid "Make leader"
 msgstr "Tornar líder"
+
+#: components/board/column-list.tsx
+msgid "Make this the review column"
+msgstr "Tornar esta a coluna de revisão"
 
 #: components/board/ticket-dialog.tsx
 msgid "Making it an epic moves it to the backlog and clears its estimate. Its sub-tickets stay where they are."
@@ -6635,10 +6649,6 @@ msgstr "Retomar"
 msgid "Review"
 msgstr "Revisão"
 
-#: app/boards/[id]/edit/page.tsx
-msgid "Review column"
-msgstr "Coluna de revisão"
-
 #: components/board/sprint-bar.tsx
 msgid "Review the imported tickets first"
 msgstr "Reveja primeiro os tickets importados"
@@ -6778,6 +6788,10 @@ msgstr "Salvar prefixo"
 #: app/boards/[id]/edit/page.tsx
 msgid "Save template"
 msgstr "Salvar modelo"
+
+#: components/board/column-list.tsx
+msgid "Save the board first to pick a new column"
+msgstr "Salve o quadro primeiro para escolher uma coluna nova"
 
 #: components/settings/google-chat.tsx
 msgid "Saved."
@@ -7825,6 +7839,10 @@ msgstr "O provedor recusou ou não pôde ser acessado. Tente novamente."
 msgid "the review column must be one of this board's columns, other than To do and Done"
 msgstr "a coluna de revisão deve ser uma das colunas deste quadro, exceto A fazer e Concluído"
 
+#: app/boards/[id]/edit/page.tsx
+msgid "The robot marks the column where an agent’s finished ticket waits for a person’s review. Pick another column with its crossed-out robot."
+msgstr "O robô marca a coluna onde o ticket concluído de um agente espera pela revisão de uma pessoa. Escolha outra coluna pelo robô riscado dela."
+
 #: components/reports/report-view.tsx
 #: components/reports/rollup-view.tsx
 msgid "the same as the period before"
@@ -8689,10 +8707,6 @@ msgstr "O que está errado / o que é necessário?"
 #: components/ticket/bugfixes-panel.tsx
 msgid "Where"
 msgstr "Onde"
-
-#: app/boards/[id]/edit/page.tsx
-msgid "Where an agent’s finished ticket waits for a person’s review."
-msgstr "Onde o ticket concluído de um agente aguarda a revisão de uma pessoa."
 
 #: components/settings/api-keys.tsx
 msgid "Which agent"
