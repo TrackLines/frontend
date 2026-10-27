@@ -782,20 +782,22 @@ export const intake = {
   dismiss: (id: string, t: T) => api<void>(`/intake-submissions/${id}/dismiss`, { method: 'POST', token: t }),
 };
 
-// Embedding (TL-494): the origins an org allows its public roadmap/request-form widgets to run on.
-// Adding one opens the API's CORS to it; org admins manage the list (can_manage).
+// Embedding (TL-494): the origins a project allows its public roadmap/request-form widgets to run on
+// (per project since TL-683). Adding one opens the API's CORS to it; the project's managers manage the
+// list (can_manage).
 export type EmbedOrigin = { id: string; origin: string; created_by: string; created_at: string };
 // A public embed key (tle_…) and the usage recorded against it; last_used is YYYY-MM-DD or null.
 export type EmbedKey = { id: string; key: string; label: string; created_by: string; created_at: string; hits: number; origins: number; last_used: string | null };
 export type EmbedUsage = { origin: string; resource: string; hits: number; last_used: string };
+const embedPath = (project: string, rest: string) => `/projects/${encodeURIComponent(project)}/embed/${rest}`;
 export const embed = {
-  origins: (t: T) => api<{ origins: EmbedOrigin[]; can_manage: boolean }>('/embed/origins', { token: t }),
-  addOrigin: (origin: string, t: T) => api<EmbedOrigin>('/embed/origins', { method: 'POST', body: { origin }, token: t }),
-  removeOrigin: (id: string, t: T) => api<void>(`/embed/origins/${encodeURIComponent(id)}`, { method: 'DELETE', token: t }),
-  keys: (t: T) => api<{ keys: EmbedKey[]; can_manage: boolean }>('/embed/keys', { token: t }),
-  createKey: (label: string, t: T) => api<EmbedKey>('/embed/keys', { method: 'POST', body: { label }, token: t }),
-  deleteKey: (id: string, t: T) => api<void>(`/embed/keys/${encodeURIComponent(id)}`, { method: 'DELETE', token: t }),
-  keyUsage: (id: string, t: T) => api<EmbedUsage[]>(`/embed/keys/${encodeURIComponent(id)}/usage`, { token: t }),
+  origins: (project: string, t: T) => api<{ origins: EmbedOrigin[]; can_manage: boolean }>(embedPath(project, 'origins'), { token: t }),
+  addOrigin: (project: string, origin: string, t: T) => api<EmbedOrigin>(embedPath(project, 'origins'), { method: 'POST', body: { origin }, token: t }),
+  removeOrigin: (project: string, id: string, t: T) => api<void>(embedPath(project, `origins/${encodeURIComponent(id)}`), { method: 'DELETE', token: t }),
+  keys: (project: string, t: T) => api<{ keys: EmbedKey[]; can_manage: boolean }>(embedPath(project, 'keys'), { token: t }),
+  createKey: (project: string, label: string, t: T) => api<EmbedKey>(embedPath(project, 'keys'), { method: 'POST', body: { label }, token: t }),
+  deleteKey: (project: string, id: string, t: T) => api<void>(embedPath(project, `keys/${encodeURIComponent(id)}`), { method: 'DELETE', token: t }),
+  keyUsage: (project: string, id: string, t: T) => api<EmbedUsage[]>(embedPath(project, `keys/${encodeURIComponent(id)}/usage`), { token: t }),
 };
 
 // Outbound webhooks (TL-636, on TL-635): an org's endpoints, admins only, Pro and Enterprise.

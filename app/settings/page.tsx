@@ -7,7 +7,7 @@ import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 import { PlanCard } from '@/components/billing/plan-card';
 import { useFlags } from '@flags-gg/react-library';
-import { CodeIcon, KeyRoundIcon, PlugIcon, UploadIcon, WebhookIcon } from 'lucide-react';
+import { KeyRoundIcon, PlugIcon, UploadIcon, WebhookIcon } from 'lucide-react';
 import { McpConnect } from '@/components/mcp-connect';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { SettingsCard } from '@/components/settings/settings-card';
@@ -41,8 +41,6 @@ export default function SettingsPage() {
         <OrganizationCard admin={admin} />
         {admin && <OrgReportCard />}
         {admin && <SettingsCard icon={PlugIcon} title={t`Integrations`} href="/settings/integrations" description={t`Connect GitHub, Bitbucket, Google Chat and Bugfixes.`} />}
-        {/* embedding is behind the flags.gg "embedding" flag so it can be rolled out and tested (TL-494) */}
-        {admin && is('embedding').enabled() && <SettingsCard icon={CodeIcon} title={t`Embedding`} href="/settings/embedding" description={t`Put a public roadmap or your request form on your own site.`} />}
         {admin && is('imports').enabled() && <SettingsCard icon={UploadIcon} title={t`Import`} href="/settings/import" description={t`Bring work in from Jira, or from a CSV (Trello, Asana, Linear, spreadsheets), as new projects.`} />}
         {admin && is('webhooks').enabled() && <SettingsCard icon={WebhookIcon} title={t`Webhooks`} href="/settings/webhooks" description={t`Send ticket, sprint and roadmap events to your own tools as they happen.`} />}
         <SettingsCard icon={KeyRoundIcon} title={t`API keys`}

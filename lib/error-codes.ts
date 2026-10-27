@@ -9,7 +9,7 @@ import { msg } from '@lingui/core/macro';
 export const ERROR_MESSAGES: Record<string, MessageDescriptor> = {
   accept_clerk_first: msg`accept the organization invitation through Clerk before completing this invitation`,
   accept_session_required: msg`invitation acceptance requires a signed-in session`,
-  admins_embed: msg`only an organization admin, signed in, can change embed origins`,
+  embed_managers: msg`only someone who manages this project, signed in, can change where its roadmaps and request form can be embedded`,
   admins_file_cleanup: msg`only org admins can see the file clean-up`,
   admins_intake_form: msg`only an organization admin, signed in, can open, close or reset the request form`,
   admins_make_service_keys: msg`only organization admins can make service keys`,
@@ -235,7 +235,7 @@ export const ERROR_MESSAGES: Record<string, MessageDescriptor> = {
   template_not_found: msg`template not found`,
   title_required: msg`title is required`,
   too_many_files: msg`this ticket already has as many files as it can hold: remove one to add another`,
-  too_many_origins: msg`too many embed origins for this organization`,
+  too_many_origins: msg`too many embed origins for this project`,
   too_many_planned: msg`a board plans at most 2 sprints ahead`,
   unknown_assignee: msg`assignee must be an active organization member or AI agent`,
   unknown_provider: msg`unknown provider`,

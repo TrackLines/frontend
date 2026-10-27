@@ -3401,6 +3401,7 @@ msgid "Edit labels"
 msgstr "permey tIchoH"
 
 #: app/projects/[id]/edit/page.tsx
+#: app/projects/[id]/embedding/page.tsx
 #: app/projects/[id]/page.tsx
 msgid "Edit project"
 msgstr "jInmol yIchoH"
@@ -3439,12 +3440,12 @@ msgstr "email_address'e' email Daq lugh 'oHnIS"
 msgid "Embed name"
 msgstr "embed pong"
 
-#: app/settings/embedding/page.tsx
-#: app/settings/page.tsx
+#: app/projects/[id]/edit/page.tsx
+#: app/projects/[id]/embedding/page.tsx
 msgid "Embedding"
 msgstr "embed"
 
-#: app/settings/embedding/page.tsx
+#: app/projects/[id]/embedding/page.tsx
 msgid "Embedding isn’t turned on for your organization yet."
 msgstr "ghom'a'lIjvaD embed chu'lu'be' DaH."
 
@@ -5742,10 +5743,6 @@ msgid "Only an organization admin or whoever uploaded it can remove this file."
 msgstr "ghom'a' loHwI' pagh lI'bogh ghot neH ghItlhvam teqlaH."
 
 #: lib/error-codes.ts
-msgid "only an organization admin, signed in, can change embed origins"
-msgstr "ghom'a' loHwI', 'elpu'bogh, neH embed originmey choHlaH"
-
-#: lib/error-codes.ts
 msgid "only an organization admin, signed in, can open, close or reset the request form"
 msgstr "ghom'a' loHwI', 'elpu'bogh, neH tlhobmeH nav poSmoHlaH, SoQmoHlaH, cherqa'laH je"
 
@@ -5792,10 +5789,6 @@ msgstr "ghom'a' loHwI'pu' jInmolvam beq DevwI'pu' je neH He navmeyDaj choHlaH."
 #: components/roadmap/updates.tsx
 msgid "Only organization admins and this project’s team leaders can post updates."
 msgstr "ghom'a' loHwI'pu' jInmolvam beq DevwI'pu' je neH chu'ghachmey ngeHlaH."
-
-#: components/settings/embedding.tsx
-msgid "Only organization admins can add or remove sites."
-msgstr "ghom'a' loHwI'pu' neH Daqmey chellaH teqlaH je."
 
 #: components/billing/plan-card.tsx
 msgid "Only organization admins can change the plan."
@@ -5877,6 +5870,14 @@ msgstr "ghotpu' AI ngaQHa'moHwI'mey je neH ticketmey noblaH"
 #: lib/error-codes.ts
 msgid "only people review agent work"
 msgstr "ghotpu' neH AI Qu' nuD"
+
+#: components/settings/embedding.tsx
+msgid "Only people who manage this project can add or remove sites."
+msgstr "jInmolvam vu'bogh ghot neH Daqmey chel pagh teqlaH."
+
+#: lib/error-codes.ts
+msgid "only someone who manages this project, signed in, can change where its roadmaps and request form can be embedded"
+msgstr "jInmolvam vu'bogh ghot neH, 'el, choHlaH nuqDaq roadmapmeyDaj tlhobmeH ghItlhDaj je yInIDlu'"
 
 #: lib/error-codes.ts
 msgid "only the host can do that"
@@ -6416,14 +6417,14 @@ msgstr "repositorymeyvamDaq ticket ngaQHa'moHwI' pongbogh pull requestmey (rur: 
 msgid "push notifications aren't set up on this server"
 msgstr "naDev push ghuHmey cherlu'be'"
 
-#: app/settings/embedding/page.tsx
-#: app/settings/page.tsx
-msgid "Put a public roadmap or your request form on your own site."
-msgstr "DaqlIjDaq He nav poSbogh pagh tlhobmeH navlIj yIlan."
+#: app/projects/[id]/edit/page.tsx
+#: app/projects/[id]/embedding/page.tsx
+msgid "Put this project’s public roadmaps or its request form on your own site."
+msgstr "jInmolvam roadmapmey Hegh pagh tlhobmeH ghItlh yIlan Daqlij'e'Daq."
 
 #: components/settings/embedding.tsx
-msgid "Put a public roadmap or your request form on your own site. A widget runs on your page and calls TrackLin.es, so every site it runs on must be listed here first — otherwise the browser blocks it. Adding a site is what turns embedding on."
-msgstr "DaqlIjDaq He nav poSbogh pagh tlhobmeH navlIj yIlan. navlIjDaq widget Qap 'ej TrackLin.es rI', vaj naDev Qap Daq Hoch tetlhnIS wa'DIch — pagh De'wI' HablI' bot. Daq Dachelchugh embed chu'lu'."
+msgid "Put this project’s public roadmaps or its request form on your own site. A widget runs on your page and calls TrackLin.es, so every site it runs on must be listed here first — otherwise the browser blocks it. Adding a site is what turns embedding on, for this project only."
+msgstr "jInmolvam roadmapmey Hegh pagh tlhobmeH ghItlh yIlan Daqlij'e'Daq. widget ruch nav'e'lijDaq, TrackLin.es rItlh; vaj naDev Daq Hoch tetlhlu'nIS wa'DIch — ghobe'chugh, bot browser. Daq Dachelchugh, jInmolvam neH yInIDlu'."
 
 #: components/staff/help-editor.tsx
 msgid "Question"
@@ -6564,8 +6565,8 @@ msgid "Replace webhook URL"
 msgstr "webhook URL yIlIS"
 
 #: components/settings/embedding.tsx
-msgid "Replace YOUR_REQUEST_TOKEN with your form’s token (Settings → project → request form)."
-msgstr "YOUR_REQUEST_TOKEN Daq navlIj token yIlan (SeHlaw → jInmol → tlhobmeH nav)."
+msgid "Replace YOUR_REQUEST_TOKEN with the token in this project’s request form link (Edit project → Request form)."
+msgstr "YOUR_REQUEST_TOKEN yIlchoH jInmolvam tlhobmeH ghItlh rarwI' token (jInmol yIchoH → tlhobmeH ghItlh)."
 
 #: components/settings/embedding.tsx
 msgid "Replace YOUR_ROADMAP_ID with the roadmap’s id (it’s in the roadmap’s share link, /r/<id>)."
@@ -7056,7 +7057,6 @@ msgstr "{0} yIcher"
 #: app/boards/[id]/edit/page.tsx
 #: app/dashboard/page.tsx
 #: app/settings/api-keys/page.tsx
-#: app/settings/embedding/page.tsx
 #: app/settings/file-cleanup/page.tsx
 #: app/settings/integrations/page.tsx
 #: app/settings/organization/page.tsx
@@ -7913,6 +7913,10 @@ msgstr "luQaghpu': nIDqa'meH DIch lo'qa'"
 msgid "they haven't joined the session"
 msgstr "ghom muvbe' chaH"
 
+#: components/settings/embedding.tsx
+msgid "They work only on the sites allowed above."
+msgstr "Daqmey chaw'lu'bogh Dung neH Qap."
+
 #: lib/error-codes.ts
 msgid "this api key is read-only"
 msgstr "api ngaQHa'moHwI'vam laD neH"
@@ -8305,8 +8309,8 @@ msgid "token is required; base_url must be an https address like https://bugfix.
 msgstr "token poQlu'; base_url'e' https Daq 'oHnIS, https://bugfix.es rur"
 
 #: lib/error-codes.ts
-msgid "too many embed origins for this organization"
-msgstr "ghom'a'vamvaD embed originmey law' law'qu'"
+msgid "too many embed origins for this project"
+msgstr "jInmolvamvaD Daqmey law' law'qu'"
 
 #: lib/error-codes.ts
 msgid "too many requests from you; please try again later"

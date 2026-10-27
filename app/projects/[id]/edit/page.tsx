@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { Plural, Trans, useLingui } from '@lingui/react/macro';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { DownloadIcon, GitPullRequestIcon, HashIcon, InboxIcon, KanbanIcon, MessageSquareIcon, TypeIcon } from 'lucide-react';
+import { CodeIcon, DownloadIcon, GitPullRequestIcon, HashIcon, InboxIcon, KanbanIcon, MessageSquareIcon, TypeIcon } from 'lucide-react';
+import { useFlags } from '@flags-gg/react-library';
 import { GoogleChatSettings } from '@/components/settings/google-chat';
 import { EditableTitle } from '@/components/editable-title';
 import { SettingsCard } from '@/components/settings/settings-card';
@@ -22,6 +23,7 @@ import { useToken } from '@/lib/use-token';
 // and linked repositories.
 export default function EditProjectPage() {
   const { t } = useLingui();
+  const { is } = useFlags();
   const { id } = useParams<{ id: string }>();
   const token = useToken();
   const [project, setProject] = useCachedState<Project>(`project:${id}`); // shared with the project page
@@ -74,6 +76,8 @@ export default function EditProjectPage() {
         <SettingsCard wide icon={InboxIcon} title={t`Request form`} description={t`A public form for customers to suggest features and report bugs; you choose what reaches the backlog.`}>
           <IntakeSettingsSection projectId={project.id} token={token} />
         </SettingsCard>
+        {/* embedding is the project's (TL-683), behind the flags.gg "embedding" flag (TL-494) */}
+        {is('embedding').enabled() && <SettingsCard icon={CodeIcon} title={t`Embedding`} href={`/projects/${project.id}/embedding`} description={t`Put this project’s public roadmaps or its request form on your own site.`} />}
         <SettingsCard wide icon={MessageSquareIcon} title="Google Chat" description={t`Post this project’s notifications into its team’s Google Chat space: new tickets, reviews, sprints over capacity and more.`}>
           <GoogleChatSettings token={token} projectId={project.id} canManage={admin} />
         </SettingsCard>

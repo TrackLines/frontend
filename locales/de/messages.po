@@ -3401,6 +3401,7 @@ msgid "Edit labels"
 msgstr "Labels bearbeiten"
 
 #: app/projects/[id]/edit/page.tsx
+#: app/projects/[id]/embedding/page.tsx
 #: app/projects/[id]/page.tsx
 msgid "Edit project"
 msgstr "Projekt bearbeiten"
@@ -3439,12 +3440,12 @@ msgstr "email_address muss eine gültige E-Mail-Adresse sein."
 msgid "Embed name"
 msgstr "Name des Embeds"
 
-#: app/settings/embedding/page.tsx
-#: app/settings/page.tsx
+#: app/projects/[id]/edit/page.tsx
+#: app/projects/[id]/embedding/page.tsx
 msgid "Embedding"
 msgstr "Einbetten"
 
-#: app/settings/embedding/page.tsx
+#: app/projects/[id]/embedding/page.tsx
 msgid "Embedding isn’t turned on for your organization yet."
 msgstr "Einbetten ist für deine Organisation noch nicht aktiviert."
 
@@ -5742,10 +5743,6 @@ msgid "Only an organization admin or whoever uploaded it can remove this file."
 msgstr "Nur ein Organisations-Admin oder die Person, die die Datei hochgeladen hat, kann sie entfernen."
 
 #: lib/error-codes.ts
-msgid "only an organization admin, signed in, can change embed origins"
-msgstr "Nur ein angemeldeter Organisations-Admin kann Embed-Origins ändern."
-
-#: lib/error-codes.ts
 msgid "only an organization admin, signed in, can open, close or reset the request form"
 msgstr "Nur ein angemeldeter Organisations-Admin kann das Anfrageformular öffnen, schließen oder zurücksetzen."
 
@@ -5792,10 +5789,6 @@ msgstr "Nur Organisations-Admins und die Teamleitung dieses Projekts können sei
 #: components/roadmap/updates.tsx
 msgid "Only organization admins and this project’s team leaders can post updates."
 msgstr "Nur Organisations-Admins und die Teamleitung dieses Projekts können Updates posten."
-
-#: components/settings/embedding.tsx
-msgid "Only organization admins can add or remove sites."
-msgstr "Nur Organisations-Admins können Sites hinzufügen oder entfernen."
 
 #: components/billing/plan-card.tsx
 msgid "Only organization admins can change the plan."
@@ -5877,6 +5870,14 @@ msgstr "Nur Personen und KI-Schlüssel können Tickets zuweisen."
 #: lib/error-codes.ts
 msgid "only people review agent work"
 msgstr "Nur Personen prüfen die Arbeit von Agents."
+
+#: components/settings/embedding.tsx
+msgid "Only people who manage this project can add or remove sites."
+msgstr "Nur wer dieses Projekt verwaltet, kann Websites hinzufügen oder entfernen."
+
+#: lib/error-codes.ts
+msgid "only someone who manages this project, signed in, can change where its roadmaps and request form can be embedded"
+msgstr "nur jemand, der dieses Projekt verwaltet, angemeldet, kann ändern, wo seine Roadmaps und sein Anfrageformular eingebettet werden können"
 
 #: lib/error-codes.ts
 msgid "only the host can do that"
@@ -6416,14 +6417,14 @@ msgstr "Pull Requests in diesen Repositories, die den Schlüssel eines Tickets n
 msgid "push notifications aren't set up on this server"
 msgstr "Push-Benachrichtigungen sind auf diesem Server nicht eingerichtet."
 
-#: app/settings/embedding/page.tsx
-#: app/settings/page.tsx
-msgid "Put a public roadmap or your request form on your own site."
-msgstr "Bring eine öffentliche Roadmap oder dein Anfrageformular auf deine eigene Website."
+#: app/projects/[id]/edit/page.tsx
+#: app/projects/[id]/embedding/page.tsx
+msgid "Put this project’s public roadmaps or its request form on your own site."
+msgstr "Binde die öffentlichen Roadmaps oder das Anfrageformular dieses Projekts auf deiner eigenen Website ein."
 
 #: components/settings/embedding.tsx
-msgid "Put a public roadmap or your request form on your own site. A widget runs on your page and calls TrackLin.es, so every site it runs on must be listed here first — otherwise the browser blocks it. Adding a site is what turns embedding on."
-msgstr "Bring eine öffentliche Roadmap oder dein Anfrageformular auf deine eigene Website. Ein Widget läuft auf deiner Seite und ruft TrackLin.es auf, daher muss jede Site, auf der es läuft, zuerst hier eingetragen sein — sonst blockiert der Browser es. Mit dem Hinzufügen einer Site wird das Einbetten aktiviert."
+msgid "Put this project’s public roadmaps or its request form on your own site. A widget runs on your page and calls TrackLin.es, so every site it runs on must be listed here first — otherwise the browser blocks it. Adding a site is what turns embedding on, for this project only."
+msgstr "Binde die öffentlichen Roadmaps oder das Anfrageformular dieses Projekts auf deiner eigenen Website ein. Ein Widget läuft auf deiner Seite und ruft TrackLin.es auf, deshalb muss jede Website, auf der es läuft, zuerst hier stehen — sonst blockiert der Browser es. Eine Website hinzuzufügen schaltet das Einbetten ein, nur für dieses Projekt."
 
 #: components/staff/help-editor.tsx
 msgid "Question"
@@ -6564,8 +6565,8 @@ msgid "Replace webhook URL"
 msgstr "Webhook-URL ersetzen"
 
 #: components/settings/embedding.tsx
-msgid "Replace YOUR_REQUEST_TOKEN with your form’s token (Settings → project → request form)."
-msgstr "Ersetze YOUR_REQUEST_TOKEN durch das Token deines Formulars (Einstellungen → Projekt → Anfrageformular)."
+msgid "Replace YOUR_REQUEST_TOKEN with the token in this project’s request form link (Edit project → Request form)."
+msgstr "Ersetze YOUR_REQUEST_TOKEN durch das Token im Link des Anfrageformulars dieses Projekts (Projekt bearbeiten → Anfrageformular)."
 
 #: components/settings/embedding.tsx
 msgid "Replace YOUR_ROADMAP_ID with the roadmap’s id (it’s in the roadmap’s share link, /r/<id>)."
@@ -7056,7 +7057,6 @@ msgstr "{0} einrichten"
 #: app/boards/[id]/edit/page.tsx
 #: app/dashboard/page.tsx
 #: app/settings/api-keys/page.tsx
-#: app/settings/embedding/page.tsx
 #: app/settings/file-cleanup/page.tsx
 #: app/settings/integrations/page.tsx
 #: app/settings/organization/page.tsx
@@ -7913,6 +7913,10 @@ msgstr "Diese sind fehlgeschlagen: erneut anwenden, um sie zu wiederholen"
 msgid "they haven't joined the session"
 msgstr "Die Person ist der Sitzung nicht beigetreten."
 
+#: components/settings/embedding.tsx
+msgid "They work only on the sites allowed above."
+msgstr "Sie funktionieren nur auf den oben erlaubten Websites."
+
 #: lib/error-codes.ts
 msgid "this api key is read-only"
 msgstr "Dieser API-Schlüssel ist schreibgeschützt."
@@ -8305,8 +8309,8 @@ msgid "token is required; base_url must be an https address like https://bugfix.
 msgstr "token ist erforderlich; base_url muss eine https-Adresse sein, z. B. https://bugfix.es."
 
 #: lib/error-codes.ts
-msgid "too many embed origins for this organization"
-msgstr "Zu viele Embed-Origins für diese Organisation."
+msgid "too many embed origins for this project"
+msgstr "zu viele Einbettungs-Origins für dieses Projekt"
 
 #: lib/error-codes.ts
 msgid "too many requests from you; please try again later"
