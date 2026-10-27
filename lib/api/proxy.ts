@@ -10,9 +10,11 @@ export function backendURL(path: string[], search: string, backend: string): URL
   return url;
 }
 
-// Never forwarded to the backend: hop-by-hop or per-connection headers; the browser's Origin (the
-// backend's CORS is for direct browser callers); its cookies (the backend uses the Authorization
-// header and never reads them); and client-claimed addresses, which anyone can make up.
+// Never forwarded to the backend: hop-by-hop or per-connection headers; the browser's Origin when it's
+// this site (the app's own calls aren't cross-site); its cookies (the backend uses the Authorization
+// header and never reads them); and client-claimed addresses, which anyone can make up. Another site's
+// Origin does go through: an embedded roadmap or request form calls /api from the customer's page, and
+// the backend's CORS answers for it (allowed sites get their origin back; anything else stays refused).
 const DROP_REQUEST = ['host', 'origin', 'connection', 'content-length', 'accept-encoding', 'cookie',
   'x-forwarded-for', 'x-real-ip', 'forwarded', 'x-forwarded-host', 'true-client-ip', 'cf-connecting-ip'];
 
@@ -22,15 +24,29 @@ const DROP_REQUEST = ['host', 'origin', 'connection', 'content-length', 'accept-
 export function requestHeaders(incoming: Headers): Headers {
   const out = new Headers(incoming);
   const hops = (incoming.get('x-forwarded-for') ?? '').split(',').map((h) => h.trim()).filter(Boolean);
+  const origin = incoming.get('origin');
   for (const name of DROP_REQUEST) out.delete(name);
+  if (origin && !sameSite(origin, incoming.get('x-forwarded-host') ?? incoming.get('host'))) out.set('origin', origin);
   if (hops.length) out.set('x-forwarded-for', hops[hops.length - 1]);
   return out;
 }
 
+// sameSite: whether origin is the site the request came in on (the host it was sent to). Unparseable is
+// treated as ours, so it's dropped as before.
+function sameSite(origin: string, host: string | null): boolean {
+  try {
+    return !host || new URL(origin).host === host;
+  } catch {
+    return true;
+  }
+}
+
 // Only these backend response headers reach the browser: no Set-Cookie, no internal redirects
-// (Location), nothing hop-by-hop. Retry-After and X-RateLimit-* explain 429s.
+// (Location), nothing hop-by-hop. Retry-After and X-RateLimit-* explain 429s; Access-Control-* are the
+// backend's answer to an embed's site (TL-494).
 const KEEP_RESPONSE = ['content-type', 'cache-control', 'content-disposition', 'retry-after',
-  'x-ratelimit-limit', 'x-ratelimit-remaining', 'etag', 'last-modified', 'vary', 'x-request-id'];
+  'x-ratelimit-limit', 'x-ratelimit-remaining', 'etag', 'last-modified', 'vary', 'x-request-id',
+  'access-control-allow-origin', 'access-control-allow-methods', 'access-control-allow-headers', 'access-control-max-age'];
 
 export function responseHeaders(upstream: Headers): Headers {
   const out = new Headers();
