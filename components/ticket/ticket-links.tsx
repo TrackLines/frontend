@@ -31,7 +31,7 @@ export function TicketLinks({ ticket, token, onChanged }: { ticket: TicketDetail
   }, []);
   const subs = (ticket.children ?? []).length;
   return (
-    <section id="blocked-by" aria-labelledby={`links-${ticket.id}`} className="grid scroll-mt-20 gap-3">
+    <section id="blocked-by" aria-labelledby={`links-${ticket.id}`} className="grid scroll-mt-20 gap-3 rounded-xl border p-5"> {/* one box: the tabs belong together */}
       <h2 id={`links-${ticket.id}`} className="text-sm font-semibold"><Trans>Ticket links</Trans></h2>
       <Tabs value={tab} onValueChange={(v) => setTab(v as LinkTab)}>
         <TabsList aria-label={t`Ticket links`}>

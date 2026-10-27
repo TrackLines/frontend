@@ -10,6 +10,8 @@ const dep = (id: string) => ({ id, title: id, done: false });
 test('the tabs, with their counts, under one heading', () => {
   const html = renderToStaticMarkup(<TicketLinks token="x" onChanged={() => {}} ticket={{ ...base, children: [dep('a')], blocked_by: [dep('b'), dep('c')] }} />).replace(/<!-- -->/g, '');
   for (const s of ['Ticket links', 'Sub-tickets (1)', 'Blocked by (2)', 'Blocks (0)', 'id="blocked-by"']) expect(html).toContain(s);
+  // one bordered box around the heading, the tabs and what they show, so they read as one thing
+  expect(html).toMatch(/<section id="blocked-by"[^>]*class="[^"]*rounded-xl border p-5/);
 });
 
 test('they open where there is something: sub-tickets (or an epic), then blockers, then what it blocks; the badge link opens Blocked by', () => {
