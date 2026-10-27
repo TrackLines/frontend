@@ -41,3 +41,13 @@ test('WIP limits are only for work in progress: not the first column (waiting) o
   expect(html).not.toContain('Over the limit');
   expect(html).not.toContain('ring-2 ring-destructive/50'); // the over-limit outline
 });
+
+// TL-689: very wide screens show up to five columns (18rem each), not three and a bit; others are unchanged
+test('the board page widens to 100rem on very wide screens (source)', async () => {
+  const page = await Bun.file(new URL('../../app/boards/[id]/page.tsx', import.meta.url)).text();
+  expect(page).toContain("const BOARD_WIDTH = 'max-w-6xl min-[1700px]:max-w-[100rem]';");
+  expect(page).toContain('<main className={`mx-auto flex min-h-screen w-full flex-col ${BOARD_WIDTH}`}>');
+  expect(page).toContain('<div key={col.id} className="min-w-72 flex-1">'); // 5 × 18rem + gaps + padding fit in 100rem
+  const skeleton = await Bun.file(new URL('../layout/page-skeletons.tsx', import.meta.url)).text();
+  expect(skeleton).toContain('min-[1700px]:max-w-[100rem]'); // the loading board is as wide as the board
+});

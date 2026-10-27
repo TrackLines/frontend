@@ -18,7 +18,7 @@ export function Loading({ label, children, className }: { label: string; childre
 export function BoardSkeleton() {
   const { t } = useLingui();
   return (
-    <Loading label={t`Loading board…`} className="mx-auto flex min-h-screen w-full max-w-6xl flex-col">
+    <Loading label={t`Loading board…`} className="mx-auto flex min-h-screen w-full max-w-6xl flex-col min-[1700px]:max-w-[100rem]">
       <div className="flex items-center gap-4 border-b px-6 py-4">
         <Skeleton className="h-4 w-16" />
         <Skeleton className="h-7 w-48" />

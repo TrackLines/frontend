@@ -36,6 +36,10 @@ import { parseLabels, parsePriorities, PriorityFilter, ticketFilterQuery } from 
 import type { AssigneeFilter } from '@/components/board/assignee-filter';
 import { boardAccess, canAddTicket, shownTickets } from '@/lib/board/board-view';
 
+
+// BOARD_WIDTH: the board page's width (TL-689). Columns are 18rem at least, so the site's 72rem shows three
+// and a bit; very wide screens get 100rem, room for five.
+const BOARD_WIDTH = 'max-w-6xl min-[1700px]:max-w-[100rem]';
 export default function BoardPage() {
   const { id } = useParams<{ id: string }>();
   const focus = useSearchParams().get('ticket'); // /boards/<id>?ticket=<ticket> opens that ticket's modal
@@ -183,7 +187,7 @@ export default function BoardPage() {
   const hasVisibleTickets = (board.columns ?? []).some((column) => shownTickets(column.tickets, filters).length > 0);
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col">
+    <main className={`mx-auto flex min-h-screen w-full flex-col ${BOARD_WIDTH}`}>
       <header className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b px-6 py-4">
         <Link href={`/projects/${board.project_id}`} className="text-sm text-muted-foreground hover:underline">← <Trans>Project</Trans></Link>
         <h1 className="text-2xl font-bold tracking-tight">{board.name}</h1>
