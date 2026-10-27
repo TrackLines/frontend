@@ -882,10 +882,6 @@ msgstr "Ajouter un commentaire"
 msgid "Add a label"
 msgstr "Ajouter une étiquette"
 
-#: components/ticket/sub-tickets.tsx
-msgid "Add a sub-ticket…"
-msgstr "Ajouter un sous-ticket…"
-
 #: components/board/ticket-dialog.tsx
 msgid "Add a ticket"
 msgstr "Ajouter un ticket"
@@ -1432,10 +1428,14 @@ msgstr "Espaces de travail Bitbucket"
 msgid "Blocked"
 msgstr "Bloqué"
 
-#: components/ticket/dependencies.tsx
 #: components/ticket/relations.tsx
 msgid "Blocked by"
 msgstr "Bloqué par"
+
+#. placeholder {0}: ticket.blocked_by.length
+#: components/ticket/ticket-links.tsx
+msgid "Blocked by ({0})"
+msgstr "Bloqué par ({0})"
 
 #: lib/error-codes.ts
 msgid "blocked must be exclude"
@@ -1445,10 +1445,14 @@ msgstr "blocked doit valoir exclude"
 msgid "Blocked: see what it's waiting on"
 msgstr "Bloqué : voir ce qu’il attend"
 
-#: components/ticket/dependencies.tsx
 #: components/ticket/relations.tsx
 msgid "Blocks"
 msgstr "Bloque"
+
+#. placeholder {0}: ticket.blocks.length
+#: components/ticket/ticket-links.tsx
+msgid "Blocks ({0})"
+msgstr "Bloque ({0})"
 
 #: app/reports/page.tsx
 msgid "board"
@@ -2321,6 +2325,10 @@ msgstr "Impossible de supprimer le tableau. Veuillez réessayer."
 msgid "Couldn’t delete the template. Please try again."
 msgstr "Impossible de supprimer le modèle. Veuillez réessayer."
 
+#: components/ticket/sub-tickets.tsx
+msgid "Couldn’t detach it. Please try again."
+msgstr "Impossible de le détacher. Veuillez réessayer."
+
 #. placeholder {0}: account ?? name
 #: components/settings/integrations.tsx
 msgid "Couldn’t disconnect {0}."
@@ -3035,10 +3043,6 @@ msgstr "Livré par mois"
 msgid "Deliveries"
 msgstr "Livraisons"
 
-#: components/ticket/dependencies.tsx
-msgid "Dependencies"
-msgstr "Dépendances"
-
 #: components/settings/csv-import.tsx
 #: components/settings/organization.tsx
 msgid "Description"
@@ -3057,10 +3061,9 @@ msgstr "Description <0>(facultatif)</0>"
 msgid "Detach {title}"
 msgstr "Détacher {title}"
 
-#. placeholder {0}: ticket.parent.title
 #: components/ticket/sub-tickets.tsx
-msgid "Detach from “{0}”"
-msgstr "Détacher de « {0} »"
+msgid "Detach from {title}"
+msgstr "Détacher de {title}"
 
 #: app/roadmaps/[id]/edit/page.tsx
 msgid "Details"
@@ -3517,6 +3520,7 @@ msgstr "epic"
 
 #: components/board/epic-filter.tsx
 #: components/ticket-type.tsx
+#: components/ticket/sub-tickets.tsx
 msgid "Epic"
 msgstr "Epic"
 
@@ -4489,6 +4493,10 @@ msgstr "Liez des dépôts à des projets. Les pull requests qui mentionnent la c
 #: components/settings/integrations.tsx
 msgid "Link repositories to projects. Pull requests that mention a ticket’s key (e.g. TL-123) show on the ticket, and merging one closes it. Connect each GitHub organization your projects’ repositories live in."
 msgstr "Liez des dépôts à des projets. Les pull requests qui mentionnent la clé d’un ticket (ex. TL-123) s’affichent sur le ticket, et la fusion de l’une d’elles le ferme. Connectez chaque organisation GitHub qui héberge les dépôts de vos projets."
+
+#: components/ticket/sub-tickets.tsx
+msgid "Link sub-ticket…"
+msgstr "Lier un sous-ticket…"
 
 #: components/settings/organization.tsx
 msgid "Link team"
@@ -5589,6 +5597,10 @@ msgstr "Rien envoyé ces 30 derniers jours."
 msgid "Nothing unplanned in the backlog. Planned tickets are on their board’s Next sprints."
 msgstr "Rien de non planifié dans le backlog. Les tickets planifiés se trouvent dans les Prochains sprints de leur tableau."
 
+#: components/ticket/dependencies.tsx
+msgid "Nothing waits on it."
+msgstr "Rien n’attend ce ticket."
+
 #: components/board/past-sprints.tsx
 msgid "Nothing was finished in this sprint."
 msgstr "Rien n’a été terminé dans ce sprint."
@@ -6055,14 +6067,17 @@ msgstr "page doit être supérieur ou égal à 1"
 msgid "pagination"
 msgstr "pagination"
 
+#: components/ticket/sub-tickets.tsx
+msgid "Parent ticket"
+msgstr "Ticket parent"
+
 #: lib/error-codes.ts
 msgid "parent_comment_id must be a comment on the same ticket"
 msgstr "parent_comment_id doit être un commentaire du même ticket"
 
 #. placeholder {0}: parent.title
-#. placeholder {0}: ticket.parent.title
+#: components/board/ticket-dialog.tsx
 #: components/ticket/relations.tsx
-#: components/ticket/sub-tickets.tsx
 msgid "Part of <0>{0}</0>"
 msgstr "Fait partie de <0>{0}</0>"
 
@@ -7498,9 +7513,9 @@ msgstr "Style"
 msgid "style must be sprints or kanban"
 msgstr "style doit valoir sprints ou kanban"
 
-#: components/ticket/sub-tickets.tsx
-msgid "Sub-tickets"
-msgstr "Sous-tickets"
+#: components/ticket/ticket-links.tsx
+msgid "Sub-tickets ({subs})"
+msgstr "Sous-tickets ({subs})"
 
 #: components/ticket/labels.tsx
 msgid "Suggested labels"
@@ -8140,6 +8155,10 @@ msgstr "Clés des tickets"
 #: components/ticket/labels.tsx
 msgid "Ticket labels"
 msgstr "Étiquettes du ticket"
+
+#: components/ticket/ticket-links.tsx
+msgid "Ticket links"
+msgstr "Liens du ticket"
 
 #: components/load-error.tsx
 msgid "Ticket not found"

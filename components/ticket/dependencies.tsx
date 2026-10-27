@@ -37,8 +37,8 @@ export function DepRow({ d, onRemove, removeLabel }: { d: Dep; onRemove?: () => 
   );
 }
 
-// Dependencies: what this ticket waits on (editable) and what waits on it.
-export function Dependencies({ ticket, token, onChanged }: { ticket: TicketDetail; token: string; onChanged: () => void }) {
+// BlockedBy: what this ticket waits on, editable (the Ticket links tab names it, TL-686).
+export function BlockedBy({ ticket, token, onChanged }: { ticket: TicketDetail; token: string; onChanged: () => void }) {
   const { t } = useLingui();
   const [options, setOptions] = useState<Option[] | null>(null);
   const [saving, setSaving] = useState(false);
@@ -61,38 +61,34 @@ export function Dependencies({ ticket, token, onChanged }: { ticket: TicketDetai
   const choices = (options ?? []).filter((o) => o.id !== ticket.id && !current.includes(o.id));
 
   return (
-    <section aria-labelledby={`deps-${ticket.id}`} className="grid gap-3">
-      <h2 id={`deps-${ticket.id}`} className="text-sm font-semibold"><Trans>Dependencies</Trans></h2>
-      <div className="grid gap-1.5">
-        <p id="blocked-by" className="scroll-mt-20 text-xs font-medium text-muted-foreground uppercase"><Trans>Blocked by</Trans></p>
-        {ticket.blocked_by.length === 0 ? (
-          <p className="text-sm text-muted-foreground">{ticket.done ? <Trans>Nothing.</Trans> : <Trans>Nothing — it can be picked up.</Trans>}</p>
-        ) : (
-          <ul className="grid gap-1">{ticket.blocked_by.map((d) => <DepRow key={d.id} d={d} onRemove={saving ? undefined : () => save(current.filter((x) => x !== d.id))} />)}</ul>
-        )}
-        {/* a done ticket can drop blockers but not gain them (TL-528) */}
-        {!ticket.done && <div className="flex items-center gap-2">
-          {options === null ? (
-            <Button size="sm" variant="outline" disabled={saving} onClick={() => projectTickets(ticket.project_id, token).then(setOptions, () => setError(t`Couldn’t load the project’s tickets.`))}>
-              <Trans>Add a blocker…</Trans>
-            </Button>
-          ) : (
-            <Select items={Object.fromEntries(choices.map((o) => [o.id, o.title]))} value={null} onValueChange={(v) => v && save([...current, String(v)])} disabled={saving}>
-              <SelectTrigger size="sm" className="w-full max-w-md" aria-label={t`Choose a ticket this one waits on`}>
-                <SelectValue placeholder={choices.length ? t`Choose a ticket it waits on…` : t`No other tickets in this project`} />
-              </SelectTrigger>
-              <SelectContent>{choices.map((o) => <SelectItem key={o.id} value={o.id}>{o.title}</SelectItem>)}</SelectContent>
-            </Select>
-          )}
-        </div>}
-      </div>
-      {ticket.blocks.length > 0 && (
-        <div className="grid gap-1.5">
-          <p className="text-xs font-medium text-muted-foreground uppercase"><Trans>Blocks</Trans></p>
-          <ul className="grid gap-1">{ticket.blocks.map((d) => <DepRow key={d.id} d={d} />)}</ul>
-        </div>
+    <div className="grid gap-1.5">
+      {ticket.blocked_by.length === 0 ? (
+        <p className="text-sm text-muted-foreground">{ticket.done ? <Trans>Nothing.</Trans> : <Trans>Nothing — it can be picked up.</Trans>}</p>
+      ) : (
+        <ul className="grid gap-1">{ticket.blocked_by.map((d) => <DepRow key={d.id} d={d} onRemove={saving ? undefined : () => save(current.filter((x) => x !== d.id))} />)}</ul>
       )}
+      {/* a done ticket can drop blockers but not gain them (TL-528) */}
+      {!ticket.done && <div className="flex items-center gap-2">
+        {options === null ? (
+          <Button size="sm" variant="outline" disabled={saving} onClick={() => projectTickets(ticket.project_id, token).then(setOptions, () => setError(t`Couldn’t load the project’s tickets.`))}>
+            <Trans>Add a blocker…</Trans>
+          </Button>
+        ) : (
+          <Select items={Object.fromEntries(choices.map((o) => [o.id, o.title]))} value={null} onValueChange={(v) => v && save([...current, String(v)])} disabled={saving}>
+            <SelectTrigger size="sm" className="w-full max-w-md" aria-label={t`Choose a ticket this one waits on`}>
+              <SelectValue placeholder={choices.length ? t`Choose a ticket it waits on…` : t`No other tickets in this project`} />
+            </SelectTrigger>
+            <SelectContent>{choices.map((o) => <SelectItem key={o.id} value={o.id}>{o.title}</SelectItem>)}</SelectContent>
+          </Select>
+        )}
+      </div>}
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-    </section>
+    </div>
   );
+}
+
+// Blocks: what waits on this ticket (set from those tickets' own Blocked by).
+export function Blocks({ ticket }: { ticket: TicketDetail }) {
+  if (ticket.blocks.length === 0) return <p className="text-sm text-muted-foreground"><Trans>Nothing waits on it.</Trans></p>;
+  return <ul className="grid gap-1">{ticket.blocks.map((d) => <DepRow key={d.id} d={d} />)}</ul>;
 }

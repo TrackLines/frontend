@@ -882,10 +882,6 @@ msgstr "Kommentar hinzufügen"
 msgid "Add a label"
 msgstr "Label hinzufügen"
 
-#: components/ticket/sub-tickets.tsx
-msgid "Add a sub-ticket…"
-msgstr "Unterticket hinzufügen…"
-
 #: components/board/ticket-dialog.tsx
 msgid "Add a ticket"
 msgstr "Ticket hinzufügen"
@@ -1432,10 +1428,14 @@ msgstr "Bitbucket-Workspaces"
 msgid "Blocked"
 msgstr "Blockiert"
 
-#: components/ticket/dependencies.tsx
 #: components/ticket/relations.tsx
 msgid "Blocked by"
 msgstr "Blockiert durch"
+
+#. placeholder {0}: ticket.blocked_by.length
+#: components/ticket/ticket-links.tsx
+msgid "Blocked by ({0})"
+msgstr "Blockiert durch ({0})"
 
 #: lib/error-codes.ts
 msgid "blocked must be exclude"
@@ -1445,10 +1445,14 @@ msgstr "blocked muss exclude sein."
 msgid "Blocked: see what it's waiting on"
 msgstr "Blockiert: sieh, worauf es wartet"
 
-#: components/ticket/dependencies.tsx
 #: components/ticket/relations.tsx
 msgid "Blocks"
 msgstr "Blockiert"
+
+#. placeholder {0}: ticket.blocks.length
+#: components/ticket/ticket-links.tsx
+msgid "Blocks ({0})"
+msgstr "Blockiert ({0})"
 
 #: app/reports/page.tsx
 msgid "board"
@@ -2321,6 +2325,10 @@ msgstr "Das Board konnte nicht gelöscht werden. Bitte versuch es noch einmal."
 msgid "Couldn’t delete the template. Please try again."
 msgstr "Die Vorlage konnte nicht gelöscht werden. Bitte versuch es noch einmal."
 
+#: components/ticket/sub-tickets.tsx
+msgid "Couldn’t detach it. Please try again."
+msgstr "Konnte es nicht lösen. Bitte versuche es erneut."
+
 #. placeholder {0}: account ?? name
 #: components/settings/integrations.tsx
 msgid "Couldn’t disconnect {0}."
@@ -3035,10 +3043,6 @@ msgstr "Geliefert pro Monat"
 msgid "Deliveries"
 msgstr "Zustellungen"
 
-#: components/ticket/dependencies.tsx
-msgid "Dependencies"
-msgstr "Abhängigkeiten"
-
 #: components/settings/csv-import.tsx
 #: components/settings/organization.tsx
 msgid "Description"
@@ -3057,10 +3061,9 @@ msgstr "Beschreibung <0>(optional)</0>"
 msgid "Detach {title}"
 msgstr "{title} lösen"
 
-#. placeholder {0}: ticket.parent.title
 #: components/ticket/sub-tickets.tsx
-msgid "Detach from “{0}”"
-msgstr "Von „{0}“ lösen"
+msgid "Detach from {title}"
+msgstr "Von {title} lösen"
 
 #: app/roadmaps/[id]/edit/page.tsx
 msgid "Details"
@@ -3517,6 +3520,7 @@ msgstr "Epic"
 
 #: components/board/epic-filter.tsx
 #: components/ticket-type.tsx
+#: components/ticket/sub-tickets.tsx
 msgid "Epic"
 msgstr "Epic"
 
@@ -4489,6 +4493,10 @@ msgstr "Verknüpfe Repositories mit Projekten. Pull Requests, die den Schlüssel
 #: components/settings/integrations.tsx
 msgid "Link repositories to projects. Pull requests that mention a ticket’s key (e.g. TL-123) show on the ticket, and merging one closes it. Connect each GitHub organization your projects’ repositories live in."
 msgstr "Verknüpfe Repositories mit Projekten. Pull Requests, die den Schlüssel eines Tickets nennen (z. B. TL-123), erscheinen beim Ticket, und ein Merge schließt es. Verbinde jede GitHub-Organisation, in der die Repositories deiner Projekte liegen."
+
+#: components/ticket/sub-tickets.tsx
+msgid "Link sub-ticket…"
+msgstr "Unterticket verknüpfen…"
 
 #: components/settings/organization.tsx
 msgid "Link team"
@@ -5589,6 +5597,10 @@ msgstr "In den letzten 30 Tagen nichts gesendet."
 msgid "Nothing unplanned in the backlog. Planned tickets are on their board’s Next sprints."
 msgstr "Nichts Ungeplantes im Backlog. Geplante Tickets findest du unter „Nächste Sprints“ ihres Boards."
 
+#: components/ticket/dependencies.tsx
+msgid "Nothing waits on it."
+msgstr "Nichts wartet darauf."
+
 #: components/board/past-sprints.tsx
 msgid "Nothing was finished in this sprint."
 msgstr "In diesem Sprint wurde nichts abgeschlossen."
@@ -6055,14 +6067,17 @@ msgstr "page muss 1 oder größer sein."
 msgid "pagination"
 msgstr "Seitennummerierung"
 
+#: components/ticket/sub-tickets.tsx
+msgid "Parent ticket"
+msgstr "Übergeordnetes Ticket"
+
 #: lib/error-codes.ts
 msgid "parent_comment_id must be a comment on the same ticket"
 msgstr "parent_comment_id muss ein Kommentar im selben Ticket sein."
 
 #. placeholder {0}: parent.title
-#. placeholder {0}: ticket.parent.title
+#: components/board/ticket-dialog.tsx
 #: components/ticket/relations.tsx
-#: components/ticket/sub-tickets.tsx
 msgid "Part of <0>{0}</0>"
 msgstr "Teil von <0>{0}</0>"
 
@@ -7498,9 +7513,9 @@ msgstr "Stil"
 msgid "style must be sprints or kanban"
 msgstr "style muss sprints oder kanban sein."
 
-#: components/ticket/sub-tickets.tsx
-msgid "Sub-tickets"
-msgstr "Untertickets"
+#: components/ticket/ticket-links.tsx
+msgid "Sub-tickets ({subs})"
+msgstr "Untertickets ({subs})"
 
 #: components/ticket/labels.tsx
 msgid "Suggested labels"
@@ -8140,6 +8155,10 @@ msgstr "Ticketschlüssel"
 #: components/ticket/labels.tsx
 msgid "Ticket labels"
 msgstr "Ticket-Labels"
+
+#: components/ticket/ticket-links.tsx
+msgid "Ticket links"
+msgstr "Ticket-Verknüpfungen"
 
 #: components/load-error.tsx
 msgid "Ticket not found"

@@ -1,18 +1,21 @@
 import { expect, test } from 'bun:test';
 import { render as renderToStaticMarkup } from '@/test/i18n';
-import { Dependencies, DepRow, projectTickets } from './dependencies';
+import { BlockedBy, Blocks, DepRow, projectTickets } from './dependencies';
 import { afterEach } from 'bun:test';
 import type { TicketDetail } from '@/lib/api';
 
 const base = { id: 't', project_id: 'p', blocked_by: [], blocks: [] } as unknown as TicketDetail;
 
 test('nothing blocking reads as free to pick up; blockers link, with done ones struck through', () => {
-  expect(renderToStaticMarkup(<Dependencies ticket={base} token="tok" onChanged={() => {}} />)).toContain('Nothing — it can be picked up.');
-  const html = renderToStaticMarkup(<Dependencies ticket={{ ...base, blocked_by: [{ id: 'a', title: 'API first', done: false }, { id: 'b', title: 'Schema', done: true }],
-    blocks: [{ id: 'c', title: 'Release', done: false }] }} token="tok" onChanged={() => {}} />);
-  for (const s of ['href="/tickets/a"', 'API first', 'Stop waiting on API first', 'Blocks', 'Release', 'Add a blocker']) expect(html).toContain(s);
+  expect(renderToStaticMarkup(<BlockedBy ticket={base} token="tok" onChanged={() => {}} />)).toContain('Nothing — it can be picked up.');
+  const html = renderToStaticMarkup(<BlockedBy ticket={{ ...base, blocked_by: [{ id: 'a', title: 'API first', done: false }, { id: 'b', title: 'Schema', done: true }] }} token="tok" onChanged={() => {}} />);
+  for (const s of ['href="/tickets/a"', 'API first', 'Stop waiting on API first', 'Add a blocker']) expect(html).toContain(s);
   expect(html).toMatch(/line-through[^>]*>Schema/);
-  expect(html).not.toContain('Stop waiting on Release'); // what it blocks isn't editable here
+  // what it blocks: linked, not editable here (set from those tickets' own Blocked by)
+  const blocks = renderToStaticMarkup(<Blocks ticket={{ ...base, blocks: [{ id: 'c', title: 'Release', done: false }] }} />);
+  expect(blocks).toContain('href="/tickets/c"');
+  expect(blocks).not.toContain('<button');
+  expect(renderToStaticMarkup(<Blocks ticket={base} />)).toContain('Nothing waits on it.');
   expect(renderToStaticMarkup(<ul><DepRow d={{ id: 'x', title: 'X', done: false }} /></ul>)).not.toContain('<button');
 });
 
@@ -31,7 +34,7 @@ test('projectTickets gathers every board’s tickets (last column = done) and th
 });
 
 test('a done ticket can drop blockers but not add them (TL-528)', () => {
-  const html = renderToStaticMarkup(<Dependencies ticket={{ ...base, done: true, blocked_by: [{ id: 'a', title: 'API first', done: true }] }} token="tok" onChanged={() => {}} />);
+  const html = renderToStaticMarkup(<BlockedBy ticket={{ ...base, done: true, blocked_by: [{ id: 'a', title: 'API first', done: true }] }} token="tok" onChanged={() => {}} />);
   expect(html).not.toContain('Add a blocker');
   expect(html).toContain('Stop waiting on API first');
 });
