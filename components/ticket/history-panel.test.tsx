@@ -2,7 +2,8 @@ import { expect, test } from 'bun:test';
 import { render as renderToStaticMarkup } from '@/test/i18n';
 import { i18nFor } from '@/lib/i18n';
 import type { HistoryEntry } from '@/lib/api';
-import { HistoryPanelView, historySteps } from './history-panel';
+import { ACTIONS, activitySteps, HistoryPanelView, historySteps, namesOf, SHOWN } from './history-panel';
+import type { ActivityEntry, TicketDetail } from '@/lib/api';
 
 const at = (m: number) => `2026-10-17T10:${String(m).padStart(2, '0')}:00Z`;
 const col = (name: string, m: number, outcome: HistoryEntry['outcome'] = 'entered', actor?: string, done = false): HistoryEntry =>
@@ -36,7 +37,7 @@ test('a ticket made in a later column says which columns it skipped', () => {
 });
 
 test('the panel lists the steps, or says when nothing has been recorded yet', () => {
-  const html = renderToStaticMarkup(<HistoryPanelView people={people} entries={[{ at: at(0), stage: 'backlog', outcome: 'entered', stage_order: 0, done: false, actor: 'user_ava' }]} />);
+  const html = renderToStaticMarkup(<HistoryPanelView people={people} entries={[{ id: '1', at: at(0), actor: 'user_ava', actor_kind: 'person', action: 'ticket.stage', data: { stage: 'backlog', outcome: 'entered', stage_order: 0, done: false } }]} />);
   expect(html).toContain('aria-label="History"');
   expect(html).toContain('Ava Smith');
   expect(html).toContain('created it in the backlog');
@@ -64,4 +65,81 @@ test('the history held elsewhere and out of reach says so, not nothing (TL-667)'
   expect(html).not.toContain('Nothing recorded yet');
   const panel = await Bun.file(new URL('./history-panel.tsx', import.meta.url)).text();
   expect(panel).toContain("err.code === 'history_unavailable' ? 'unavailable' : null");
+});
+
+// TL-680: every change, as a sentence, never the text
+const ev = (action: string, data: Record<string, unknown> = {}, actor: string | null = 'user_ava', m = 0): ActivityEntry =>
+  ({ id: action + m, at: at(m), actor, actor_kind: actor ? 'person' : 'system', action, data });
+const lines = (entries: ActivityEntry[], names: Record<string, string> = {}) =>
+  activitySteps(i18nFor('en'), entries, people, names).map((s) => `${s.who} ${s.text}`).reverse();
+
+test('assignment: to someone, to themself, reassigned, unassigned', () => {
+  expect(lines([
+    ev('ticket.assigned', { from: null, to: 'claude' }),
+    ev('ticket.assigned', { from: 'claude', to: 'user_ava' }),
+    ev('ticket.assigned', { from: 'user_ava', to: null }),
+    ev('ticket.assigned', { from: null, to: 'user_ava' }, 'claude'),
+    ev('ticket.assigned', { from: 'user_ava', to: 'claude' }, 'claude'),
+    ev('ticket.assigned', { from: 'claude', to: null }),
+  ])).toEqual([
+    'Ava Smith assigned it to Claude',
+    'Ava Smith assigned it to themself',
+    'Ava Smith unassigned themself',
+    'Claude assigned it to Ava Smith',
+    'Claude assigned it to themself',
+    'Ava Smith unassigned Claude',
+  ]);
+});
+
+test('edits: several fields make one line, text says only that it changed, values in words', () => {
+  const [line] = lines([ev('ticket.updated', { fields: { priority: { from: 'medium', to: 'urgent' }, title: true, description: true, estimate: { from: '3', to: '5' } } })]);
+  expect(line).toBe('Ava Smith changed the priority from Medium to Urgent, edited the title, edited the description, changed the estimate from 3 to 5');
+  expect(lines([ev('ticket.updated', { fields: { type: { from: 'task', to: 'bug' }, due_date: { from: null, to: '2026-10-30' }, timebox_days: { from: 1, to: 2 }, timebox_hours: { from: 0, to: 4 } } })]))
+    .toEqual(['Ava Smith changed the type from Task to Bug, set the due date to 30 Oct 2026, changed the timebox']);
+});
+
+test('links name the tickets the page knows, and the rest read sensibly', () => {
+  const names = namesOf({ parent: { id: 'e', title: 'Audit epic', done: false }, children: [], blocked_by: [{ id: 'b', title: 'API first', done: false }], blocks: [] } as unknown as TicketDetail);
+  expect(lines([
+    ev('ticket.blocked_by_changed', { added: ['b'] }),
+    ev('ticket.blocked_by_changed', { removed: ['gone'] }),
+    ev('ticket.parent_changed', { from: null, to: 'e' }),
+    ev('ticket.labels_changed', { added: ['bug', 'ui'] }),
+    ev('attachment.added', { name: 'spec.pdf', size: 10 }),
+    ev('pr.state_changed', { repo: 'tl/web', number: 42, from: 'open', to: 'merged' }, null),
+  ], names)).toEqual([
+    'Ava Smith marked it blocked by API first',
+    'Ava Smith removed the blocker another ticket',
+    'Ava Smith made it part of Audit epic',
+    'Ava Smith added the labels bug, ui',
+    'Ava Smith attached spec.pdf',
+    'TrackLin.es merged pull request tl/web#42',
+  ]);
+});
+
+// the backend's actions (its OpenAPI, GET /tickets/{id}/activity): each has its own sentence
+test('every recorded action has a sentence', () => {
+  expect(ACTIONS).toHaveLength(23);
+  for (const a of ACTIONS) {
+    const data = a === 'ticket.stage' ? { stage: 'backlog', outcome: 'entered' } : a === 'ticket.updated' ? { fields: { title: true } } : { from: 'x', to: 'y', added: ['a'], name: 'f', repo: 'r', number: 1, of: 'x' };
+    const [line] = lines([ev(a, data)]);
+    expect(line).not.toContain('made a change');
+    expect(line.length).toBeGreaterThan('Ava Smith '.length);
+  }
+  expect(lines([ev('something.new')])).toEqual(['Ava Smith made a change']); // a newer backend's action
+});
+
+test('a long history shows the newest first, then Show older', () => {
+  const many = Array.from({ length: SHOWN + 5 }, (_, i) => ev('comment.added', {}, 'user_ava', i % 60));
+  const html = renderToStaticMarkup(<HistoryPanelView people={people} entries={many} />).replace(/<!-- -->/g, '');
+  expect(html.match(/commented/g)).toHaveLength(SHOWN);
+  expect(html).toContain('Show older');
+  expect(renderToStaticMarkup(<HistoryPanelView people={people} entries={many.slice(0, 3)} />)).not.toContain('Show older');
+});
+
+test('the panel reads the activity, and the page gives it the ticket for names (source)', async () => {
+  const panel = await Bun.file(new URL('./history-panel.tsx', import.meta.url)).text();
+  expect(panel).toContain('tickets.activity(ticketId, token)');
+  const page = await Bun.file(new URL('../../app/tickets/[id]/page.tsx', import.meta.url)).text();
+  expect(page).toContain('<HistoryPanel ticketId={tk.id} token={token} people={people} ticket={tk} />');
 });

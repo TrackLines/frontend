@@ -171,7 +171,7 @@ export default function TicketPage() {
       {token && <PullRequestsPanel ticketId={tk.id} token={token} />}
       {token && <TicketComments ticketId={tk.id} token={token} />}
       {/* last, below the conversation; full page only: the board's dialog and side view leave history out */}
-      {token && <HistoryPanel ticketId={tk.id} token={token} people={people} />}
+      {token && <HistoryPanel ticketId={tk.id} token={token} people={people} ticket={tk} />}
       {token && (
         <TicketDialog
           open={editing}

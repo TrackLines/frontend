@@ -1011,6 +1011,14 @@ msgstr "Añadido como <0>{0}</0>"
 msgid "added by {name}"
 msgstr "añadido por {name}"
 
+#: components/ticket/history-panel.tsx
+msgid "added it to a sprint"
+msgstr "lo añadió a un sprint"
+
+#: components/ticket/history-panel.tsx
+msgid "added the labels {added}"
+msgstr "añadió las etiquetas {added}"
+
 #. placeholder {0}: added.ticket_key
 #: components/intake/triage.tsx
 msgid "Added to the backlog as <0>{0}</0>."
@@ -1186,6 +1194,10 @@ msgstr "otra organización"
 msgid "another project in this organization already uses that key prefix"
 msgstr "otro proyecto de esta organización ya usa ese prefijo de clave"
 
+#: components/ticket/history-panel.tsx
+msgid "another ticket"
+msgstr "otro ticket"
+
 #: components/staff/help-editor.tsx
 msgid "Answer"
 msgstr "Respuesta"
@@ -1288,6 +1300,18 @@ msgstr "Tableros archivados →"
 msgid "Ask an organization admin to upgrade."
 msgstr "Pide a un administrador de la organización que mejore el plan."
 
+#: components/ticket/history-panel.tsx
+msgid "asked for a review"
+msgstr "pidió una revisión"
+
+#: components/ticket/history-panel.tsx
+msgid "assigned it to {to}"
+msgstr "lo asignó a {to}"
+
+#: components/ticket/history-panel.tsx
+msgid "assigned it to themself"
+msgstr "se lo asignó"
+
 #: app/tickets/[id]/page.tsx
 #: components/board/ticket-view.tsx
 msgid "Assigned to"
@@ -1327,6 +1351,10 @@ msgstr "En riesgo"
 #: components/ticket/attach-files-button.tsx
 msgid "Attach files"
 msgstr "Adjuntar archivos"
+
+#: components/ticket/history-panel.tsx
+msgid "attached {f}"
+msgstr "adjuntó {f}"
 
 #: components/staff/stats.tsx
 #: components/ticket/attachments.tsx
@@ -1636,6 +1664,26 @@ msgstr "Cambiar duración"
 msgid "Change sprint {0} length"
 msgstr "Cambiar la duración del sprint {0}"
 
+#: components/ticket/history-panel.tsx
+msgid "changed the {field}"
+msgstr "cambió {field}"
+
+#: components/ticket/history-panel.tsx
+msgid "changed the estimate from {a} to {b}"
+msgstr "cambió la estimación de {a} a {b}"
+
+#: components/ticket/history-panel.tsx
+msgid "changed the priority from {a} to {b}"
+msgstr "cambió la prioridad de {a} a {b}"
+
+#: components/ticket/history-panel.tsx
+msgid "changed the timebox"
+msgstr "cambió el timebox"
+
+#: components/ticket/history-panel.tsx
+msgid "changed the type from {a} to {b}"
+msgstr "cambió el tipo de {a} a {b}"
+
 #: lib/live-status.ts
 msgid "Changes others make appear here as they happen."
 msgstr "Los cambios que hacen otros aparecen aquí en tiempo real."
@@ -1877,6 +1925,10 @@ msgstr "lo cerró como hecho"
 msgid "closed it as won’t do"
 msgstr "lo cerró como no se hará"
 
+#: components/ticket/history-panel.tsx
+msgid "closed pull request {pr}"
+msgstr "cerró la pull request {pr}"
+
 #: components/board/sprint-bar.tsx
 msgid "Closing it now:"
 msgstr "Cerrándolo ahora:"
@@ -1923,6 +1975,10 @@ msgstr "el comentario no puede estar vacío ni superar los 10000 caracteres"
 #: lib/error-codes.ts
 msgid "comment is too long"
 msgstr "el comentario es demasiado largo"
+
+#: components/ticket/history-panel.tsx
+msgid "commented"
+msgstr "comentó"
 
 #: components/staff/stats.tsx
 msgid "Comments"
@@ -3014,6 +3070,14 @@ msgstr "Eliminado"
 msgid "Deleted {0}"
 msgstr "Eliminado {0}"
 
+#: components/ticket/history-panel.tsx
+msgid "deleted a comment"
+msgstr "borró un comentario"
+
+#: components/ticket/history-panel.tsx
+msgid "deleted it"
+msgstr "lo borró"
+
 #. placeholder {0}: day.format(new Date(f.delete_on))
 #: components/settings/file-cleanup.tsx
 msgid "Deleted on {0}"
@@ -3064,6 +3128,10 @@ msgstr "Separar {title}"
 #: components/ticket/sub-tickets.tsx
 msgid "Detach from {title}"
 msgstr "Desvincular de {title}"
+
+#: components/ticket/history-panel.tsx
+msgid "detached it from its parent"
+msgstr "lo desvinculó de su padre"
 
 #: app/roadmaps/[id]/edit/page.tsx
 msgid "Details"
@@ -3422,6 +3490,18 @@ msgstr "Editar ticket"
 msgid "Edit ticket labels"
 msgstr "Editar etiquetas del ticket"
 
+#: components/ticket/history-panel.tsx
+msgid "edited a comment"
+msgstr "editó un comentario"
+
+#: components/ticket/history-panel.tsx
+msgid "edited the description"
+msgstr "editó la descripción"
+
+#: components/ticket/history-panel.tsx
+msgid "edited the title"
+msgstr "editó el título"
+
 #: components/settings/jira-import.tsx
 msgid "Email"
 msgstr "Correo electrónico"
@@ -3579,6 +3659,10 @@ msgstr "Escala de estimación"
 #: lib/error-codes.ts
 msgid "estimate_scale must be none, fibonacci, tshirt, powers or linear"
 msgstr "estimate_scale debe ser none, fibonacci, tshirt, powers o linear"
+
+#: components/ticket/history-panel.tsx
+msgid "estimated it at {b}"
+msgstr "lo estimó en {b}"
 
 #: app/boards/[id]/edit/page.tsx
 msgid "Estimates"
@@ -3801,6 +3885,10 @@ msgstr "Terminados por sprint y la media de los tres últimos (la línea), en ti
 #: components/reports/report-view.tsx
 msgid "Finished sprints that set a goal: met or not."
 msgstr "Sprints terminados con objetivo: cumplido o no."
+
+#: components/ticket/history-panel.tsx
+msgid "finished the review"
+msgstr "terminó la revisión"
 
 #: components/board/column-list.tsx
 msgid "first: new tickets start here"
@@ -4317,6 +4405,10 @@ msgstr "Guarda la clave en una variable de entorno (p. ej. en el perfil de tu sh
 msgid "Keep ticket"
 msgstr "Mantener ticket"
 
+#: components/ticket/history-panel.tsx
+msgid "kept {f} for another year"
+msgstr "conservó {f} un año más"
+
 #: components/settings/csv-import.tsx
 msgid "Key prefix"
 msgstr "Prefijo de clave"
@@ -4510,6 +4602,10 @@ msgstr "Vincular esta cuenta"
 #: components/settings/organization.tsx
 msgid "Linked"
 msgstr "Vinculado"
+
+#: components/ticket/history-panel.tsx
+msgid "linked pull request {pr}"
+msgstr "vinculó la pull request {pr}"
 
 #: components/roadmap/item-tickets.tsx
 msgid "Linked tickets"
@@ -4729,6 +4825,14 @@ msgstr "Minúsculas, dígitos y guiones."
 msgid "Made {0} tickets on {1} boards."
 msgstr "Se crearon {0} tickets en {1} tableros."
 
+#: components/ticket/history-panel.tsx
+msgid "made a change"
+msgstr "hizo un cambio"
+
+#: components/ticket/history-panel.tsx
+msgid "made it part of {to}"
+msgstr "lo hizo parte de {to}"
+
 #. placeholder {0}: column.name
 #: components/board/column-list.tsx
 msgid "Make {0} the review column"
@@ -4803,6 +4907,14 @@ msgstr "Marcado como duplicado"
 msgid "marked duplicate"
 msgstr "marcado como duplicado"
 
+#: components/ticket/history-panel.tsx
+msgid "marked it a duplicate of {of}"
+msgstr "lo marcó como duplicado de {of}"
+
+#: components/ticket/history-panel.tsx
+msgid "marked it blocked by {added}"
+msgstr "lo marcó como bloqueado por {added}"
+
 #: components/ticket/duplicates.tsx
 msgid "Marking…"
 msgstr "Marcando…"
@@ -4852,6 +4964,10 @@ msgstr "Menciones"
 #: components/ticket/pull-requests-panel.tsx
 msgid "Merged"
 msgstr "Fusionado"
+
+#: components/ticket/history-panel.tsx
+msgid "merged pull request {pr}"
+msgstr "fusionó la pull request {pr}"
 
 #: components/reports/report-view.tsx
 #: components/reports/rollup-view.tsx
@@ -4960,6 +5076,10 @@ msgstr "¿Cambiar tu organización a {name}? Stripe ajusta el cargo de este peri
 #: components/ticket/history-panel.tsx
 msgid "moved it to {where}"
 msgstr "lo movió a {where}"
+
+#: components/ticket/history-panel.tsx
+msgid "moved it to another sprint"
+msgstr "lo movió a otro sprint"
 
 #: components/project/backlog.tsx
 #: components/project/move-to-board.tsx
@@ -6184,6 +6304,10 @@ msgstr "Planificado en el sprint {n}"
 msgid "Planned into sprint {n} on {board}"
 msgstr "Planificado en el sprint {n} de {board}"
 
+#: components/ticket/history-panel.tsx
+msgid "planned it for a later sprint"
+msgstr "lo planificó para un sprint posterior"
+
 #: lib/google-chat.ts
 msgid "Planned sprint needs approval"
 msgstr "El sprint planificado necesita aprobación"
@@ -6467,6 +6591,10 @@ msgstr "Motivo <0>(opcional, se añade como comentario)</0>"
 msgid "reason is too long"
 msgstr "el motivo es demasiado largo"
 
+#: components/ticket/history-panel.tsx
+msgid "reassigned it from {from} to {to}"
+msgstr "lo reasignó de {from} a {to}"
+
 #: components/intake/triage.tsx
 msgid "Received <0/>"
 msgstr "Recibido <0/>"
@@ -6557,6 +6685,26 @@ msgstr "¿Quitar el sprint planificado {0}? Sus tickets vuelven al backlog, sin 
 msgid "Removed"
 msgstr "Quitado"
 
+#: components/ticket/history-panel.tsx
+msgid "removed {f}"
+msgstr "quitó {f}"
+
+#: components/ticket/history-panel.tsx
+msgid "removed the blocker {removed}"
+msgstr "quitó el bloqueo {removed}"
+
+#: components/ticket/history-panel.tsx
+msgid "removed the due date"
+msgstr "quitó la fecha límite"
+
+#: components/ticket/history-panel.tsx
+msgid "removed the estimate"
+msgstr "quitó la estimación"
+
+#: components/ticket/history-panel.tsx
+msgid "removed the labels {removed}"
+msgstr "quitó las etiquetas {removed}"
+
 #: components/settings/google-chat.tsx
 msgid "Removed."
 msgstr "Quitado."
@@ -6568,6 +6716,14 @@ msgstr "La elimina junto con sus elementos; el enlace compartido deja de funcion
 #: components/editable-title.tsx
 msgid "Rename {label}"
 msgstr "Renombrar {label}"
+
+#: components/ticket/history-panel.tsx
+msgid "reopened it"
+msgstr "lo reabrió"
+
+#: components/ticket/history-panel.tsx
+msgid "reopened pull request {pr}"
+msgstr "reabrió la pull request {pr}"
 
 #: components/settings/integrations.tsx
 msgid "Replace access token"
@@ -6588,6 +6744,10 @@ msgstr "Reemplaza YOUR_ROADMAP_ID por el id de la hoja de ruta (está en su enla
 #: components/settings/embedding.tsx
 msgid "Replace YOUR_ROADMAP_ID with the roadmap’s id (its share link, /r/<id>)."
 msgstr "Reemplaza YOUR_ROADMAP_ID por el id de la hoja de ruta (su enlace para compartir, /r/<id>)."
+
+#: components/ticket/history-panel.tsx
+msgid "replied to a comment"
+msgstr "respondió a un comentario"
 
 #: components/ticket/comments.tsx
 msgid "Reply"
@@ -6653,6 +6813,10 @@ msgstr "Restaurar"
 #: components/board/board-lifecycle.tsx
 msgid "Restore board"
 msgstr "Restaurar tablero"
+
+#: components/ticket/history-panel.tsx
+msgid "restored it"
+msgstr "lo restauró"
 
 #: components/board/board-lifecycle.tsx
 #: components/project/archived-boards.tsx
@@ -7062,6 +7226,10 @@ msgstr "Indícala en días o elige una fecha de fin; en ambos casos se mide desd
 msgid "Set priority…"
 msgstr "Fijar prioridad…"
 
+#: components/ticket/history-panel.tsx
+msgid "set the due date to {b}"
+msgstr "fijó la fecha límite en {b}"
+
 #. placeholder {0}: fresh.name
 #: components/settings/api-keys.tsx
 msgid "Set up {0}"
@@ -7109,6 +7277,7 @@ msgid "Show"
 msgstr "Mostrar"
 
 #: components/settings/webhooks.tsx
+#: components/ticket/history-panel.tsx
 msgid "Show older"
 msgstr "Ver anteriores"
 
@@ -8333,6 +8502,14 @@ msgstr "demasiados orígenes de inserción para este proyecto"
 msgid "too many requests from you; please try again later"
 msgstr "demasiadas solicitudes por tu parte; inténtalo de nuevo más tarde"
 
+#: components/ticket/history-panel.tsx
+msgid "took it out of a planned sprint"
+msgstr "lo sacó de un sprint planificado"
+
+#: components/ticket/history-panel.tsx
+msgid "took it out of its sprint"
+msgstr "lo sacó de su sprint"
+
 #: components/roadmap/report.tsx
 msgid "Total"
 msgstr "Total"
@@ -8400,6 +8577,14 @@ msgstr "sin asignar"
 msgid "Unassigned"
 msgstr "Sin asignar"
 
+#: components/ticket/history-panel.tsx
+msgid "unassigned {from}"
+msgstr "desasignó a {from}"
+
+#: components/ticket/history-panel.tsx
+msgid "unassigned themself"
+msgstr "se desasignó"
+
 #: components/ticket/assignee-select.tsx
 msgid "Unavailable organization member"
 msgstr "Miembro de la organización no disponible"
@@ -8446,6 +8631,10 @@ msgstr "Desvincular {0}"
 #: components/project/repositories.tsx
 msgid "Unlink {0}? Its pull requests stop linking to this project's tickets."
 msgstr "¿Desvincular {0}? Sus pull requests dejarán de vincularse a los tickets de este proyecto."
+
+#: components/ticket/history-panel.tsx
+msgid "unlinked pull request {pr}"
+msgstr "desvinculó la pull request {pr}"
 
 #: components/settings/chat-dm.tsx
 msgid "Unlinking…"
