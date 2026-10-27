@@ -2893,6 +2893,10 @@ msgstr "No se pudo quitar el sprint planificado. Inténtalo de nuevo."
 msgid "Couldn’t rename the {label}. Please try again."
 msgstr "No se pudo cambiar el nombre de {label}. Inténtalo de nuevo."
 
+#: components/settings/guide.tsx
+msgid "Couldn’t reset the guide. Please try again."
+msgstr "No se pudo reiniciar la guía. Inténtalo de nuevo."
+
 #. placeholder {0}: b.name
 #: components/project/archived-boards.tsx
 msgid "Couldn’t restore {0}. Only organization admins and the board’s team leaders can."
@@ -4413,8 +4417,13 @@ msgid "Got it"
 msgstr "Entendido"
 
 #: components/onboarding/guide.tsx
+#: components/settings/guide.tsx
 msgid "Guide"
 msgstr "Guía"
+
+#: components/settings/guide.tsx
+msgid "Guide progress reset for this organization."
+msgstr "Se ha reiniciado el progreso de la guía para esta organización."
 
 #: components/settings/mcp-connect.tsx
 msgid "Header"
@@ -7154,6 +7163,10 @@ msgid "Refinement"
 msgstr "Refinamiento"
 
 #: lib/api/error-codes.ts
+msgid "refresh after switching organizations"
+msgstr "actualiza la página después de cambiar de organización"
+
+#: lib/api/error-codes.ts
 msgid "refresh to load the current guide"
 msgstr "actualiza la página para cargar la guía actual"
 
@@ -7347,6 +7360,18 @@ msgstr "Solicitudes"
 #: lib/api/error-codes.ts
 msgid "requires a signed-in session, not an API key"
 msgstr "requiere una sesión iniciada, no una clave de API"
+
+#: components/settings/guide.tsx
+msgid "Reset guide"
+msgstr "Reiniciar guía"
+
+#: components/settings/guide.tsx
+msgid "Reset your guide progress for this organization to show the Guide button again."
+msgstr "Reinicia tu progreso en esta organización para volver a mostrar el botón Guía."
+
+#: components/settings/guide.tsx
+msgid "Resetting…"
+msgstr "Reiniciando…"
 
 #: lib/api/error-codes.ts
 msgid "resolution must be done or wont_do"

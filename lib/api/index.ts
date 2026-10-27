@@ -154,6 +154,7 @@ export const organization = {
 
 export type OnboardingState = {
   admin: boolean; step: 'project' | 'invite' | 'complete';
+  chapters: string[];
   project_id: string | null; board_id: string | null; completed_at: string | null;
   guide: { id: string; version: number; available: boolean };
 };
@@ -164,6 +165,8 @@ export const onboarding = {
   finish: (token: T) => api<OnboardingState>('/onboarding/finish', { method: 'POST', token }),
   completeGuide: (guide: { id: string; version: number }, token: T) =>
     api<OnboardingState>('/onboarding/guide/complete', { method: 'POST', body: guide, token }),
+  resetGuide: (orgId: string, token: T) =>
+    api<OnboardingState>('/onboarding/guide/reset', { method: 'POST', body: { org_id: orgId }, token }),
 };
 
 export const teams = {

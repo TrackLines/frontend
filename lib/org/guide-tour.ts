@@ -7,10 +7,11 @@ export type GuideAction = { type: 'next' | 'new-project' | 'add-backlog' | 'back
 export const GUIDE_ACTION = 'tracklines:guide-action';
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-export function startTour(chapter: Chapter | 'all', projectId: string | null, completed: Chapter[] = []): Tour {
+export function startTour(chapter: Chapter | 'all', projectId: string | null, completed: Chapter[] = [], allowed: readonly Chapter[] = CHAPTERS): Tour {
   const validProject = projectId && uuid.test(projectId) ? projectId : null;
-  const chapters = chapter === 'all' ? [...CHAPTERS] : chapter === 'ticket' && !validProject ? ['project', 'ticket'] as Chapter[] : [chapter];
-  return { chapters, chapter: 0, stage: first(chapters[0]), projectId: validProject, completed };
+  const requested = chapter === 'all' ? [...CHAPTERS] : chapter === 'ticket' && !validProject ? ['project', 'ticket'] as Chapter[] : [chapter];
+  const chapters = chapter === 'ticket' && !validProject && !allowed.includes('project') ? [] : requested.filter((c) => allowed.includes(c));
+  return { chapters, chapter: 0, stage: chapters.length ? first(chapters[0]) : 'done', projectId: validProject, completed };
 }
 
 function first(chapter: Chapter): Stage {
@@ -66,8 +67,8 @@ export function tourStep(tour: Tour): { path: string; target: string; action: bo
   return { path, target: `[data-guide="${target}"]`, action };
 }
 
-export function guideCovered(completed: Chapter[]) {
-  return CHAPTERS.every((chapter) => completed.includes(chapter));
+export function guideCovered(completed: Chapter[], allowed: readonly Chapter[] = CHAPTERS) {
+  return allowed.length > 0 && allowed.every((chapter) => completed.includes(chapter));
 }
 
 export function emitGuideAction(action: GuideAction) {

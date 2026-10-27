@@ -10,6 +10,7 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { DevicePushCard } from '@/components/settings/device-push';
 import { LanguageCard } from '@/components/settings/language';
 import { SettingsCard } from '@/components/settings/settings-card';
+import { GuideSettings } from '@/components/settings/guide';
 import { useToken } from '@/lib/hooks/use-token';
 
 // Your settings (TL-294): how you personally hear about things, and your own API keys: personal keys
@@ -28,6 +29,7 @@ export default function AccountPage() {
         {token ? (
           <>
             <LanguageCard token={token} />
+            <GuideSettings token={token} />
             <DevicePushCard token={token} />
             <ChatDmCard token={token} />
             <SettingsCard icon={KeyRoundIcon} title={t`API keys`}
