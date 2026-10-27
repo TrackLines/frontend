@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { GoogleCalendarSettings } from '@/components/settings/google-calendar';
 import { GoogleChatSettings } from '@/components/settings/google-chat';
 import { integrations, organization, type IntegrationProvider, type IntegrationStatus } from '@/lib/api';
-import { integrationError, PROVIDER_NAMES } from '@/lib/integrations';
+import { integrationError, PROVIDER_NAMES } from '@/lib/org/integrations';
 
 const ABOUT: Record<IntegrationProvider, MessageDescriptor> = {
   bugfixes: msg`Bug tickets Bugfixes creates show the crash report’s live details: occurrences, last seen, where, and whether it came back.`,

@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { ListPageSkeleton } from '@/components/page-skeletons';
-import { Mentions } from '@/components/mentions';
-import { useToken } from '@/lib/use-token';
+import { ListPageSkeleton } from '@/components/layout/page-skeletons';
+import { Mentions } from '@/components/work/mentions';
+import { useToken } from '@/lib/hooks/use-token';
 
 export default function MentionsPage() {
   const { t } = useLingui();

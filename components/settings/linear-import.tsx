@@ -8,7 +8,7 @@ import { ImportStatus, importActions } from '@/components/settings/csv-import';
 import { ImportPreview, useAct } from '@/components/settings/jira-import';
 import { importsApi, linear, projects as projectsApi, teams as teamsApi, type ImportJob, type LinearConnection, type Team } from '@/lib/api';
 import { dates } from '@/lib/i18n';
-import { useToken } from '@/lib/use-token';
+import { useToken } from '@/lib/hooks/use-token';
 
 export const LINEAR_KEYS = 'https://linear.app/settings/account/security';
 

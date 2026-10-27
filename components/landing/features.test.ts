@@ -32,7 +32,7 @@ test('the Errors become tickets card links to BugFix.es (cross promotion), named
 });
 
 test('the homepage highlights the terminal app, Google Chat buttons and TRMNL, each with where to get it', async () => {
-  const { OUR_TUI } = await import('@/lib/our-links');
+  const { OUR_TUI } = await import('@/lib/site/our-links');
   expect(FEATURES.find((f) => f.title === 'Your work in the terminal')?.links).toEqual([{ href: OUR_TUI, label: 'Get the terminal app →' }]);
   expect(OUR_TUI).toBe('https://github.com/TrackLines/tui');
   expect(FEATURES.find((f) => f.title === 'Your work in the terminal')?.body).toContain('follow along when someone runs a standup or refinement'); // it follows, it doesn't host (TL-465)

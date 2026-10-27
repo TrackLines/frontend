@@ -9,17 +9,17 @@ import { useFlags } from '@flags-gg/react-library';
 import { GoogleChatSettings } from '@/components/settings/google-chat';
 import { EmbeddingSettings } from '@/components/settings/embedding';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { EditableTitle } from '@/components/editable-title';
+import { EditableTitle } from '@/components/common/editable-title';
 import { SettingsCard } from '@/components/settings/settings-card';
-import { ListPageSkeleton } from '@/components/page-skeletons';
+import { ListPageSkeleton } from '@/components/layout/page-skeletons';
 import { ProjectKeyPrefix } from '@/components/project/key-prefix';
 import { NewBoardButton } from '@/components/project/new-board';
 import { ProjectRepositories } from '@/components/project/repositories';
 import { IntakeSettingsSection } from '@/components/intake/intake-settings';
 import { ExportCSVButton } from '@/components/project/export-csv';
 import { organization, projects, type Project } from '@/lib/api';
-import { useCachedState } from '@/lib/page-cache';
-import { useToken } from '@/lib/use-token';
+import { useCachedState } from '@/lib/api/page-cache';
+import { useToken } from '@/lib/hooks/use-token';
 
 // Edit project: the project's setup, kept off its main page: name, ticket key prefix, more boards
 // and linked repositories.

@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { B, Guide, H2, Items, P, Steps } from '@/components/docs/prose';
-import { CHAT_KINDS } from '@/lib/google-chat';
-import { serverI18n } from '@/lib/server-i18n';
+import { CHAT_KINDS } from '@/lib/org/google-chat';
+import { serverI18n } from '@/lib/i18n/server-i18n';
 
 export const metadata: Metadata = {
   title: 'Google Chat for your organization · TrackLin.es docs',

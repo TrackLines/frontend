@@ -1,9 +1,9 @@
 'use client';
 
 import { Trans, useLingui } from '@lingui/react/macro';
-import { ListPageSkeleton } from '@/components/page-skeletons';
+import { ListPageSkeleton } from '@/components/layout/page-skeletons';
 import { ApiKeysManager } from '@/components/settings/api-keys';
-import { useToken } from '@/lib/use-token';
+import { useToken } from '@/lib/hooks/use-token';
 
 // Your API keys (TL-451): personal keys and AI agents, both acting as you. The organization's service
 // keys are in Settings → API keys.

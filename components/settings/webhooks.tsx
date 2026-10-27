@@ -3,14 +3,14 @@
 import Link from 'next/link';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
-import { CopyButton } from '@/components/copy-link';
-import { When } from '@/components/when';
+import { CopyButton } from '@/components/common/copy-link';
+import { When } from '@/components/common/when';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { ApiError, WEBHOOK_EVENTS, webhooks, type WebhookDelivery, type WebhookEndpoint, type WebhookEvent } from '@/lib/api';
-import { useToken } from '@/lib/use-token';
+import { useToken } from '@/lib/hooks/use-token';
 
 // webhookURL: what the backend will take: https, a real host (it also refuses private addresses).
 export function webhookURL(raw: string): string | null {

@@ -1,6 +1,6 @@
 'use client';
 
-import { ListPageSkeleton } from '@/components/page-skeletons';
+import { ListPageSkeleton } from '@/components/layout/page-skeletons';
 import Link from 'next/link';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState, type FormEvent } from 'react';
@@ -10,9 +10,9 @@ import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ApiError, billing, invitations, organization, teams as teamApi, type Invitation } from '@/lib/api';
-import { useToken } from '@/lib/use-token';
+import { useToken } from '@/lib/hooks/use-token';
 import { OutcomeNote, ReceivedInvitations, TeamEditor } from '@/components/settings/organization';
-import { adminSource, fetchOrganization, type OrganizationData, inviteInput, memberCount, inviteReady, memberName, personIn, saveError, sectionOf, targetName, type Outcome } from '@/lib/organization-settings';
+import { adminSource, fetchOrganization, type OrganizationData, inviteInput, memberCount, inviteReady, memberName, personIn, saveError, sectionOf, targetName, type Outcome } from '@/lib/org/organization-settings';
 import { dates } from '@/lib/i18n';
 
 const card = 'rounded-xl border p-5';

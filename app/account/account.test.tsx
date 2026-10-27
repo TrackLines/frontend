@@ -12,11 +12,11 @@ test('Google Chat lives on Your settings, not the organization’s Settings', as
 });
 
 test('Your settings is reachable from the account menu and the bell, and needs sign-in', async () => {
-  const menu = await read('../../components/user-menu.tsx');
+  const menu = await read('../../components/layout/user-menu.tsx');
   expect(menu).toContain('label={t`Your settings`}');
   expect(menu).toContain("router.push('/account')");
   expect(menu).toContain('label={t`Organization settings`}');
-  expect(await read('../../components/notifications-bell.tsx')).toContain('href="/account"');
+  expect(await read('../../components/work/notifications-bell.tsx')).toContain('href="/account"');
   expect(await read('../../proxy.ts')).toContain("'/account'");
 });
 

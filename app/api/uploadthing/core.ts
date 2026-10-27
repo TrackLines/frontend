@@ -2,8 +2,8 @@ import { auth } from '@clerk/nextjs/server';
 import { createUploadthing, type FileRouter } from 'uploadthing/next';
 import { UploadThingError } from 'uploadthing/server';
 import { z } from 'zod';
-import { attachProblem, MAX_FILES_PER_TICKET } from '@/lib/attachment-limits';
-import { serverI18n } from '@/lib/server-i18n';
+import { attachProblem, MAX_FILES_PER_TICKET } from '@/lib/ticket/attachment-limits';
+import { serverI18n } from '@/lib/i18n/server-i18n';
 
 const f = createUploadthing();
 

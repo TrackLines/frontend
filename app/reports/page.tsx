@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { LoadError } from '@/components/load-error';
+import { LoadError } from '@/components/layout/load-error';
 import { ReportView } from '@/components/reports/report-view';
 import { RollupView } from '@/components/reports/rollup-view';
 import { ExportMenu, PrintCover } from '@/components/reports/export-menu';
@@ -12,8 +12,8 @@ import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { ApiError, reports, type BoardReport, type RollupReport } from '@/lib/api';
-import { presetOf, presetRange, PRESETS, readQuery, writeQuery, type Preset, type Range } from '@/lib/sprint-report';
-import { useToken } from '@/lib/use-token';
+import { presetOf, presetRange, PRESETS, readQuery, writeQuery, type Preset, type Range } from '@/lib/sprint/sprint-report';
+import { useToken } from '@/lib/hooks/use-token';
 
 // /reports?board=<id> | ?project=<id> | ?org=1, &from=&to=: a sprint report (TL-400). The address is the report: share it.
 export default function ReportsPage() {

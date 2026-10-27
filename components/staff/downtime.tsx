@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { staff, type CreditPreview, type CreditResult, type DowntimeCredit, type Outage } from '@/lib/api';
 import { dates } from '@/lib/i18n';
-import { useToken } from '@/lib/use-token';
+import { useToken } from '@/lib/hooks/use-token';
 import { cn } from '@/lib/utils';
 
 export const STATUS_PAGE = 'https://uptime.chewedfeed.com/status/tracklines';

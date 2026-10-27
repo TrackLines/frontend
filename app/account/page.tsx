@@ -5,12 +5,12 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ChatDmCard } from '@/components/settings/chat-dm';
 import { KeyRoundIcon } from 'lucide-react';
-import { McpConnect } from '@/components/mcp-connect';
+import { McpConnect } from '@/components/settings/mcp-connect';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { DevicePushCard } from '@/components/settings/device-push';
 import { LanguageCard } from '@/components/settings/language';
 import { SettingsCard } from '@/components/settings/settings-card';
-import { useToken } from '@/lib/use-token';
+import { useToken } from '@/lib/hooks/use-token';
 
 // Your settings (TL-294): how you personally hear about things, and your own API keys: personal keys
 // and AI agents (TL-451). The organization's plan, people, connections and service keys stay in Settings.

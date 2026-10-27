@@ -1,4 +1,4 @@
-import { safeRedirect } from '@/lib/safe-redirect';
+import { safeRedirect } from '@/lib/server/safe-redirect';
 import { SignUp } from '@clerk/nextjs';
 
 export const metadata = { title: 'Create account | TrackLin.es' };

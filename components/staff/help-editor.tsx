@@ -3,8 +3,8 @@
 import { Trans, useLingui } from '@lingui/react/macro';
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { HelpItem } from '@/components/help-bot';
-import { Pager } from '@/components/pager';
+import { HelpItem } from '@/components/layout/help-bot';
+import { Pager } from '@/components/common/pager';
 import { useAct } from '@/components/settings/jira-import';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -13,10 +13,10 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { staff, type HelpAnswer, type HelpAnswerInput } from '@/lib/api';
-import { appRoute, PAGE_KINDS, type PageKind } from '@/lib/help';
+import { appRoute, PAGE_KINDS, type PageKind } from '@/lib/site/help';
 import { LOCALES, type Locale } from '@/lib/i18n';
-import { LANGUAGE_NAMES } from '@/lib/locale';
-import { useToken } from '@/lib/use-token';
+import { LANGUAGE_NAMES } from '@/lib/i18n/locale';
+import { useToken } from '@/lib/hooks/use-token';
 
 // missing: the languages an answer has no question or answer in (they're shown the English).
 export const missing = (a: Pick<HelpAnswerInput, 'question' | 'answer'>): Locale[] =>

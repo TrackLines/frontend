@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { DownloadIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { exportCSV } from '@/lib/api';
-import { csvFile } from '@/lib/csv-import';
+import { csvFile } from '@/lib/org/csv-import';
 
 // ExportCSVButton: every ticket in the project as a CSV file (TL-638): take your data anywhere.
 export function ExportCSVButton({ projectId, name, token }: { projectId: string; name: string; token: string }) {

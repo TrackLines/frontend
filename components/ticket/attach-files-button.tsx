@@ -4,10 +4,10 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { useRef, useState } from 'react';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { useUploadThing } from '@/lib/uploadthing';
+import { useUploadThing } from '@/lib/org/uploadthing';
 import type { PendingFile } from './pending-attachments';
 import type { UploadTarget } from '@/app/api/uploadthing/core';
-import { attachProblem } from '@/lib/attachment-limits';
+import { attachProblem } from '@/lib/ticket/attachment-limits';
 
 type Props = {
   target: UploadTarget | null; // the ticket, or while creating one its project; null: nowhere yet

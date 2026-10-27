@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@/components/ui/drawer';
 import { projects } from '@/lib/api';
-import { addLabels, removeLabel } from '@/lib/labels';
+import { addLabels, removeLabel } from '@/lib/ticket/labels';
 
 // MoreLabels: the "+N" dropdown holding labels that didn't fit; nothing when there are none.
 export function MoreLabels({ labels }: { labels: string[] }) {

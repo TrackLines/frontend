@@ -11,7 +11,7 @@ import { Donut } from '@/components/reports/donut';
 import { HealthBadge } from '@/components/roadmap/updates';
 import { roadmaps, type Roadmap, type RoadmapBurnup, type RoadmapItem, type RoadmapUpdate } from '@/lib/api';
 import { dates } from '@/lib/i18n';
-import { useToken } from '@/lib/use-token';
+import { useToken } from '@/lib/hooks/use-token';
 
 // The roadmap report (TL-617, on TL-616's endpoint): for the people who manage the roadmap, an
 // Export menu (PDF by printing, Markdown from the server) and the print-only report it prints.

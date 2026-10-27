@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ApiError, boardTemplates, type BoardTemplate } from '@/lib/api';
-import { SCALES } from '@/lib/estimates';
+import { SCALES } from '@/lib/board/estimates';
 
 export const DEFAULT_TEMPLATE = 'builtin:simple';
 

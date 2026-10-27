@@ -5,12 +5,12 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { LanguagesIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { setLanguageCookie } from '@/components/language-sync';
+import { setLanguageCookie } from '@/components/layout/language-sync';
 import { SettingsCard } from '@/components/settings/settings-card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { me } from '@/lib/api';
 import { LOCALES } from '@/lib/i18n';
-import { LANGUAGE_NAMES, pickLocale } from '@/lib/locale';
+import { LANGUAGE_NAMES, pickLocale } from '@/lib/i18n/locale';
 
 const BROWSER = 'browser'; // the Select's value for "follow the browser" (saved as null)
 

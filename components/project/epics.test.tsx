@@ -3,7 +3,7 @@ import { render as renderToStaticMarkup } from '@/test/i18n';
 import { EpicsView, epicSize } from './epics';
 import { i18nFor } from '@/lib/i18n';
 import { byBoard } from '@/components/ticket/sub-tickets';
-import { pickerTypes, TICKET_TYPES } from '@/components/ticket-type';
+import { pickerTypes, TICKET_TYPES } from '@/components/ticket/ticket-type';
 import { convertLeavesBoard } from '@/components/board/ticket-dialog';
 
 test('an epic’s progress and size read plainly (TL-214)', () => {

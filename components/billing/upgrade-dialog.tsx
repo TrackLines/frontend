@@ -5,8 +5,8 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ApiError, billing, type Subscription } from '@/lib/api';
-import { PLAN_NAMES, planOf, projectsText } from '@/lib/plans';
-import { stripeRedirect } from '@/lib/stripe-redirect';
+import { PLAN_NAMES, planOf, projectsText } from '@/lib/org/plans';
+import { stripeRedirect } from '@/lib/server/stripe-redirect';
 import { planActions } from './plan-card';
 
 // atProjectLimit: creating a project failed because the plan's project limit is reached (402).

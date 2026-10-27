@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { ListPageSkeleton } from '@/components/page-skeletons';
+import { ListPageSkeleton } from '@/components/layout/page-skeletons';
 import { IntegrationsSettings } from '@/components/settings/integrations';
-import { useToken } from '@/lib/use-token';
+import { useToken } from '@/lib/hooks/use-token';
 
 export default function IntegrationsPage() {
   const token = useToken();

@@ -1,13 +1,13 @@
 'use client';
 
-import { ListPageSkeleton } from '@/components/page-skeletons';
+import { ListPageSkeleton } from '@/components/layout/page-skeletons';
 import Link from 'next/link';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
 import { useFlags } from '@flags-gg/react-library';
 import { ApiKeysManager } from '@/components/settings/api-keys';
 import { organization, type ApiKeyKind } from '@/lib/api';
-import { useToken } from '@/lib/use-token';
+import { useToken } from '@/lib/hooks/use-token';
 
 // The organization's keys: service keys for servers and integrations. AI agent keys are personal and
 // made in Your settings; this page's AI tab stays behind the org-ai-keys flag (TL-451). Everyone sees

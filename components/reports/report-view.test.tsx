@@ -1,9 +1,9 @@
 import { expect, test } from 'bun:test';
 import { render as renderToStaticMarkup } from '@/test/i18n';
 import { ReportView, SpikeLine } from './report-view';
-import { ReportLink } from '@/components/board/past-sprints';
+import { ReportLink } from '@/components/sprint/past-sprints';
 import type { BoardReport } from '@/lib/api';
-import { presetOf, presetRange, readQuery, scopeChange, trend, writeQuery } from '@/lib/sprint-report';
+import { presetOf, presetRange, readQuery, scopeChange, trend, writeQuery } from '@/lib/sprint/sprint-report';
 
 const report: BoardReport = {
   board_id: 'b1', board_name: 'Backend', unit: 'points', from: '2026-07-01T00:00:00Z', to: '2026-10-01T00:00:00Z',

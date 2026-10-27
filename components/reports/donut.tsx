@@ -3,7 +3,7 @@
 import { Trans, useLingui } from '@lingui/react/macro';
 import { Cell, Pie, PieChart } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
-import { num } from '@/lib/sprint-report';
+import { num } from '@/lib/sprint/sprint-report';
 
 export type Slice = { key: string; label: string; value: number };
 

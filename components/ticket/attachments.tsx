@@ -1,6 +1,6 @@
 'use client';
 
-import { ListSkeleton } from '@/components/page-skeletons';
+import { ListSkeleton } from '@/components/layout/page-skeletons';
 import { Dialog as DialogPrimitive } from '@base-ui/react/dialog';
 import { DownloadIcon, EyeIcon, PaperclipIcon, XIcon } from 'lucide-react';
 import { Trans, useLingui } from '@lingui/react/macro';
@@ -8,8 +8,8 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogOverlay, DialogPortal, DialogTitle } from '@/components/ui/dialog';
 import { ApiError, attachments, type Assignee, type Attachment } from '@/lib/api';
-import { personLabel } from '@/lib/people';
-import { usePeople } from '@/lib/use-people';
+import { personLabel } from '@/lib/work/people';
+import { usePeople } from '@/lib/hooks/use-people';
 import { dates } from '@/lib/i18n';
 import { AttachFilesButton } from './attach-files-button';
 

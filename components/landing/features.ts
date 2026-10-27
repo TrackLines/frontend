@@ -1,5 +1,5 @@
 import { BotIcon, BugIcon, ChartColumnIcon, LayersIcon, LockIcon, MapIcon, MessageSquareIcon, MonitorIcon, ScreenShareOffIcon, ShieldCheckIcon, SquareTerminalIcon, TreePalmIcon, type LucideIcon } from 'lucide-react';
-import { OUR_REQUEST_FORM, OUR_ROADMAP, OUR_TUI } from '@/lib/our-links';
+import { OUR_REQUEST_FORM, OUR_ROADMAP, OUR_TUI } from '@/lib/site/our-links';
 import { TRMNL_RECIPE } from '@/app/docs/trmnl/page';
 
 // FEATURES: the homepage's "What makes it different" cards.

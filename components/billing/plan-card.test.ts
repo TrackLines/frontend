@@ -1,7 +1,7 @@
 import { expect, test } from 'bun:test';
 import { ApiError } from '@/lib/api';
 import { billingError, planActions, planText } from './plan-card';
-import { formatPrice, projectsText } from '@/lib/plans';
+import { formatPrice, projectsText } from '@/lib/org/plans';
 import { i18nFor } from '@/lib/i18n';
 
 const i18n = i18nFor('en');

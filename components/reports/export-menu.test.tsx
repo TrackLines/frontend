@@ -37,7 +37,7 @@ test('the PDF: a cover only in print, the controls and site chrome left out', as
   expect(renderToStaticMarkup(<ExportMenu scope={{ kind: 'board', id: 'b1' }} range={{ from: '2026-08-01', to: '2026-09-30' }} name="Backend" token="t" />)).toContain('print:hidden');
   const read = (p: string) => Bun.file(new URL(p, import.meta.url)).text();
   expect(await read('../../app/layout.tsx')).toContain('py-4 print:hidden'); // the site header
-  expect(await read('../site-footer.tsx')).toContain('print:hidden');
+  expect(await read('../layout/site-footer.tsx')).toContain('print:hidden');
   const css = await read('../../app/globals.css');
   expect(css).toContain('@page report');
   expect(css).toContain('size: landscape');

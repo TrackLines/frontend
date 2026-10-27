@@ -6,8 +6,8 @@ import { useParams, useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { buttonVariants } from '@/components/ui/button';
 import { integrations } from '@/lib/api';
-import { integrationError, PROVIDER_NAMES } from '@/lib/integrations';
-import { useToken } from '@/lib/use-token';
+import { integrationError, PROVIDER_NAMES } from '@/lib/org/integrations';
+import { useToken } from '@/lib/hooks/use-token';
 
 // Where GitHub (after installing the app) and Bitbucket (after authorizing) send the admin back:
 // finish connecting with what they passed along.

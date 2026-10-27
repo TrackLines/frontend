@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { invitations, teams as teamApi, type Invitation, type OrganizationMember, type Project, type Team, type TeamMember } from '@/lib/api';
-import { memberName, type Outcome, type Section } from '@/lib/organization-settings';
+import { memberName, type Outcome, type Section } from '@/lib/org/organization-settings';
 import { dates } from '@/lib/i18n';
 
 const card = 'rounded-xl border p-5';

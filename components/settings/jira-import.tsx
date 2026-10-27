@@ -11,8 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ImportStatus, importActions } from '@/components/settings/csv-import';
 import { ApiError, importsApi, jira, projects as projectsApi, teams as teamsApi, type ImportJob, type JiraConnection, type JiraProject, type Team } from '@/lib/api';
 import { dates } from '@/lib/i18n';
-import { ATLASSIAN_TOKENS, prefixNeeded, prefixProblem } from '@/lib/jira-import';
-import { useToken } from '@/lib/use-token';
+import { ATLASSIAN_TOKENS, prefixNeeded, prefixProblem } from '@/lib/org/jira-import';
+import { useToken } from '@/lib/hooks/use-token';
 
 const NO_TEAM = '-';
 

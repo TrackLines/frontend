@@ -5,9 +5,9 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Triage } from '@/components/intake/triage';
-import { ListPageSkeleton } from '@/components/page-skeletons';
+import { ListPageSkeleton } from '@/components/layout/page-skeletons';
 import { projects, type Project } from '@/lib/api';
-import { useToken } from '@/lib/use-token';
+import { useToken } from '@/lib/hooks/use-token';
 
 // A project's request inbox: what came in through its public request form.
 export default function RequestsPage() {

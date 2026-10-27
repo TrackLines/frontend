@@ -1,13 +1,13 @@
 'use client';
 
-import { ListPageSkeleton } from '@/components/page-skeletons';
+import { ListPageSkeleton } from '@/components/layout/page-skeletons';
 import Link from 'next/link';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
 import { FileCleanupView } from '@/components/settings/file-cleanup';
 import { ApiError, attachments, type FileCleanup } from '@/lib/api';
-import { usePeople } from '@/lib/use-people';
-import { useToken } from '@/lib/use-token';
+import { usePeople } from '@/lib/hooks/use-people';
+import { useToken } from '@/lib/hooks/use-token';
 
 // File clean-up (TL-261): org admins see the year-old files due to be deleted, keep any they need,
 // and see what the clean-up has already deleted.

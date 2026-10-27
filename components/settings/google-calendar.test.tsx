@@ -4,7 +4,7 @@ import { ApiError, type CalendarStatus } from '@/lib/api';
 import { i18nFor } from '@/lib/i18n';
 import { calendarError, DELEGATION_URL, GoogleCalendarView, UK_HOLIDAYS } from './google-calendar';
 import { IntegrationsSettings } from './integrations';
-import { FeatureFlags } from '@/components/feature-flags';
+import { FeatureFlags } from '@/components/layout/feature-flags';
 
 const i18n = i18nFor('en');
 

@@ -2,7 +2,7 @@ import { expect, test } from 'bun:test';
 import { render as renderToStaticMarkup } from '@/test/i18n';
 import { i18nFor } from '@/lib/i18n';
 import { LabelDrawer, TicketLabels } from './labels';
-import { addLabels, normalizeLabels, removeLabel } from '@/lib/labels';
+import { addLabels, normalizeLabels, removeLabel } from '@/lib/ticket/labels';
 
 test('ticket label chips render as outlined, truncated badges', () => {
   const html = renderToStaticMarkup(<TicketLabels labels={['frontend', 'agent:checkout-api']} />);

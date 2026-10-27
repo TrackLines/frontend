@@ -1,6 +1,6 @@
 'use client';
 
-import { MarkdownTextarea } from '@/components/markdown';
+import { MarkdownTextarea } from '@/components/common/markdown';
 import type { I18n } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';

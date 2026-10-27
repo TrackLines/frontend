@@ -8,18 +8,18 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { BoardLifecycle } from '@/components/board/board-lifecycle';
 import { ColumnList } from '@/components/board/column-list';
-import { SprintBar } from '@/components/board/sprint-bar';
-import { NameDialog } from '@/components/name-dialog';
-import { BoardSkeleton } from '@/components/page-skeletons';
+import { SprintBar } from '@/components/sprint/sprint-bar';
+import { NameDialog } from '@/components/common/name-dialog';
+import { BoardSkeleton } from '@/components/layout/page-skeletons';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { ApiError, boards, boardTemplates, columns, organization, type Board, type BoardStyle } from '@/lib/api';
-import { canManageBoard } from '@/lib/board-access';
-import { devComplete, devCompleteOptions, dirty, draftOf, layout, layoutChanged, problem, settingsPatch, type Draft } from '@/lib/board-edit';
-import { SCALES, type EstimateScale } from '@/lib/estimates';
-import { useToken } from '@/lib/use-token';
+import { canManageBoard } from '@/lib/board/board-access';
+import { devComplete, devCompleteOptions, dirty, draftOf, layout, layoutChanged, problem, settingsPatch, type Draft } from '@/lib/board/board-edit';
+import { SCALES, type EstimateScale } from '@/lib/board/estimates';
+import { useToken } from '@/lib/hooks/use-token';
 
 // EditBoardPage: /boards/<id>/edit (TL-470). The board's settings and its columns on their own page,
 // without its tickets. Nothing is saved until Save; Cancel (or leaving) drops the changes. The sprint's

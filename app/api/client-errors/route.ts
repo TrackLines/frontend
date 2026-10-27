@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server';
-import { allowReport, cleanReport, reportServer } from '@/lib/report';
-import { readCapped } from '@/lib/proxy';
+import { allowReport, cleanReport, reportServer } from '@/lib/server/report';
+import { readCapped } from '@/lib/api/proxy';
 
 export const runtime = 'nodejs';
 

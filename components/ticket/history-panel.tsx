@@ -7,12 +7,12 @@ import { Trans } from '@lingui/react/macro';
 import { HistoryIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { PRIORITY } from '@/components/board/priority-badge';
-import { TICKET_TYPES } from '@/components/ticket-type';
-import { When } from '@/components/when';
+import { TICKET_TYPES } from '@/components/ticket/ticket-type';
+import { When } from '@/components/common/when';
 import { Button } from '@/components/ui/button';
 import { ApiError, tickets, type ActivityEntry, type Assignee, type HistoryEntry, type TicketDetail } from '@/lib/api';
 import { dates } from '@/lib/i18n';
-import { personLabel } from '@/lib/people';
+import { personLabel } from '@/lib/work/people';
 
 // HistoryPanel: everything that happened to the ticket (TL-76, TL-680), on the full ticket page only: it's
 // detail for looking back, not for working the board, so the board's dialog and side view leave it out.

@@ -3,26 +3,26 @@
 import { Trans, useLingui } from '@lingui/react/macro';
 import { NeedsReviewBadge } from './review';
 import { DueBadge } from '@/components/ticket/due-badge';
-import { plainText } from '@/components/markdown';
-import { When } from '@/components/when';
+import { plainText } from '@/components/common/markdown';
+import { When } from '@/components/common/when';
 import { Badge } from '@/components/ui/badge';
 import { useState, type MouseEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { PencilIcon } from 'lucide-react';
 import { Card } from '@/components/ui/card';
-import { personLabel } from '@/lib/people';
-import { usePeople } from '@/lib/use-people';
+import { personLabel } from '@/lib/work/people';
+import { usePeople } from '@/lib/hooks/use-people';
 import { PriorityBadge } from './priority-badge';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
 import { TicketLabels } from '@/components/ticket/labels';
-import { TypeBadge, TimeboxBadge } from '@/components/ticket-type';
+import { TypeBadge, TimeboxBadge } from '@/components/ticket/ticket-type';
 import { tickets, type Ticket, type Board } from '@/lib/api';
 import { ChecklistCount } from '@/components/ticket/checklist-count';
 import { TicketDialog } from './ticket-dialog';
 import { TicketView } from './ticket-view';
 import Link from 'next/link';
 import { TicketKey, ticketPath } from '@/components/ticket/ticket-key';
-import type { EstimateScale } from '@/lib/estimates';
+import type { EstimateScale } from '@/lib/board/estimates';
 
 type Props = {
   ticket: Ticket;

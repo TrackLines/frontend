@@ -6,7 +6,7 @@ import { BellRingIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { SettingsCard } from '@/components/settings/settings-card';
-import { disablePush, enablePush, pushFailure, pushState, type PushState } from '@/lib/push';
+import { disablePush, enablePush, pushFailure, pushState, type PushState } from '@/lib/org/push';
 
 // DevicePushCard: notifications on this device (Web Push), the same switch as in the bell (TL-294).
 export function DevicePushCard({ token }: { token: string }) {

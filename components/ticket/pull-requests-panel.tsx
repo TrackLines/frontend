@@ -7,7 +7,7 @@ import { useLingui } from '@lingui/react';
 import { Trans } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
-import { When } from '@/components/when';
+import { When } from '@/components/common/when';
 import { tickets, type TicketPR } from '@/lib/api';
 
 const STATES: Record<TicketPR['state'], { icon: LucideIcon; label: MessageDescriptor; className: string }> = {

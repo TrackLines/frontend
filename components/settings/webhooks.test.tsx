@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { render } from '@/test/i18n';
 import { Deliveries, loadProblem, webhookURL } from './webhooks';
 import { WEBHOOK_EVENTS, webhooks, type WebhookDelivery } from '@/lib/api';
-import { ERROR_MESSAGES } from '@/lib/error-codes';
+import { ERROR_MESSAGES } from '@/lib/api/error-codes';
 import WebhooksDocs, { VERIFY_NODE } from '@/app/docs/webhooks/page';
 
 const realFetch = globalThis.fetch;

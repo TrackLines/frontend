@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Trans, useLingui } from '@lingui/react/macro';
 import type { ReactNode } from 'react';
-import { useStaff } from '@/lib/use-staff';
+import { useStaff } from '@/lib/hooks/use-staff';
 import { cn } from '@/lib/utils';
 
 export type StaffTab = 'stats' | 'help' | 'downtime';

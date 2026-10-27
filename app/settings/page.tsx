@@ -8,14 +8,14 @@ import { Suspense, useEffect, useState } from 'react';
 import { PlanCard } from '@/components/billing/plan-card';
 import { useFlags } from '@flags-gg/react-library';
 import { KeyRoundIcon, PlugIcon, UploadIcon, WebhookIcon } from 'lucide-react';
-import { McpConnect } from '@/components/mcp-connect';
+import { McpConnect } from '@/components/settings/mcp-connect';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { SettingsCard } from '@/components/settings/settings-card';
 import { OrgReportCard } from '@/components/reports/report-links';
 import { FileCleanupLink } from '@/components/settings/file-cleanup';
 import { OrganizationCard } from '@/components/settings/organization-card';
 import { attachments, organization, type FileCleanup } from '@/lib/api';
-import { useToken } from '@/lib/use-token';
+import { useToken } from '@/lib/hooks/use-token';
 
 export default function SettingsPage() {
   // organization and integrations are run by org admins (TL-241): everyone else can look, not manage

@@ -3,7 +3,7 @@
 import { Trans } from '@lingui/react/macro';
 import { useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { reportClient } from '@/lib/report';
+import { reportClient } from '@/lib/server/report';
 
 // A page that crashed: reported to Bugfixes (TL-292), with a way to try again.
 export default function PageError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {

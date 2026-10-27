@@ -5,7 +5,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { When } from '@/components/when';
+import { When } from '@/components/common/when';
 import { tickets, type Ticket, type TicketBugfixes } from '@/lib/api';
 
 // BugfixesPanel shows the crash report behind a ticket Bugfixes made: how often it happened, when

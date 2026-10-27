@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ApiError, boards } from '@/lib/api';
-import { SCALES, scaleValues, type EstimateScale } from '@/lib/estimates';
+import { SCALES, scaleValues, type EstimateScale } from '@/lib/board/estimates';
 
 const NONE = '__none';
 

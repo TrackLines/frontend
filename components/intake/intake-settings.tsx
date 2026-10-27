@@ -2,7 +2,7 @@
 
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
-import { CopyButton } from '@/components/copy-link';
+import { CopyButton } from '@/components/common/copy-link';
 import { Button } from '@/components/ui/button';
 import { intake, type IntakeSettings } from '@/lib/api';
 

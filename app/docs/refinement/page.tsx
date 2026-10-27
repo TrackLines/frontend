@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { B, Guide, H2, Items, P, Steps } from '@/components/docs/prose';
-import { MAX_PLANNED } from '@/lib/refinement';
+import { MAX_PLANNED } from '@/lib/live/refinement';
 
 export const metadata: Metadata = {
   title: 'Refinement · TrackLin.es docs',
