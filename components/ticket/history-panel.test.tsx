@@ -57,3 +57,11 @@ test('the board’s ticket view has a History button that opens the full page at
   expect(view.indexOf('<CopyLink ')).toBeLessThan(view.indexOf('#history'));
   expect(renderToStaticMarkup(<HistoryPanelView people={people} entries={[]} />)).toContain('id="history"');
 });
+
+test('the history held elsewhere and out of reach says so, not nothing (TL-667)', async () => {
+  const html = renderToStaticMarkup(<HistoryPanelView entries="unavailable" people={null} />);
+  expect(html).toContain('History can’t be loaded right now. Try again shortly.');
+  expect(html).not.toContain('Nothing recorded yet');
+  const panel = await Bun.file(new URL('./history-panel.tsx', import.meta.url)).text();
+  expect(panel).toContain("err.code === 'history_unavailable' ? 'unavailable' : null");
+});

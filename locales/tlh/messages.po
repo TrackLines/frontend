@@ -4032,6 +4032,10 @@ msgstr "Dun"
 msgid "History"
 msgstr "qun"
 
+#: components/ticket/history-panel.tsx
+msgid "History can’t be loaded right now. Try again shortly."
+msgstr "DaH qun lI'laHbe'lu'. tugh yInIDqa'."
+
 #: components/hosted-bar.tsx
 msgid "Host"
 msgstr "pa' DevwI'"
@@ -8081,6 +8085,10 @@ msgstr "nuDghach loSbe' ticketvam"
 #: components/board/review.tsx
 msgid "This ticket isn’t waiting for review any more."
 msgstr "nuDghach loSbe' ticketvam not."
+
+#: lib/error-codes.ts
+msgid "this ticket’s history can’t be loaded right now: try again shortly"
+msgstr "Seghvam qun DaH lI'laHbe'lu': tugh yInIDqa'"
 
 #: lib/google-chat.ts
 msgid "Ticket assigned (“assigned TL-12 to Sam”)"
