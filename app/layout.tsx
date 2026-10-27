@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { SiteFooter } from '@/components/layout/site-footer';
 import { HelpBot } from '@/components/layout/help-bot';
+import { OnboardingGuide } from '@/components/onboarding/guide';
 import { ScrollToTop } from '@/components/layout/scroll-to-top';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -69,6 +70,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
               {/* QuickAddTicket only renders on some pages, so it goes first: the toggle and avatar never move */}
               <Show when="signed-in"><QuickAddTicket /></Show>
               <Show when="signed-in"><TicketSearch /></Show>
+              <Show when="signed-in"><OnboardingGuide nonce={nonce} /></Show>
               <Show when="signed-in"><NotificationsBell /></Show>
               <ThemeChooser />
               <Show when="signed-out">

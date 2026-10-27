@@ -1158,6 +1158,10 @@ msgstr "{origin} DuHmoH"
 msgid "Allowed sites"
 msgstr "Daqmey chaw'lu'bogh"
 
+#: components/onboarding/setup.tsx
+msgid "Already have work elsewhere? Import it first, then return here to choose its board."
+msgstr "latlh DaqDaq Qu' Daghaj'a'? yIImport, ghIq naDev 'echlet yIwIv."
+
 #: lib/api/error-codes.ts
 msgid "already subscribed — manage it from the billing portal"
 msgstr "DaH Daghajpu' — Huch lojmIt vo' yIloH"
@@ -1464,6 +1468,11 @@ msgstr "Qav {MIN_SPRINTS_FOR_VELOCITY} sprintmey motlh: <0>{mean} pointmey</0> (
 #: components/sprint/velocity.tsx
 msgid "Average of the last {MIN_SPRINTS_FOR_VELOCITY} sprints: <0>{mean} tickets</0> (dashed line). Bars are labelled by sprint number."
 msgstr "Qav {MIN_SPRINTS_FOR_VELOCITY} sprintmey motlh: <0>{mean} ticketmey</0> (tlhegh ghoSbe'bogh). sprint mI' lo'taH tutHommey permey."
+
+#: components/onboarding/guide.tsx
+#: components/onboarding/setup.tsx
+msgid "Back"
+msgstr "chegh"
 
 #: app/settings/integrations/[provider]/page.tsx
 msgid "Back to integrations"
@@ -1843,6 +1852,10 @@ msgstr "DIlmeH Qu' qIllu'pu' — Huch tlhaplu'be'."
 msgid "Choose a {0} repository"
 msgstr "{0} repository yIwIv"
 
+#: lib/api/error-codes.ts
+msgid "choose a board in this organization"
+msgstr "DIvI'vam 'echlet yIwIv"
+
 #: components/project/move-to-board.tsx
 msgid "Choose a board…"
 msgstr "'echlet yIwIv…"
@@ -1870,6 +1883,10 @@ msgstr "ticketvam ticket puq DachenmoHmeH ticket yIwIv"
 #: components/ticket/sub-tickets.tsx
 msgid "Choose a ticket…"
 msgstr "ticket yIwIv…"
+
+#: components/onboarding/setup.tsx
+msgid "Choose an empty board or a template, or import your existing work. Imported projects count towards your plan’s project limit."
+msgstr "'echlet chIm pagh ghantoH yIwIv, pagh Qu'lIj yIImport. jInmolmey lI'lu'bogh mI' vuS nab."
 
 #: components/roadmap/item-tickets.tsx
 msgid "Choose an epic that delivers this milestone"
@@ -1969,6 +1986,8 @@ msgstr "client'e' claude-code, claude-desktop, codex, cursor, vscode, gemini pag
 
 #: components/board/ticket-view.tsx
 #: components/live/hosted-bar.tsx
+#: components/onboarding/guide.tsx
+#: components/onboarding/setup.tsx
 #: components/ticket/attachments.tsx
 #: components/ui/dialog.tsx
 msgid "Close"
@@ -2148,9 +2167,14 @@ msgstr "{name} yIrar"
 msgid "Connect AI"
 msgstr "AI yIrar"
 
+#: components/onboarding/guide.tsx
 #: components/settings/mcp-connect.tsx
 msgid "Connect an AI agent"
 msgstr "AI vumwI' yIrar"
+
+#: components/onboarding/guide.tsx
+msgid "Connect GitHub"
+msgstr "GitHub yIrI'"
 
 #: app/settings/page.tsx
 msgid "Connect GitHub, Bitbucket, Google Chat and Bugfixes."
@@ -2171,6 +2195,10 @@ msgstr "Linear yIrar"
 #: app/settings/integrations/page.tsx
 msgid "Connect your organization to the tools it uses. Link repositories to a project from the project's page."
 msgstr "ghom'a'lIj lo'bogh jan tIrar. jInmol nach vo' jInmolvaD repositorymey tIrar."
+
+#: components/onboarding/guide.tsx
+msgid "Connect your repository so pull requests stay linked to the tickets they deliver."
+msgstr "polmeHlIj yIrI'; Qu'Hommey rar pull requestmey."
 
 #: components/settings/google-calendar.tsx
 #: components/settings/integrations.tsx
@@ -2228,6 +2256,18 @@ msgstr "ghel"
 #: components/intake/triage.tsx
 msgid "Contact: <0>{0}</0>"
 msgstr "ghel: <0>{0}</0>"
+
+#: components/onboarding/guide.tsx
+msgid "Continue setup"
+msgstr "chermeH yItaH"
+
+#: components/onboarding/setup.tsx
+msgid "Continue to your board"
+msgstr "'echletlIjDaq yIghoS"
+
+#: components/onboarding/setup.tsx
+msgid "Continue with an existing board"
+msgstr "'echlet tu'lu'bogh yIlo'"
 
 #: components/ticket/comments.tsx
 msgid "Conversation"
@@ -2593,6 +2633,10 @@ msgstr "sprintmey ret Hevlu'laHbe'. yInIDqa'."
 msgid "Couldn’t load requests. Please try again."
 msgstr "tlhobmey Hevlu'laHbe'. yInIDqa'."
 
+#: components/onboarding/setup.tsx
+msgid "Couldn’t load setup. Please try again."
+msgstr "chermeH De' lI'laHbe'. yInIDqa'."
+
 #: components/board/template-picker.tsx
 msgid "Couldn’t load templates; the board will use the Simple layout."
 msgstr "mIlloghmey Hevlu'laHbe'; Simple mIw lo' 'echlet."
@@ -2838,6 +2882,10 @@ msgstr "{0} cheghmoHlu'laHbe'. ghom'a' loHwI'pu' 'echlet beq DevwI'pu' je neH ch
 msgid "Couldn’t restore the board. Please try again."
 msgstr "'echlet cheghmoHlu'laHbe'. yInIDqa'."
 
+#: components/onboarding/guide.tsx
+msgid "Couldn’t save guide completion. Please try again."
+msgstr "DevwI' pItlh polHa'. yInIDqa'."
+
 #: app/tickets/[id]/page.tsx
 msgid "Couldn’t save labels. Please try again."
 msgstr "permey pollu'laHbe'. yInIDqa'."
@@ -2997,6 +3045,10 @@ msgstr "ngaQHa'moHwI' yIchenmoH"
 msgid "Create project"
 msgstr "jInmol yIchenmoH"
 
+#: components/onboarding/setup.tsx
+msgid "Create project and board"
+msgstr "jInmol 'echlet je yIchenmoH"
+
 #: components/roadmap/roadmap-editor-form.tsx
 msgid "Create roadmap"
 msgstr "He nav yIchenmoH"
@@ -3004,6 +3056,18 @@ msgstr "He nav yIchenmoH"
 #: app/settings/organization/page.tsx
 msgid "Create team"
 msgstr "beq yIchenmoH"
+
+#: components/onboarding/setup.tsx
+msgid "Create your first project"
+msgstr "jInmollIj wa'DIch yIchenmoH"
+
+#: components/onboarding/guide.tsx
+msgid "Create your first ticket"
+msgstr "Qu'HomlIj wa'DIch yIchenmoH"
+
+#: components/onboarding/guide.tsx
+msgid "Create, edit and move tickets from your terminal with the TUI."
+msgstr "TUI Dalo'taHvIS Qu'Hommey tIchenmoH, tIchoH, tIvIHmoH."
 
 #: components/settings/csv-import.tsx
 #: components/work/dashboard-work.tsx
@@ -3704,6 +3768,7 @@ msgid "Email"
 msgstr "QIn"
 
 #: app/settings/organization/page.tsx
+#: components/onboarding/setup.tsx
 msgid "Email address"
 msgstr "email Daq"
 
@@ -4092,9 +4157,17 @@ msgstr "ticket wa'DIch yInej"
 msgid "Finish"
 msgstr "yIrInmoH"
 
+#: components/onboarding/guide.tsx
+msgid "Finish guide"
+msgstr "DevwI' yIta'"
+
 #: lib/org/audit.ts
 msgid "finish on release"
 msgstr "chu'DI' rIn"
+
+#: lib/api/error-codes.ts
+msgid "finish organization setup before completing the guide"
+msgstr "DIvI' yIcher, ghIq DevwI' yIta'"
 
 #: app/boards/[id]/edit/page.tsx
 msgid "Finish tickets on release"
@@ -4230,9 +4303,17 @@ msgstr "Google ChatDaq ghuHmeylIj yIHev: Google ChatDaq “TrackLin.es” yInej,
 msgid "Getting ready to show changes others make as they happen."
 msgstr "latlhpu' choHmey 'anglu'meH ghuHlI'."
 
+#: components/onboarding/guide.tsx
+msgid "Getting started"
+msgstr "tagh"
+
 #: components/board/ticket-dialog.tsx
 msgid "Give the work a clear title. Details are optional."
 msgstr "Qu'vaD pong mIS'e' yInob. De'mey DaneHchugh neH."
+
+#: components/onboarding/guide.tsx
+msgid "Give your agent its own API key and connect it over MCP to work on tickets with your team."
+msgstr "DuywI'lIjvaD API ngaQHa'moHwI' yInob. MCP yIlo'; ghomlIj tlhejtaHvIS Qu'Hommey ta'."
 
 #: components/ui/pagination.tsx
 msgid "Go to next page"
@@ -4299,6 +4380,14 @@ msgstr "naDev Google Chat cherlu'be'."
 #: components/settings/google-calendar.tsx
 msgid "Google still lets TrackLin.es read your calendars."
 msgstr "poH navmeylIj laDlaH TrackLin.es 'e' chaw' Google DaH."
+
+#: components/onboarding/setup.tsx
+msgid "Got it"
+msgstr "jIyaj"
+
+#: components/onboarding/guide.tsx
+msgid "Guide"
+msgstr "DevwI'"
 
 #: components/settings/mcp-connect.tsx
 msgid "Header"
@@ -4400,6 +4489,10 @@ msgstr "mIllogh"
 #: components/settings/import-page.tsx
 msgid "Import"
 msgstr "yIqem"
+
+#: components/onboarding/setup.tsx
+msgid "Import existing work"
+msgstr "Qu' yIImport"
 
 #: lib/work/people.ts
 msgid "Imported"
@@ -4511,6 +4604,10 @@ msgstr "rI'ghach 'ay'"
 msgid "Invitation sent to {0}."
 msgstr "{0}vaD rI'ghach ngeHlu'pu'."
 
+#: components/onboarding/setup.tsx
+msgid "Invitation sent. You can invite another teammate."
+msgstr "tlhobmeH QIn ngeHlu'. latlh ghom mutlhejbogh yItlhob."
+
 #: app/settings/organization/page.tsx
 msgid "Invitation target"
 msgstr "rI'ghach DoS"
@@ -4539,6 +4636,10 @@ msgstr "ghotpu' tIrI'"
 msgid "Invite people, and manage members, teams, project access and leadership."
 msgstr "ghotpu' tIrI', 'ej beqpu', beqmey, jInmol 'elmeH chaw', DevwI'pu' je tIloH."
 
+#: components/onboarding/setup.tsx
+msgid "Invite your teammates"
+msgstr "ghomlIj yItlhob"
+
 #: lib/org/audit.ts
 msgid "Invited someone to a project"
 msgstr "jInmolDaq vay' rI'"
@@ -4550,6 +4651,10 @@ msgstr "ghomDaq vay' rI'"
 #: lib/org/audit.ts
 msgid "Invited someone to the organization"
 msgstr "DIvI'Daq vay' rI'"
+
+#: components/onboarding/setup.tsx
+msgid "Inviting teammates is optional. Continue to your board whenever you’re ready."
+msgstr "ghom DItlhobnISbe'. bISuDrupDI' 'echletlIjDaq yIghoS."
 
 #: components/settings/csv-import.tsx
 msgid "It can’t be scrapped any more: someone has worked on what it made (moved, edited, commented on or reviewed a ticket, or added one)."
@@ -5061,6 +5166,7 @@ msgstr "Qu'meylIj Hevlu'lI'…"
 #: components/intake/request-form.tsx
 #: components/layout/help-bot.tsx
 #: components/layout/page-skeletons.tsx
+#: components/onboarding/setup.tsx
 #: components/project/archived-boards.tsx
 #: components/project/move-to-board.tsx
 #: components/project/refinement.tsx
@@ -5532,6 +5638,8 @@ msgid "Newest first"
 msgstr "chu'qu' wa'DIch"
 
 #: components/live/standup.tsx
+#: components/onboarding/guide.tsx
+#: components/onboarding/setup.tsx
 #: components/ui/pagination.tsx
 msgid "Next"
 msgstr "veb"
@@ -6363,6 +6471,10 @@ msgstr "TrackLin.es rarwI'mey neH tIqHa'moHlu'laH"
 msgid "Open"
 msgstr "yIpoSmoH"
 
+#: components/onboarding/guide.tsx
+msgid "Open a board and use Add ticket to turn an idea into work your team can follow."
+msgstr "'echlet yIpoSmoH. Qu'Hom yIchel; qechlIj Qu' mojmoH."
+
 #: app/reports/page.tsx
 msgid "Open a report from a board’s past sprints, a project, or organization settings."
 msgstr "'echlet sprintmey ret, jInmol, ghom'a' SeHlaw ghap vo' ja'ghach yIpoSmoH."
@@ -6859,6 +6971,10 @@ msgstr "jInmol 'echletmey"
 msgid "Project ID"
 msgstr "jInmol ID"
 
+#: components/onboarding/setup.tsx
+msgid "Project name"
+msgstr "jInmol pong"
+
 #: components/layout/load-error.tsx
 msgid "Project not found"
 msgstr "jInmol tu'lu'be'"
@@ -7001,6 +7117,10 @@ msgstr "ja'ghachmey qonlu'pa' qonlu': SoQDI' ngaSbogh"
 #: components/project/refinement.tsx
 msgid "Refinement"
 msgstr "Dubghach"
+
+#: lib/api/error-codes.ts
+msgid "refresh to load the current guide"
+msgstr "DaH DevwI' DalI'meH yIchu'qa'"
 
 #: lib/live/live-status.ts
 msgid "Refresh to see changes others have made."
@@ -7238,6 +7358,15 @@ msgstr "cheghmoHlI'…"
 msgid "Resume"
 msgstr "yItaH"
 
+#: components/onboarding/guide.tsx
+#: components/onboarding/setup.tsx
+msgid "Retry"
+msgstr "yInIDqa'"
+
+#: components/settings/import-page.tsx
+msgid "Return to setup and choose your imported board"
+msgstr "chermeHDaq yIchegh; 'echletlIj yIwIv"
+
 #: components/board/review.tsx
 msgid "Review"
 msgstr "nuDghach"
@@ -7415,6 +7544,8 @@ msgstr "permey pollI'…"
 #: components/board/ticket-dialog.tsx
 #: components/common/name-dialog.tsx
 #: components/intake/triage.tsx
+#: components/onboarding/guide.tsx
+#: components/onboarding/setup.tsx
 #: components/project/key-prefix.tsx
 #: components/roadmap/item-editor.tsx
 #: components/roadmap/roadmap-editor-form.tsx
@@ -7549,6 +7680,10 @@ msgstr "chegh yIngeH"
 msgid "send every answer's id, once each"
 msgstr "Hoch jang ID yIngeH, wa'logh"
 
+#: components/onboarding/setup.tsx
+msgid "Send invitation"
+msgstr "tlhobmeH QIn yIngeH"
+
 #: app/settings/organization/page.tsx
 msgid "Send invite"
 msgstr "rI'ghach yIngeH"
@@ -7666,6 +7801,10 @@ msgstr "{b} Qav jaj cherpu'"
 msgid "Set up {0}"
 msgstr "{0} yIcher"
 
+#: components/onboarding/setup.tsx
+msgid "Set up your team’s first board. You can leave and continue later."
+msgstr "ghomlIj 'echlet wa'DIch yIcher. bImejlaH; pIq bItaHlaH."
+
 #: app/boards/[id]/edit/page.tsx
 #: app/dashboard/page.tsx
 #: app/settings/api-keys/page.tsx
@@ -7708,6 +7847,10 @@ msgstr "He nav Ho'DoS QInHommey jaj ghajbogh, He navDaq 'anglu', chu'qu' wa'DIch
 #: components/work/mentions.tsx
 msgid "Show"
 msgstr "yI'ang"
+
+#: components/onboarding/setup.tsx
+msgid "Show me around"
+msgstr "HIdev"
 
 #: components/settings/webhooks.tsx
 #: components/ticket/history-panel.tsx
@@ -7800,6 +7943,10 @@ msgstr "nap"
 msgid "Site origin"
 msgstr "Daq origin"
 
+#: components/onboarding/guide.tsx
+msgid "Skip"
+msgstr "yISup"
+
 #: components/staff/help-editor.tsx
 msgid "Slug"
 msgstr "slug"
@@ -7822,6 +7969,7 @@ msgid "Something went wrong"
 msgstr "Qagh! Doch ghoSHa'"
 
 #: components/common/name-dialog.tsx
+#: components/onboarding/setup.tsx
 #: components/roadmap/roadmap-editor-form.tsx
 msgid "Something went wrong. Please try again."
 msgstr "Qagh! Doch ghoSHa'. yInIDqa'."
@@ -8030,9 +8178,17 @@ msgstr "sprint yItagh"
 msgid "Start date <0>(optional)</0>"
 msgstr "tagh jaj <0>(DaneHchugh)</0>"
 
+#: components/onboarding/setup.tsx
+msgid "Start empty"
+msgstr "'echlet chIm yItagh"
+
 #: components/project/new-board.tsx
 msgid "Start from a template; you can change columns and settings afterwards."
 msgstr "mIllogh vo' yItagh; ghIq tutmey SeHlaw je DachoHlaH."
+
+#: components/onboarding/guide.tsx
+msgid "Start guide"
+msgstr "DevwI' yItagh"
 
 #: components/sprint/sprint-bar.tsx
 msgid "Start sprint"
@@ -8049,6 +8205,10 @@ msgstr "Hoch ghot muvDI' tlhaq yItagh"
 #: app/boards/[id]/edit/page.tsx
 msgid "Start the next one"
 msgstr "veb yItagh"
+
+#: components/onboarding/setup.tsx
+msgid "Start with"
+msgstr "taghmeH yIwIv"
 
 #: app/dashboard/page.tsx
 msgid "Start your first project"
@@ -8817,6 +8977,7 @@ msgstr "rIn ticket — ghItlhmeyDaj DachoHmeH rIn vo' yIvIHmoH"
 msgid "ticket is not assigned to caller"
 msgstr "rI'wI'vaD ticket noblu'be'"
 
+#: components/onboarding/setup.tsx
 #: components/project/key-prefix.tsx
 msgid "Ticket key prefix"
 msgstr "ticket ngaQHa'moHwI' moHaq"
@@ -9040,6 +9201,10 @@ msgstr "TrackLin.es Dev {company}."
 msgid "Try again"
 msgstr "yInIDqa'"
 
+#: components/onboarding/guide.tsx
+msgid "Try the terminal app"
+msgstr "TUI yInID"
+
 #: components/settings/device-push.tsx
 #: components/settings/webhooks.tsx
 #: components/work/notifications-bell.tsx
@@ -9245,6 +9410,10 @@ msgstr "lI'lI'…"
 msgid "Urgent"
 msgstr "SIbI' ta'nIS"
 
+#: components/onboarding/setup.tsx
+msgid "Use 2–6 capital letters or digits, starting with a letter."
+msgstr "cha' jav ghap Degh tIn mI' ghap tIlo'; wa'DIch Degh yIlo'."
+
 #: components/settings/linear-import.tsx
 msgid "Use a personal API key: <0>create one in Linear</0> under Security & access. TrackLin.es keeps it, encrypted, for 30 days."
 msgstr "nIteb API ngaQHa'moHwI' yIlo': <0>Linear Daq wa' yIchenmoH</0> Security & access bIng. wejmaH jaj So' 'ej pol TrackLin.es."
@@ -9402,6 +9571,10 @@ msgstr "Hoch Hogh Qu' rInpu'bogh"
 #: lib/api/error-codes.ts
 msgid "weeks must be between 1 and 52"
 msgstr "weeks'e' 1 vo' 52 ghoS 'oHnIS"
+
+#: components/onboarding/setup.tsx
+msgid "Welcome to TrackLin.es"
+msgstr "TrackLin.esDaq yI'el"
 
 #: components/settings/audit-log.tsx
 msgid "What"
@@ -9639,6 +9812,10 @@ msgstr "SoH"
 #: app/dashboard/page.tsx
 msgid "You can add a board for each team inside it."
 msgstr "qoDDaq Hoch beqvaD 'echlet DachellaH."
+
+#: components/onboarding/setup.tsx
+msgid "You can invite people now or come back to this in organization settings."
+msgstr "DaH nuvpu' DatlhoblaH, pagh pIq DIvI' DuHmeyDaq bIcheghlaH."
 
 #: app/roadmaps/[id]/edit/page.tsx
 msgid "You can only edit your own roadmaps."
