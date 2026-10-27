@@ -41,6 +41,19 @@ Or bring up the whole stack from the repo root with `docker compose up --build`.
   Every other test sits next to its code.
 - `public/` — static assets, including `embed.js` (the embeddable roadmap/request widget).
 
+## Onboarding and feature guides
+
+New organization admins resume setup at `/onboarding`. React Joyride supplies the tour;
+organization setup and each user's guide completion are persisted separately by the backend.
+Members skip setup, imports reuse their created boards, and completing the tour hides its button
+across sessions and devices. Closing or skipping a tour does not mark it complete.
+
+To publish a guide for newly released features, update its steps in
+`components/onboarding/guide.tsx` and deliberately increment `GUIDE.version` in
+`lib/org/onboarding.ts` together with `GuideVersion` in the backend. Keep the guide ID stable.
+Deploy the backend first; unmatched versions are hidden until the matching frontend is deployed.
+Routine releases must not change the guide version. A newer guide never repeats project setup.
+
 ## Config
 
 | Var | Purpose |

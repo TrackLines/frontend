@@ -7,12 +7,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CSVImport } from '@/components/settings/csv-import';
 import { JiraImport } from '@/components/settings/jira-import';
 import { LinearImport } from '@/components/settings/linear-import';
+import { useSearchParams } from 'next/navigation';
 
 export type ImportSource = 'csv' | 'jira' | 'linear';
 
 // ImportSettings: Settings → Import, one page with a tab per source (TL-653); more sources are more tabs.
 export function ImportSettings({ initial }: { initial: ImportSource }) {
   const { is } = useFlags();
+  const onboarding = useSearchParams().get('onboarding') === '1';
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
       <Link href="/settings" className="text-sm text-muted-foreground hover:underline">← <Trans>Settings</Trans></Link>
@@ -20,6 +22,7 @@ export function ImportSettings({ initial }: { initial: ImportSource }) {
         <h1 className="text-3xl font-bold tracking-tight"><Trans>Import</Trans></h1>
         <p className="mt-1 text-sm text-muted-foreground"><Trans>Bring work in from another tool as new projects. You see what it will make before anything is created, and can scrap it afterwards while nobody has worked on it.</Trans></p>
       </header>
+      {onboarding && <p className="mb-6"><Link href="/onboarding" className="underline"><Trans>Return to setup and choose your imported board</Trans></Link></p>}
       {is('imports').enabled() ? (
         <Tabs defaultValue={initial} className="min-w-0">
           <TabsList>

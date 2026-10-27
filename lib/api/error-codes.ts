@@ -7,6 +7,9 @@ import { msg } from '@lingui/core/macro';
 // names) aren't here: those show the backend's English until it sends the values separately.
 // ponytail: copied by hand from openapi.yaml; generate it if the codes start changing often.
 export const ERROR_MESSAGES: Record<string, MessageDescriptor> = {
+  onboarding_board: msg`choose a board in this organization`,
+  onboarding_incomplete: msg`finish organization setup before completing the guide`,
+  guide_version: msg`refresh to load the current guide`,
   accept_clerk_first: msg`accept the organization invitation through Clerk before completing this invitation`,
   accept_session_required: msg`invitation acceptance requires a signed-in session`,
   embed_managers: msg`only someone who manages this project, signed in, can change where its roadmaps and request form can be embedded`,

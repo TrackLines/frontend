@@ -1158,6 +1158,10 @@ msgstr "{origin} mag embedden"
 msgid "Allowed sites"
 msgstr "Toegestane sites"
 
+#: components/onboarding/setup.tsx
+msgid "Already have work elsewhere? Import it first, then return here to choose its board."
+msgstr "Staat je werk al ergens anders? Importeer het eerst en kom dan hier terug om het bord te kiezen."
+
 #: lib/api/error-codes.ts
 msgid "already subscribed — manage it from the billing portal"
 msgstr "Je hebt al een abonnement; beheer het via het factureringsportaal."
@@ -1464,6 +1468,11 @@ msgstr "Gemiddelde van de laatste {MIN_SPRINTS_FOR_VELOCITY} sprints: <0>{mean} 
 #: components/sprint/velocity.tsx
 msgid "Average of the last {MIN_SPRINTS_FOR_VELOCITY} sprints: <0>{mean} tickets</0> (dashed line). Bars are labelled by sprint number."
 msgstr "Gemiddelde van de laatste {MIN_SPRINTS_FOR_VELOCITY} sprints: <0>{mean} tickets</0> (stippellijn). Staven zijn gelabeld met het sprintnummer."
+
+#: components/onboarding/guide.tsx
+#: components/onboarding/setup.tsx
+msgid "Back"
+msgstr "Terug"
 
 #: app/settings/integrations/[provider]/page.tsx
 msgid "Back to integrations"
@@ -1843,6 +1852,10 @@ msgstr "Afrekenen geannuleerd — er is niets in rekening gebracht."
 msgid "Choose a {0} repository"
 msgstr "Kies een {0}-repository"
 
+#: lib/api/error-codes.ts
+msgid "choose a board in this organization"
+msgstr "kies een bord in deze organisatie"
+
 #: components/project/move-to-board.tsx
 msgid "Choose a board…"
 msgstr "Kies een bord…"
@@ -1870,6 +1883,10 @@ msgstr "Kies een ticket om er een subticket van dit ticket van te maken"
 #: components/ticket/sub-tickets.tsx
 msgid "Choose a ticket…"
 msgstr "Kies een ticket…"
+
+#: components/onboarding/setup.tsx
+msgid "Choose an empty board or a template, or import your existing work. Imported projects count towards your plan’s project limit."
+msgstr "Kies een leeg bord of een sjabloon, of importeer je bestaande werk. Geïmporteerde projecten tellen mee voor de projectlimiet van je abonnement."
 
 #: components/roadmap/item-tickets.tsx
 msgid "Choose an epic that delivers this milestone"
@@ -1969,6 +1986,8 @@ msgstr "Client moet claude-code, claude-desktop, codex, cursor, vscode, gemini o
 
 #: components/board/ticket-view.tsx
 #: components/live/hosted-bar.tsx
+#: components/onboarding/guide.tsx
+#: components/onboarding/setup.tsx
 #: components/ticket/attachments.tsx
 #: components/ui/dialog.tsx
 msgid "Close"
@@ -2148,9 +2167,14 @@ msgstr "{name} koppelen"
 msgid "Connect AI"
 msgstr "AI koppelen"
 
+#: components/onboarding/guide.tsx
 #: components/settings/mcp-connect.tsx
 msgid "Connect an AI agent"
 msgstr "Een AI-agent koppelen"
+
+#: components/onboarding/guide.tsx
+msgid "Connect GitHub"
+msgstr "GitHub koppelen"
 
 #: app/settings/page.tsx
 msgid "Connect GitHub, Bitbucket, Google Chat and Bugfixes."
@@ -2171,6 +2195,10 @@ msgstr "Linear koppelen"
 #: app/settings/integrations/page.tsx
 msgid "Connect your organization to the tools it uses. Link repositories to a project from the project's page."
 msgstr "Koppel je organisatie aan de tools die ze gebruikt. Link repositories aan een project via de projectpagina."
+
+#: components/onboarding/guide.tsx
+msgid "Connect your repository so pull requests stay linked to the tickets they deliver."
+msgstr "Koppel je repository zodat pull requests gekoppeld blijven aan de tickets die ze opleveren."
 
 #: components/settings/google-calendar.tsx
 #: components/settings/integrations.tsx
@@ -2228,6 +2256,18 @@ msgstr "Contact"
 #: components/intake/triage.tsx
 msgid "Contact: <0>{0}</0>"
 msgstr "Contact: <0>{0}</0>"
+
+#: components/onboarding/guide.tsx
+msgid "Continue setup"
+msgstr "Instellen hervatten"
+
+#: components/onboarding/setup.tsx
+msgid "Continue to your board"
+msgstr "Verder naar je bord"
+
+#: components/onboarding/setup.tsx
+msgid "Continue with an existing board"
+msgstr "Verder met een bestaand bord"
 
 #: components/ticket/comments.tsx
 msgid "Conversation"
@@ -2593,6 +2633,10 @@ msgstr "Kan eerdere sprints niet laden. Probeer het opnieuw."
 msgid "Couldn’t load requests. Please try again."
 msgstr "Kan aanvragen niet laden. Probeer het opnieuw."
 
+#: components/onboarding/setup.tsx
+msgid "Couldn’t load setup. Please try again."
+msgstr "De instellingen konden niet worden geladen. Probeer het opnieuw."
+
 #: components/board/template-picker.tsx
 msgid "Couldn’t load templates; the board will use the Simple layout."
 msgstr "Kan sjablonen niet laden; het bord gebruikt de indeling Eenvoudig."
@@ -2838,6 +2882,10 @@ msgstr "Kan {0} niet herstellen. Alleen beheerders van de organisatie en de team
 msgid "Couldn’t restore the board. Please try again."
 msgstr "Kan het bord niet herstellen. Probeer het opnieuw."
 
+#: components/onboarding/guide.tsx
+msgid "Couldn’t save guide completion. Please try again."
+msgstr "Het afronden van de rondleiding kon niet worden opgeslagen. Probeer het opnieuw."
+
 #: app/tickets/[id]/page.tsx
 msgid "Couldn’t save labels. Please try again."
 msgstr "Kan labels niet opslaan. Probeer het opnieuw."
@@ -2997,6 +3045,10 @@ msgstr "Sleutel aanmaken"
 msgid "Create project"
 msgstr "Project aanmaken"
 
+#: components/onboarding/setup.tsx
+msgid "Create project and board"
+msgstr "Project en bord aanmaken"
+
 #: components/roadmap/roadmap-editor-form.tsx
 msgid "Create roadmap"
 msgstr "Roadmap aanmaken"
@@ -3004,6 +3056,18 @@ msgstr "Roadmap aanmaken"
 #: app/settings/organization/page.tsx
 msgid "Create team"
 msgstr "Team aanmaken"
+
+#: components/onboarding/setup.tsx
+msgid "Create your first project"
+msgstr "Maak je eerste project aan"
+
+#: components/onboarding/guide.tsx
+msgid "Create your first ticket"
+msgstr "Maak je eerste ticket aan"
+
+#: components/onboarding/guide.tsx
+msgid "Create, edit and move tickets from your terminal with the TUI."
+msgstr "Maak, bewerk en verplaats tickets vanuit je terminal met de TUI."
 
 #: components/settings/csv-import.tsx
 #: components/work/dashboard-work.tsx
@@ -3704,6 +3768,7 @@ msgid "Email"
 msgstr "E-mail"
 
 #: app/settings/organization/page.tsx
+#: components/onboarding/setup.tsx
 msgid "Email address"
 msgstr "E-mailadres"
 
@@ -4092,9 +4157,17 @@ msgstr "Zoek het oorspronkelijke ticket"
 msgid "Finish"
 msgstr "Afronden"
 
+#: components/onboarding/guide.tsx
+msgid "Finish guide"
+msgstr "Rondleiding afronden"
+
 #: lib/org/audit.ts
 msgid "finish on release"
 msgstr "afronden bij release"
+
+#: lib/api/error-codes.ts
+msgid "finish organization setup before completing the guide"
+msgstr "rond eerst het instellen van de organisatie af voordat je de rondleiding voltooit"
 
 #: app/boards/[id]/edit/page.tsx
 msgid "Finish tickets on release"
@@ -4230,9 +4303,17 @@ msgstr "Ontvang je meldingen in Google Chat: zoek “TrackLin.es” in Google Ch
 msgid "Getting ready to show changes others make as they happen."
 msgstr "Bezig met voorbereiden om wijzigingen van anderen direct te tonen."
 
+#: components/onboarding/guide.tsx
+msgid "Getting started"
+msgstr "Aan de slag"
+
 #: components/board/ticket-dialog.tsx
 msgid "Give the work a clear title. Details are optional."
 msgstr "Geef het werk een duidelijke titel. Details zijn optioneel."
+
+#: components/onboarding/guide.tsx
+msgid "Give your agent its own API key and connect it over MCP to work on tickets with your team."
+msgstr "Geef je agent een eigen API-sleutel en verbind hem via MCP om samen met je team aan tickets te werken."
 
 #: components/ui/pagination.tsx
 msgid "Go to next page"
@@ -4299,6 +4380,14 @@ msgstr "Google Chat is niet ingesteld op deze server."
 #: components/settings/google-calendar.tsx
 msgid "Google still lets TrackLin.es read your calendars."
 msgstr "Google laat TrackLin.es nog steeds je agenda’s lezen."
+
+#: components/onboarding/setup.tsx
+msgid "Got it"
+msgstr "Begrepen"
+
+#: components/onboarding/guide.tsx
+msgid "Guide"
+msgstr "Rondleiding"
 
 #: components/settings/mcp-connect.tsx
 msgid "Header"
@@ -4400,6 +4489,10 @@ msgstr "afbeelding"
 #: components/settings/import-page.tsx
 msgid "Import"
 msgstr "Importeren"
+
+#: components/onboarding/setup.tsx
+msgid "Import existing work"
+msgstr "Bestaand werk importeren"
 
 #: lib/work/people.ts
 msgid "Imported"
@@ -4511,6 +4604,10 @@ msgstr "Bereik van uitnodiging"
 msgid "Invitation sent to {0}."
 msgstr "Uitnodiging verstuurd naar {0}."
 
+#: components/onboarding/setup.tsx
+msgid "Invitation sent. You can invite another teammate."
+msgstr "Uitnodiging verstuurd. Je kunt nog iemand uitnodigen."
+
 #: app/settings/organization/page.tsx
 msgid "Invitation target"
 msgstr "Doel van uitnodiging"
@@ -4539,6 +4636,10 @@ msgstr "Mensen uitnodigen"
 msgid "Invite people, and manage members, teams, project access and leadership."
 msgstr "Nodig mensen uit en beheer leden, teams, projecttoegang en leiding."
 
+#: components/onboarding/setup.tsx
+msgid "Invite your teammates"
+msgstr "Nodig je teamgenoten uit"
+
 #: lib/org/audit.ts
 msgid "Invited someone to a project"
 msgstr "Iemand uitgenodigd voor een project"
@@ -4550,6 +4651,10 @@ msgstr "Iemand uitgenodigd voor een team"
 #: lib/org/audit.ts
 msgid "Invited someone to the organization"
 msgstr "Iemand uitgenodigd voor de organisatie"
+
+#: components/onboarding/setup.tsx
+msgid "Inviting teammates is optional. Continue to your board whenever you’re ready."
+msgstr "Teamgenoten uitnodigen is optioneel. Ga verder naar je bord wanneer je klaar bent."
 
 #: components/settings/csv-import.tsx
 msgid "It can’t be scrapped any more: someone has worked on what it made (moved, edited, commented on or reviewed a ticket, or added one)."
@@ -5061,6 +5166,7 @@ msgstr "Je werk laden…"
 #: components/intake/request-form.tsx
 #: components/layout/help-bot.tsx
 #: components/layout/page-skeletons.tsx
+#: components/onboarding/setup.tsx
 #: components/project/archived-boards.tsx
 #: components/project/move-to-board.tsx
 #: components/project/refinement.tsx
@@ -5532,6 +5638,8 @@ msgid "Newest first"
 msgstr "Nieuwste eerst"
 
 #: components/live/standup.tsx
+#: components/onboarding/guide.tsx
+#: components/onboarding/setup.tsx
 #: components/ui/pagination.tsx
 msgid "Next"
 msgstr "Volgende"
@@ -6363,6 +6471,10 @@ msgstr "Alleen TrackLin.es-links kunnen worden ingekort."
 msgid "Open"
 msgstr "Openen"
 
+#: components/onboarding/guide.tsx
+msgid "Open a board and use Add ticket to turn an idea into work your team can follow."
+msgstr "Open een bord en gebruik Ticket toevoegen om van een idee werk te maken dat je team kan volgen."
+
 #: app/reports/page.tsx
 msgid "Open a report from a board’s past sprints, a project, or organization settings."
 msgstr "Open een rapport vanuit de afgelopen sprints van een bord, een project of de organisatie-instellingen."
@@ -6859,6 +6971,10 @@ msgstr "Projectborden"
 msgid "Project ID"
 msgstr "Project-ID"
 
+#: components/onboarding/setup.tsx
+msgid "Project name"
+msgstr "Projectnaam"
+
 #: components/layout/load-error.tsx
 msgid "Project not found"
 msgstr "Project niet gevonden"
@@ -7001,6 +7117,10 @@ msgstr "Vastgelegd vóór rapporten: wat erin zat toen hij sloot"
 #: components/project/refinement.tsx
 msgid "Refinement"
 msgstr "Refinement"
+
+#: lib/api/error-codes.ts
+msgid "refresh to load the current guide"
+msgstr "vernieuw de pagina om de huidige rondleiding te laden"
 
 #: lib/live/live-status.ts
 msgid "Refresh to see changes others have made."
@@ -7238,6 +7358,15 @@ msgstr "Herstellen…"
 msgid "Resume"
 msgstr "Hervatten"
 
+#: components/onboarding/guide.tsx
+#: components/onboarding/setup.tsx
+msgid "Retry"
+msgstr "Opnieuw proberen"
+
+#: components/settings/import-page.tsx
+msgid "Return to setup and choose your imported board"
+msgstr "Terug naar instellen en je geïmporteerde bord kiezen"
+
 #: components/board/review.tsx
 msgid "Review"
 msgstr "Review"
@@ -7415,6 +7544,8 @@ msgstr "Labels opslaan…"
 #: components/board/ticket-dialog.tsx
 #: components/common/name-dialog.tsx
 #: components/intake/triage.tsx
+#: components/onboarding/guide.tsx
+#: components/onboarding/setup.tsx
 #: components/project/key-prefix.tsx
 #: components/roadmap/item-editor.tsx
 #: components/roadmap/roadmap-editor-form.tsx
@@ -7549,6 +7680,10 @@ msgstr "Terugsturen"
 msgid "send every answer's id, once each"
 msgstr "stuur de id van elk antwoord, elk één keer"
 
+#: components/onboarding/setup.tsx
+msgid "Send invitation"
+msgstr "Uitnodiging versturen"
+
 #: app/settings/organization/page.tsx
 msgid "Send invite"
 msgstr "Uitnodiging sturen"
@@ -7666,6 +7801,10 @@ msgstr "heeft de deadline ingesteld op {b}"
 msgid "Set up {0}"
 msgstr "{0} instellen"
 
+#: components/onboarding/setup.tsx
+msgid "Set up your team’s first board. You can leave and continue later."
+msgstr "Stel het eerste bord van je team in. Je kunt stoppen en later verdergaan."
+
 #: app/boards/[id]/edit/page.tsx
 #: app/dashboard/page.tsx
 #: app/settings/api-keys/page.tsx
@@ -7708,6 +7847,10 @@ msgstr "Korte, gedateerde notities over hoe de roadmap ervoor staat, op de roadm
 #: components/work/mentions.tsx
 msgid "Show"
 msgstr "Tonen"
+
+#: components/onboarding/setup.tsx
+msgid "Show me around"
+msgstr "Laat me zien hoe het werkt"
 
 #: components/settings/webhooks.tsx
 #: components/ticket/history-panel.tsx
@@ -7800,6 +7943,10 @@ msgstr "Eenvoudig"
 msgid "Site origin"
 msgstr "Site-origin"
 
+#: components/onboarding/guide.tsx
+msgid "Skip"
+msgstr "Overslaan"
+
 #: components/staff/help-editor.tsx
 msgid "Slug"
 msgstr "Slug"
@@ -7822,6 +7969,7 @@ msgid "Something went wrong"
 msgstr "Er ging iets mis"
 
 #: components/common/name-dialog.tsx
+#: components/onboarding/setup.tsx
 #: components/roadmap/roadmap-editor-form.tsx
 msgid "Something went wrong. Please try again."
 msgstr "Er ging iets mis. Probeer het opnieuw."
@@ -8030,9 +8178,17 @@ msgstr "Een sprint starten"
 msgid "Start date <0>(optional)</0>"
 msgstr "Startdatum <0>(optioneel)</0>"
 
+#: components/onboarding/setup.tsx
+msgid "Start empty"
+msgstr "Met een leeg bord beginnen"
+
 #: components/project/new-board.tsx
 msgid "Start from a template; you can change columns and settings afterwards."
 msgstr "Begin met een sjabloon; je kunt kolommen en instellingen later aanpassen."
+
+#: components/onboarding/guide.tsx
+msgid "Start guide"
+msgstr "Rondleiding starten"
 
 #: components/sprint/sprint-bar.tsx
 msgid "Start sprint"
@@ -8049,6 +8205,10 @@ msgstr "Start de klok zodra iedereen er is"
 #: app/boards/[id]/edit/page.tsx
 msgid "Start the next one"
 msgstr "Volgende starten"
+
+#: components/onboarding/setup.tsx
+msgid "Start with"
+msgstr "Begin met"
 
 #: app/dashboard/page.tsx
 msgid "Start your first project"
@@ -8817,6 +8977,7 @@ msgstr "Het ticket is klaar; haal het uit Klaar om de bijlagen te wijzigen."
 msgid "ticket is not assigned to caller"
 msgstr "Het ticket is niet aan jou toegewezen."
 
+#: components/onboarding/setup.tsx
 #: components/project/key-prefix.tsx
 msgid "Ticket key prefix"
 msgstr "Prefix voor ticketcodes"
@@ -9040,6 +9201,10 @@ msgstr "TrackLin.es wordt beheerd door {company}."
 msgid "Try again"
 msgstr "Opnieuw proberen"
 
+#: components/onboarding/guide.tsx
+msgid "Try the terminal app"
+msgstr "Probeer de terminal-app"
+
 #: components/settings/device-push.tsx
 #: components/settings/webhooks.tsx
 #: components/work/notifications-bell.tsx
@@ -9245,6 +9410,10 @@ msgstr "Uploaden…"
 msgid "Urgent"
 msgstr "Urgent"
 
+#: components/onboarding/setup.tsx
+msgid "Use 2–6 capital letters or digits, starting with a letter."
+msgstr "Gebruik 2–6 hoofdletters of cijfers, beginnend met een letter."
+
 #: components/settings/linear-import.tsx
 msgid "Use a personal API key: <0>create one in Linear</0> under Security & access. TrackLin.es keeps it, encrypted, for 30 days."
 msgstr "Gebruik een persoonlijke API-sleutel: <0>maak er een aan in Linear</0> onder Security & access. TrackLin.es bewaart hem 30 dagen, versleuteld."
@@ -9402,6 +9571,10 @@ msgstr "Wekelijkse doorvoer"
 #: lib/api/error-codes.ts
 msgid "weeks must be between 1 and 52"
 msgstr "Weeks moet tussen 1 en 52 liggen."
+
+#: components/onboarding/setup.tsx
+msgid "Welcome to TrackLin.es"
+msgstr "Welkom bij TrackLin.es"
 
 #: components/settings/audit-log.tsx
 msgid "What"
@@ -9639,6 +9812,10 @@ msgstr "Jij"
 #: app/dashboard/page.tsx
 msgid "You can add a board for each team inside it."
 msgstr "Je kunt er voor elk team een bord in toevoegen."
+
+#: components/onboarding/setup.tsx
+msgid "You can invite people now or come back to this in organization settings."
+msgstr "Je kunt nu mensen uitnodigen of dit later doen via de organisatie-instellingen."
 
 #: app/roadmaps/[id]/edit/page.tsx
 msgid "You can only edit your own roadmaps."

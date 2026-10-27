@@ -152,6 +152,20 @@ export const organization = {
   revokeAdmin: (userId: string, token: T) => api<void>(`/organizations/admins/${encodeURIComponent(userId)}`, { method: 'DELETE', token }),
 };
 
+export type OnboardingState = {
+  admin: boolean; step: 'project' | 'invite' | 'complete';
+  project_id: string | null; board_id: string | null; completed_at: string | null;
+  guide: { id: string; version: number; available: boolean };
+};
+export const onboarding = {
+  status: (token: T) => api<OnboardingState>('/onboarding', { token }),
+  setup: (body: { name?: string; key_prefix?: string; template_id?: string; board_id?: string }, token: T) =>
+    api<OnboardingState>('/onboarding/setup', { method: 'POST', body, token }),
+  finish: (token: T) => api<OnboardingState>('/onboarding/finish', { method: 'POST', token }),
+  completeGuide: (guide: { id: string; version: number }, token: T) =>
+    api<OnboardingState>('/onboarding/guide/complete', { method: 'POST', body: guide, token }),
+};
+
 export const teams = {
   list: (token: T) => api<Team[]>('/teams', { token }),
   create: (name: string, description: string, token: T) => api<Team>('/teams', { method: 'POST', body: { name, description }, token }),

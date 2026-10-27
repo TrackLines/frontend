@@ -1158,6 +1158,10 @@ msgstr "Permitiu que {origin} incorpore"
 msgid "Allowed sites"
 msgstr "Sites permitidos"
 
+#: components/onboarding/setup.tsx
+msgid "Already have work elsewhere? Import it first, then return here to choose its board."
+msgstr "Já tem trabalho em outra ferramenta? Importe primeiro e volte aqui para escolher o quadro."
+
 #: lib/api/error-codes.ts
 msgid "already subscribed — manage it from the billing portal"
 msgstr "assinatura já existe — gerencie pelo portal de cobrança"
@@ -1464,6 +1468,11 @@ msgstr "Média das últimas {MIN_SPRINTS_FOR_VELOCITY} sprints: <0>{mean} pontos
 #: components/sprint/velocity.tsx
 msgid "Average of the last {MIN_SPRINTS_FOR_VELOCITY} sprints: <0>{mean} tickets</0> (dashed line). Bars are labelled by sprint number."
 msgstr "Média das últimas {MIN_SPRINTS_FOR_VELOCITY} sprints: <0>{mean} tickets</0> (linha tracejada). As barras são identificadas pelo número da sprint."
+
+#: components/onboarding/guide.tsx
+#: components/onboarding/setup.tsx
+msgid "Back"
+msgstr "Voltar"
 
 #: app/settings/integrations/[provider]/page.tsx
 msgid "Back to integrations"
@@ -1843,6 +1852,10 @@ msgstr "Checkout cancelado — nada foi cobrado."
 msgid "Choose a {0} repository"
 msgstr "Escolha um repositório do {0}"
 
+#: lib/api/error-codes.ts
+msgid "choose a board in this organization"
+msgstr "escolha um quadro desta organização"
+
 #: components/project/move-to-board.tsx
 msgid "Choose a board…"
 msgstr "Escolha um quadro…"
@@ -1870,6 +1883,10 @@ msgstr "Escolha um ticket para torná-lo sub-ticket deste"
 #: components/ticket/sub-tickets.tsx
 msgid "Choose a ticket…"
 msgstr "Escolha um ticket…"
+
+#: components/onboarding/setup.tsx
+msgid "Choose an empty board or a template, or import your existing work. Imported projects count towards your plan’s project limit."
+msgstr "Escolha um quadro vazio ou um modelo, ou importe seu trabalho existente. Os projetos importados contam para o limite do seu plano."
 
 #: components/roadmap/item-tickets.tsx
 msgid "Choose an epic that delivers this milestone"
@@ -1969,6 +1986,8 @@ msgstr "client deve ser um destes: claude-code, claude-desktop, codex, cursor, v
 
 #: components/board/ticket-view.tsx
 #: components/live/hosted-bar.tsx
+#: components/onboarding/guide.tsx
+#: components/onboarding/setup.tsx
 #: components/ticket/attachments.tsx
 #: components/ui/dialog.tsx
 msgid "Close"
@@ -2148,9 +2167,14 @@ msgstr "Conectar {name}"
 msgid "Connect AI"
 msgstr "Conectar IA"
 
+#: components/onboarding/guide.tsx
 #: components/settings/mcp-connect.tsx
 msgid "Connect an AI agent"
 msgstr "Conectar um agente de IA"
+
+#: components/onboarding/guide.tsx
+msgid "Connect GitHub"
+msgstr "Conectar GitHub"
 
 #: app/settings/page.tsx
 msgid "Connect GitHub, Bitbucket, Google Chat and Bugfixes."
@@ -2171,6 +2195,10 @@ msgstr "Ligar o Linear"
 #: app/settings/integrations/page.tsx
 msgid "Connect your organization to the tools it uses. Link repositories to a project from the project's page."
 msgstr "Conecte sua organização às ferramentas que ela usa. Vincule repositórios a um projeto pela página do projeto."
+
+#: components/onboarding/guide.tsx
+msgid "Connect your repository so pull requests stay linked to the tickets they deliver."
+msgstr "Conecte seu repositório para manter os pull requests vinculados aos tickets correspondentes."
 
 #: components/settings/google-calendar.tsx
 #: components/settings/integrations.tsx
@@ -2228,6 +2256,18 @@ msgstr "Contato"
 #: components/intake/triage.tsx
 msgid "Contact: <0>{0}</0>"
 msgstr "Contato: <0>{0}</0>"
+
+#: components/onboarding/guide.tsx
+msgid "Continue setup"
+msgstr "Continuar configuração"
+
+#: components/onboarding/setup.tsx
+msgid "Continue to your board"
+msgstr "Continuar para seu quadro"
+
+#: components/onboarding/setup.tsx
+msgid "Continue with an existing board"
+msgstr "Continuar com um quadro existente"
 
 #: components/ticket/comments.tsx
 msgid "Conversation"
@@ -2593,6 +2633,10 @@ msgstr "Não foi possível carregar as sprints anteriores. Tente novamente."
 msgid "Couldn’t load requests. Please try again."
 msgstr "Não foi possível carregar as solicitações. Tente novamente."
 
+#: components/onboarding/setup.tsx
+msgid "Couldn’t load setup. Please try again."
+msgstr "Não foi possível carregar a configuração. Tente novamente."
+
 #: components/board/template-picker.tsx
 msgid "Couldn’t load templates; the board will use the Simple layout."
 msgstr "Não foi possível carregar os modelos; o quadro usará o layout Simples."
@@ -2838,6 +2882,10 @@ msgstr "Não foi possível restaurar {0}. Só admins da organização e líderes
 msgid "Couldn’t restore the board. Please try again."
 msgstr "Não foi possível restaurar o quadro. Tente novamente."
 
+#: components/onboarding/guide.tsx
+msgid "Couldn’t save guide completion. Please try again."
+msgstr "Não foi possível salvar a conclusão do guia. Tente novamente."
+
 #: app/tickets/[id]/page.tsx
 msgid "Couldn’t save labels. Please try again."
 msgstr "Não foi possível salvar as etiquetas. Tente novamente."
@@ -2997,6 +3045,10 @@ msgstr "Criar chave"
 msgid "Create project"
 msgstr "Criar projeto"
 
+#: components/onboarding/setup.tsx
+msgid "Create project and board"
+msgstr "Criar projeto e quadro"
+
 #: components/roadmap/roadmap-editor-form.tsx
 msgid "Create roadmap"
 msgstr "Criar roadmap"
@@ -3004,6 +3056,18 @@ msgstr "Criar roadmap"
 #: app/settings/organization/page.tsx
 msgid "Create team"
 msgstr "Criar equipe"
+
+#: components/onboarding/setup.tsx
+msgid "Create your first project"
+msgstr "Crie seu primeiro projeto"
+
+#: components/onboarding/guide.tsx
+msgid "Create your first ticket"
+msgstr "Crie seu primeiro ticket"
+
+#: components/onboarding/guide.tsx
+msgid "Create, edit and move tickets from your terminal with the TUI."
+msgstr "Crie, edite e mova tickets pelo terminal com a TUI."
 
 #: components/settings/csv-import.tsx
 #: components/work/dashboard-work.tsx
@@ -3704,6 +3768,7 @@ msgid "Email"
 msgstr "Email"
 
 #: app/settings/organization/page.tsx
+#: components/onboarding/setup.tsx
 msgid "Email address"
 msgstr "Endereço de e-mail"
 
@@ -4092,9 +4157,17 @@ msgstr "Encontrar o ticket original"
 msgid "Finish"
 msgstr "Concluir"
 
+#: components/onboarding/guide.tsx
+msgid "Finish guide"
+msgstr "Concluir guia"
+
 #: lib/org/audit.ts
 msgid "finish on release"
 msgstr "concluir no release"
+
+#: lib/api/error-codes.ts
+msgid "finish organization setup before completing the guide"
+msgstr "conclua a configuração da organização antes de finalizar o guia"
 
 #: app/boards/[id]/edit/page.tsx
 msgid "Finish tickets on release"
@@ -4230,9 +4303,17 @@ msgstr "Receba suas notificações no Google Chat: encontre “TrackLin.es” no
 msgid "Getting ready to show changes others make as they happen."
 msgstr "Preparando para mostrar as alterações de outras pessoas assim que acontecerem."
 
+#: components/onboarding/guide.tsx
+msgid "Getting started"
+msgstr "Primeiros passos"
+
 #: components/board/ticket-dialog.tsx
 msgid "Give the work a clear title. Details are optional."
 msgstr "Dê um título claro ao trabalho. Os detalhes são opcionais."
+
+#: components/onboarding/guide.tsx
+msgid "Give your agent its own API key and connect it over MCP to work on tickets with your team."
+msgstr "Dê ao seu agente uma chave de API própria e conecte-o via MCP para trabalhar nos tickets com sua equipe."
 
 #: components/ui/pagination.tsx
 msgid "Go to next page"
@@ -4299,6 +4380,14 @@ msgstr "O Google Chat não está configurado neste servidor."
 #: components/settings/google-calendar.tsx
 msgid "Google still lets TrackLin.es read your calendars."
 msgstr "O Google ainda permite que o TrackLin.es leia seus calendários."
+
+#: components/onboarding/setup.tsx
+msgid "Got it"
+msgstr "Entendi"
+
+#: components/onboarding/guide.tsx
+msgid "Guide"
+msgstr "Guia"
 
 #: components/settings/mcp-connect.tsx
 msgid "Header"
@@ -4400,6 +4489,10 @@ msgstr "imagem"
 #: components/settings/import-page.tsx
 msgid "Import"
 msgstr "Importar"
+
+#: components/onboarding/setup.tsx
+msgid "Import existing work"
+msgstr "Importar trabalho existente"
 
 #: lib/work/people.ts
 msgid "Imported"
@@ -4511,6 +4604,10 @@ msgstr "Escopo do convite"
 msgid "Invitation sent to {0}."
 msgstr "Convite enviado para {0}."
 
+#: components/onboarding/setup.tsx
+msgid "Invitation sent. You can invite another teammate."
+msgstr "Convite enviado. Você pode convidar outro colega."
+
 #: app/settings/organization/page.tsx
 msgid "Invitation target"
 msgstr "Destino do convite"
@@ -4539,6 +4636,10 @@ msgstr "Convidar pessoas"
 msgid "Invite people, and manage members, teams, project access and leadership."
 msgstr "Convide pessoas e gerencie membros, equipes, acesso a projetos e liderança."
 
+#: components/onboarding/setup.tsx
+msgid "Invite your teammates"
+msgstr "Convide sua equipe"
+
 #: lib/org/audit.ts
 msgid "Invited someone to a project"
 msgstr "Convidou alguém para um projeto"
@@ -4550,6 +4651,10 @@ msgstr "Convidou alguém para uma equipe"
 #: lib/org/audit.ts
 msgid "Invited someone to the organization"
 msgstr "Convidou alguém para a organização"
+
+#: components/onboarding/setup.tsx
+msgid "Inviting teammates is optional. Continue to your board whenever you’re ready."
+msgstr "Convidar colegas é opcional. Continue para seu quadro quando quiser."
 
 #: components/settings/csv-import.tsx
 msgid "It can’t be scrapped any more: someone has worked on what it made (moved, edited, commented on or reviewed a ticket, or added one)."
@@ -5061,6 +5166,7 @@ msgstr "Carregando seu trabalho…"
 #: components/intake/request-form.tsx
 #: components/layout/help-bot.tsx
 #: components/layout/page-skeletons.tsx
+#: components/onboarding/setup.tsx
 #: components/project/archived-boards.tsx
 #: components/project/move-to-board.tsx
 #: components/project/refinement.tsx
@@ -5532,6 +5638,8 @@ msgid "Newest first"
 msgstr "Mais recentes primeiro"
 
 #: components/live/standup.tsx
+#: components/onboarding/guide.tsx
+#: components/onboarding/setup.tsx
 #: components/ui/pagination.tsx
 msgid "Next"
 msgstr "Próximo"
@@ -6363,6 +6471,10 @@ msgstr "só links do TrackLin.es podem ser encurtados"
 msgid "Open"
 msgstr "Abrir"
 
+#: components/onboarding/guide.tsx
+msgid "Open a board and use Add ticket to turn an idea into work your team can follow."
+msgstr "Abra um quadro e use Adicionar ticket para transformar uma ideia em trabalho que sua equipe possa acompanhar."
+
 #: app/reports/page.tsx
 msgid "Open a report from a board’s past sprints, a project, or organization settings."
 msgstr "Abra um relatório pelas sprints anteriores de um quadro, por um projeto ou pelas configurações da organização."
@@ -6859,6 +6971,10 @@ msgstr "Quadros do projeto"
 msgid "Project ID"
 msgstr "ID do projeto"
 
+#: components/onboarding/setup.tsx
+msgid "Project name"
+msgstr "Nome do projeto"
+
 #: components/layout/load-error.tsx
 msgid "Project not found"
 msgstr "Projeto não encontrado"
@@ -7001,6 +7117,10 @@ msgstr "Registrado antes dos relatórios: o que continha ao ser fechada"
 #: components/project/refinement.tsx
 msgid "Refinement"
 msgstr "Refinamento"
+
+#: lib/api/error-codes.ts
+msgid "refresh to load the current guide"
+msgstr "atualize a página para carregar o guia atual"
 
 #: lib/live/live-status.ts
 msgid "Refresh to see changes others have made."
@@ -7238,6 +7358,15 @@ msgstr "Restaurando…"
 msgid "Resume"
 msgstr "Retomar"
 
+#: components/onboarding/guide.tsx
+#: components/onboarding/setup.tsx
+msgid "Retry"
+msgstr "Tentar novamente"
+
+#: components/settings/import-page.tsx
+msgid "Return to setup and choose your imported board"
+msgstr "Voltar à configuração e escolher o quadro importado"
+
 #: components/board/review.tsx
 msgid "Review"
 msgstr "Revisão"
@@ -7415,6 +7544,8 @@ msgstr "Salvando etiquetas…"
 #: components/board/ticket-dialog.tsx
 #: components/common/name-dialog.tsx
 #: components/intake/triage.tsx
+#: components/onboarding/guide.tsx
+#: components/onboarding/setup.tsx
 #: components/project/key-prefix.tsx
 #: components/roadmap/item-editor.tsx
 #: components/roadmap/roadmap-editor-form.tsx
@@ -7549,6 +7680,10 @@ msgstr "Devolver"
 msgid "send every answer's id, once each"
 msgstr "envie o id de cada resposta, uma vez cada"
 
+#: components/onboarding/setup.tsx
+msgid "Send invitation"
+msgstr "Enviar convite"
+
 #: app/settings/organization/page.tsx
 msgid "Send invite"
 msgstr "Enviar convite"
@@ -7666,6 +7801,10 @@ msgstr "definiu a data de entrega para {b}"
 msgid "Set up {0}"
 msgstr "Configurar {0}"
 
+#: components/onboarding/setup.tsx
+msgid "Set up your team’s first board. You can leave and continue later."
+msgstr "Configure o primeiro quadro da sua equipe. Você pode sair e continuar depois."
+
 #: app/boards/[id]/edit/page.tsx
 #: app/dashboard/page.tsx
 #: app/settings/api-keys/page.tsx
@@ -7708,6 +7847,10 @@ msgstr "Notas curtas e datadas sobre o andamento do roadmap, exibidas no roadmap
 #: components/work/mentions.tsx
 msgid "Show"
 msgstr "Mostrar"
+
+#: components/onboarding/setup.tsx
+msgid "Show me around"
+msgstr "Mostre como funciona"
 
 #: components/settings/webhooks.tsx
 #: components/ticket/history-panel.tsx
@@ -7800,6 +7943,10 @@ msgstr "Simples"
 msgid "Site origin"
 msgstr "Origem do site"
 
+#: components/onboarding/guide.tsx
+msgid "Skip"
+msgstr "Pular"
+
 #: components/staff/help-editor.tsx
 msgid "Slug"
 msgstr "Slug"
@@ -7822,6 +7969,7 @@ msgid "Something went wrong"
 msgstr "Algo deu errado"
 
 #: components/common/name-dialog.tsx
+#: components/onboarding/setup.tsx
 #: components/roadmap/roadmap-editor-form.tsx
 msgid "Something went wrong. Please try again."
 msgstr "Algo deu errado. Tente novamente."
@@ -8030,9 +8178,17 @@ msgstr "Iniciar uma sprint"
 msgid "Start date <0>(optional)</0>"
 msgstr "Data de início <0>(opcional)</0>"
 
+#: components/onboarding/setup.tsx
+msgid "Start empty"
+msgstr "Começar com um quadro vazio"
+
 #: components/project/new-board.tsx
 msgid "Start from a template; you can change columns and settings afterwards."
 msgstr "Comece a partir de um modelo; você pode alterar as colunas e configurações depois."
+
+#: components/onboarding/guide.tsx
+msgid "Start guide"
+msgstr "Iniciar guia"
 
 #: components/sprint/sprint-bar.tsx
 msgid "Start sprint"
@@ -8049,6 +8205,10 @@ msgstr "Inicie o cronômetro quando todos tiverem entrado"
 #: app/boards/[id]/edit/page.tsx
 msgid "Start the next one"
 msgstr "Iniciar o próximo"
+
+#: components/onboarding/setup.tsx
+msgid "Start with"
+msgstr "Começar com"
 
 #: app/dashboard/page.tsx
 msgid "Start your first project"
@@ -8817,6 +8977,7 @@ msgstr "o ticket está concluído — tire-o de Concluído para alterar os anexo
 msgid "ticket is not assigned to caller"
 msgstr "o ticket não está atribuído a quem fez a chamada"
 
+#: components/onboarding/setup.tsx
 #: components/project/key-prefix.tsx
 msgid "Ticket key prefix"
 msgstr "Prefixo da chave do ticket"
@@ -9040,6 +9201,10 @@ msgstr "O TrackLin.es é operado por {company}."
 msgid "Try again"
 msgstr "Tentar novamente"
 
+#: components/onboarding/guide.tsx
+msgid "Try the terminal app"
+msgstr "Experimente o aplicativo de terminal"
+
 #: components/settings/device-push.tsx
 #: components/settings/webhooks.tsx
 #: components/work/notifications-bell.tsx
@@ -9245,6 +9410,10 @@ msgstr "Enviando…"
 msgid "Urgent"
 msgstr "Urgente"
 
+#: components/onboarding/setup.tsx
+msgid "Use 2–6 capital letters or digits, starting with a letter."
+msgstr "Use de 2 a 6 letras maiúsculas ou dígitos, começando com uma letra."
+
 #: components/settings/linear-import.tsx
 msgid "Use a personal API key: <0>create one in Linear</0> under Security & access. TrackLin.es keeps it, encrypted, for 30 days."
 msgstr "Use uma chave de API pessoal: <0>crie uma no Linear</0> em Security & access. O TrackLin.es guarda-a, encriptada, durante 30 dias."
@@ -9402,6 +9571,10 @@ msgstr "Vazão semanal"
 #: lib/api/error-codes.ts
 msgid "weeks must be between 1 and 52"
 msgstr "weeks deve estar entre 1 e 52"
+
+#: components/onboarding/setup.tsx
+msgid "Welcome to TrackLin.es"
+msgstr "Boas-vindas ao TrackLin.es"
 
 #: components/settings/audit-log.tsx
 msgid "What"
@@ -9639,6 +9812,10 @@ msgstr "Você"
 #: app/dashboard/page.tsx
 msgid "You can add a board for each team inside it."
 msgstr "Você pode adicionar um quadro para cada equipe dentro dele."
+
+#: components/onboarding/setup.tsx
+msgid "You can invite people now or come back to this in organization settings."
+msgstr "Você pode convidar pessoas agora ou fazer isso depois nas configurações da organização."
 
 #: app/roadmaps/[id]/edit/page.tsx
 msgid "You can only edit your own roadmaps."
