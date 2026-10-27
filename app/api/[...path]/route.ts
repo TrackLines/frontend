@@ -53,3 +53,4 @@ export const POST = forward;
 export const PUT = forward;
 export const PATCH = forward;
 export const DELETE = forward;
+export const OPTIONS = forward; // an embed's preflight: the backend says whether its site is allowed

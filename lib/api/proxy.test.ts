@@ -44,3 +44,27 @@ test('only safe headers come back: no Set-Cookie or internal redirects; 429s kee
   expect(h.get('cache-control')).toBe('no-store');
   for (const gone of ['set-cookie', 'location', 'content-encoding', 'transfer-encoding', 'server']) expect(h.has(gone)).toBe(false);
 });
+
+// TL-494: an embedded roadmap or request form calls /api from the customer's page; the backend's CORS
+// decides, so it must see that site's Origin and its answer must reach the browser
+test('an embed: another site’s Origin goes to the backend, its CORS answer comes back', () => {
+  const embed = requestHeaders(new Headers({ origin: 'https://interviews.tools', host: 'tracklin.es' }));
+  expect(embed.get('origin')).toBe('https://interviews.tools');
+  expect(embed.has('host')).toBe(false);
+  // ours, however the edge names the host: still dropped
+  expect(requestHeaders(new Headers({ origin: 'https://tracklin.es', host: 'frontend.railway.internal', 'x-forwarded-host': 'tracklin.es' })).has('origin')).toBe(false);
+  expect(requestHeaders(new Headers({ origin: 'null', host: 'tracklin.es' })).has('origin')).toBe(false);
+  const back = responseHeaders(new Headers({
+    'access-control-allow-origin': 'https://interviews.tools', 'access-control-allow-methods': 'GET, POST, OPTIONS',
+    'access-control-allow-headers': 'Content-Type', 'access-control-max-age': '86400', vary: 'Origin',
+  }));
+  expect(back.get('access-control-allow-origin')).toBe('https://interviews.tools');
+  expect(back.get('access-control-allow-methods')).toBe('GET, POST, OPTIONS');
+  expect(back.get('access-control-max-age')).toBe('86400');
+  expect(back.get('vary')).toBe('Origin');
+});
+
+test('preflights go to the backend', async () => {
+  const route = await Bun.file(new URL('../../app/api/[...path]/route.ts', import.meta.url)).text();
+  expect(route).toContain('export const OPTIONS = forward;');
+});
