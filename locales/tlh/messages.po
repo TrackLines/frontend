@@ -7744,6 +7744,10 @@ msgstr "sprint {0} 'Iqghach"
 msgid "Sprint {0} goal"
 msgstr "sprint {0} ngoQ"
 
+#: components/sprint/sprint-bar.tsx
+msgid "Sprint {ended} ended"
+msgstr "sprint {ended} rIn"
+
 #: components/reports/report-view.tsx
 #: components/ticket/planned-badge.tsx
 msgid "Sprint {n}"
@@ -7796,6 +7800,10 @@ msgstr "sprint chartmey"
 #: components/sprint/sprint-bar.tsx
 msgid "Sprint end date"
 msgstr "sprint rIn jaj"
+
+#: components/work/notification-icon.tsx
+msgid "Sprint ended: start the next"
+msgstr "sprint rIn: veb yItagh"
 
 #: components/live/standup.tsx
 msgid "Sprint goal:"
@@ -7884,9 +7892,17 @@ msgstr "mIllogh vo' yItagh; ghIq tutmey SeHlaw je DachoHlaH."
 msgid "Start sprint"
 msgstr "sprint yItagh! Qapla'!"
 
+#: components/sprint/sprint-bar.tsx
+msgid "Start sprint {next}"
+msgstr "sprint {next} yItagh"
+
 #: components/live/standup.tsx
 msgid "Start the clock once everyone has joined"
 msgstr "Hoch ghot muvDI' tlhaq yItagh"
+
+#: app/boards/[id]/edit/page.tsx
+msgid "Start the next one"
+msgstr "veb yItagh"
 
 #: app/dashboard/page.tsx
 msgid "Start your first project"
@@ -8317,6 +8333,10 @@ msgstr "tut Qav rIn 'oH 'ej Qav ratlh: retlhDaq latlh tutmey tIvIHmoH"
 #: app/global-not-found.tsx
 msgid "The link may be old, or the address mistyped."
 msgstr "ngo' rarwI' net Sov, pagh Daq ghItlhlu'pu'bogh lughbe'."
+
+#: app/boards/[id]/edit/page.tsx
+msgid "The next sprint starts straight away, with unfinished tickets carried over."
+msgstr "SIbI' sprint veb tagh; Segh rInbe'bogh lunge'."
 
 #: components/sprint/sprint-bar.tsx
 msgid "The next sprint won’t start until you start it, so you can choose its length then. A planned next sprint joins when it starts."
@@ -8911,6 +8931,14 @@ msgstr "ghom'a' beqpu' tu'lu'be'bogh"
 msgid "Undated roadmap items"
 msgstr "He nav Dochmey jaj ghajbe'bogh"
 
+#: components/sprint/sprint-bar.tsx
+msgid "Unfinished tickets wait on the board until the next sprint starts."
+msgstr "sprint veb taghpa' 'echletDaq loS Segh rInbe'bogh."
+
+#: app/boards/[id]/edit/page.tsx
+msgid "Unfinished tickets wait on the board, and the board's managers are told to start the next sprint."
+msgstr "'echletDaq loS Segh rInbe'bogh; sprint veb taghmeH 'echlet DevwI'pu' ngeHlu'."
+
 #: app/settings/integrations/[provider]/page.tsx
 msgid "Unknown integration."
 msgstr "rarghach Sovlu'be'."
@@ -9109,6 +9137,10 @@ msgstr "He nav yIlegh"
 msgid "visibility must be public, login_only or team"
 msgstr "visibility'e' public, login_only pagh team 'oHnIS"
 
+#: app/boards/[id]/edit/page.tsx
+msgid "Wait for a manager"
+msgstr "DevwI' yIloS"
+
 #: components/intake/triage.tsx
 msgid "Waiting"
 msgstr "loSlI'"
@@ -9256,6 +9288,10 @@ msgstr "nuq lughbe' / nuq poQlu'?"
 #: components/settings/audit-log.tsx
 msgid "When"
 msgstr "ghorgh"
+
+#: app/boards/[id]/edit/page.tsx
+msgid "When a sprint ends"
+msgstr "sprint rInDI'"
 
 #: components/ticket/bugfixes-panel.tsx
 msgid "Where"

@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { ApiError, boards, boardTemplates, columns, organization, type Board, type BoardStyle } from '@/lib/api';
+import { ApiError, boards, boardTemplates, columns, organization, type Board, type BoardStyle, type WhenSprintEnds } from '@/lib/api';
 import { canManageBoard } from '@/lib/board/board-access';
 import { devComplete, devCompleteOptions, dirty, draftOf, layout, layoutChanged, problem, settingsPatch, type Draft } from '@/lib/board/board-edit';
 import { SCALES, type EstimateScale } from '@/lib/board/estimates';
@@ -118,6 +118,13 @@ export default function EditBoardPage() {
         </label>
         <Choice label={t`Style`} hint={t`Sprints: time boxes. Kanban: continuous flow.`} value={draft.style}
           options={[['sprints', t`Sprints`], ['kanban', t`Kanban`]]} onChange={(v) => setDraft({ ...draft, style: v as BoardStyle })} />
+        {/* TL-279: a sprint board's choice, as in Jira; kanban has no sprints to end */}
+        {draft.style === 'sprints' && (
+          <Choice label={t`When a sprint ends`} hint={draft.whenSprintEnds === 'wait'
+            ? t`Unfinished tickets wait on the board, and the board's managers are told to start the next sprint.`
+            : t`The next sprint starts straight away, with unfinished tickets carried over.`} value={draft.whenSprintEnds}
+            options={[['start_next', t`Start the next one`], ['wait', t`Wait for a manager`]]} onChange={(v) => setDraft({ ...draft, whenSprintEnds: v as WhenSprintEnds })} />
+        )}
         <div className="grid gap-1.5 text-sm">
           <span className="font-medium"><Trans>Estimates</Trans></span>
           <Select items={Object.fromEntries(SCALES.map((s) => [s.value, i18n._(s.label)]))} value={draft.scale} onValueChange={(v) => v && setDraft({ ...draft, scale: v as EstimateScale })}>

@@ -7,6 +7,8 @@ test('every notification type has its own icon and label; ones that ask for some
   expect(new Set(kinds.map((k) => NOTIFICATION_ICONS[k as keyof typeof NOTIFICATION_ICONS].icon)).size).toBe(kinds.length);
   expect(renderToStaticMarkup(<NotificationIcon kind="over_capacity" />)).toContain('text-amber-600');
   expect(renderToStaticMarkup(<NotificationIcon kind="approval" />)).toContain('text-amber-600');
+  // TL-279: a board waiting for a manager to start its next sprint asks for something too
+  expect(renderToStaticMarkup(<NotificationIcon kind="sprint_waiting" />)).toContain('text-amber-600');
   const mention = renderToStaticMarkup(<NotificationIcon kind="mention" />);
   expect(mention).toContain('title="Mentioned you"');
   expect(mention).not.toContain('amber');

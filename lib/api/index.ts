@@ -47,6 +47,7 @@ export type Sprint = {
 };
 export type Column = { id: string; name: string; position: number; tickets: Ticket[]; wip_limit?: number | null };
 export type BoardStyle = 'sprints' | 'kanban';
+export type WhenSprintEnds = 'start_next' | 'wait';
 export type Board = {
   id: string; project_id: string; owner_clerk_id: string; name: string; description: string;
   team_id?: string | null;
@@ -58,6 +59,8 @@ export type Board = {
   agent_review?: boolean; // agents' moves into Done wait for a person's review
   dev_complete_column_id?: string | null; // merged PRs land here, a release moves them to Done (TL-531)
   review_column_id?: string | null; // agents' finished work waits here for review (TL-592); null: the column before Done
+  when_sprint_ends?: WhenSprintEnds; // TL-279: start the next sprint straight away, or end and wait for a manager
+  last_sprint_number?: number; // the latest closed sprint, so a board between sprints can say which ended
   archived_at?: string | null; // archived: off the project page, history kept, no new work
   deletable?: boolean; // never used (no tickets, no sprints): can be deleted; otherwise archive it
   sprint?: Sprint; // open sprint, absent when the board doesn't run sprints
@@ -375,7 +378,7 @@ export const boards = {
   create: (projectId: string, b: { name: string; description?: string; template_id?: string }, token: T) =>
     api<Board>(`/projects/${projectId}/boards`, { method: 'POST', body: b, token }),
   // Update the board name and/or settings; switching estimate_scale clears open tickets' estimates.
-  update: (id: string, b: { name?: string; estimate_scale?: EstimateScale; style?: BoardStyle; agent_review?: boolean; dev_complete_column_id?: string; review_column_id?: string }, token: T) => api<void>(`/boards/${id}`, { method: 'PATCH', body: b, token }),
+  update: (id: string, b: { name?: string; estimate_scale?: EstimateScale; style?: BoardStyle; agent_review?: boolean; dev_complete_column_id?: string; review_column_id?: string; when_sprint_ends?: WhenSprintEnds }, token: T) => api<void>(`/boards/${id}`, { method: 'PATCH', body: b, token }),
   remove: (id: string, token: T) => api<void>(`/boards/${id}`, { method: 'DELETE', token }), // never-used boards only
   archive: (id: string, token: T) => api<void>(`/boards/${id}/archive`, { method: 'POST', token }),
   restore: (id: string, token: T) => api<void>(`/boards/${id}/restore`, { method: 'POST', token }),
@@ -729,7 +732,7 @@ export const projectRepos = {
 };
 
 // Notifications: the signed-in user's inbox (internal; external channels later).
-export type NotificationKind = 'assigned' | 'mention' | 'finished' | 'wont_do' | 'review' | 'sent_back' | 'approval' | 'retention' | 'over_capacity' | 'legal' | 'downtime_credit'; // retention: TL-259; over_capacity: a sprint started over capacity (TL-149)
+export type NotificationKind = 'assigned' | 'mention' | 'finished' | 'wont_do' | 'review' | 'sent_back' | 'approval' | 'retention' | 'over_capacity' | 'legal' | 'downtime_credit' | 'sprint_waiting'; // retention: TL-259; over_capacity: a sprint started over capacity (TL-149)
 export type AppNotification = {
   id: string; kind: NotificationKind; text: string; actor: string;
   ticket_id: string | null; ticket_key: string | null; board_id: string | null; link?: string | null; // link: a page, e.g. a new Terms version (TL-424)

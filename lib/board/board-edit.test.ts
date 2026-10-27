@@ -100,3 +100,14 @@ test('Review column (TL-593, TL-673): the robot marks the picked column, or the 
 function changeEmpty(d: ReturnType<typeof draftOf>) {
   return { ...d, columns: d.columns.map((c) => (c.id === 'doing' ? { ...c, tickets: 0 } : c)) };
 }
+
+// TL-279: when a sprint ends, starting the next straight away unless the board's set to wait
+test('when a sprint ends: start_next unless set, and saved only when it changes', () => {
+  expect(draftOf(board).whenSprintEnds).toBe('start_next');
+  const was = draftOf({ ...board, when_sprint_ends: 'wait' });
+  expect(was.whenSprintEnds).toBe('wait');
+  expect(settingsPatch(was, was)).toBeNull();
+  const d = { ...was, whenSprintEnds: 'start_next' as const };
+  expect(settingsPatch(d, was)).toEqual({ when_sprint_ends: 'start_next' });
+  expect(dirty(d, was)).toBe(true);
+});

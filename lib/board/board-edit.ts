@@ -1,6 +1,6 @@
 import type { I18n } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
-import type { Board, BoardStyle } from '../api';
+import type { Board, BoardStyle, WhenSprintEnds } from '../api';
 import type { EstimateScale } from './estimates';
 
 // The edit board page (TL-470) works on a draft: nothing reaches the backend until Save, which sends
@@ -17,13 +17,15 @@ export type DraftColumn = {
 };
 // devComplete (TL-532): the column merged PRs move tickets to, until a release ships them; '' = merging finishes them
 // reviewColumn (TL-593): where agents' finished work waits for review; '' = the column before Done
-export type Draft = { name: string; style: BoardStyle; scale: EstimateScale; agentReview: boolean; devComplete: string; reviewColumn: string; columns: DraftColumn[] };
+// whenSprintEnds (TL-279): start the next sprint as one ends, or end it and wait for a manager
+export type Draft = { name: string; style: BoardStyle; scale: EstimateScale; agentReview: boolean; devComplete: string; reviewColumn: string; whenSprintEnds: WhenSprintEnds; columns: DraftColumn[] };
 
 export const MAX_COLUMN_NAME = 80; // the backend's columns.maxColumnName
 
 export function draftOf(b: Board): Draft {
   return {
     name: b.name, style: b.style ?? 'sprints', scale: b.estimate_scale ?? 'none', agentReview: !!b.agent_review, devComplete: b.dev_complete_column_id ?? '', reviewColumn: b.review_column_id ?? '',
+    whenSprintEnds: b.when_sprint_ends ?? 'start_next',
     columns: (b.columns ?? []).map((c) => ({ key: c.id, id: c.id, name: c.name, wip: c.wip_limit ?? null, tickets: c.tickets.length })),
   };
 }
@@ -98,7 +100,7 @@ export function problem(d: Draft, i18n: I18n): string | null {
 }
 
 // settingsPatch is what PATCH /boards/{id} gets: only what changed, or null when nothing did.
-export function settingsPatch(d: Draft, was: Draft): { name?: string; style?: BoardStyle; estimate_scale?: EstimateScale; agent_review?: boolean; dev_complete_column_id?: string; review_column_id?: string } | null {
+export function settingsPatch(d: Draft, was: Draft): { name?: string; style?: BoardStyle; estimate_scale?: EstimateScale; agent_review?: boolean; dev_complete_column_id?: string; review_column_id?: string; when_sprint_ends?: WhenSprintEnds } | null {
   const patch = {
     ...(d.name.trim() !== was.name && { name: d.name.trim() }),
     ...(d.style !== was.style && { style: d.style }),
@@ -106,6 +108,7 @@ export function settingsPatch(d: Draft, was: Draft): { name?: string; style?: Bo
     ...(d.agentReview !== was.agentReview && { agent_review: d.agentReview }),
     ...(devComplete(d) !== was.devComplete && { dev_complete_column_id: devComplete(d) }),
     ...(reviewColumn(d) !== was.reviewColumn && { review_column_id: reviewColumn(d) }),
+    ...(d.whenSprintEnds !== was.whenSprintEnds && { when_sprint_ends: d.whenSprintEnds }),
   };
   return Object.keys(patch).length ? patch : null;
 }
