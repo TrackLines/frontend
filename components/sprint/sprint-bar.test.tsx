@@ -112,3 +112,21 @@ test('each sprint dialog has its own key, or React shows a stale one that Save a
   expect(keys.length).toBeGreaterThanOrEqual(3);
   expect(new Set(keys).size).toBe(keys.length);
 });
+
+// TL-695: on a phone, Close sprint isn't a button on the bar (easy to press by accident) but in a menu;
+// wider screens keep the button. Either way it still asks first.
+test('phones: close sprint is behind the sprint menu', () => {
+  const ends = new Date(Date.now() + 5 * 86_400_000).toISOString();
+  const html = renderToStaticMarkup(
+    <SprintBar board={{ ...board, sprint: { id: 's', board_id: 'b', number: 2, length_days: 14, starts_at: '2026-10-01T09:00:00Z', ends_at: ends, closed_at: null } }}
+      token="t" canManage onChanged={() => {}} />,
+  );
+  expect(html).toMatch(/<button[^>]*class="[^"]*max-md:hidden[^"]*"[^>]*>Close sprint<\/button>/); // the button: wider screens only
+  expect(html).toContain('aria-label="Sprint actions"'); // the menu: phones only
+  expect(html).toContain('class="md:hidden"');
+  const member = renderToStaticMarkup(
+    <SprintBar board={{ ...board, sprint: { id: 's', board_id: 'b', number: 2, length_days: 14, starts_at: '2026-10-01T09:00:00Z', ends_at: ends, closed_at: null } }}
+      token="t" canManage={false} onChanged={() => {}} />,
+  );
+  expect(member).not.toContain('Sprint actions'); // nothing to close: no menu
+});

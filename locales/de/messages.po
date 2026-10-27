@@ -1956,6 +1956,10 @@ msgstr "Sprint abschließen"
 msgid "Close sprint {0}?"
 msgstr "Sprint {0} abschließen?"
 
+#: components/sprint/sprint-bar.tsx
+msgid "Close sprint…"
+msgstr "Sprint abschließen…"
+
 #: components/intake/intake-settings.tsx
 msgid "Close the form"
 msgstr "Formular schließen"
@@ -2266,6 +2270,7 @@ msgstr "Schlüssel kopieren"
 msgid "Copy labels to the original"
 msgstr "Labels ins Original kopieren"
 
+#: app/boards/[id]/page.tsx
 #: app/roadmaps/page.tsx
 #: components/common/copy-link.tsx
 #: components/intake/intake-settings.tsx
@@ -5195,6 +5200,10 @@ msgstr "Meilenstein, an seinem Fälligkeitsdatum"
 msgid "More"
 msgstr "Mehr"
 
+#: app/boards/[id]/page.tsx
+msgid "More board actions"
+msgstr "Weitere Board-Aktionen"
+
 #: components/ticket/labels.tsx
 msgid "More labels"
 msgstr "Weitere Labels"
@@ -7766,6 +7775,10 @@ msgstr "Sprint {number}: Burn-down"
 #: components/sprint/velocity.tsx
 msgid "Sprint {number}: burn-up"
 msgstr "Sprint {number}: Burn-up"
+
+#: components/sprint/sprint-bar.tsx
+msgid "Sprint actions"
+msgstr "Sprint-Aktionen"
 
 #: components/reports/report-view.tsx
 msgid "Sprint by sprint"
