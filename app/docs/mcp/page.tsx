@@ -42,18 +42,29 @@ export const chain = [
 ];
 
 // Prompts: what the MCP server tells agents, from the API itself so it can't drift (TL-566).
-export type Prompts = { instructions: string; tools: { name: string; title: string; description: string }[] };
+// version and published_at: the pre-prompt's version (TL-674); absent when the API served its built-in text.
+export type Prompts = { instructions: string; version?: number; published_at?: string; tools: { name: string; title: string; description: string }[] };
+// PromptVersion: one published version of the pre-prompt, as /api/mcp/prompts/versions lists them.
+export type PromptVersion = { version: number; body?: string; note: string; published_at: string };
 export const PROMPTS_URL = 'https://api.tracklin.es/api/mcp/prompts';
 
 // loadPrompts reads them from the API, refreshed hourly; null when the API can't be reached.
 async function loadPrompts(): Promise<Prompts | null> {
+  return fromAPI<Prompts>('/api/mcp/prompts');
+}
+
+// fromAPI reads a public API path, refreshed hourly (a published version shows within the hour); null when it can't.
+export async function fromAPI<R>(path: string): Promise<R | null> {
   try {
-    const res = await fetch(`${process.env.BACKEND_URL ?? 'http://localhost:8080'}/api/mcp/prompts`, { next: { revalidate: 3600 } });
-    return res.ok ? ((await res.json()) as Prompts) : null;
+    const res = await fetch(`${process.env.BACKEND_URL ?? 'http://localhost:8080'}${path}`, { next: { revalidate: 3600 } });
+    return res.ok ? ((await res.json()) as R) : null;
   } catch {
     return null;
   }
 }
+
+// day: a published date as the docs write dates ("27 October 2026").
+export const day = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
 
 const H2 = ({ children }: { children: React.ReactNode }) => <h2 className="mt-10 text-xl font-semibold">{children}</h2>;
 const P = ({ children }: { children: React.ReactNode }) => <p className="mt-2 text-muted-foreground [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:text-foreground">{children}</p>;
@@ -82,7 +93,7 @@ function Rows({ head, rows }: { head: [string, string]; rows: { a: string; b: st
 }
 
 export default async function McpDocs() {
-  const prompts = await loadPrompts();
+  const [prompts, versions] = await Promise.all([loadPrompts(), fromAPI<PromptVersion[]>('/api/mcp/prompts/versions')]);
   return (
     <main className="mx-auto max-w-6xl px-6 py-16">
       <article className="max-w-3xl">
@@ -129,19 +140,39 @@ export default async function McpDocs() {
           Also at <a href={PROMPTS_URL} className="underline">{PROMPTS_URL}</a>.
         </P>
         {prompts ? <PromptList prompts={prompts} /> : <P>They couldn’t be loaded just now.</P>}
+        <EarlierVersions versions={(Array.isArray(versions) ? versions : []).filter((v) => v.version !== prompts?.version)} />
       </article>
     </main>
   );
 }
 
-function PromptList({ prompts }: { prompts: Prompts }) {
+export function PromptList({ prompts }: { prompts: Prompts }) {
   return (
     <>
+      {prompts.version && prompts.published_at && <p className="mt-4 text-sm text-muted-foreground" data-prompt-version>Version {prompts.version} · published {day(prompts.published_at)}</p>}
       <pre className="mt-4 rounded-lg border bg-muted/50 p-4 text-sm whitespace-pre-wrap">{prompts.instructions}</pre>
       <details className="mt-4 rounded-lg border">
         <summary className="cursor-pointer px-4 py-3 font-medium">Each tool’s description ({prompts.tools.length} tools)</summary>
         <Rows head={['Tool', 'Description']} rows={prompts.tools.map((t) => ({ a: t.name, b: t.description }))} />
       </details>
     </>
+  );
+}
+
+// EarlierVersions: the pre-prompt's earlier versions (TL-674), each kept as it was published, like the terms' history.
+export function EarlierVersions({ versions }: { versions: PromptVersion[] }) {
+  if (versions.length === 0) return null;
+  return (
+    <section className="mt-6">
+      <h3 className="font-semibold">Earlier versions</h3>
+      <ul className="mt-2 grid gap-1 text-sm">
+        {versions.map((v) => (
+          <li key={v.version}>
+            <Link href={`/docs/mcp/versions/${v.version}`} className="underline">Version {v.version}</Link>
+            <span className="text-muted-foreground"> · {day(v.published_at)}{v.note ? ` · ${v.note}` : ''}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }

@@ -7,7 +7,7 @@ import type { ReactNode } from 'react';
 import { useStaff } from '@/lib/hooks/use-staff';
 import { cn } from '@/lib/utils';
 
-export type StaffTab = 'stats' | 'help' | 'downtime';
+export type StaffTab = 'stats' | 'help' | 'mcp-prompt' | 'downtime';
 
 // StaffShell: the admin panel's frame (TL-577), a tab per page. Anyone who isn't staff gets the
 // ordinary not-found page, so the panel isn't advertised.
@@ -26,6 +26,7 @@ export function StaffFrame({ tab, children }: { tab: StaffTab; children: ReactNo
   const tabs: { id: StaffTab; label: ReactNode }[] = [
     { id: 'stats', label: <Trans>Stats</Trans> },
     { id: 'help', label: <Trans>Help answers</Trans> },
+    { id: 'mcp-prompt', label: <Trans>MCP pre-prompt</Trans> },
     { id: 'downtime', label: <Trans>Downtime</Trans> },
   ];
   return (

@@ -896,8 +896,13 @@ export type HelpAnswerInput = Omit<HelpAnswer, 'id' | 'position' | 'updated_by' 
 export const help = {
   list: (locale: string, t: T) => api<HelpEntry[]>(`/help?locale=${encodeURIComponent(locale)}`, { token: t }),
 };
+// McpPromptVersion: one published version of the MCP pre-prompt (TL-674); body is left out of lists
+export type McpPromptVersion = { version: number; body?: string; note: string; published_at: string; published_by?: string };
+
 export const staff = {
   me: (t: T) => api<{ staff: boolean }>('/staff/me', { token: t }),
+  mcpPrompt: (t: T) => api<{ current: McpPromptVersion | null; versions: McpPromptVersion[] }>('/staff/mcp-prompt', { token: t }),
+  publishMcpPrompt: (body: string, note: string, t: T) => api<McpPromptVersion>('/staff/mcp-prompt', { method: 'POST', body: { body, note }, token: t }),
   stats: (t: T) => api<SystemStats>('/staff/stats', { token: t }), // counts only (TL-574)
   help: (t: T) => api<HelpAnswer[]>('/staff/help', { token: t }),
   addHelp: (a: HelpAnswerInput, t: T) => api<HelpAnswer>('/staff/help', { method: 'POST', body: a, token: t }),

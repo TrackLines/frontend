@@ -116,3 +116,42 @@ test('the TRMNL guide: a read-only personal key and the plugin on TRMNL (TL-450)
   for (const s of [`href="${TRMNL_RECIPE}"`, 'href="/account/api-keys"', 'Personal', 'Read only', 'My work']) expect(html).toContain(s);
   expect(renderToStaticMarkup(<DocsPage />)).toContain('href="/docs/trmnl"');
 });
+
+// TL-674: the pre-prompt is versioned like the terms: the docs show the latest with its version, list the
+// earlier ones, and each earlier one has its own page as it was published
+test('the MCP guide: the pre-prompt’s version, earlier versions, and each version’s page', async () => {
+  const { default: McpDocs } = await import('./mcp/page');
+  const { default: VersionPage } = await import('./mcp/versions/[version]/page');
+  const { render } = await import('@/test/i18n');
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = (async (url: string) => {
+    const u = String(url);
+    if (u.endsWith('/api/mcp/prompts')) return Response.json({ instructions: 'Version three text.', version: 3, published_at: '2026-10-27T20:00:00Z', tools: [] });
+    if (u.endsWith('/api/mcp/prompts/versions')) return Response.json([
+      { version: 3, note: 'clearer', published_at: '2026-10-27T20:00:00Z' },
+      { version: 2, note: 'run the whole suite', published_at: '2026-10-20T09:00:00Z' },
+      { version: 1, note: '', published_at: '2026-10-01T09:00:00Z' },
+    ]);
+    if (u.endsWith('/api/mcp/prompts/versions/2')) return Response.json({ version: 2, body: 'Version two text.', note: 'run the whole suite', published_at: '2026-10-20T09:00:00Z' });
+    return new Response('not found', { status: 404 });
+  }) as unknown as typeof fetch;
+  try {
+    const html = render(await McpDocs());
+    expect(html).toContain('Version 3 · published 27 October 2026');
+    expect(html).toContain('Version three text.');
+    expect(html).toContain('Earlier versions');
+    expect(html).toContain('href="/docs/mcp/versions/2"');
+    expect(html).toContain('href="/docs/mcp/versions/1"');
+    expect(html).not.toContain('href="/docs/mcp/versions/3"'); // the current one is the page itself
+    expect(html).toContain('run the whole suite');
+    const v2 = render(await VersionPage({ params: Promise.resolve({ version: '2' }) }));
+    expect(v2).toContain('MCP pre-prompt, version 2');
+    expect(v2).toContain('Version two text.');
+    expect(v2).toContain('Published 20 October 2026: run the whole suite');
+    for (const bad of ['99', '0', 'abc']) {
+      await expect(VersionPage({ params: Promise.resolve({ version: bad }) })).rejects.toThrow(); // notFound()
+    }
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
