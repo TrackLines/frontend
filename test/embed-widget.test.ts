@@ -74,3 +74,19 @@ test('submitError speaks to the visitor by status', () => {
   expect(widget.submitError(429)).toContain('try again');
   expect(widget.submitError(500)).toContain('try again');
 });
+
+// an item's description says what it is, as on the roadmap page: a title alone ("Your data") doesn't
+test('renderRoadmap shows what each item is, escaped; none, no empty paragraph', () => {
+  const html = widget.renderRoadmap({
+    title: 'Interview Tools',
+    items: [
+      { title: 'Your data', description: 'Import and export your applications <b>now</b>', status: 'not_started', progress: { done: 0, total: 2 } },
+      { title: 'Offers' },
+    ],
+  });
+  expect(html).toContain('<p class="tl-embed-item-desc">Import and export your applications &lt;b&gt;now&lt;/b&gt;</p>');
+  expect(html).not.toContain('<b>now</b>');
+  expect(html.match(/tl-embed-item-desc/g)).toHaveLength(1); // Offers has none
+  expect(html.indexOf('Your data')).toBeLessThan(html.indexOf('Import and export'));
+  expect(html.indexOf('Import and export')).toBeLessThan(html.indexOf('0/2 done'));
+});

@@ -57,6 +57,8 @@
           '<span class="tl-embed-item-title">' + esc(it.title) + '</span>' +
           '<span class="tl-embed-badge">' + esc(STATUS_LABEL[status] || status) + '</span>' +
           '</div>' +
+          // what the item is, as the roadmap page says it: a title alone ("Your data") rarely explains itself
+          (it.description ? '<p class="tl-embed-item-desc">' + esc(it.description) + '</p>' : '') +
           (meta.length ? '<div class="tl-embed-meta">' + esc(meta.join(' · ')) + '</div>' : '') +
           '</li>'
         );
@@ -107,6 +109,7 @@
     '.tl-embed-dot{width:.6rem;height:.6rem;border-radius:50%;background:#cbd5e1;flex:none}' +
     '.tl-embed-in_progress .tl-embed-dot{background:#f59e0b}.tl-embed-done .tl-embed-dot{background:#16a34a}' +
     '.tl-embed-badge{font-size:.75rem;color:#555;border:1px solid #e5e7eb;border-radius:999px;padding:.05rem .5rem}' +
+    '.tl-embed-item-desc{margin:.25rem 0 0 1.1rem;color:#555;white-space:pre-line}' +
     '.tl-embed-meta{color:#777;font-size:.8rem;margin-top:.25rem}' +
     '.tl-embed-form{display:grid;gap:.75rem}' +
     '.tl-embed-field{display:grid;gap:.25rem;font-weight:500}' +
