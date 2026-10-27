@@ -916,6 +916,20 @@ export type DowntimeProblem = { org_id: string; error: string };
 export type CreditPreview = { outage: Outage; credits: DowntimeCredit[]; problems: DowntimeProblem[] };
 export type CreditResult = { credited: DowntimeCredit[]; problems: DowntimeProblem[] };
 // exportCSV: a project's tickets as CSV text (TL-637), for the browser to save.
+// AuditEvent: one entry in the org's audit log (TL-670): who did what across the organization.
+export type AuditEvent = {
+  id: string; at: string; actor: string | null; actor_kind: 'person' | 'agent' | 'service' | 'system'; action: string;
+  target_type: string | null; target_id: string | null; project_id: string | null; data: Record<string, unknown>;
+};
+export type AuditPage = { events: AuditEvent[]; next_cursor: string | null };
+// AuditFilters: the log's filters, as the backend takes them (from/to are RFC 3339; action is exact, or a prefix ending in ".")
+export type AuditFilters = { actor?: string; action?: string; project?: string; from?: string; to?: string; cursor?: string };
+const auditQuery = (f: AuditFilters) => new URLSearchParams(Object.entries(f).filter(([, v]) => v) as [string, string][]).toString();
+export const auditLog = {
+  list: (f: AuditFilters, token: T) => api<AuditPage>(`/org/audit?${auditQuery(f)}`, { token }),
+  exportCSV: (f: AuditFilters, token: T) => api<string>(`/org/audit/export.csv?${auditQuery({ ...f, cursor: undefined })}`, { token }),
+};
+
 export const exportCSV = (projectId: string, t: T) => api<string>(`/projects/${encodeURIComponent(projectId)}/export.csv`, { token: t });
 
 // Web Push: notifications on this device even when Tracklines is closed (if the server has VAPID keys).

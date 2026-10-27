@@ -13,8 +13,9 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { SettingsCard } from '@/components/settings/settings-card';
 import { OrgReportCard } from '@/components/reports/report-links';
 import { FileCleanupLink } from '@/components/settings/file-cleanup';
+import { AuditLogCard } from '@/components/settings/audit-log';
 import { OrganizationCard } from '@/components/settings/organization-card';
-import { attachments, organization, type FileCleanup } from '@/lib/api';
+import { attachments, billing, organization, type FileCleanup, type Subscription } from '@/lib/api';
 import { useToken } from '@/lib/hooks/use-token';
 
 export default function SettingsPage() {
@@ -25,8 +26,10 @@ export default function SettingsPage() {
   const [admin, setAdmin] = useState(false);
   const signedIn = token !== null;
   const [cleanup, setCleanup] = useState<FileCleanup | null>(null);
+  const [plan, setPlan] = useState<Subscription | null>(null); // the audit log's card: open it, or what it takes (TL-671)
   useEffect(() => { if (token) organization.me(token).then((r) => setAdmin(r.admin), () => setAdmin(false)); }, [signedIn]);
   useEffect(() => { if (token && admin) attachments.cleanup(token).then(setCleanup, () => {}); }, [admin]); // admins only (TL-261)
+  useEffect(() => { if (token && admin) billing.status(token).then(setPlan, () => {}); }, [admin]);
   return (
     <main className="mx-auto max-w-6xl px-6 py-10">
       <Link href="/dashboard" className="text-sm text-muted-foreground hover:underline">← <Trans>Projects</Trans></Link>
@@ -55,6 +58,7 @@ export default function SettingsPage() {
           )}
         </SettingsCard>
         {admin && <FileCleanupLink report={cleanup} />}
+        {admin && is('audit-service').enabled() && <AuditLogCard plan={plan} token={token} />}
       </ul>
     </main>
   );
