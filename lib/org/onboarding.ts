@@ -12,6 +12,14 @@ export function offerGuide(state: OnboardingState) {
     state.guide.id === GUIDE.id && state.guide.version === GUIDE.version;
 }
 
+// A status request started before completion must not resurrect the same guide when it arrives late.
+export function mergeGuideStatus(current: OnboardingState | null, next: OnboardingState): OnboardingState {
+  if (current && !current.guide.available && current.guide.id === next.guide.id && current.guide.version === next.guide.version) {
+    return { ...next, guide: { ...next.guide, available: false } };
+  }
+  return next;
+}
+
 // Skip, dismiss and errors do not count as completing a guide.
 export function finishedGuide(event: { type: string; status: string }) {
   return event.type === 'tour:end' && event.status === 'finished';

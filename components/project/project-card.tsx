@@ -13,7 +13,7 @@ export function ProjectCard({ project: p }: { project: Project }) {
   const total = st ? st.open + st.done : 0;
   return (
     <li>
-      <Link href={`/projects/${p.id}`} className="group block h-full rounded-xl focus-visible:outline-2 focus-visible:outline-ring">
+      <Link data-guide="project-card" data-project-id={p.id} href={`/projects/${p.id}`} className="group block h-full rounded-xl focus-visible:outline-2 focus-visible:outline-ring">
         <Card className="h-full transition-colors group-hover:bg-muted/40">
           <CardHeader>
             <CardTitle className="flex items-start justify-between gap-2">

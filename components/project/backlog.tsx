@@ -1,6 +1,7 @@
 'use client';
 
 import { DueBadge } from '@/components/ticket/due-badge';
+import { emitGuideAction } from '@/lib/org/guide-tour';
 import { SimilarTickets, useSimilarTickets } from '@/components/ticket/similar-tickets';
 import { MarkdownTextarea, plainText } from '@/components/common/markdown';
 import { When } from '@/components/common/when';
@@ -218,7 +219,7 @@ export function Backlog({ projectId, boards, token }: Props) {
         {!refining && (
           <div className="ml-auto flex shrink-0 gap-2">
             {(session.session || canRefine(role, boards)) && <Button variant="outline" onClick={() => void refine()}>{refineLabel(session.session)}</Button>}
-            <Button variant="outline" onClick={() => setAdding(true)}><Trans>Add to backlog</Trans></Button>
+            <Button data-guide="add-backlog" variant="outline" onClick={() => setAdding(true)}><Trans>Add to backlog</Trans></Button>
           </div>
         )}
       </div>
@@ -326,13 +327,14 @@ export function Backlog({ projectId, boards, token }: Props) {
       )}
       <AddDialog
         open={adding}
-        onOpenChange={setAdding}
+        onOpenChange={(open) => { setAdding(open); if (!open) emitGuideAction({ type: 'ticket-dialog-closed' }); }}
         projectId={projectId}
         token={token}
         onAdd={async ({ files, ...input }) => {
           const tk = await backlog.create(projectId, input, token);
           if (await attachAll(tk.id, files, token)) setError(t`“${tk.title}” was added, but some files didn’t attach — add them from the ticket.`);
           void load(); // lands wherever the server orders it
+          emitGuideAction({ type: 'ticket-created' });
         }}
       />
     </section>
@@ -382,7 +384,7 @@ function AddDialog({ open, onOpenChange, projectId, token, onAdd }: {
           </DialogHeader>
           <TypePicker value={type} onChange={setType} />
           <LabelDrawer projectId={projectId} token={token} labels={labels} onChange={setLabels} disabled={saving} />
-          <Input autoFocus required maxLength={200} placeholder={t`What's wrong / what's needed?`} value={title} onChange={(e) => setTitle(e.target.value)} />
+          <Input data-guide="backlog-title" autoFocus required maxLength={200} placeholder={t`What's wrong / what's needed?`} value={title} onChange={(e) => setTitle(e.target.value)} />
           <SimilarTickets suggestions={similar} description={description} />
           <MarkdownTextarea
             placeholder={t`Details, steps to reproduce… (optional)`}
@@ -393,7 +395,7 @@ function AddDialog({ open, onOpenChange, projectId, token, onAdd }: {
           <PendingAttachments files={files} onChange={setFiles} projectId={projectId} />
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           <DialogFooter>
-            <Button type="submit" disabled={saving || !title.trim()}>{saving ? t`Adding…` : t`Add to backlog`}</Button>
+            <Button data-guide="backlog-submit" type="submit" disabled={saving || !title.trim()}>{saving ? t`Adding…` : t`Add to backlog`}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

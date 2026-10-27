@@ -115,7 +115,7 @@ export function ProviderCardView({ provider, status, canManage, busy, error, onC
   // GitHub connects several accounts (TL-281): each project links repos from whichever owns them
   const accounts = provider === 'github' ? status?.accounts ?? [] : [];
   return (
-    <section aria-label={name} className="grid gap-3 rounded-xl border p-5">
+    <section data-guide={provider === 'github' && status !== null ? 'github-integration' : undefined} aria-label={name} className="grid gap-3 rounded-xl border p-5">
       <div className="flex flex-wrap items-center gap-2">
         <h2 className="text-lg font-semibold">{name}</h2>
         {status === null ? <Badge variant="secondary"><Trans>Checking…</Trans></Badge>

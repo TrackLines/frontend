@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 
 type Props = {
   open: boolean;
+  guide?: 'project';
   onOpenChange: (open: boolean) => void;
   title: string;
   description?: string;
@@ -20,7 +21,7 @@ type Props = {
 };
 
 // NameDialog asks for a single name, e.g. "New project" or "New board".
-export function NameDialog({ open, onOpenChange, title, description, placeholder, initialValue = '', submitLabel, children, onSubmit }: Props) {
+export function NameDialog({ open, guide, onOpenChange, title, description, placeholder, initialValue = '', submitLabel, children, onSubmit }: Props) {
   const { t } = useLingui();
   const [name, setName] = useState('');
   const [saving, setSaving] = useState(false);
@@ -53,11 +54,11 @@ export function NameDialog({ open, onOpenChange, title, description, placeholder
             <DialogTitle>{title}</DialogTitle>
             {description && <DialogDescription>{description}</DialogDescription>}
           </DialogHeader>
-          <Input autoFocus required maxLength={120} placeholder={placeholder} value={name} onChange={(e) => setName(e.target.value)} />
+          <Input data-guide={guide && 'project-name'} autoFocus required maxLength={120} placeholder={placeholder} value={name} onChange={(e) => setName(e.target.value)} />
           {children}
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
           <DialogFooter>
-            <Button type="submit" disabled={saving || !name.trim()}>{saving ? <Trans>Saving…</Trans> : submitLabel}</Button>
+            <Button data-guide={guide && 'project-submit'} type="submit" disabled={saving || !name.trim()}>{saving ? <Trans>Saving…</Trans> : submitLabel}</Button>
           </DialogFooter>
         </form>
       </DialogContent>
