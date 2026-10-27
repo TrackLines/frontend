@@ -2,6 +2,7 @@ import type { I18n, MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import type { Assignee, AuditEvent, AuditFilters } from '@/lib/api';
 import { personLabel } from '@/lib/work/people';
+import { ERROR_MESSAGES } from '@/lib/api/error-codes';
 
 // ORG_ACTIONS is every action the backend's org audit log holds (its OpenAPI, /org/audit): each has a
 // sentence below, and a test fails on one without.
@@ -15,10 +16,15 @@ export const ORG_ACTIONS = [
   'webhook.created', 'webhook.updated', 'webhook.deleted',
   'import.run', 'export.downloaded', 'tickets.bulk_edited',
   'org.plan_changed', 'org.deleted', 'ticket.deleted', 'ticket.restored', 'ticket.purged',
+  // TL-700 (for TL-624): refused attempts, settings with before and after, embedding, repositories, expiry
+  'access.refused', 'board.settings_changed', 'project.request_form', 'embed.site_added', 'embed.site_removed',
+  'embed.key_created', 'embed.key_deleted', 'repo.linked', 'repo.unlinked', 'integration.updated',
+  'roadmap.visibility_changed', 'api_key.expired',
 ] as const;
 
 // ACTION_FILTERS: the action filter's choices. The backend takes one action, or one prefix ending in a dot.
 export const ACTION_FILTERS: { value: string; label: MessageDescriptor }[] = [
+  { value: 'access.refused', label: msg`Refused attempts` },
   { value: 'member.', label: msg`Members and invitations` },
   { value: 'admin.', label: msg`Admins` },
   { value: 'api_key.', label: msg`API keys` },
@@ -27,6 +33,9 @@ export const ACTION_FILTERS: { value: string; label: MessageDescriptor }[] = [
   { value: 'team.', label: msg`Teams` },
   { value: 'sprint.', label: msg`Sprints` },
   { value: 'integration.', label: msg`Integrations` },
+  { value: 'repo.', label: msg`Repositories` },
+  { value: 'embed.', label: msg`Embedding` },
+  { value: 'roadmap.', label: msg`Roadmaps` },
   { value: 'webhook.', label: msg`Webhooks` },
   { value: 'import.', label: msg`Imports` },
   { value: 'export.', label: msg`Exports` },
@@ -40,6 +49,14 @@ const PROVIDERS: Record<string, string> = {
   'google-chat': 'Google Chat', jira: 'Jira', linear: 'Linear',
 };
 const PLANS: Record<string, string> = { free: 'Free', pro: 'Pro', enterprise: 'Enterprise' };
+
+// SETTINGS: a board's settings, as board.settings_changed names them
+const SETTINGS: Record<string, MessageDescriptor> = {
+  estimate_scale: msg`estimates`, style: msg`style`, agent_review: msg`agent review`, dev_complete_column_id: msg`finish on release`,
+  review_column_id: msg`review column`, when_sprint_ends: msg`when a sprint ends`, team_id: msg`team`,
+};
+// SEEN_BY: who can see a roadmap
+const SEEN_BY: Record<string, MessageDescriptor> = { public: msg`anyone`, login_only: msg`anyone signed in`, team: msg`the team` };
 
 const str = (v: unknown) => (typeof v === 'string' ? v : v == null ? '' : String(v));
 
@@ -111,6 +128,36 @@ export function auditSentence(i18n: I18n, e: AuditEvent, people: Assignee[] | nu
     case 'ticket.deleted': return t(msg`Deleted a ticket`);
     case 'ticket.restored': return t(msg`Restored a ticket`);
     case 'ticket.purged': return t(msg`Removed a deleted ticket for good`);
+    case 'access.refused': {
+      // what they tried, and why it was refused, in the reader's language where the app knows the reason
+      const route = str(d.route) || `${str(d.method)} ${str(d.path)}`;
+      const code = str(d.code);
+      const why = code ? (ERROR_MESSAGES[code] ? i18n._(ERROR_MESSAGES[code]) : code) : '';
+      return why ? t(msg`Wasn’t allowed: ${route} (${why})`) : t(msg`Wasn’t allowed: ${route}`);
+    }
+    case 'board.settings_changed': {
+      const fields = Object.keys((d.fields as Record<string, unknown>) ?? {}).map((f) => (SETTINGS[f] ? t(SETTINGS[f]) : f)).join(', ');
+      return t(msg`Changed ${name}’s settings: ${fields}`);
+    }
+    case 'project.request_form':
+      return d.change === 'opened' ? t(msg`Opened the request form of ${name}`)
+        : d.change === 'closed' ? t(msg`Closed the request form of ${name}`) : t(msg`Made a new request form link for ${name}`);
+    case 'embed.site_added': { const origin = str(d.origin); return t(msg`Allowed ${origin} to embed`); }
+    case 'embed.site_removed': { const origin = str(d.origin); return t(msg`Stopped ${origin} embedding`); }
+    case 'embed.key_created': { const label = str(d.label); return t(msg`Created the embed key “${label}”`); }
+    case 'embed.key_deleted': { const label = str(d.label); return t(msg`Deleted the embed key “${label}”`); }
+    case 'repo.linked': { const repo = str(d.repo); return t(msg`Linked the repository ${repo}`); }
+    case 'repo.unlinked': { const repo = str(d.repo); return t(msg`Unlinked the repository ${repo}`); }
+    case 'integration.updated': { const provider = PROVIDERS[str(d.provider)] ?? str(d.provider); return t(msg`Changed the ${provider} settings`); }
+    case 'roadmap.visibility_changed': {
+      const title = str(d.title);
+      const seenBy = SEEN_BY[str(d.to)] ? t(SEEN_BY[str(d.to)]) : str(d.to);
+      return t(msg`Made the roadmap ${title} visible to ${seenBy}`);
+    }
+    case 'api_key.expired': {
+      const kind = d.kind === 'service' ? t(msg`service key`) : d.kind === 'ai' ? t(msg`agent key`) : t(msg`personal key`);
+      return t(msg`The ${kind} “${name}” expired`);
+    }
   }
   const action = e.action;
   return t(msg`Made a change (${action})`);

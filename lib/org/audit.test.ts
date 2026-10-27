@@ -10,7 +10,7 @@ const people = [{ id: 'user_sam', label: 'Sam Doe', kind: 'person' as const }, {
 
 // TL-671: a sentence for every action in the backend's org log catalogue; an unknown one still reads
 test('every org action reads as a sentence', () => {
-  expect(ORG_ACTIONS).toHaveLength(35);
+  expect(ORG_ACTIONS).toHaveLength(47);
   for (const a of ORG_ACTIONS) {
     const s = auditSentence(i18n, ev(a, { name: 'Shop', from: 'a', to: 'b', change: 'added', user: 'user_sam', provider: 'jira', host: 'x.io', source: 'jira', state: 'done', created: 3, kind: 'csv', plan: 'pro', number: 4, board_name: 'Web', changed: 2, count: 3 }, { target_id: 'user_sam' }), people);
     expect(s, a).not.toContain('Made a change');
@@ -68,4 +68,20 @@ test('the API gets the filters, a cursor for older pages, and none for the expor
   }
   expect(asked[0]).toEndWith('/org/audit?actor=user_sam&action=board.&cursor=41');
   expect(asked[1]).toEndWith('/org/audit/export.csv?project=p1');
+});
+
+// TL-701: the TL-624 events read as sentences, with what changed and why a change was refused
+test('refused attempts, settings, embedding, repositories, visibility and expiry', () => {
+  const read = (a: string, d: Record<string, unknown>) => auditSentence(i18n, ev(a, d), people);
+  expect(read('access.refused', { method: 'PATCH', route: 'PATCH /api/boards/{id}', path: '/api/boards/b1', code: 'admins_or_leaders_only' }))
+    .toBe('Wasn’t allowed: PATCH /api/boards/{id} (only organization admins or this board\'s team leaders can do this)');
+  expect(read('access.refused', { route: 'DELETE /api/x', code: 'brand_new' })).toBe('Wasn’t allowed: DELETE /api/x (brand_new)');
+  expect(read('access.refused', { method: 'POST', path: '/api/y' })).toBe('Wasn’t allowed: POST /api/y');
+  expect(read('board.settings_changed', { name: 'Web', fields: { estimate_scale: {}, agent_review: {} } })).toBe('Changed Web’s settings: estimates, agent review');
+  expect(read('project.request_form', { name: 'Shop', change: 'reset' })).toBe('Made a new request form link for Shop');
+  expect(read('embed.site_added', { origin: 'https://interviews.tools' })).toBe('Allowed https://interviews.tools to embed');
+  expect(read('repo.unlinked', { repo: 'acme/shop' })).toBe('Unlinked the repository acme/shop');
+  expect(read('integration.updated', { provider: 'google-chat' })).toBe('Changed the Google Chat settings');
+  expect(read('roadmap.visibility_changed', { title: 'Plan', from: 'team', to: 'public' })).toBe('Made the roadmap Plan visible to anyone');
+  expect(read('api_key.expired', { kind: 'service', name: 'CI' })).toBe('The service key “CI” expired');
 });
