@@ -4,9 +4,11 @@ import Link from 'next/link';
 import { Plural, Trans, useLingui } from '@lingui/react/macro';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { CodeIcon, DownloadIcon, GitPullRequestIcon, HashIcon, InboxIcon, KanbanIcon, MessageSquareIcon, TypeIcon } from 'lucide-react';
+import { DownloadIcon, GlobeIcon, HashIcon, KanbanIcon, PlugIcon, TypeIcon } from 'lucide-react';
 import { useFlags } from '@flags-gg/react-library';
 import { GoogleChatSettings } from '@/components/settings/google-chat';
+import { EmbeddingSettings } from '@/components/settings/embedding';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { EditableTitle } from '@/components/editable-title';
 import { SettingsCard } from '@/components/settings/settings-card';
 import { ListPageSkeleton } from '@/components/page-skeletons';
@@ -44,7 +46,7 @@ export default function EditProjectPage() {
       <Link href={`/projects/${project.id}`} className="text-sm text-muted-foreground hover:underline">← {project.name}</Link>
       <header className="mt-2 mb-8">
         <h1 className="text-3xl font-bold tracking-tight"><Trans>Edit project</Trans></h1>
-        <p className="mt-1 text-sm text-muted-foreground"><Trans>{project.name}’s name, ticket keys, boards, export, request form and repositories.</Trans></p>
+        <p className="mt-1 text-sm text-muted-foreground"><Trans>{project.name}’s name, ticket keys, boards, export, what people outside your organization can reach, and integrations.</Trans></p>
       </header>
       {/* the same panels as Settings (TL-282): the quick ones three across, forms and lists full width */}
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -73,16 +75,40 @@ export default function EditProjectPage() {
         <SettingsCard icon={DownloadIcon} title={t`Export`} description={t`Every ticket in the project, open and closed, as a CSV file for a spreadsheet or another tool.`}>
           <ExportCSVButton projectId={project.id} name={project.name} token={token} />
         </SettingsCard>
-        <SettingsCard wide icon={InboxIcon} title={t`Request form`} description={t`A public form for customers to suggest features and report bugs; you choose what reaches the backlog.`}>
-          <IntakeSettingsSection projectId={project.id} token={token} />
+        {/* what people outside the org can reach (TL-685): the request form, and embedding it and the
+            roadmaps on your own sites (the project's since TL-683, behind the flags.gg "embedding" flag) */}
+        <SettingsCard wide icon={GlobeIcon} title={t`External`} description={t`What people outside your organization can reach: the request form, and this project’s roadmaps and form on your own sites.`}>
+          <Tabs defaultValue="request">
+            <TabsList>
+              <TabsTrigger value="request"><Trans>Request form</Trans></TabsTrigger>
+              {is('embedding').enabled() && <TabsTrigger value="embedding"><Trans>Embedding</Trans></TabsTrigger>}
+            </TabsList>
+            <TabsContent value="request" className="grid gap-3 pt-3">
+              <p className="text-sm text-muted-foreground"><Trans>A public form for customers to suggest features and report bugs; you choose what reaches the backlog.</Trans></p>
+              <IntakeSettingsSection projectId={project.id} token={token} />
+            </TabsContent>
+            {is('embedding').enabled() && (
+              <TabsContent value="embedding" className="pt-3">
+                <EmbeddingSettings projectId={project.id} />
+              </TabsContent>
+            )}
+          </Tabs>
         </SettingsCard>
-        {/* embedding is the project's (TL-683), behind the flags.gg "embedding" flag (TL-494) */}
-        {is('embedding').enabled() && <SettingsCard icon={CodeIcon} title={t`Embedding`} href={`/projects/${project.id}/embedding`} description={t`Put this project’s public roadmaps or its request form on your own site.`} />}
-        <SettingsCard wide icon={MessageSquareIcon} title="Google Chat" description={t`Post this project’s notifications into its team’s Google Chat space: new tickets, reviews, sprints over capacity and more.`}>
-          <GoogleChatSettings token={token} projectId={project.id} canManage={admin} />
-        </SettingsCard>
-        <SettingsCard wide icon={GitPullRequestIcon} title={t`Repositories`} description={t`Pull requests in these repositories link to the tickets they mention, and merging one closes it.`}>
-          <ProjectRepositories projectId={project.id} token={token} admin={admin} />
+        <SettingsCard wide icon={PlugIcon} title={t`Integrations`} description={t`Other tools this project works with: its team’s Google Chat space, and the repositories whose pull requests link to its tickets.`}>
+          <Tabs defaultValue="chat">
+            <TabsList>
+              <TabsTrigger value="chat">Google Chat</TabsTrigger>
+              <TabsTrigger value="repos"><Trans>Repositories</Trans></TabsTrigger>
+            </TabsList>
+            <TabsContent value="chat" className="grid gap-3 pt-3">
+              <p className="text-sm text-muted-foreground"><Trans>Post this project’s notifications into its team’s Google Chat space: new tickets, reviews, sprints over capacity and more.</Trans></p>
+              <GoogleChatSettings token={token} projectId={project.id} canManage={admin} />
+            </TabsContent>
+            <TabsContent value="repos" className="grid gap-3 pt-3">
+              <p className="text-sm text-muted-foreground"><Trans>Pull requests in these repositories link to the tickets they mention, and merging one closes it.</Trans></p>
+              <ProjectRepositories projectId={project.id} token={token} admin={admin} />
+            </TabsContent>
+          </Tabs>
         </SettingsCard>
       </ul>
     </main>

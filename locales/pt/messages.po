@@ -325,8 +325,8 @@ msgstr "{0}: {startLabel} a {endLabel}"
 
 #. placeholder {0}: project.name
 #: app/projects/[id]/edit/page.tsx
-msgid "{0}’s name, ticket keys, boards, export, request form and repositories."
-msgstr "Nome, chaves de ticket, quadros, exportação, formulário de pedidos e repositórios de {0}."
+msgid "{0}’s name, ticket keys, boards, export, what people outside your organization can reach, and integrations."
+msgstr "Nome, chaves de tickets, quadros, exportação, o que pessoas de fora da sua organização podem acessar e integrações de {0}."
 
 #: components/board/sprint-bar.tsx
 msgid "{carry, plural, one {unfinished ticket stays on the board} other {unfinished tickets stay on the board}}"
@@ -3401,7 +3401,6 @@ msgid "Edit labels"
 msgstr "Editar etiquetas"
 
 #: app/projects/[id]/edit/page.tsx
-#: app/projects/[id]/embedding/page.tsx
 #: app/projects/[id]/page.tsx
 msgid "Edit project"
 msgstr "Editar projeto"
@@ -3441,13 +3440,8 @@ msgid "Embed name"
 msgstr "Nome do embed"
 
 #: app/projects/[id]/edit/page.tsx
-#: app/projects/[id]/embedding/page.tsx
 msgid "Embedding"
 msgstr "Embed"
-
-#: app/projects/[id]/embedding/page.tsx
-msgid "Embedding isn’t turned on for your organization yet."
-msgstr "O embed ainda não está ativado para sua organização."
 
 #: components/settings/embedding.tsx
 msgid "Embeds & usage"
@@ -3669,6 +3663,10 @@ msgstr "Exportar"
 #: components/project/export-csv.tsx
 msgid "Export CSV"
 msgstr "Exportar CSV"
+
+#: app/projects/[id]/edit/page.tsx
+msgid "External"
+msgstr "Externo"
 
 #: lib/error-codes.ts
 msgid "external is set by integrations (API keys)"
@@ -4113,6 +4111,7 @@ msgstr "Incluir concluídos"
 msgid "initial admin: {who}"
 msgstr "admin inicial: {who}"
 
+#: app/projects/[id]/edit/page.tsx
 #: app/settings/integrations/page.tsx
 #: app/settings/page.tsx
 msgid "Integrations"
@@ -5999,6 +5998,10 @@ msgstr "original"
 msgid "Original:"
 msgstr "Original:"
 
+#: app/projects/[id]/edit/page.tsx
+msgid "Other tools this project works with: its team’s Google Chat space, and the repositories whose pull requests link to its tickets."
+msgstr "Outras ferramentas com que este projeto trabalha: o espaço do Google Chat da equipe e os repositórios cujos pull requests apontam para os tickets dele."
+
 #: lib/error-codes.ts
 msgid "outage not found"
 msgstr "queda não encontrada"
@@ -6417,11 +6420,6 @@ msgstr "Pull requests nestes repositórios que mencionam a chave de um ticket (e
 msgid "push notifications aren't set up on this server"
 msgstr "as notificações push não estão configuradas neste servidor"
 
-#: app/projects/[id]/edit/page.tsx
-#: app/projects/[id]/embedding/page.tsx
-msgid "Put this project’s public roadmaps or its request form on your own site."
-msgstr "Coloque os roadmaps públicos ou o formulário de pedidos deste projeto no seu próprio site."
-
 #: components/settings/embedding.tsx
 msgid "Put this project’s public roadmaps or its request form on your own site. A widget runs on your page and calls TrackLin.es, so every site it runs on must be listed here first — otherwise the browser blocks it. Adding a site is what turns embedding on, for this project only."
 msgstr "Coloque os roadmaps públicos ou o formulário de pedidos deste projeto no seu próprio site. Um widget roda na sua página e chama o TrackLin.es, então cada site onde ele roda precisa estar listado aqui primeiro — senão o navegador o bloqueia. Adicionar um site é o que ativa a incorporação, só para este projeto."
@@ -6565,8 +6563,8 @@ msgid "Replace webhook URL"
 msgstr "Substituir URL do webhook"
 
 #: components/settings/embedding.tsx
-msgid "Replace YOUR_REQUEST_TOKEN with the token in this project’s request form link (Edit project → Request form)."
-msgstr "Substitua YOUR_REQUEST_TOKEN pelo token do link do formulário de pedidos deste projeto (Editar projeto → Formulário de pedidos)."
+msgid "Replace YOUR_REQUEST_TOKEN with the token in this project’s request form link (the Request form tab)."
+msgstr "Substitua YOUR_REQUEST_TOKEN pelo token do link do formulário de pedidos deste projeto (a aba Formulário de pedidos)."
 
 #: components/settings/embedding.tsx
 msgid "Replace YOUR_ROADMAP_ID with the roadmap’s id (it’s in the roadmap’s share link, /r/<id>)."
@@ -8682,6 +8680,10 @@ msgstr "O que precisa ser feito <0>(adicionado como comentário)</0>"
 #: components/board/ticket-dialog.tsx
 msgid "What needs to be done?"
 msgstr "O que precisa ser feito?"
+
+#: app/projects/[id]/edit/page.tsx
+msgid "What people outside your organization can reach: the request form, and this project’s roadmaps and form on your own sites."
+msgstr "O que pessoas de fora da sua organização podem acessar: o formulário de pedidos, e os roadmaps e o formulário deste projeto nos seus próprios sites."
 
 #: components/board/sprint-bar.tsx
 msgid "What should this sprint achieve?"
