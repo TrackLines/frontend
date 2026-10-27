@@ -1,10 +1,17 @@
 import { afterEach, expect, test } from 'bun:test';
 import { onboarding, type OnboardingState } from '@/lib/api';
-import { boardDestination, finishedGuide, GUIDE, needsSetup, offerGuide } from './onboarding';
+import { boardDestination, finishedGuide, GUIDE, mergeGuideStatus, needsSetup, offerGuide } from './onboarding';
 
 const state: OnboardingState = { admin: true, step: 'complete', project_id: 'project', board_id: 'board', completed_at: '2026-10-27T00:00:00Z', guide: { ...GUIDE, available: true } };
 const realFetch = globalThis.fetch;
 afterEach(() => { globalThis.fetch = realFetch; });
+
+test('a late pre-completion status response cannot bring the guide back, while a new published version can', () => {
+  const saved = { ...state, guide: { ...state.guide, available: false } };
+  expect(mergeGuideStatus(saved, state).guide.available).toBe(false);
+  expect(mergeGuideStatus(saved, { ...state, guide: { ...state.guide, version: GUIDE.version+1 } }).guide.available).toBe(true);
+  expect(mergeGuideStatus(null, state)).toBe(state);
+});
 
 test('setup resumes only for admins and ends independently of guide completion', () => {
   expect(needsSetup({ ...state, step: 'project' })).toBe(true);

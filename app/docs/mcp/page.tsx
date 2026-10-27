@@ -115,7 +115,7 @@ export default async function McpDocs() {
 
         <H2>2. Connect your agent</H2>
         <P>Pick your client and replace <code>tl_ai_your_key</code> with your key.</P>
-        <div className="mt-4 rounded-lg border p-4">
+        <div data-guide="mcp-connect" className="mt-4 rounded-lg border p-4">
           <McpInstructions />
         </div>
 

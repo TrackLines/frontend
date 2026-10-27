@@ -1976,6 +1976,26 @@ msgstr "Clear: {0}"
 msgid "Clerk invitation is no longer valid"
 msgstr "Clerk invitation is no longer valid"
 
+#: components/onboarding/guide.tsx
+msgid "Click Add to backlog to create a ticket in this project."
+msgstr "Click Add to backlog to create a ticket in this project."
+
+#: components/onboarding/guide.tsx
+msgid "Click Add to backlog to save your ticket. The guide waits for it to succeed."
+msgstr "Click Add to backlog to save your ticket. The guide waits for it to succeed."
+
+#: components/onboarding/guide.tsx
+msgid "Click Create project to save it. The guide waits until the project has been created."
+msgstr "Click Create project to save it. The guide waits until the project has been created."
+
+#: components/onboarding/guide.tsx
+msgid "Click New project to create a project. You can also continue with one you already have."
+msgstr "Click New project to create a project. You can also continue with one you already have."
+
+#: components/onboarding/guide.tsx
+msgid "Click the Backlog tab to see work waiting to be planned."
+msgstr "Click the Backlog tab to see work waiting to be planned."
+
 #: components/settings/google-calendar.tsx
 msgid "Client ID"
 msgstr "Client ID"
@@ -2134,6 +2154,10 @@ msgstr "Company days off <0>(optional: a shared calendar’s ID)</0>"
 msgid "Company days off from"
 msgstr "Company days off from"
 
+#: components/onboarding/guide.tsx
+msgid "Complete"
+msgstr "Complete"
+
 #: components/settings/organization.tsx
 msgid "Complete acceptance"
 msgstr "Complete acceptance"
@@ -2195,10 +2219,6 @@ msgstr "Connect Linear"
 #: app/settings/integrations/page.tsx
 msgid "Connect your organization to the tools it uses. Link repositories to a project from the project's page."
 msgstr "Connect your organization to the tools it uses. Link repositories to a project from the project's page."
-
-#: components/onboarding/guide.tsx
-msgid "Connect your repository so pull requests stay linked to the tickets they deliver."
-msgstr "Connect your repository so pull requests stay linked to the tickets they deliver."
 
 #: components/settings/google-calendar.tsx
 #: components/settings/integrations.tsx
@@ -2956,6 +2976,10 @@ msgstr "Couldn’t size “{0}”. Please try again."
 msgid "Couldn’t start connecting {name}."
 msgstr "Couldn’t start connecting {name}."
 
+#: components/onboarding/guide.tsx
+msgid "Couldn’t start the guide. Please try again."
+msgstr "Couldn’t start the guide. Please try again."
+
 #: components/project/backlog.tsx
 msgid "Couldn’t start the shared session; refining on your own."
 msgstr "Couldn’t start the shared session; refining on your own."
@@ -3021,6 +3045,7 @@ msgid "Counted in tickets. Pick an estimate scale in Edit board to count points.
 msgstr "Counted in tickets. Pick an estimate scale in Edit board to count points."
 
 #: app/dashboard/page.tsx
+#: components/onboarding/guide.tsx
 msgid "Create a project"
 msgstr "Create a project"
 
@@ -3064,10 +3089,6 @@ msgstr "Create your first project"
 #: components/onboarding/guide.tsx
 msgid "Create your first ticket"
 msgstr "Create your first ticket"
-
-#: components/onboarding/guide.tsx
-msgid "Create, edit and move tickets from your terminal with the TUI."
-msgstr "Create, edit and move tickets from your terminal with the TUI."
 
 #: components/settings/csv-import.tsx
 #: components/work/dashboard-work.tsx
@@ -3837,6 +3858,10 @@ msgstr "ends tomorrow"
 msgid "enquiries aren't available right now"
 msgstr "enquiries aren't available right now"
 
+#: components/onboarding/guide.tsx
+msgid "Enter a ticket title, choose its type and add any details. Choose Next when you’re ready."
+msgstr "Enter a ticket title, choose its type and add any details. Choose Next when you’re ready."
+
 #: components/board/ticket-dialog.tsx
 msgid "Enter a title."
 msgstr "Enter a title."
@@ -3852,6 +3877,11 @@ msgstr "Enter an origin like https://example.com."
 #: lib/api/error-codes.ts
 msgid "enter your Google Workspace domain, e.g. example.com"
 msgstr "enter your Google Workspace domain, e.g. example.com"
+
+#: components/onboarding/guide.tsx
+#: components/onboarding/setup.tsx
+msgid "Enter your project’s name here, then choose Next to see where to save it."
+msgstr "Enter your project’s name here, then choose Next to see where to save it."
 
 #: components/billing/plan-card.tsx
 msgid "Enterprise has unlimited projects and members."
@@ -4311,10 +4341,6 @@ msgstr "Getting started"
 msgid "Give the work a clear title. Details are optional."
 msgstr "Give the work a clear title. Details are optional."
 
-#: components/onboarding/guide.tsx
-msgid "Give your agent its own API key and connect it over MCP to work on tickets with your team."
-msgstr "Give your agent its own API key and connect it over MCP to work on tickets with your team."
-
 #: components/ui/pagination.tsx
 msgid "Go to next page"
 msgstr "Go to next page"
@@ -4381,6 +4407,7 @@ msgstr "Google Chat isn’t set up on this server."
 msgid "Google still lets TrackLin.es read your calendars."
 msgstr "Google still lets TrackLin.es read your calendars."
 
+#: components/onboarding/guide.tsx
 #: components/onboarding/setup.tsx
 msgid "Got it"
 msgstr "Got it"
@@ -4535,6 +4562,10 @@ msgstr "Include done"
 #: lib/org/organization-settings.ts
 msgid "initial admin: {who}"
 msgstr "initial admin: {who}"
+
+#: components/onboarding/guide.tsx
+msgid "Install the terminal app using this command, then follow this page’s API key and configuration instructions."
+msgstr "Install the terminal app using this command, then follow this page’s API key and configuration instructions."
 
 #: app/projects/[id]/edit/page.tsx
 #: app/settings/integrations/page.tsx
@@ -6471,10 +6502,6 @@ msgstr "only TrackLin.es links can be shortened"
 msgid "Open"
 msgstr "Open"
 
-#: components/onboarding/guide.tsx
-msgid "Open a board and use Add ticket to turn an idea into work your team can follow."
-msgstr "Open a board and use Add ticket to turn an idea into work your team can follow."
-
 #: app/reports/page.tsx
 msgid "Open a report from a board’s past sprints, a project, or organization settings."
 msgstr "Open a report from a board’s past sprints, a project, or organization settings."
@@ -6515,6 +6542,10 @@ msgstr "Open the full report, to save as PDF or Markdown →"
 msgid "Open the full ticket"
 msgstr "Open the full ticket"
 
+#: components/onboarding/guide.tsx
+msgid "Open the project you want to add a ticket to."
+msgstr "Open the project you want to add a ticket to."
+
 #: app/boards/[id]/page.tsx
 msgid "Open the ticket"
 msgstr "Open the ticket"
@@ -6522,6 +6553,10 @@ msgstr "Open the ticket"
 #: lib/org/audit.ts
 msgid "Opened the request form of {name}"
 msgstr "Opened the request form of {name}"
+
+#: components/onboarding/guide.tsx
+msgid "Opening the next guide step…"
+msgstr "Opening the next guide step…"
 
 #: components/intake/intake-settings.tsx
 #: components/settings/integrations.tsx
@@ -7943,10 +7978,6 @@ msgstr "Simple"
 msgid "Site origin"
 msgstr "Site origin"
 
-#: components/onboarding/guide.tsx
-msgid "Skip"
-msgstr "Skip"
-
 #: components/staff/help-editor.tsx
 msgid "Slug"
 msgstr "Slug"
@@ -8807,9 +8838,17 @@ msgstr "this form isn't taking requests"
 msgid "This form isn’t taking requests any more."
 msgstr "This form isn’t taking requests any more."
 
+#: components/onboarding/guide.tsx
+msgid "This guide step couldn’t load. Retry or close the guide."
+msgstr "This guide step couldn’t load. Retry or close the guide."
+
 #: lib/api/error-codes.ts
 msgid "this integration isn't configured on the server"
 msgstr "this integration isn't configured on the server"
+
+#: components/onboarding/guide.tsx
+msgid "This is your organization’s GitHub connection. Use Connect GitHub to authorize your account; link repositories from Edit project."
+msgstr "This is your organization’s GitHub connection. Use Connect GitHub to authorize your account; link repositories from Edit project."
 
 #: components/settings/jira-import.tsx
 msgid "This Jira token can’t see any projects."
@@ -9418,6 +9457,14 @@ msgstr "Use 2–6 capital letters or digits, starting with a letter."
 msgid "Use a personal API key: <0>create one in Linear</0> under Security & access. TrackLin.es keeps it, encrypted, for 30 days."
 msgstr "Use a personal API key: <0>create one in Linear</0> under Security & access. TrackLin.es keeps it, encrypted, for 30 days."
 
+#: components/onboarding/guide.tsx
+msgid "Use an existing project"
+msgstr "Use an existing project"
+
+#: components/onboarding/setup.tsx
+msgid "Use Create project and board to save your choices and continue to invitations."
+msgstr "Use Create project and board to save your choices and continue to invitations."
+
 #: components/settings/webhooks.tsx
 msgid "Use it to check that requests really come from TrackLin.es: see <0>verifying webhooks</0>."
 msgstr "Use it to check that requests really come from TrackLin.es: see <0>verifying webhooks</0>."
@@ -9425,6 +9472,10 @@ msgstr "Use it to check that requests really come from TrackLin.es: see <0>verif
 #: components/settings/working-week.tsx
 msgid "Use the organization’s working week"
 msgstr "Use the organization’s working week"
+
+#: components/onboarding/guide.tsx
+msgid "Use these connection settings to connect your agent over MCP with its own API key."
+msgstr "Use these connection settings to connect your agent over MCP with its own API key."
 
 #: components/settings/jira-import.tsx
 msgid "Use your Jira email and an API token. <0>Create a token at Atlassian</0>. TrackLin.es keeps it, encrypted, for 30 days."

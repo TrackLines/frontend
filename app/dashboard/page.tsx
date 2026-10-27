@@ -15,6 +15,7 @@ import { FolderKanbanIcon, PlusIcon } from 'lucide-react';
 import { projects, type Project } from '@/lib/api';
 import { useToken } from '@/lib/hooks/use-token';
 import { useCachedState } from '@/lib/api/page-cache';
+import { emitGuideAction } from '@/lib/org/guide-tour';
 
 // Signed-in home: your projects. A project holds a board per team plus its roadmaps.
 export default function Dashboard() {
@@ -34,10 +35,12 @@ export default function Dashboard() {
   async function create(name: string) {
     try {
       const p = await projects.create({ name }, token);
+      emitGuideAction({ type: 'project-created', projectId: p.id });
       router.push(`/projects/${p.id}`);
     } catch (err) {
       if (!atProjectLimit(err)) throw new Error(t`Couldn’t create the project. Please try again.`);
       setCreating(false);
+      emitGuideAction({ type: 'project-dialog-closed' });
       setAtLimit(true);
     }
   }
@@ -54,7 +57,7 @@ export default function Dashboard() {
         <div className="flex items-center gap-2">
           <Link href="/roadmaps" className={buttonVariants({ variant: 'ghost' })}><Trans>Roadmaps</Trans></Link>
           <Link href="/settings" className={buttonVariants({ variant: 'ghost' })}><Trans>Settings</Trans></Link>
-          <Button onClick={() => setCreating(true)} disabled={!token}><PlusIcon /><Trans>New project</Trans></Button>
+          <Button data-guide="new-project" onClick={() => setCreating(true)} disabled={!token}><PlusIcon /><Trans>New project</Trans></Button>
         </div>
       </header>
       {token && <DashboardWork token={token} />}
@@ -77,8 +80,9 @@ export default function Dashboard() {
       {token && (
         <>
           <NameDialog
+            guide="project"
             open={creating}
-            onOpenChange={setCreating}
+            onOpenChange={(open) => { setCreating(open); if (!open) emitGuideAction({ type: 'project-dialog-closed' }); }}
             title={t`New project`}
             description={t`You can add a board for each team inside it.`}
             placeholder={t`e.g. Website relaunch`}

@@ -47,7 +47,7 @@ function Setup({ nonce }: { nonce?: string }) {
       setState(s);
       const [ts, ps] = await Promise.all([boardTemplates.list(token), projects.list(token)]);
       const details = await Promise.all(ps.map((p) => projects.get(p.id, token)));
-      if (live) { setTemplates(ts); setExisting(details); setLoaded(true); }
+      if (live) { setTemplates(ts); setExisting(details); setLoaded(true); setTip(s.step === 'project'); }
     }).catch(() => { if (live) setError(t`Couldn’t load setup. Please try again.`); });
     return () => { live = false; };
   }, [token !== null, router]);
@@ -83,18 +83,18 @@ function Setup({ nonce }: { nonce?: string }) {
         {state.step === 'project' || !state.board_id ? <>
           <h2 className="text-xl font-semibold"><Trans>Create your first project</Trans></h2>
           <form onSubmit={create} className="mt-4 grid gap-4">
-            <label className="grid gap-2 text-sm"><Trans>Project name</Trans><Input required maxLength={200} value={name} onChange={(e) => setName(e.target.value)} /></label>
-            <label className="grid gap-2 text-sm"><Trans>Ticket key prefix</Trans><Input required pattern="[A-Z][A-Z0-9]{1,5}" minLength={2} maxLength={6} value={key} placeholder="WEB" onChange={(e) => setKey(e.target.value.toUpperCase())} /><span className="text-muted-foreground"><Trans>Use 2–6 capital letters or digits, starting with a letter.</Trans></span></label>
+            <label className="grid gap-2 text-sm"><Trans>Project name</Trans><Input data-guide="setup-name" required maxLength={200} value={name} onChange={(e) => setName(e.target.value)} /></label>
+            <label className="grid gap-2 text-sm"><Trans>Ticket key prefix</Trans><Input data-guide="setup-prefix" required pattern="[A-Z][A-Z0-9]{1,5}" minLength={2} maxLength={6} value={key} placeholder="WEB" onChange={(e) => setKey(e.target.value.toUpperCase())} /><span className="text-muted-foreground"><Trans>Use 2–6 capital letters or digits, starting with a letter.</Trans></span></label>
             <div className="grid gap-2 text-sm"><label htmlFor="onboarding-template"><Trans>Start with</Trans></label>
               <Select value={template} onValueChange={(value) => { if (value) setTemplate(value); }} items={{ 'builtin:simple': t`Start empty`, ...Object.fromEntries(templates.filter((x) => x.id !== 'builtin:simple').map((x) => [x.id, x.name])) }}>
-                <SelectTrigger id="onboarding-template" className="w-full"><SelectValue /></SelectTrigger>
+                <SelectTrigger data-guide="setup-template" id="onboarding-template" className="w-full"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="builtin:simple">{t`Start empty`}</SelectItem>
                   {templates.filter((x) => x.id !== 'builtin:simple').map((x) => <SelectItem key={x.id} value={x.id}>{x.name}</SelectItem>)}
                 </SelectContent>
               </Select>
             </div>
-            <Button type="submit" disabled={busy}>{busy ? <Trans>Saving…</Trans> : <Trans>Create project and board</Trans>}</Button>
+            <Button data-guide="setup-submit" type="submit" disabled={busy}>{busy ? <Trans>Saving…</Trans> : <Trans>Create project and board</Trans>}</Button>
           </form>
           {is('imports').enabled() && <div className="mt-6 border-t pt-4">
             <p className="mb-2 text-sm"><Trans>Already have work elsewhere? Import it first, then return here to choose its board.</Trans></p>
@@ -115,8 +115,13 @@ function Setup({ nonce }: { nonce?: string }) {
           <Button onClick={finish} disabled={busy}>{busy ? <Trans>Saving…</Trans> : <Trans>Continue to your board</Trans>}</Button>
         </>}
       </section>
-      <Joyride nonce={nonce} continuous run={tip} key={`${state.step}:${tip}`} steps={[{ target: '#setup-stage', skipBeacon: true, content: state.step === 'project' ? t`Choose an empty board or a template, or import your existing work. Imported projects count towards your plan’s project limit.` : t`Inviting teammates is optional. Continue to your board whenever you’re ready.` }]}
-        onEvent={(e) => { if (e.type === 'tour:end') setTip(false); }} locale={{ last: t`Got it`, close: t`Close`, next: t`Next`, back: t`Back` }} options={{ primaryColor: '#4f46e5', textColor: '#111827', backgroundColor: '#ffffff' }} />
+      <Joyride nonce={nonce} continuous run={tip} key={`${state.step}:${tip}`} steps={state.step === 'project' ? [
+        { target: '[data-guide="setup-name"]', skipBeacon: true, content: t`Enter your project’s name here, then choose Next to see where to save it.` },
+        { target: '[data-guide="setup-prefix"]', skipBeacon: true, content: t`Use 2–6 capital letters or digits, starting with a letter.` },
+        { target: '[data-guide="setup-template"]', skipBeacon: true, content: t`Choose an empty board or a template, or import your existing work. Imported projects count towards your plan’s project limit.` },
+        { target: '[data-guide="setup-submit"]', skipBeacon: true, content: t`Use Create project and board to save your choices and continue to invitations.` },
+      ] : [{ target: '#setup-stage', skipBeacon: true, content: t`Inviting teammates is optional. Continue to your board whenever you’re ready.` }]}
+        onEvent={(e) => { if (e.type === 'tour:end') setTip(false); }} locale={{ last: t`Got it`, close: t`Close`, next: t`Next`, back: t`Back` }} options={{ closeButtonAction: 'skip', disableFocusTrap: true, blockTargetInteraction: false, primaryColor: '#4f46e5', textColor: '#111827', backgroundColor: '#ffffff' }} />
     </>}
   </main>;
 }

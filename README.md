@@ -48,6 +48,14 @@ organization setup and each user's guide completion are persisted separately by 
 Members skip setup, imports reuse their created boards, and completing the tour hides its button
 across sessions and devices. Closing or skipping a tour does not mark it complete.
 
+Each guide chapter navigates to the actual page and spotlights its controls. Create a project
+opens Projects and follows the name dialog; Create your first ticket follows a project card,
+its Backlog tab, Add to backlog and the ticket form. The layout retains the active tour while
+navigating. Visible targets may mount asynchronously, and creation steps wait for successful API
+responses. Existing projects can be reused without consuming another plan slot. GitHub, TUI and
+MCP chapters open their real settings/documentation. Only covering all chapters completes the guide.
+Stable `data-guide` attributes and `lib/org/guide-tour.ts` supply its navigation and action contract.
+
 To publish a guide for newly released features, update its steps in
 `components/onboarding/guide.tsx` and deliberately increment `GUIDE.version` in
 `lib/org/onboarding.ts` together with `GuideVersion` in the backend. Keep the guide ID stable.

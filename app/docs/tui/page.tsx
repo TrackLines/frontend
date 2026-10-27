@@ -55,8 +55,8 @@ chmod 600 ~/.config/tracklines/key`}</Code>
             ))}
           </dl>
           <p className="mt-2">Then make it executable and put it on your path. For example, on Linux x86:</p>
-          <Code>{`curl -fLo ~/.local/bin/tracklines ${TUI_REPO}/releases/latest/download/tracklines-linux-amd64
-chmod +x ~/.local/bin/tracklines`}</Code>
+          <div data-guide="tui-install"><Code>{`curl -fLo ~/.local/bin/tracklines ${TUI_REPO}/releases/latest/download/tracklines-linux-amd64
+chmod +x ~/.local/bin/tracklines`}</Code></div>
         </li>
         <li>Run <code>tracklines</code>.</li>
       </Steps>

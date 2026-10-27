@@ -21,7 +21,7 @@ export function WorkTabs({ projectId, boards, token, roadmaps }: { projectId: st
   return (
     <Tabs value={tab} onValueChange={(v) => setTab(v as WorkTab)} className="mt-10 gap-4">
       <TabsList>
-        <TabsTrigger value="backlog"><Trans>Backlog</Trans></TabsTrigger>
+        <TabsTrigger data-guide="backlog-tab" value="backlog"><Trans>Backlog</Trans></TabsTrigger>
         <TabsTrigger value="epics"><Trans>Epics</Trans></TabsTrigger>
         <TabsTrigger value="roadmaps"><Trans>Roadmaps</Trans></TabsTrigger>
       </TabsList>
