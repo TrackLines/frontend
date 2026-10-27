@@ -19,10 +19,12 @@ const PUBLISHED: Record<LegalDoc, Record<string, string>> = {
   // privacy 2026-10-17: pre-launch correction (owner, 2026-10-17): links to each provider (and ChewedFeed HQ), "Flags.gg", "BugFix.es"
   // privacy 2026-10-25: every cookie and item of device storage; what deleting your account erases (TL-595)
   // privacy 2026-10-26: ticket history and the audit log, who sees them, how long they're kept (TL-672)
+  // privacy 2026-10-27: ticket history records every change, never the text of an edit (TL-682)
   privacy: {
     '2026-10-17': '953aec79535ae87943f85f5ab66e7f63d7f4fb1b6104f7dd1f2c5c46d01e6aad',
     '2026-10-25': '0b333b88d7b224e568da39770307367a172961fa1e3299db06eaacdf704fa9b6',
     '2026-10-26': '3acadb349fd15e7d93142b74348f65acb848d140287b18abb406e73f1dee95f5',
+    '2026-10-27': 'd057fb3569c67ea3cb6321434db486f0dcb303320407208ea316bf8f09de7327',
   },
 };
 const sha = (s: string) => new Bun.CryptoHasher('sha256').update(s).digest('hex');
@@ -77,7 +79,8 @@ test('the backend’s list of versions, and the bell’s notice', async () => {
   const list = await GET().json();
   expect(list).toEqual([{ doc: 'terms', version: '2026-10-17', summary: 'First published version.' }, { doc: 'privacy', version: '2026-10-17', summary: 'First published version.' },
     { doc: 'privacy', version: '2026-10-25', summary: 'Lists every cookie and item of device storage, and says what deleting your account erases.' },
-    { doc: 'privacy', version: '2026-10-26', summary: 'Adds ticket history and the audit log on Pro and Enterprise: what they record, who can see them and how long they’re kept.' }]);
+    { doc: 'privacy', version: '2026-10-26', summary: 'Adds ticket history and the audit log on Pro and Enterprise: what they record, who can see them and how long they’re kept.' },
+    { doc: 'privacy', version: '2026-10-27', summary: 'Ticket history now records every change to a ticket and who made it, never the text of an edit.' }]);
   const notice = { kind: 'legal', actor: '', text: 'We’ve updated our Terms of service (from 2026-11-20): Downtime credit now counts short outages.', ticket_id: null, ticket_key: null, board_id: null, link: '/terms/2026-11-20' };
   expect(notificationLine(i18nFor('en'), notice, [])).toBe(notice.text); // not "Someone We've updated…"
   expect(notificationHref(notice)).toBe('/terms/2026-11-20');
@@ -107,5 +110,9 @@ test('the policy says what the audit log holds, who sees it and how long it’s 
     '**The audit log** for 1 year on the Pro plan, and for as long as your organization exists on the Enterprise plan',
     '**Ticket history** for as long as the ticket exists',
     'such as tickets, comments, ticket history and audit log entries, stays with your organization',
+    // TL-682: every ticket change, never the text, and not to measure people
+    'Each ticket keeps a history of every change to it, who made it and when',
+    'the history records that it changed, never the text',
+    "it isn't used to rank or measure individuals",
   ]) expect(p).toContain(s);
 });
