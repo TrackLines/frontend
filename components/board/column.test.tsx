@@ -51,3 +51,15 @@ test('the board page widens to 100rem on very wide screens (source)', async () =
   const skeleton = await Bun.file(new URL('../layout/page-skeletons.tsx', import.meta.url)).text();
   expect(skeleton).toContain('min-[1700px]:max-w-[100rem]'); // the loading board is as wide as the board
 });
+
+// TL-695: on a phone the board header is name, then one sideways-scrolling row of filters; Copy link and
+// Edit board are in the "⋯" menu (wider screens keep them as buttons)
+test('the board header on phones: filters scroll in one row, rarer actions in a menu (source)', async () => {
+  const page = await Bun.file(new URL('../../app/boards/[id]/page.tsx', import.meta.url)).text();
+  expect(page).toContain('max-md:w-full max-md:overflow-x-auto');
+  expect(page).toContain('className="max-md:hidden" />'); // CopyLink: wider screens
+  expect(page).toContain("className: 'max-md:hidden' })}><Trans>Edit board</Trans>");
+  expect(page).toContain('<BoardMenu boardId={board.id} token={token} canEdit={!!boardCanManage && !archived && !joinedStandup} />');
+  expect(page).toContain('aria-label={t`More board actions`}');
+  expect(page).toContain("copyLink(`/boards/${boardId}`, token, t`A board on TrackLin.es`)"); // the same copy as the button
+});

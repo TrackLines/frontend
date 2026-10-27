@@ -11,6 +11,8 @@ import { Input } from '@/components/ui/input';
 import { ApiError, sprints, type Board, type Sprint } from '@/lib/api';
 import { LENGTH_PRESETS, dateInput, daysUntil, sprintLocked, sprintStatus } from './sprint-status';
 import { Charts } from './velocity';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { EllipsisIcon } from 'lucide-react';
 import { PastSprints } from './past-sprints';
 import { ImportReview } from '../board/import-review';
 import { dates } from '@/lib/i18n';
@@ -49,7 +51,18 @@ export function SprintBar({ board, token, canManage, editMode = false, onChanged
           {canManage && editMode && <Button size="sm" variant="outline" onClick={() => setEditingLength(true)}><Trans>Change length</Trans></Button>}
           {canManage && editMode && <Button size="sm" variant="outline" onClick={() => setEditingGoal(true)}>{sprint.goal ? t`Edit goal` : t`Set goal`}</Button>}
           {/* closing is running the board, not configuring it: hidden while editing */}
-          {canManage && !editMode && sprintStarted && <Button size="sm" variant="outline" onClick={() => setClosing(true)}><Trans>Close sprint</Trans></Button>}
+          {canManage && !editMode && sprintStarted && <Button size="sm" variant="outline" className="max-md:hidden" onClick={() => setClosing(true)}><Trans>Close sprint</Trans></Button>}
+          {/* phones (TL-695): behind a menu, not the first thing under your thumb; it still asks first */}
+          {canManage && !editMode && sprintStarted && (
+            <span className="md:hidden">
+              <DropdownMenu>
+                <DropdownMenuTrigger render={<Button size="sm" variant="ghost" aria-label={t`Sprint actions`} />}><EllipsisIcon aria-hidden /></DropdownMenuTrigger>
+                <DropdownMenuContent align="start">
+                  <DropdownMenuItem onClick={() => setClosing(true)}><Trans>Close sprint…</Trans></DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </span>
+          )}
         </>
       ) : (
         <>

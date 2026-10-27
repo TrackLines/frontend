@@ -1960,6 +1960,10 @@ msgstr "sprint yISoQmoH"
 msgid "Close sprint {0}?"
 msgstr "sprint {0} DaSoQmoH'a'?"
 
+#: components/sprint/sprint-bar.tsx
+msgid "Close sprint…"
+msgstr "sprint rIn…"
+
 #: components/intake/intake-settings.tsx
 msgid "Close the form"
 msgstr "nav yISoQmoH"
@@ -2270,6 +2274,7 @@ msgstr "ngaQHa'moHwI' yIvelqa'moH"
 msgid "Copy labels to the original"
 msgstr "wa'DIchDaq permey tIvelqa'moH"
 
+#: app/boards/[id]/page.tsx
 #: app/roadmaps/page.tsx
 #: components/common/copy-link.tsx
 #: components/intake/intake-settings.tsx
@@ -5200,6 +5205,10 @@ msgstr "Hut'In, Qav jajDajDaq"
 msgid "More"
 msgstr "latlh"
 
+#: app/boards/[id]/page.tsx
+msgid "More board actions"
+msgstr "latlh 'echlet ta'"
+
 #: components/ticket/labels.tsx
 msgid "More labels"
 msgstr "latlh permey"
@@ -7771,6 +7780,10 @@ msgstr "sprint {number}: meQ-bIng"
 #: components/sprint/velocity.tsx
 msgid "Sprint {number}: burn-up"
 msgstr "sprint {number}: meQ-Dung"
+
+#: components/sprint/sprint-bar.tsx
+msgid "Sprint actions"
+msgstr "sprint ta'"
 
 #: components/reports/report-view.tsx
 msgid "Sprint by sprint"

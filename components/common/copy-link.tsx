@@ -47,12 +47,7 @@ export async function shortOr(full: string, make: ((url: string) => Promise<{ ur
 export function CopyLink({ path, token, title = 'TrackLin.es', className }: { path: string; token?: string | null; title?: string; className?: string }) {
   const [copied, setCopied] = useState(false);
   async function copy() {
-    const link = shortOr(window.location.origin + path, token ? (url) => shortLinks.create(url, title, token) : null);
-    try {
-      await navigator.clipboard.write([new ClipboardItem({ 'text/plain': link.then((t) => new Blob([t], { type: 'text/plain' })) })]);
-    } catch {
-      await navigator.clipboard.writeText(await link); // no ClipboardItem: copy it once it's here
-    }
+    await copyLink(path, token, title);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }
@@ -61,4 +56,14 @@ export function CopyLink({ path, token, title = 'TrackLin.es', className }: { pa
       <span aria-live="polite">{copied ? <Trans>Copied</Trans> : <Trans>Copy link</Trans>}</span>
     </Button>
   );
+}
+
+// copyLink is CopyLink's copy, for a menu item that does the same (the board's menu on phones, TL-695).
+export async function copyLink(path: string, token?: string | null, title = 'TrackLin.es') {
+  const link = shortOr(window.location.origin + path, token ? (url) => shortLinks.create(url, title, token) : null);
+  try {
+    await navigator.clipboard.write([new ClipboardItem({ 'text/plain': link.then((t) => new Blob([t], { type: 'text/plain' })) })]);
+  } catch {
+    await navigator.clipboard.writeText(await link); // no ClipboardItem: copy it once it's here
+  }
 }

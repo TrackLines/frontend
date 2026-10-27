@@ -15,7 +15,9 @@ import { FlowCharts } from '@/components/sprint/flow-charts';
 import { StandupPanel } from '@/components/live/standup';
 import { TicketCard } from '@/components/board/ticket-card';
 import { TicketDialog } from '@/components/board/ticket-dialog';
-import { CopyLink } from '@/components/common/copy-link';
+import { CopyLink, copyLink } from '@/components/common/copy-link';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { EllipsisIcon } from 'lucide-react';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { ApiError, boards, hostedPaths, organization, projects, teams, tickets, type Board, type EpicSummary, type Ticket } from '@/lib/api';
 import { FollowedTicket, HostedBar } from '@/components/live/hosted-bar';
@@ -191,6 +193,8 @@ export default function BoardPage() {
       <header className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b px-6 py-4">
         <Link href={`/projects/${board.project_id}`} className="text-sm text-muted-foreground hover:underline">← <Trans>Project</Trans></Link>
         <h1 className="text-2xl font-bold tracking-tight">{board.name}</h1>
+        {/* phones (TL-695): the filters are one row that scrolls sideways, not four that wrap */}
+        <div className="flex items-center gap-x-4 gap-y-2 max-md:order-last max-md:w-full max-md:overflow-x-auto max-md:pb-1 md:flex-wrap" data-board-filters>
         <LabelFilter
           options={labelCounts((board.columns ?? []).flatMap((c) => c.tickets))}
           labels={labelFilter}
@@ -203,9 +207,10 @@ export default function BoardPage() {
           <Button type="button" size="sm" variant={assigneeFilter === 'mine' ? 'secondary' : 'ghost'} aria-pressed={assigneeFilter === 'mine'} onClick={() => setAssigneeFilter((filter) => filter === 'mine' ? 'all' : 'mine')}><Trans>My tickets</Trans></Button>
           <Button type="button" size="sm" variant={assigneeFilter === 'unassigned' ? 'secondary' : 'ghost'} aria-pressed={assigneeFilter === 'unassigned'} onClick={() => setAssigneeFilter((filter) => filter === 'unassigned' ? 'all' : 'unassigned')}><Trans>Unassigned</Trans></Button>
         </div>
+        </div>
         {/* the same actions in and out of edit mode, so the header doesn't jump around */}
         <div className="ml-auto flex flex-wrap items-center gap-2">
-          <CopyLink path={`/boards/${board.id}`} token={token} title={t`A board on TrackLin.es`} />
+          <CopyLink path={`/boards/${board.id}`} token={token} title={t`A board on TrackLin.es`} className="max-md:hidden" />
           {/* standup is for running the board, not configuring it */}
           {!joinedStandup && <Button type="button" variant="outline" size="sm" disabled={startingStandup} onClick={() => standup ? setJoinedStandup(true) : void beginStandup(board)}>
             {startingStandup ? t`Starting…` : standup ? t`Join standup` : t`Standup`}
@@ -217,7 +222,9 @@ export default function BoardPage() {
           )}
           {/* only while you're in the standup */ joinedStandup && <LiveToast state={live} />}
           {/* settings and columns have their own page (TL-470) */}
-          {boardCanManage && !archived && !joinedStandup && <Link href={`/boards/${board.id}/edit`} className={buttonVariants({ variant: 'outline', size: 'sm' })}><Trans>Edit board</Trans></Link>}
+          {boardCanManage && !archived && !joinedStandup && <Link href={`/boards/${board.id}/edit`} className={buttonVariants({ variant: 'outline', size: 'sm', className: 'max-md:hidden' })}><Trans>Edit board</Trans></Link>}
+          {/* phones: the rarer actions in a menu, so the header fits and nothing's pressed by accident (TL-695) */}
+          <BoardMenu boardId={board.id} token={token} canEdit={!!boardCanManage && !archived && !joinedStandup} />
         </div>
         {board.description && <p className="w-full text-muted-foreground">{board.description}</p>}
       </header>
@@ -335,5 +342,22 @@ export default function BoardPage() {
         />
       )}
     </main>
+  );
+}
+
+// BoardMenu: on phones, Copy link and Edit board behind "⋯" (TL-695); wider screens show them as buttons.
+function BoardMenu({ boardId, token, canEdit }: { boardId: string; token: string | null; canEdit: boolean }) {
+  const { t } = useLingui();
+  const router = useRouter();
+  return (
+    <div className="md:hidden">
+      <DropdownMenu>
+        <DropdownMenuTrigger render={<Button type="button" variant="outline" size="sm" aria-label={t`More board actions`} />}><EllipsisIcon aria-hidden /></DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => void copyLink(`/boards/${boardId}`, token, t`A board on TrackLin.es`)}><Trans>Copy link</Trans></DropdownMenuItem>
+          {canEdit && <DropdownMenuItem onClick={() => router.push(`/boards/${boardId}/edit`)}><Trans>Edit board</Trans></DropdownMenuItem>}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   );
 }
