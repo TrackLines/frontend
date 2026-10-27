@@ -1,9 +1,9 @@
-FROM oven/bun:1.4.3 AS deps
+FROM oven/bun:1.4.4 AS deps
 WORKDIR /app
 COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
-FROM oven/bun:1.4.3 AS build
+FROM oven/bun:1.4.4 AS build
 WORKDIR /app
 ARG NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
 ENV NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
@@ -15,7 +15,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN bun run build
 
-FROM oven/bun:1.4.3 AS runner
+FROM oven/bun:1.4.4 AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
