@@ -130,3 +130,17 @@ test('phones: close sprint is behind the sprint menu', () => {
   );
   expect(member).not.toContain('Sprint actions'); // nothing to close: no menu
 });
+
+// TL-279: between sprints the bar says which ended, and Start names the next
+test('between sprints: which sprint ended, and Start sprint N+1 for managers', () => {
+  const html = renderToStaticMarkup(<SprintBar board={{ ...board, last_sprint_number: 4 }} token="t" canManage onChanged={() => {}} />);
+  expect(html).toContain('Sprint 4 ended');
+  expect(html).toContain('Unfinished tickets wait on the board');
+  expect(html).toContain('>Start sprint 5<');
+  expect(html).not.toContain('No sprint running');
+  const member = renderToStaticMarkup(<SprintBar board={{ ...board, last_sprint_number: 4 }} token="t" canManage={false} onChanged={() => {}} />);
+  expect(member).toContain('Sprint 4 ended');
+  expect(member).not.toContain('Start sprint');
+  // a board that never ran one is as before
+  expect(renderToStaticMarkup(<SprintBar board={board} token="t" canManage onChanged={() => {}} />)).toContain('>Start sprint<');
+});

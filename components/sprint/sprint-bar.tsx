@@ -28,6 +28,8 @@ export function SprintBar({ board, token, canManage, editMode = false, onChanged
   const [editingLength, setEditingLength] = useState(false);
   const [editingGoal, setEditingGoal] = useState(false);
   const sprint = board.sprint;
+  const ended = board.last_sprint_number; // the latest closed sprint, when none is running
+  const next = (ended ?? 0) + 1;
   const sprintStarted = sprint ? new Date(sprint.starts_at).getTime() <= Date.now() : false;
 
   return (
@@ -66,10 +68,13 @@ export function SprintBar({ board, token, canManage, editMode = false, onChanged
         </>
       ) : (
         <>
-          <span className="text-muted-foreground"><Trans>No sprint running — tickets aren&apos;t time-boxed.</Trans></span>
+          {/* between sprints (the board waits, TL-279, or one was closed by hand): say which ended */}
+          {ended
+            ? <span data-sprint-ended><span className="font-semibold"><Trans>Sprint {ended} ended</Trans></span>{' '}<span className="text-muted-foreground"><Trans>Unfinished tickets wait on the board until the next sprint starts.</Trans></span></span>
+            : <span className="text-muted-foreground"><Trans>No sprint running — tickets aren&apos;t time-boxed.</Trans></span>}
           {/* an imported board settles its set-aside tickets first (TL-545) */}
           {canManage && !editMode && <Button size="sm" disabled={(board.to_review ?? 0) > 0} title={(board.to_review ?? 0) > 0 ? t`Review the imported tickets first` : undefined}
-            onClick={() => setStarting(true)}><Trans>Start sprint</Trans></Button>}
+            onClick={() => setStarting(true)}>{ended ? t`Start sprint ${next}` : t`Start sprint`}</Button>}
           {!editMode && <ImportReview board={board} token={token} canManage={canManage} onChanged={onChanged} />}
         </>
       )}

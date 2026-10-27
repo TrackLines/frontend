@@ -7744,6 +7744,10 @@ msgstr "Capaciteit sprint {0}"
 msgid "Sprint {0} goal"
 msgstr "Doel sprint {0}"
 
+#: components/sprint/sprint-bar.tsx
+msgid "Sprint {ended} ended"
+msgstr "Sprint {ended} is afgelopen"
+
 #: components/reports/report-view.tsx
 #: components/ticket/planned-badge.tsx
 msgid "Sprint {n}"
@@ -7796,6 +7800,10 @@ msgstr "Sprintgrafieken"
 #: components/sprint/sprint-bar.tsx
 msgid "Sprint end date"
 msgstr "Einddatum sprint"
+
+#: components/work/notification-icon.tsx
+msgid "Sprint ended: start the next"
+msgstr "Sprint afgelopen: start de volgende"
 
 #: components/live/standup.tsx
 msgid "Sprint goal:"
@@ -7884,9 +7892,17 @@ msgstr "Begin met een sjabloon; je kunt kolommen en instellingen later aanpassen
 msgid "Start sprint"
 msgstr "Sprint starten"
 
+#: components/sprint/sprint-bar.tsx
+msgid "Start sprint {next}"
+msgstr "Sprint {next} starten"
+
 #: components/live/standup.tsx
 msgid "Start the clock once everyone has joined"
 msgstr "Start de klok zodra iedereen er is"
+
+#: app/boards/[id]/edit/page.tsx
+msgid "Start the next one"
+msgstr "Volgende starten"
 
 #: app/dashboard/page.tsx
 msgid "Start your first project"
@@ -8317,6 +8333,10 @@ msgstr "De laatste kolom is Klaar en blijft laatst: verplaats de andere kolommen
 #: app/global-not-found.tsx
 msgid "The link may be old, or the address mistyped."
 msgstr "De link is misschien oud, of het adres is verkeerd getypt."
+
+#: app/boards/[id]/edit/page.tsx
+msgid "The next sprint starts straight away, with unfinished tickets carried over."
+msgstr "De volgende sprint start meteen, met onafgemaakte tickets meegenomen."
 
 #: components/sprint/sprint-bar.tsx
 msgid "The next sprint won’t start until you start it, so you can choose its length then. A planned next sprint joins when it starts."
@@ -8911,6 +8931,14 @@ msgstr "Niet-beschikbaar organisatielid"
 msgid "Undated roadmap items"
 msgstr "Roadmapitems zonder datum"
 
+#: components/sprint/sprint-bar.tsx
+msgid "Unfinished tickets wait on the board until the next sprint starts."
+msgstr "Onafgemaakte tickets wachten op het bord tot de volgende sprint start."
+
+#: app/boards/[id]/edit/page.tsx
+msgid "Unfinished tickets wait on the board, and the board's managers are told to start the next sprint."
+msgstr "Onafgemaakte tickets wachten op het bord, en de beheerders van het bord krijgen een seintje om de volgende sprint te starten."
+
 #: app/settings/integrations/[provider]/page.tsx
 msgid "Unknown integration."
 msgstr "Onbekende integratie."
@@ -9109,6 +9137,10 @@ msgstr "Roadmap bekijken"
 msgid "visibility must be public, login_only or team"
 msgstr "Visibility moet public, login_only of team zijn."
 
+#: app/boards/[id]/edit/page.tsx
+msgid "Wait for a manager"
+msgstr "Wachten op een beheerder"
+
 #: components/intake/triage.tsx
 msgid "Waiting"
 msgstr "Wachtend"
@@ -9256,6 +9288,10 @@ msgstr "Wat is er mis / wat is er nodig?"
 #: components/settings/audit-log.tsx
 msgid "When"
 msgstr "Wanneer"
+
+#: app/boards/[id]/edit/page.tsx
+msgid "When a sprint ends"
+msgstr "Als een sprint afloopt"
 
 #: components/ticket/bugfixes-panel.tsx
 msgid "Where"

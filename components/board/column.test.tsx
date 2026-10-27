@@ -63,3 +63,10 @@ test('the board header on phones: filters scroll in one row, rarer actions in a 
   expect(page).toContain('aria-label={t`More board actions`}');
   expect(page).toContain("copyLink(`/boards/${boardId}`, token, t`A board on TrackLin.es`)"); // the same copy as the button
 });
+
+// TL-279: Edit board offers "When a sprint ends" on sprint boards only (kanban has no sprints to end)
+test('Edit board: when a sprint ends, for sprint boards (source)', async () => {
+  const page = await Bun.file(new URL('../../app/boards/[id]/edit/page.tsx', import.meta.url)).text();
+  expect(page).toContain("{draft.style === 'sprints' && (");
+  expect(page).toContain("options={[['start_next', t`Start the next one`], ['wait', t`Wait for a manager`]]}");
+});
