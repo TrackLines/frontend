@@ -196,7 +196,7 @@ export function EmbeddingView({ data, busy, error, onAdd, onRemove, origin }: {
         <h2 className="font-semibold"><Trans>Paste on your site</Trans></h2>
         <p className="text-muted-foreground"><Trans>They work only on the sites allowed above.</Trans></p>
         <Snippet label={t`Roadmap`} hint={t`Replace YOUR_ROADMAP_ID with the roadmap’s id (it’s in the roadmap’s share link, /r/<id>).`} code={roadmapSnippet} />
-        <Snippet label={t`Request form`} hint={t`Replace YOUR_REQUEST_TOKEN with the token in this project’s request form link (Edit project → Request form).`} code={requestSnippet} />
+        <Snippet label={t`Request form`} hint={t`Replace YOUR_REQUEST_TOKEN with the token in this project’s request form link (the Request form tab).`} code={requestSnippet} />
       </section>
     </div>
   );
@@ -275,7 +275,7 @@ export function EmbedsView({ data, usage, busy, error, onCreate, onDelete, onSho
                 )
               )}
               <Snippet label={t`Roadmap`} hint={t`Replace YOUR_ROADMAP_ID with the roadmap’s id (its share link, /r/<id>).`} code={`<script src="${site}/embed.js" data-roadmap="YOUR_ROADMAP_ID" data-key="${k.key}"></script>`} />
-              <Snippet label={t`Request form`} hint={t`Replace YOUR_REQUEST_TOKEN with the token in this project’s request form link (Edit project → Request form).`} code={`<script src="${site}/embed.js" data-request="YOUR_REQUEST_TOKEN" data-key="${k.key}"></script>`} />
+              <Snippet label={t`Request form`} hint={t`Replace YOUR_REQUEST_TOKEN with the token in this project’s request form link (the Request form tab).`} code={`<script src="${site}/embed.js" data-request="YOUR_REQUEST_TOKEN" data-key="${k.key}"></script>`} />
             </li>
           ))}
         </ul>

@@ -88,13 +88,20 @@ test('create and delete are for admins only', () => {
 
 // TL-683: embedding belongs to the project — its own page from Edit project, gone from org settings, and
 // every call is the project's
-test('embedding lives in the project, not the organization (source)', async () => {
+test('embedding lives in the project, in the External panel beside the request form (source, TL-683, TL-685)', async () => {
   const read = (p: string) => Bun.file(new URL(p, import.meta.url)).text();
   const edit = await read('../../app/projects/[id]/edit/page.tsx');
-  expect(edit).toContain("is('embedding').enabled() && <SettingsCard icon={CodeIcon} title={t`Embedding`} href={`/projects/${project.id}/embedding`}");
-  expect(await read('../../app/projects/[id]/embedding/page.tsx')).toContain('<EmbeddingSettings projectId={id} />');
+  expect(edit).toContain('title={t`External`}');
+  expect(edit).toContain("{is('embedding').enabled() && <TabsTrigger value=\"embedding\"><Trans>Embedding</Trans></TabsTrigger>}");
+  expect(edit).toContain('<EmbeddingSettings projectId={project.id} />');
+  expect(edit.indexOf('<IntakeSettingsSection')).toBeLessThan(edit.indexOf('<EmbeddingSettings'));
+  // Google Chat and repositories share the Integrations panel
+  expect(edit).toContain('title={t`Integrations`}');
+  expect(edit.indexOf('title={t`Integrations`}')).toBeLessThan(edit.indexOf('<GoogleChatSettings'));
+  expect(edit.indexOf('<GoogleChatSettings')).toBeLessThan(edit.indexOf('<ProjectRepositories'));
+  for (const gone of ['title={t`Request form`}', 'title="Google Chat"', 'title={t`Repositories`}', '/embedding`}']) expect(edit).not.toContain(gone);
+  expect(await Bun.file(new URL('../../app/projects/[id]/embedding/page.tsx', import.meta.url)).exists()).toBe(false);
   expect(await read('../../app/settings/page.tsx')).not.toContain('/settings/embedding');
-  expect(await Bun.file(new URL('../../app/settings/embedding/page.tsx', import.meta.url)).exists()).toBe(false);
   const api = await read('../../lib/api.ts');
   expect(api).toContain('`/projects/${encodeURIComponent(project)}/embed/${rest}`');
   expect(api).not.toContain("'/embed/origins'");
