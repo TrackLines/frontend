@@ -604,6 +604,18 @@ msgstr "{used} / {cap} Punkte"
 msgid "{used} / {cap} tickets"
 msgstr "{used} / {cap} Tickets"
 
+#: lib/org/audit.ts
+msgid "{user} joined the organization"
+msgstr "{user} ist der Organisation beigetreten"
+
+#: lib/org/audit.ts
+msgid "{user} left the organization"
+msgstr "{user} hat die Organisation verlassen"
+
+#: lib/org/audit.ts
+msgid "{user} no longer leads {name}"
+msgstr "{user} leitet {name} nicht mehr"
+
 #: components/sprint/flow-charts.tsx
 msgid "{value}d"
 msgstr "{value}T"
@@ -994,9 +1006,17 @@ msgstr "„{added}“ zum Backlog von {where} hinzugefügt."
 msgid "Added “{added}” to the backlog."
 msgstr "„{added}“ zum Backlog hinzugefügt."
 
+#: lib/org/audit.ts
+msgid "Added {user} to {name}"
+msgstr "{user} zu {name} hinzugefügt"
+
 #: components/settings/webhooks.tsx
 msgid "added <0/>"
 msgstr "hinzugefügt <0/>"
+
+#: lib/org/audit.ts
+msgid "Added a webhook to {host}"
+msgstr "Webhook an {host} hinzugefügt"
 
 #: components/reports/report-view.tsx
 msgid "added after sprints started"
@@ -1042,9 +1062,17 @@ msgstr "Admin-E-Mail <0>(ein Nutzer in dieser Domain, um den Zugriff zu prüfen)
 msgid "Admin panel"
 msgstr "Admin-Bereich"
 
+#: lib/org/audit.ts
+msgid "Admins"
+msgstr "Admins"
+
 #: components/settings/api-keys.tsx
 msgid "After that the key stops working and you make a new one."
 msgstr "Danach funktioniert der Schlüssel nicht mehr und du erstellst einen neuen."
+
+#: lib/org/audit.ts
+msgid "agent key"
+msgstr "Agentenschlüssel"
 
 #: app/boards/[id]/edit/page.tsx
 msgid "Agent work needs review"
@@ -1146,6 +1174,10 @@ msgstr "Ein Epic kann nicht in einem anderen Epic liegen."
 msgid "An hour or less"
 msgstr "Eine Stunde oder kürzer"
 
+#: lib/org/audit.ts
+msgid "An import from {source} failed"
+msgstr "Ein Import aus {source} ist fehlgeschlagen"
+
 #: lib/api/error-codes.ts
 msgid "an item's start date must be on or before its target date"
 msgstr "Das Startdatum eines Eintrags muss am oder vor seinem Zieldatum liegen."
@@ -1214,6 +1246,10 @@ msgstr "Beliebiges Fälligkeitsdatum"
 msgid "Any MCP client that supports remote servers over Streamable HTTP:"
 msgstr "Jeder MCP-Client, der Remote-Server über Streamable HTTP unterstützt:"
 
+#: components/settings/audit-log.tsx
+msgid "Anyone"
+msgstr "Alle"
+
 #: components/intake/intake-settings.tsx
 msgid "Anyone with the link can send a bug report or feature request, without an account. Requests wait in the project's request inbox until someone adds them to the backlog or dismisses them. The form shows nothing about the project."
 msgstr "Jeder mit dem Link kann ohne Konto einen Bugreport oder Feature-Wunsch senden. Anfragen warten im Anfrage-Posteingang des Projekts, bis jemand sie zum Backlog hinzufügt oder verwirft. Das Formular zeigt nichts über das Projekt."
@@ -1234,6 +1270,7 @@ msgstr "API-Schlüssel abgelaufen: Erstelle unter Einstellungen → API-Schlüss
 #: app/settings/page.tsx
 #: components/settings/api-keys.tsx
 #: components/staff/stats.tsx
+#: lib/org/audit.ts
 msgid "API keys"
 msgstr "API-Schlüssel"
 
@@ -1294,6 +1331,10 @@ msgstr "Archivierte Boards"
 #: app/projects/[id]/edit/page.tsx
 msgid "Archived boards →"
 msgstr "Archivierte Boards →"
+
+#: lib/org/audit.ts
+msgid "Archived the board {name}"
+msgstr "Board {name} archiviert"
 
 #: components/billing/plan-card.tsx
 #: components/billing/upgrade-dialog.tsx
@@ -1374,6 +1415,11 @@ msgstr "Anhänge <0>(optional)</0>"
 #: components/settings/webhooks.tsx
 msgid "attempt {0}"
 msgstr "Versuch {0}"
+
+#: app/settings/audit/page.tsx
+#: components/settings/audit-log.tsx
+msgid "Audit log"
+msgstr "Audit-Log"
 
 #: components/settings/google-chat.tsx
 msgid "Avatar URL"
@@ -1521,6 +1567,7 @@ msgstr "Board-Ansicht"
 #: app/projects/[id]/page.tsx
 #: components/reports/rollup-view.tsx
 #: components/staff/stats.tsx
+#: lib/org/audit.ts
 msgid "Boards"
 msgstr "Boards"
 
@@ -1598,6 +1645,14 @@ msgstr "Integriert"
 msgid "built-in templates can't be deleted"
 msgstr "Integrierte Vorlagen können nicht gelöscht werden."
 
+#: lib/org/audit.ts
+msgid "Bulk edits"
+msgstr "Massenbearbeitungen"
+
+#: lib/org/audit.ts
+msgid "Bulk-edited {changed} of {count} tickets"
+msgstr "{changed} von {count} Tickets gesammelt bearbeitet"
+
 #: components/sprint/velocity.tsx
 msgid "Burn-down"
 msgstr "Burn-down"
@@ -1638,6 +1693,10 @@ msgstr "Umbenennen abbrechen"
 msgid "Cancel reply"
 msgstr "Antwort abbrechen"
 
+#: lib/org/audit.ts
+msgid "Cancelled an import from {source}"
+msgstr "Import aus {source} abgebrochen"
+
 #: components/settings/csv-import.tsx
 msgid "Cancelled: nothing was imported."
 msgstr "Abgebrochen: Es wurde nichts importiert."
@@ -1672,6 +1731,14 @@ msgstr "hat {field} geändert"
 msgid "changed the estimate from {a} to {b}"
 msgstr "hat die Schätzung von {a} auf {b} geändert"
 
+#: lib/org/audit.ts
+msgid "Changed the Google Calendar domain from {from} to {to}"
+msgstr "Google-Calendar-Domain von {from} auf {to} geändert"
+
+#: lib/org/audit.ts
+msgid "Changed the plan to {plan}"
+msgstr "Tarif auf {plan} geändert"
+
 #: components/ticket/history-panel.tsx
 msgid "changed the priority from {a} to {b}"
 msgstr "hat die Priorität von {a} auf {b} geändert"
@@ -1683,6 +1750,10 @@ msgstr "hat die Timebox geändert"
 #: components/ticket/history-panel.tsx
 msgid "changed the type from {a} to {b}"
 msgstr "hat den Typ von {a} auf {b} geändert"
+
+#: lib/org/audit.ts
+msgid "Changed the webhook to {host}"
+msgstr "Webhook an {host} geändert"
 
 #: lib/live/live-status.ts
 msgid "Changes others make appear here as they happen."
@@ -1929,6 +2000,10 @@ msgstr "hat es als „Wird nicht gemacht“ geschlossen"
 msgid "closed pull request {pr}"
 msgstr "hat Pull Request {pr} geschlossen"
 
+#: lib/org/audit.ts
+msgid "Closed sprint {n} on {board}"
+msgstr "Sprint {n} auf {board} abgeschlossen"
+
 #: components/sprint/sprint-bar.tsx
 msgid "Closing it now:"
 msgstr "Jetzt schließen:"
@@ -2061,6 +2136,10 @@ msgstr "Verbinde deine Organisation mit den Tools, die sie nutzt. Verknüpfe Rep
 #: components/settings/integrations.tsx
 msgid "Connected"
 msgstr "Verbunden"
+
+#: lib/org/audit.ts
+msgid "Connected {provider}"
+msgstr "{provider} verbunden"
 
 #. placeholder {0}: status.account
 #: components/settings/integrations.tsx
@@ -2481,6 +2560,10 @@ msgstr "Vorlagen konnten nicht geladen werden; das Board verwendet das Layout �
 msgid "Couldn’t load that board. Please try again."
 msgstr "Dieses Board konnte nicht geladen werden. Bitte versuch es noch einmal."
 
+#: components/settings/audit-log.tsx
+msgid "Couldn’t load the audit log. Please try again."
+msgstr "Das Audit-Log konnte nicht geladen werden. Bitte versuche es erneut."
+
 #: components/project/refinement.tsx
 msgid "Couldn’t load the backlog and planned sprints. Please try again."
 msgstr "Backlog und geplante Sprints konnten nicht geladen werden. Bitte versuch es noch einmal."
@@ -2894,6 +2977,22 @@ msgstr "Von mir erstellt"
 msgid "created it in {where}"
 msgstr "hat es in {where} erstellt"
 
+#: lib/org/audit.ts
+msgid "Created the {kind} “{name}”"
+msgstr "{kind} „{name}“ erstellt"
+
+#: lib/org/audit.ts
+msgid "Created the board {name}"
+msgstr "Board {name} erstellt"
+
+#: lib/org/audit.ts
+msgid "Created the project {name}"
+msgstr "Projekt {name} erstellt"
+
+#: lib/org/audit.ts
+msgid "Created the team {name}"
+msgstr "Team {name} erstellt"
+
 #: app/settings/organization/page.tsx
 #: components/settings/api-keys.tsx
 msgid "Creating…"
@@ -3074,6 +3173,10 @@ msgstr "{0} gelöscht"
 msgid "deleted a comment"
 msgstr "hat einen Kommentar gelöscht"
 
+#: lib/org/audit.ts
+msgid "Deleted a ticket"
+msgstr "Ein Ticket gelöscht"
+
 #: components/ticket/history-panel.tsx
 msgid "deleted it"
 msgstr "hat es gelöscht"
@@ -3086,6 +3189,26 @@ msgstr "Gelöscht am {0}"
 #: components/ticket/attachments.tsx
 msgid "Deleted on {due} unless kept"
 msgstr "Wird am {due} gelöscht, sofern nicht behalten"
+
+#: lib/org/audit.ts
+msgid "Deleted the board {name}"
+msgstr "Board {name} gelöscht"
+
+#: lib/org/audit.ts
+msgid "Deleted the organization"
+msgstr "Die Organisation gelöscht"
+
+#: lib/org/audit.ts
+msgid "Deleted the project {name}"
+msgstr "Projekt {name} gelöscht"
+
+#: lib/org/audit.ts
+msgid "Deleted the team {name}"
+msgstr "Team {name} gelöscht"
+
+#: lib/org/audit.ts
+msgid "Deleted tickets"
+msgstr "Gelöschte Tickets"
 
 #: app/roadmaps/[id]/edit/page.tsx
 #: app/roadmaps/page.tsx
@@ -3173,6 +3296,10 @@ msgstr "Google Calendar trennen? Alle Abwesenheiten werden aus TrackLin.es gelö
 #: components/settings/integrations.tsx
 msgid "Disconnect the GitHub account {account}? Pull requests from its repositories stop linking to tickets until it's connected again."
 msgstr "GitHub-Konto {account} trennen? Pull Requests aus seinen Repositories werden nicht mehr mit Tickets verknüpft, bis es wieder verbunden ist."
+
+#: lib/org/audit.ts
+msgid "Disconnected {provider}"
+msgstr "{provider} getrennt"
 
 #: components/settings/google-calendar.tsx
 msgid "Disconnected."
@@ -3672,6 +3799,10 @@ msgstr "Schätzungen"
 msgid "every board estimates"
 msgstr "jedes Board schätzt"
 
+#: components/settings/audit-log.tsx
+msgid "Every change"
+msgstr "Jede Änderung"
+
 #: lib/api/error-codes.ts
 msgid "every column needs a name"
 msgstr "Jede Spalte braucht einen Namen."
@@ -3679,6 +3810,10 @@ msgstr "Jede Spalte braucht einen Namen."
 #: lib/board/board-edit.ts
 msgid "Every column needs a name."
 msgstr "Jede Spalte braucht einen Namen."
+
+#: components/settings/audit-log.tsx
+msgid "Every project"
+msgstr "Jedes Projekt"
 
 #: components/settings/google-chat.tsx
 msgid "Every project’s events go to this space."
@@ -3749,8 +3884,21 @@ msgid "Export"
 msgstr "Exportieren"
 
 #: components/project/export-csv.tsx
+#: components/settings/audit-log.tsx
 msgid "Export CSV"
 msgstr "CSV exportieren"
+
+#: lib/org/audit.ts
+msgid "Exported a project’s tickets as CSV"
+msgstr "Die Tickets eines Projekts als CSV exportiert"
+
+#: lib/org/audit.ts
+msgid "Exported the audit log"
+msgstr "Das Audit-Log exportiert"
+
+#: lib/org/audit.ts
+msgid "Exports"
+msgstr "Exporte"
 
 #: app/projects/[id]/edit/page.tsx
 msgid "External"
@@ -3857,6 +4005,10 @@ msgstr "Nach Tickettyp filtern"
 msgid "Filter by type"
 msgstr "Nach Typ filtern"
 
+#: components/settings/audit-log.tsx
+msgid "Filters"
+msgstr "Filter"
+
 #: components/ticket/duplicates.tsx
 msgid "Find the original ticket"
 msgstr "Ursprüngliches Ticket finden"
@@ -3946,6 +4098,7 @@ msgid "Free to use: preview again to apply it."
 msgstr "Frei: Sieh dir die Vorschau erneut an, um es zu übernehmen."
 
 #: app/reports/page.tsx
+#: components/settings/audit-log.tsx
 msgid "From"
 msgstr "Von"
 
@@ -4173,6 +4326,10 @@ msgstr "Importieren"
 msgid "Imported"
 msgstr "Importiert"
 
+#: lib/org/audit.ts
+msgid "Imported {created} tickets from {source}"
+msgstr "{created} Tickets aus {source} importiert"
+
 #: components/board/import-review.tsx
 msgid "Imported tickets to review"
 msgstr "Zu prüfende importierte Tickets"
@@ -4180,6 +4337,10 @@ msgstr "Zu prüfende importierte Tickets"
 #: components/settings/import-page.tsx
 msgid "Importing isn’t turned on for your organization yet."
 msgstr "Importieren ist für deine Organisation noch nicht aktiviert."
+
+#: lib/org/audit.ts
+msgid "Imports"
+msgstr "Importe"
 
 #: components/settings/google-calendar.tsx
 msgid "In Google, as a Workspace admin, open <0>Security → Access and data control → API controls → Manage Domain Wide Delegation</0> (you need to be a super admin), choose <1>Add new</1> and paste:"
@@ -4206,6 +4367,7 @@ msgstr "erster Admin: {who}"
 #: app/projects/[id]/edit/page.tsx
 #: app/settings/integrations/page.tsx
 #: app/settings/page.tsx
+#: lib/org/audit.ts
 msgid "Integrations"
 msgstr "Integrationen"
 
@@ -4297,6 +4459,18 @@ msgstr "Leute einladen"
 #: components/settings/organization-card.tsx
 msgid "Invite people, and manage members, teams, project access and leadership."
 msgstr "Lade Leute ein und verwalte Mitglieder, Teams, Projektzugriff und Teamleitung."
+
+#: lib/org/audit.ts
+msgid "Invited someone to a project"
+msgstr "Jemanden zu einem Projekt eingeladen"
+
+#: lib/org/audit.ts
+msgid "Invited someone to a team"
+msgstr "Jemanden zu einem Team eingeladen"
+
+#: lib/org/audit.ts
+msgid "Invited someone to the organization"
+msgstr "Jemanden in die Organisation eingeladen"
 
 #: components/settings/csv-import.tsx
 msgid "It can’t be scrapped any more: someone has worked on what it made (moved, edited, commented on or reviewed a ticket, or added one)."
@@ -4408,6 +4582,14 @@ msgstr "Ticket behalten"
 #: components/ticket/history-panel.tsx
 msgid "kept {f} for another year"
 msgstr "hat {f} ein weiteres Jahr behalten"
+
+#: components/settings/audit-log.tsx
+msgid "Kept for a year on Pro."
+msgstr "Ein Jahr lang aufbewahrt bei Pro."
+
+#: components/settings/audit-log.tsx
+msgid "Kept while your organization exists on Enterprise."
+msgstr "Aufbewahrt, solange deine Organisation besteht, bei Enterprise."
 
 #: components/settings/csv-import.tsx
 msgid "Key prefix"
@@ -4651,6 +4833,7 @@ msgstr "Live-Updates unterbrochen; Änderungen anderer erscheinen, sobald sie wi
 msgid "Live updates unavailable"
 msgstr "Live-Updates nicht verfügbar"
 
+#: components/settings/audit-log.tsx
 #: components/work/my-work.tsx
 msgid "Load more"
 msgstr "Mehr laden"
@@ -4665,6 +4848,11 @@ msgstr "API-Schlüssel werden geladen…"
 #: app/projects/[id]/archived/page.tsx
 msgid "Loading archived boards…"
 msgstr "Archivierte Boards werden geladen…"
+
+#: app/settings/audit/loading.tsx
+#: app/settings/audit/page.tsx
+msgid "Loading audit log…"
+msgstr "Audit-Log wird geladen…"
 
 #: components/layout/page-skeletons.tsx
 msgid "Loading board…"
@@ -4790,6 +4978,7 @@ msgstr "Deine Arbeit wird geladen…"
 #: components/project/move-to-board.tsx
 #: components/project/refinement.tsx
 #: components/project/repositories.tsx
+#: components/settings/audit-log.tsx
 #: components/settings/embedding.tsx
 #: components/settings/jira-import.tsx
 #: components/settings/linear-import.tsx
@@ -4825,9 +5014,21 @@ msgstr "Kleinbuchstaben, Ziffern und Bindestriche."
 msgid "Made {0} tickets on {1} boards."
 msgstr "{0} Tickets auf {1} Boards angelegt."
 
+#: lib/org/audit.ts
+msgid "Made {user} a leader of {name}"
+msgstr "{user} zur Leitung von {name} gemacht"
+
+#: lib/org/audit.ts
+msgid "Made {user} an admin"
+msgstr "{user} zum Admin gemacht"
+
 #: components/ticket/history-panel.tsx
 msgid "made a change"
 msgstr "hat etwas geändert"
+
+#: lib/org/audit.ts
+msgid "Made a change ({action})"
+msgstr "Etwas geändert ({action})"
 
 #: components/ticket/history-panel.tsx
 msgid "made it part of {to}"
@@ -4951,6 +5152,10 @@ msgstr "Mitglied aus dem Team entfernt."
 #: components/staff/stats.tsx
 msgid "Members"
 msgstr "Mitglieder"
+
+#: lib/org/audit.ts
+msgid "Members and invitations"
+msgstr "Mitglieder und Einladungen"
 
 #: components/work/notification-icon.tsx
 msgid "Mentioned you"
@@ -5685,6 +5890,10 @@ msgstr "Nichts verworfen."
 msgid "Nothing happened to these for over 6 months before the import. Keep each one in the backlog, or close it as won’t do. The first sprint can start once they’re all settled."
 msgstr "Mit diesen ist vor dem Import über 6 Monate nichts passiert. Behalte jedes im Backlog oder schließe es als „wird nicht gemacht“. Der erste Sprint kann starten, sobald alle erledigt sind."
 
+#: components/settings/audit-log.tsx
+msgid "Nothing in the log for these filters."
+msgstr "Nichts im Log für diese Filter."
+
 #: components/settings/file-cleanup.tsx
 msgid "Nothing is due to be deleted."
 msgstr "Nichts steht zur Löschung an."
@@ -5893,6 +6102,10 @@ msgstr "Verknüpfe es nur, wenn das dein eigenes Google-Konto ist und du die Tra
 msgid "only org admins can see the file clean-up"
 msgstr "Nur Organisations-Admins können die Dateibereinigung sehen."
 
+#: lib/api/error-codes.ts
+msgid "only org admins, signed in, can see the audit log"
+msgstr "nur angemeldete Organisations-Admins können das Audit-Log sehen"
+
 #: components/project/refinement.tsx
 msgid "Only organization admins and that board’s team leaders can do that."
 msgstr "Das können nur Organisations-Admins und die Teamleitung dieses Boards."
@@ -5974,6 +6187,10 @@ msgstr "Nur Admins der Organisation können Webhooks verwalten."
 msgid "Only organization admins can save templates."
 msgstr "Nur Organisations-Admins können Vorlagen speichern."
 
+#: app/settings/audit/page.tsx
+msgid "Only organization admins can see the audit log."
+msgstr "Nur Organisations-Admins können das Audit-Log sehen."
+
 #: app/settings/file-cleanup/page.tsx
 msgid "Only organization admins can see the file clean-up."
 msgstr "Nur Organisations-Admins können die Dateibereinigung sehen."
@@ -6023,6 +6240,7 @@ msgid "only TrackLin.es links can be shortened"
 msgstr "Nur TrackLin.es-Links können gekürzt werden."
 
 #: components/project/backlog.tsx
+#: components/settings/audit-log.tsx
 #: components/ticket/pull-requests-panel.tsx
 msgid "Open"
 msgstr "Öffnen"
@@ -6104,6 +6322,10 @@ msgstr "Organisations-Admins"
 #: components/settings/integrations.tsx
 msgid "Organization admins connect integrations. You can see what's connected."
 msgstr "Organisations-Admins verbinden Integrationen. Du kannst sehen, was verbunden ist."
+
+#: lib/org/audit.ts
+msgid "Organization and plan"
+msgstr "Organisation und Tarif"
 
 #: lib/api/error-codes.ts
 msgid "organization has no members to make admin"
@@ -6241,6 +6463,10 @@ msgstr "Persönlich"
 #: components/settings/api-keys.tsx
 msgid "Personal (acts as you)"
 msgstr "Persönlich (handelt in deinem Namen)"
+
+#: lib/org/audit.ts
+msgid "personal key"
+msgstr "persönlicher Schlüssel"
 
 #: components/settings/api-keys.tsx
 msgid "Personal key"
@@ -6493,6 +6719,7 @@ msgstr "Projekt"
 #: app/roadmaps/page.tsx
 #: app/settings/organization/page.tsx
 #: components/reports/rollup-view.tsx
+#: components/settings/audit-log.tsx
 #: components/staff/help-editor.tsx
 #: components/ticket/quick-add-ticket.tsx
 msgid "Project"
@@ -6516,6 +6743,7 @@ msgstr "Projekt nicht gefunden"
 #: app/settings/page.tsx
 #: components/reports/rollup-view.tsx
 #: components/staff/stats.tsx
+#: lib/org/audit.ts
 msgid "Projects"
 msgstr "Projekte"
 
@@ -6578,6 +6806,10 @@ msgstr "Schreibgeschützt"
 #: components/settings/api-keys.tsx
 msgid "Read only<0>It can see tickets but not change anything. Best for displays and anything run by someone else.</0>"
 msgstr "Schreibgeschützt<0>Kann Tickets sehen, aber nichts ändern. Am besten für Displays und alles, was jemand anderes betreibt.</0>"
+
+#: lib/org/audit.ts
+msgid "read-only"
+msgstr "schreibgeschützt"
 
 #: components/sprint/past-sprints.tsx
 msgid "Read-only: what each sprint finished and how it burned down."
@@ -6689,6 +6921,18 @@ msgstr "Entfernt"
 msgid "removed {f}"
 msgstr "hat {f} entfernt"
 
+#: lib/org/audit.ts
+msgid "Removed {user} as an admin"
+msgstr "{user} ist kein Admin mehr"
+
+#: lib/org/audit.ts
+msgid "Removed {user} from {name}"
+msgstr "{user} aus {name} entfernt"
+
+#: lib/org/audit.ts
+msgid "Removed a deleted ticket for good"
+msgstr "Ein gelöschtes Ticket endgültig entfernt"
+
 #: components/ticket/history-panel.tsx
 msgid "removed the blocker {removed}"
 msgstr "hat die Blockade {removed} entfernt"
@@ -6705,6 +6949,10 @@ msgstr "hat die Schätzung entfernt"
 msgid "removed the labels {removed}"
 msgstr "hat die Labels {removed} entfernt"
 
+#: lib/org/audit.ts
+msgid "Removed the webhook to {host}"
+msgstr "Webhook an {host} entfernt"
+
 #: components/settings/google-chat.tsx
 msgid "Removed."
 msgstr "Entfernt."
@@ -6716,6 +6964,14 @@ msgstr "Entfernt sie und ihre Einträge; der geteilte Link funktioniert nicht me
 #: components/common/editable-title.tsx
 msgid "Rename {label}"
 msgstr "{label} umbenennen"
+
+#: lib/org/audit.ts
+msgid "Renamed the board {from} to {to}"
+msgstr "Board {from} in {to} umbenannt"
+
+#: lib/org/audit.ts
+msgid "Renamed the project {from} to {to}"
+msgstr "Projekt {from} in {to} umbenannt"
 
 #: components/ticket/history-panel.tsx
 msgid "reopened it"
@@ -6814,9 +7070,17 @@ msgstr "Wiederherstellen"
 msgid "Restore board"
 msgstr "Board wiederherstellen"
 
+#: lib/org/audit.ts
+msgid "Restored a ticket"
+msgstr "Ein Ticket wiederhergestellt"
+
 #: components/ticket/history-panel.tsx
 msgid "restored it"
 msgstr "hat es wiederhergestellt"
+
+#: lib/org/audit.ts
+msgid "Restored the board {name}"
+msgstr "Board {name} wiederhergestellt"
 
 #: components/board/board-lifecycle.tsx
 #: components/project/archived-boards.tsx
@@ -6847,6 +7111,10 @@ msgstr "Widerrufen"
 #: components/settings/api-keys.tsx
 msgid "Revoke \"{name}\"? Anything using it stops working immediately."
 msgstr "„{name}“ widerrufen? Alles, was ihn nutzt, funktioniert sofort nicht mehr."
+
+#: lib/org/audit.ts
+msgid "Revoked the {kind} “{name}”"
+msgstr "{kind} „{name}“ widerrufen"
 
 #: components/staff/stats.tsx
 msgid "Right now"
@@ -7090,6 +7358,10 @@ msgstr "Wird gesucht…"
 msgid "secret ends …{0}"
 msgstr "Secret endet auf …{0}"
 
+#: components/settings/audit-log.tsx
+msgid "See who did what across your organization. Comes with the Pro and Enterprise plans."
+msgstr "Sieh, wer in deiner Organisation was getan hat. Im Pro- und Enterprise-Tarif enthalten."
+
 #: components/settings/organization-card.tsx
 msgid "See who’s in your organization, its teams and who leads them."
 msgstr "Sieh, wer in deiner Organisation ist, welche Teams es gibt und wer sie leitet."
@@ -7186,6 +7458,10 @@ msgstr "Server / API"
 msgid "Server / API integration"
 msgstr "Server-/API-Integration"
 
+#: lib/org/audit.ts
+msgid "service key"
+msgstr "Dienstschlüssel"
+
 #: components/settings/api-keys.tsx
 msgid "Service key"
 msgstr "Service-Schlüssel"
@@ -7238,6 +7514,7 @@ msgstr "{0} einrichten"
 #: app/boards/[id]/edit/page.tsx
 #: app/dashboard/page.tsx
 #: app/settings/api-keys/page.tsx
+#: app/settings/audit/page.tsx
 #: app/settings/file-cleanup/page.tsx
 #: app/settings/integrations/page.tsx
 #: app/settings/organization/page.tsx
@@ -7536,6 +7813,7 @@ msgstr "Sprint über Kapazität gestartet"
 #: app/boards/[id]/edit/page.tsx
 #: components/board/template-picker.tsx
 #: components/reports/rollup-view.tsx
+#: lib/org/audit.ts
 msgid "Sprints"
 msgstr "Sprints"
 
@@ -7599,6 +7877,10 @@ msgstr "Starte dein erstes Projekt"
 #: components/staff/downtime.tsx
 msgid "Started (UTC)"
 msgstr "Begann (UTC)"
+
+#: lib/org/audit.ts
+msgid "Started sprint {n} on {board}"
+msgstr "Sprint {n} auf {board} gestartet"
 
 #: app/boards/[id]/page.tsx
 #: components/sprint/sprint-bar.tsx
@@ -7802,6 +8084,7 @@ msgid "Team updated."
 msgstr "Team aktualisiert."
 
 #: app/settings/organization/page.tsx
+#: lib/org/audit.ts
 msgid "Teams"
 msgstr "Teams"
 
@@ -7919,6 +8202,22 @@ msgstr "Der API-Schlüssel wird bis {until} verschlüsselt aufbewahrt und dann g
 #: components/settings/jira-import.tsx
 msgid "The API token is kept, encrypted, until {until}, then deleted. Extend it if you need longer."
 msgstr "Das API-Token wird bis {until} verschlüsselt aufbewahrt und dann gelöscht. Verlängere es, wenn du länger brauchst."
+
+#: lib/api/error-codes.ts
+msgid "the audit log can’t be loaded right now: try again shortly"
+msgstr "das Audit-Log kann gerade nicht geladen werden: versuche es gleich noch einmal"
+
+#: app/settings/audit/page.tsx
+msgid "The audit log comes with the Pro and Enterprise plans. <0>Change your plan</0> to use it."
+msgstr "Das Audit-Log ist im Pro- und Enterprise-Tarif enthalten. <0>Ändere deinen Tarif</0>, um es zu nutzen."
+
+#: app/settings/audit/page.tsx
+msgid "The audit log isn’t turned on for your organization yet."
+msgstr "Das Audit-Log ist für deine Organisation noch nicht eingeschaltet."
+
+#: lib/api/error-codes.ts
+msgid "the audit log needs the Pro or Enterprise plan"
+msgstr "das Audit-Log braucht den Pro- oder Enterprise-Tarif"
 
 #: components/ticket/history-panel.tsx
 msgid "the backlog"
@@ -8475,6 +8774,7 @@ msgid "title is required"
 msgstr "Titel ist erforderlich."
 
 #: app/reports/page.tsx
+#: components/settings/audit-log.tsx
 msgid "To"
 msgstr "Bis"
 
@@ -8694,6 +8994,10 @@ msgstr "Updates"
 msgid "Updates and discussion stay separate from the ticket details."
 msgstr "Updates und Diskussion bleiben getrennt von den Ticketdetails."
 
+#: components/settings/audit-log.tsx
+msgid "Upgrade"
+msgstr "Upgraden"
+
 #: components/billing/plan-card.tsx
 msgid "Upgrade to Enterprise"
 msgstr "Upgrade auf Enterprise"
@@ -8821,6 +9125,7 @@ msgstr "Webhook-URL"
 
 #: app/settings/page.tsx
 #: app/settings/webhooks/page.tsx
+#: lib/org/audit.ts
 msgid "Webhooks"
 msgstr "Webhooks"
 
@@ -8844,6 +9149,10 @@ msgstr "Wöchentlicher Durchsatz"
 #: lib/api/error-codes.ts
 msgid "weeks must be between 1 and 52"
 msgstr "weeks muss zwischen 1 und 52 liegen."
+
+#: components/settings/audit-log.tsx
+msgid "What"
+msgstr "Was"
 
 #: components/reports/report-view.tsx
 msgid "What each sprint planned at its start, and what it finished, in points."
@@ -8926,6 +9235,10 @@ msgstr "Worum geht es in dieser Roadmap? (optional)"
 msgid "What's wrong / what's needed?"
 msgstr "Was ist falsch / was wird gebraucht?"
 
+#: components/settings/audit-log.tsx
+msgid "When"
+msgstr "Wann"
+
 #: components/ticket/bugfixes-panel.tsx
 msgid "Where"
 msgstr "Wo"
@@ -8942,9 +9255,21 @@ msgstr "Welcher Agent?"
 msgid "Which column is which"
 msgstr "Welche Spalte ist was"
 
+#: components/settings/audit-log.tsx
+msgid "Who"
+msgstr "Wer"
+
 #: components/roadmap/visibility.tsx
 msgid "Who can see this roadmap?"
 msgstr "Wer kann diese Roadmap sehen?"
+
+#: components/settings/audit-log.tsx
+msgid "Who did what across your organization: members, keys, projects, integrations and more."
+msgstr "Wer in deiner Organisation was getan hat: Mitglieder, Schlüssel, Projekte, Integrationen und mehr."
+
+#: app/settings/audit/page.tsx
+msgid "Who did what across your organization. Changes to tickets themselves are in each ticket’s history."
+msgstr "Wer in deiner Organisation was getan hat. Änderungen an Tickets selbst stehen im Verlauf des jeweiligen Tickets."
 
 #: components/live/hosted-bar.tsx
 msgid "Who's in the refinement"
@@ -8965,6 +9290,10 @@ msgstr "WIP-Limits reichen von 1 bis 999 oder keins."
 #: lib/api/error-codes.ts
 msgid "wip_limit must be between 1 and 999, or 0 to remove it"
 msgstr "wip_limit muss zwischen 1 und 999 liegen, oder 0, um es zu entfernen."
+
+#: lib/org/audit.ts
+msgid "Withdrew an invitation"
+msgstr "Eine Einladung zurückgezogen"
 
 #: components/ticket/timebox-countdown.tsx
 msgid "within timebox · {left} spare"

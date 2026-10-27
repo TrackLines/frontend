@@ -98,8 +98,8 @@ claude mcp add -s user --transport http tracklines \\
           <h2 className="text-3xl font-bold tracking-tight">Simple pricing</h2>
           <div className="mt-8 grid gap-6 md:grid-cols-3">
             <Plan name="Free" price={prices.free || 'Free'} blurb="One project and up to 20 members, with unlimited boards, tickets and roadmaps." cta="Start free" href="/sign-up" />
-            <Plan name="Pro" price={prices.pro} blurb="Five projects and up to 20 members, for teams running a few things at once." cta="Start free, upgrade any time" href="/sign-up" />
-            <Plan name="Enterprise" price={prices.enterprise} blurb="Unlimited projects and members, for the whole company." cta="Start free, upgrade any time" href="/sign-up" />
+            <Plan name="Pro" price={prices.pro} blurb="Five projects and up to 20 members, for teams running a few things at once. Includes an audit log of the last year." cta="Start free, upgrade any time" href="/sign-up" />
+            <Plan name="Enterprise" price={prices.enterprise} blurb="Unlimited projects and members, for the whole company, with an audit log kept for as long as you’re with us." cta="Start free, upgrade any time" href="/sign-up" />
           </div>
         </div>
       </section>
