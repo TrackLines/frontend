@@ -475,6 +475,11 @@ export type HistoryEntry = {
   resolution?: 'done' | 'wont_do' | 'duplicate'; actor?: string; // actor: user id or agent name; none = the system
 };
 
+// ActivityEntry: one thing that happened to a ticket (TL-679): a stage, an edit, an assignment, a comment, a
+// file… action names it and data holds the details (the backend's OpenAPI lists them). Text changes say
+// only that they happened. actor: a user id, or an agent's or service key's name; null for the system.
+export type ActivityEntry = { id: string; at: string; actor: string | null; actor_kind: 'person' | 'agent' | 'service' | 'system'; action: string; data: Record<string, unknown> };
+
 export const tickets = {
   get: (id: string, token: T) => api<TicketDetail>(`/tickets/${id}`, { token }),
   getByKey: (key: string, token: T) => api<TicketDetail>(`/ticket-keys/${encodeURIComponent(key)}`, { token }),
@@ -482,6 +487,7 @@ export const tickets = {
   bugfixes: (id: string, token: T) => api<TicketBugfixes>(`/tickets/${id}/bugfixes`, { token }),
   prs: (id: string, token: T) => api<TicketPR[]>(`/tickets/${id}/prs`, { token }), // pull requests that mention it (TL-283)
   history: (id: string, token: T) => api<HistoryEntry[]>(`/tickets/${id}/history`, { token }), // lifecycle, oldest first (TL-76)
+  activity: (id: string, token: T) => api<ActivityEntry[]>(`/tickets/${id}/activity`, { token }), // everything that happened, oldest first (TL-679)
   epics: (projectId: string, token: T) => api<EpicSummary[]>(`/projects/${projectId}/epics`, { token }), // with progress and size (TL-213)
   group: (id: string, token: T) => api<MovedTicket[]>(`/tickets/${id}/group`, { token }), // open sub-tickets that would leave the board with it (TL-218)
   // also "My work": assignee 'me', status 'open', newest change first, paged

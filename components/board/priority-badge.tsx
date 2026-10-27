@@ -4,7 +4,7 @@ import { useLingui } from '@lingui/react';
 import { Badge } from '@/components/ui/badge';
 
 // Theme-aware priority badges (work in light and dark). Medium is the default, so cards hide it.
-const PRIORITY: Record<string, { label: MessageDescriptor; className: string }> = {
+export const PRIORITY: Record<string, { label: MessageDescriptor; className: string }> = {
   low: { label: msg`Low`, className: 'border-border text-muted-foreground' },
   medium: { label: msg`Medium`, className: 'border-border text-muted-foreground' },
   high: { label: msg`High`, className: 'border-amber-500/40 text-amber-600 dark:text-amber-400' },

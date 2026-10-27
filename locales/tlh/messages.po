@@ -1011,6 +1011,14 @@ msgstr "<0>{0}</0> chellu'pu'"
 msgid "added by {name}"
 msgstr "{name} chel"
 
+#: components/ticket/history-panel.tsx
+msgid "added it to a sprint"
+msgstr "sprintDaq chelpu'"
+
+#: components/ticket/history-panel.tsx
+msgid "added the labels {added}"
+msgstr "{added} per chelpu'"
+
 #. placeholder {0}: added.ticket_key
 #: components/intake/triage.tsx
 msgid "Added to the backlog as <0>{0}</0>."
@@ -1186,6 +1194,10 @@ msgstr "latlh ghom'a'"
 msgid "another project in this organization already uses that key prefix"
 msgstr "ngaQHa'moHwI' moHaq lo'pu' latlh jInmol ghom'a'vamDaq"
 
+#: components/ticket/history-panel.tsx
+msgid "another ticket"
+msgstr "latlh Segh"
+
 #: components/staff/help-editor.tsx
 msgid "Answer"
 msgstr "jang"
@@ -1288,6 +1300,18 @@ msgstr "'echletmey ngaSlu'pu'bogh →"
 msgid "Ask an organization admin to upgrade."
 msgstr "Dub 'e' ghom'a' loHwI' yItlhob."
 
+#: components/ticket/history-panel.tsx
+msgid "asked for a review"
+msgstr "nuDmeH tlhobpu'"
+
+#: components/ticket/history-panel.tsx
+msgid "assigned it to {to}"
+msgstr "{to} nob"
+
+#: components/ticket/history-panel.tsx
+msgid "assigned it to themself"
+msgstr "nobpu' ghaHvaD"
+
 #: app/tickets/[id]/page.tsx
 #: components/board/ticket-view.tsx
 msgid "Assigned to"
@@ -1327,6 +1351,10 @@ msgstr "Qob"
 #: components/ticket/attach-files-button.tsx
 msgid "Attach files"
 msgstr "ghItlhmey tIrar"
+
+#: components/ticket/history-panel.tsx
+msgid "attached {f}"
+msgstr "{f} rarpu'"
 
 #: components/staff/stats.tsx
 #: components/ticket/attachments.tsx
@@ -1636,6 +1664,26 @@ msgstr "tIqghach yIchoH"
 msgid "Change sprint {0} length"
 msgstr "sprint {0} tIqghach yIchoH"
 
+#: components/ticket/history-panel.tsx
+msgid "changed the {field}"
+msgstr "{field} choHpu'"
+
+#: components/ticket/history-panel.tsx
+msgid "changed the estimate from {a} to {b}"
+msgstr "{a} vo' {b} Daq ngoQ choHpu'"
+
+#: components/ticket/history-panel.tsx
+msgid "changed the priority from {a} to {b}"
+msgstr "{a} vo' {b} Daq potlh choHpu'"
+
+#: components/ticket/history-panel.tsx
+msgid "changed the timebox"
+msgstr "poH choHpu'"
+
+#: components/ticket/history-panel.tsx
+msgid "changed the type from {a} to {b}"
+msgstr "{a} vo' {b} Daq Segh Sorgh choHpu'"
+
 #: lib/live-status.ts
 msgid "Changes others make appear here as they happen."
 msgstr "latlhpu' choHmey naDev 'oS, qaSDI'."
@@ -1877,6 +1925,10 @@ msgstr "rInmoHpu' SoQmoHpu'"
 msgid "closed it as won’t do"
 msgstr "ta'be'lu'meH SoQmoHpu'"
 
+#: components/ticket/history-panel.tsx
+msgid "closed pull request {pr}"
+msgstr "pull request {pr} SoQmoHpu'"
+
 #: components/board/sprint-bar.tsx
 msgid "Closing it now:"
 msgstr "DaH SoQmoHlI':"
@@ -1923,6 +1975,10 @@ msgstr "QIn chIm'eghbe'nIS 'ej 10000 ngutlhmey juSbe'nIS"
 #: lib/error-codes.ts
 msgid "comment is too long"
 msgstr "tIq law'qu' QIn"
+
+#: components/ticket/history-panel.tsx
+msgid "commented"
+msgstr "jatlhpu'"
 
 #: components/staff/stats.tsx
 msgid "Comments"
@@ -3014,6 +3070,14 @@ msgstr "Qaw'lu'pu'"
 msgid "Deleted {0}"
 msgstr "{0} Qaw'lu'pu'"
 
+#: components/ticket/history-panel.tsx
+msgid "deleted a comment"
+msgstr "jatlh Qaw'pu'"
+
+#: components/ticket/history-panel.tsx
+msgid "deleted it"
+msgstr "Qaw'pu'"
+
 #. placeholder {0}: day.format(new Date(f.delete_on))
 #: components/settings/file-cleanup.tsx
 msgid "Deleted on {0}"
@@ -3064,6 +3128,10 @@ msgstr "{title} yIchevmoH"
 #: components/ticket/sub-tickets.tsx
 msgid "Detach from {title}"
 msgstr "{title} vo' yIteq"
+
+#: components/ticket/history-panel.tsx
+msgid "detached it from its parent"
+msgstr "vavDaj vo' teqpu'"
 
 #: app/roadmaps/[id]/edit/page.tsx
 msgid "Details"
@@ -3422,6 +3490,18 @@ msgstr "ticket yIchoH"
 msgid "Edit ticket labels"
 msgstr "ticket permey tIchoH"
 
+#: components/ticket/history-panel.tsx
+msgid "edited a comment"
+msgstr "jatlh choHpu'"
+
+#: components/ticket/history-panel.tsx
+msgid "edited the description"
+msgstr "Del choHpu'"
+
+#: components/ticket/history-panel.tsx
+msgid "edited the title"
+msgstr "pong choHpu'"
+
 #: components/settings/jira-import.tsx
 msgid "Email"
 msgstr "QIn"
@@ -3579,6 +3659,10 @@ msgstr "pIHmeH juvwI'"
 #: lib/error-codes.ts
 msgid "estimate_scale must be none, fibonacci, tshirt, powers or linear"
 msgstr "estimate_scale'e' none, fibonacci, tshirt, powers pagh linear 'oHnIS"
+
+#: components/ticket/history-panel.tsx
+msgid "estimated it at {b}"
+msgstr "{b} ngoQ nobpu'"
 
 #: app/boards/[id]/edit/page.tsx
 msgid "Estimates"
@@ -3801,6 +3885,10 @@ msgstr "Hoch sprint rInpu'bogh, Qav wej motlh je (tlhegh), ticketmey."
 #: components/reports/report-view.tsx
 msgid "Finished sprints that set a goal: met or not."
 msgstr "ngoQ ghajbogh sprintmey rIntaHbogh: chav'a' pagh chavbe'?"
+
+#: components/ticket/history-panel.tsx
+msgid "finished the review"
+msgstr "nuD rInmoHpu'"
 
 #: components/board/column-list.tsx
 msgid "first: new tickets start here"
@@ -4317,6 +4405,10 @@ msgstr "ngaQHa'moHwI' environment variable Daq yIpol (rur: shell profileDaq):"
 msgid "Keep ticket"
 msgstr "ticket yIpol"
 
+#: components/ticket/history-panel.tsx
+msgid "kept {f} for another year"
+msgstr "{f} wa' DIS polpu'"
+
 #: components/settings/csv-import.tsx
 msgid "Key prefix"
 msgstr "ngaQHa'moHwI' moH"
@@ -4510,6 +4602,10 @@ msgstr "mabvam yIrar"
 #: components/settings/organization.tsx
 msgid "Linked"
 msgstr "rarlu'pu'"
+
+#: components/ticket/history-panel.tsx
+msgid "linked pull request {pr}"
+msgstr "pull request {pr} rarpu'"
 
 #: components/roadmap/item-tickets.tsx
 msgid "Linked tickets"
@@ -4729,6 +4825,14 @@ msgstr "machbogh ngutlhmey, mI'mey, tlheghmey je."
 msgid "Made {0} tickets on {1} boards."
 msgstr "{0} ticketmey, {1} 'echletmey chenmoHpu'."
 
+#: components/ticket/history-panel.tsx
+msgid "made a change"
+msgstr "vay' choHpu'"
+
+#: components/ticket/history-panel.tsx
+msgid "made it part of {to}"
+msgstr "{to} 'ay' moHpu'"
+
 #. placeholder {0}: column.name
 #: components/board/column-list.tsx
 msgid "Make {0} the review column"
@@ -4803,6 +4907,14 @@ msgstr "velqa' perlu'pu'"
 msgid "marked duplicate"
 msgstr "velqa' perlu'"
 
+#: components/ticket/history-panel.tsx
+msgid "marked it a duplicate of {of}"
+msgstr "{of} cha'DIch ghaH 'e' ghItlhpu'"
+
+#: components/ticket/history-panel.tsx
+msgid "marked it blocked by {added}"
+msgstr "{added} bot 'e' ghItlhpu'"
+
 #: components/ticket/duplicates.tsx
 msgid "Marking…"
 msgstr "perlI'…"
@@ -4852,6 +4964,10 @@ msgstr "pongmey"
 #: components/ticket/pull-requests-panel.tsx
 msgid "Merged"
 msgstr "mungpu'"
+
+#: components/ticket/history-panel.tsx
+msgid "merged pull request {pr}"
+msgstr "pull request {pr} muvpu'"
 
 #: components/reports/report-view.tsx
 #: components/reports/rollup-view.tsx
@@ -4960,6 +5076,10 @@ msgstr "{name}Daq ghom'a'lIj DavIHmoH'a'? poHvam DIlghach lI'moH Stripe."
 #: components/ticket/history-panel.tsx
 msgid "moved it to {where}"
 msgstr "{where}Daq vIHmoH"
+
+#: components/ticket/history-panel.tsx
+msgid "moved it to another sprint"
+msgstr "latlh sprintDaq vIHmoHpu'"
 
 #: components/project/backlog.tsx
 #: components/project/move-to-board.tsx
@@ -6184,6 +6304,10 @@ msgstr "sprint {n}Daq nablu'pu'"
 msgid "Planned into sprint {n} on {board}"
 msgstr "{board}Daq sprint {n}Daq nablu'pu'"
 
+#: components/ticket/history-panel.tsx
+msgid "planned it for a later sprint"
+msgstr "ghIq sprintvaD nab chenmoHpu'"
+
 #: lib/google-chat.ts
 msgid "Planned sprint needs approval"
 msgstr "sprint nablu'pu'bogh chaw' poQ"
@@ -6467,6 +6591,10 @@ msgstr "meq <0>(DaneHchugh, QIn moj)</0>"
 msgid "reason is too long"
 msgstr "tIq law'qu' meq"
 
+#: components/ticket/history-panel.tsx
+msgid "reassigned it from {from} to {to}"
+msgstr "{from} vo' {to} nobqa'pu'"
+
 #: components/intake/triage.tsx
 msgid "Received <0/>"
 msgstr "Hevlu'pu' <0/>"
@@ -6557,6 +6685,26 @@ msgstr "sprint nablu'pu'bogh {0} Dateq'a'? backlogDaq chegh ticketmeyDaj, pIHlu'
 msgid "Removed"
 msgstr "teqlu'pu'"
 
+#: components/ticket/history-panel.tsx
+msgid "removed {f}"
+msgstr "{f} teqpu'"
+
+#: components/ticket/history-panel.tsx
+msgid "removed the blocker {removed}"
+msgstr "{removed} botwI' teqpu'"
+
+#: components/ticket/history-panel.tsx
+msgid "removed the due date"
+msgstr "Qav jaj teqpu'"
+
+#: components/ticket/history-panel.tsx
+msgid "removed the estimate"
+msgstr "ngoQ teqpu'"
+
+#: components/ticket/history-panel.tsx
+msgid "removed the labels {removed}"
+msgstr "{removed} per teqpu'"
+
 #: components/settings/google-chat.tsx
 msgid "Removed."
 msgstr "teqlu'pu'."
@@ -6568,6 +6716,14 @@ msgstr "Dochmey je teq; Qapbe'choH rarwI' ghom."
 #: components/editable-title.tsx
 msgid "Rename {label}"
 msgstr "{label} pong yIchoH"
+
+#: components/ticket/history-panel.tsx
+msgid "reopened it"
+msgstr "poSmoHqa'pu'"
+
+#: components/ticket/history-panel.tsx
+msgid "reopened pull request {pr}"
+msgstr "pull request {pr} poSmoHqa'pu'"
 
 #: components/settings/integrations.tsx
 msgid "Replace access token"
@@ -6588,6 +6744,10 @@ msgstr "YOUR_ROADMAP_ID Daq He nav id yIlan (He nav rarwI' ghomDaq tu'lu', /r/<i
 #: components/settings/embedding.tsx
 msgid "Replace YOUR_ROADMAP_ID with the roadmap’s id (its share link, /r/<id>)."
 msgstr "YOUR_ROADMAP_ID Daq He nav id yIlan (rarwI' ghomDaj, /r/<id>)."
+
+#: components/ticket/history-panel.tsx
+msgid "replied to a comment"
+msgstr "jatlh jangpu'"
 
 #: components/ticket/comments.tsx
 msgid "Reply"
@@ -6653,6 +6813,10 @@ msgstr "yIcheghmoH"
 #: components/board/board-lifecycle.tsx
 msgid "Restore board"
 msgstr "'echlet yIcheghmoH"
+
+#: components/ticket/history-panel.tsx
+msgid "restored it"
+msgstr "chenqa'moHpu'"
 
 #: components/board/board-lifecycle.tsx
 #: components/project/archived-boards.tsx
@@ -7062,6 +7226,10 @@ msgstr "jajmeyDaq yIcher, pagh rIn jaj yIwIv — sprint tagh jaj wa'DIch vo' juv
 msgid "Set priority…"
 msgstr "potlh yIcher…"
 
+#: components/ticket/history-panel.tsx
+msgid "set the due date to {b}"
+msgstr "{b} Qav jaj cherpu'"
+
 #. placeholder {0}: fresh.name
 #: components/settings/api-keys.tsx
 msgid "Set up {0}"
@@ -7109,6 +7277,7 @@ msgid "Show"
 msgstr "yI'ang"
 
 #: components/settings/webhooks.tsx
+#: components/ticket/history-panel.tsx
 msgid "Show older"
 msgstr "ngo' yIcha'"
 
@@ -8333,6 +8502,14 @@ msgstr "jInmolvamvaD Daqmey law' law'qu'"
 msgid "too many requests from you; please try again later"
 msgstr "SoH vo' tlhobmey law' law'qu'! tugh yInIDqa'"
 
+#: components/ticket/history-panel.tsx
+msgid "took it out of a planned sprint"
+msgstr "nab sprint vo' teqpu'"
+
+#: components/ticket/history-panel.tsx
+msgid "took it out of its sprint"
+msgstr "sprintDaj vo' teqpu'"
+
 #: components/roadmap/report.tsx
 msgid "Total"
 msgstr "Hoch"
@@ -8400,6 +8577,14 @@ msgstr "ta'wI' Hutlh"
 msgid "Unassigned"
 msgstr "ta'wI' Hutlh"
 
+#: components/ticket/history-panel.tsx
+msgid "unassigned {from}"
+msgstr "{from} nobbe'pu'"
+
+#: components/ticket/history-panel.tsx
+msgid "unassigned themself"
+msgstr "ghaH nobbe'pu'"
+
 #: components/ticket/assignee-select.tsx
 msgid "Unavailable organization member"
 msgstr "ghom'a' beqpu' tu'lu'be'bogh"
@@ -8446,6 +8631,10 @@ msgstr "{0} yIrarHa'"
 #: components/project/repositories.tsx
 msgid "Unlink {0}? Its pull requests stop linking to this project's tickets."
 msgstr "{0} DararHa''a'? jInmolvam ticketmeyDaq pull requestmeyDaj rarbe'choH."
+
+#: components/ticket/history-panel.tsx
+msgid "unlinked pull request {pr}"
+msgstr "pull request {pr} rarbe'pu'"
 
 #: components/settings/chat-dm.tsx
 msgid "Unlinking…"
