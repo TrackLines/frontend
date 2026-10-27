@@ -2648,6 +2648,10 @@ msgstr "De statistieken konden niet worden geladen."
 msgid "Couldn’t load the updates. Please refresh to try again."
 msgstr "Kan de updates niet laden. Vernieuw de pagina om het opnieuw te proberen."
 
+#: components/settings/working-week.tsx
+msgid "Couldn’t load the working week. Please refresh to try again."
+msgstr "Kon de werkweek niet laden. Vernieuw de pagina om het opnieuw te proberen."
+
 #: components/layout/load-error.tsx
 msgid "Couldn't load this board"
 msgstr "Kan dit bord niet laden"
@@ -2834,6 +2838,10 @@ msgstr "Kan de review niet opslaan. Probeer het opnieuw."
 #: app/boards/[id]/edit/page.tsx
 msgid "Couldn’t save the template. Please try again."
 msgstr "Kan het sjabloon niet opslaan. Probeer het opnieuw."
+
+#: components/settings/working-week.tsx
+msgid "Couldn’t save the working week. Please try again."
+msgstr "Kon de werkweek niet opslaan. Probeer het opnieuw."
 
 #: components/settings/language.tsx
 msgid "Couldn’t save your language. Please try again."
@@ -4980,6 +4988,10 @@ msgstr "Ticket laden…"
 msgid "Loading updates…"
 msgstr "Updates laden…"
 
+#: app/settings/working-week/page.tsx
+msgid "Loading working week…"
+msgstr "Werkweek laden…"
+
 #: components/settings/jira-import.tsx
 msgid "Loading your Jira projects…"
 msgstr "Je Jira-projecten laden…"
@@ -5009,6 +5021,7 @@ msgstr "Je werk laden…"
 #: components/settings/jira-import.tsx
 #: components/settings/linear-import.tsx
 #: components/settings/webhooks.tsx
+#: components/settings/working-week.tsx
 #: components/sprint/next-sprints.tsx
 #: components/staff/downtime.tsx
 #: components/staff/help-editor.tsx
@@ -6174,6 +6187,10 @@ msgstr "Alleen beheerders van de organisatie en de teamleiders van dit project k
 msgid "Only organization admins and this project’s team leaders can post updates."
 msgstr "Alleen beheerders van de organisatie en de teamleiders van dit project kunnen updates plaatsen."
 
+#: components/settings/working-week.tsx
+msgid "Only organization admins can change it."
+msgstr "Alleen organisatiebeheerders kunnen dit wijzigen."
+
 #: components/billing/plan-card.tsx
 msgid "Only organization admins can change the plan."
 msgstr "Alleen beheerders van de organisatie kunnen het abonnement wijzigen."
@@ -6274,6 +6291,10 @@ msgstr "Alleen de host kan dat doen."
 #: lib/api/error-codes.ts
 msgid "only the host can run the standup"
 msgstr "Alleen de host kan de standup leiden."
+
+#: components/settings/working-week.tsx
+msgid "Only those who manage this project can change it."
+msgstr "Alleen wie dit project beheert, kan dit wijzigen."
 
 #: lib/api/error-codes.ts
 msgid "only TrackLin.es links can be shortened"
@@ -6523,6 +6544,10 @@ msgstr "Kies minstens één gebeurtenis."
 #: lib/api/error-codes.ts
 msgid "pick at least one known event"
 msgstr "kies minstens één bekende gebeurtenis"
+
+#: components/settings/working-week.tsx
+msgid "Pick at least one working day, and hours of at least one hour."
+msgstr "Kies minstens één werkdag en werktijden van minstens een uur."
 
 #: components/billing/plan-card.tsx
 #: components/staff/downtime.tsx
@@ -7242,6 +7267,7 @@ msgstr "De stand-up leiden"
 #: app/boards/[id]/edit/page.tsx
 #: components/settings/google-chat.tsx
 #: components/settings/organization.tsx
+#: components/settings/working-week.tsx
 #: components/staff/help-editor.tsx
 msgid "Save"
 msgstr "Opslaan"
@@ -7300,6 +7326,7 @@ msgid "Save the board first to pick a new column"
 msgstr "Sla het bord eerst op om een nieuwe kolom te kiezen"
 
 #: components/settings/google-chat.tsx
+#: components/settings/working-week.tsx
 msgid "Saved."
 msgstr "Opgeslagen."
 
@@ -7322,6 +7349,7 @@ msgstr "Labels opslaan…"
 #: components/roadmap/roadmap-editor-form.tsx
 #: components/settings/google-chat.tsx
 #: components/settings/integrations.tsx
+#: components/settings/working-week.tsx
 #: components/sprint/sprint-bar.tsx
 msgid "Saving…"
 msgstr "Opslaan…"
@@ -7576,6 +7604,7 @@ msgstr "{0} instellen"
 #: app/settings/organization/page.tsx
 #: app/settings/page.tsx
 #: app/settings/webhooks/page.tsx
+#: app/settings/working-week/page.tsx
 #: components/settings/import-page.tsx
 msgid "Settings"
 msgstr "Instellingen"
@@ -7750,6 +7779,10 @@ msgstr "Spike"
 #: components/ticket/timebox-countdown.tsx
 msgid "Spike timebox"
 msgstr "Spike-timebox"
+
+#: components/settings/working-week.tsx
+msgid "Spike timeboxes count these hours (a timebox day is one working day), sprint planning counts these days, reports start weeks on this day, and a sprint always ends on a working day. Hours are in each person’s own timezone."
+msgstr "Timeboxes van spikes tellen deze uren (een timeboxdag is één werkdag), sprintplanning telt deze dagen, rapporten beginnen weken op deze dag, en een sprint eindigt altijd op een werkdag. Tijden gelden in ieders eigen tijdzone."
 
 #: components/reports/report-view.tsx
 #: components/ticket/ticket-type.tsx
@@ -8388,6 +8421,10 @@ msgstr "De volgende sprint start pas als jij hem start, dus dan kun je de lengte
 msgid "The organization creator starts as its first admin."
 msgstr "De maker van de organisatie is de eerste beheerder."
 
+#: app/projects/[id]/edit/page.tsx
+msgid "The organization’s, or this project’s own: for a team that works other days or hours."
+msgstr "Die van de organisatie, of een eigen week voor dit project: voor een team dat op andere dagen of tijden werkt."
+
 #: lib/api/error-codes.ts
 msgid "the original ticket must not itself be a duplicate"
 msgstr "Het oorspronkelijke ticket mag zelf geen duplicaat zijn."
@@ -8830,8 +8867,8 @@ msgid "Timebox hours"
 msgstr "Timebox-uren"
 
 #: components/reports/report-view.tsx
-msgid "Timeboxes count working hours, Monday to Friday, 9:00 to 17:00."
-msgstr "Timeboxes tellen werkuren, maandag tot en met vrijdag, 9:00 tot 17:00."
+msgid "Timeboxes count working hours of each project’s working week (Settings → Working week)."
+msgstr "Timeboxes tellen de werkuren van de werkweek van elk project (Instellingen → Werkweek)."
 
 #: components/roadmap/timeline.tsx
 msgid "Timeline"
@@ -9124,6 +9161,10 @@ msgstr "Gebruik een persoonlijke API-sleutel: <0>maak er een aan in Linear</0> o
 msgid "Use it to check that requests really come from TrackLin.es: see <0>verifying webhooks</0>."
 msgstr "Gebruik het om te controleren dat verzoeken echt van TrackLin.es komen: zie <0>webhooks controleren</0>."
 
+#: components/settings/working-week.tsx
+msgid "Use the organization’s working week"
+msgstr "De werkweek van de organisatie gebruiken"
+
 #: components/settings/jira-import.tsx
 msgid "Use your Jira email and an API token. <0>Create a token at Atlassian</0>. TrackLin.es keeps it, encrypted, for 30 days."
 msgstr "Gebruik je Jira-e-mail en een API-token. <0>Maak een token aan bij Atlassian</0>. TrackLin.es bewaart het 30 dagen, versleuteld."
@@ -9250,6 +9291,10 @@ msgstr "Webhooks horen bij de Pro- en Enterprise-abonnementen. <0>Wijzig je abon
 msgid "webhooks need the Pro or Enterprise plan"
 msgstr "webhooks vereisen het Pro- of Enterprise-abonnement"
 
+#: components/settings/working-week.tsx
+msgid "Week starts on"
+msgstr "Week begint op"
+
 #: components/sprint/flow-charts.tsx
 msgid "Weekly throughput"
 msgstr "Wekelijkse doorvoer"
@@ -9359,6 +9404,10 @@ msgstr "Wanneer"
 msgid "When a sprint ends"
 msgstr "Als een sprint afloopt"
 
+#: app/settings/working-week/page.tsx
+msgid "When your organization works. A project can set its own in Edit project."
+msgstr "Wanneer je organisatie werkt. Een project kan een eigen week instellen bij Project bewerken."
+
 #: components/ticket/bugfixes-panel.tsx
 msgid "Where"
 msgstr "Waar"
@@ -9374,6 +9423,10 @@ msgstr "Welke agent?"
 #: components/settings/csv-import.tsx
 msgid "Which column is which"
 msgstr "Welke kolom is wat"
+
+#: app/settings/page.tsx
+msgid "Which days and hours your organization works: spike timeboxes, sprint planning and sprint ends follow it."
+msgstr "Op welke dagen en uren je organisatie werkt: timeboxes van spikes, sprintplanning en het einde van sprints volgen het."
 
 #: components/settings/audit-log.tsx
 msgid "Who"
@@ -9430,6 +9483,10 @@ msgstr "Wordt niet gedaan"
 msgid "Won’t do"
 msgstr "Wordt niet gedaan"
 
+#: components/settings/working-week.tsx
+msgid "Work ends"
+msgstr "Werk eindigt"
+
 #: components/reports/report-view.tsx
 msgid "Work mix"
 msgstr "Werkverdeling"
@@ -9438,9 +9495,23 @@ msgstr "Werkverdeling"
 msgid "Work mix, whole period"
 msgstr "Werkverdeling, hele periode"
 
+#: components/settings/working-week.tsx
+msgid "Work starts"
+msgstr "Werk begint"
+
+#: components/settings/working-week.tsx
+msgid "Working days"
+msgstr "Werkdagen"
+
 #: components/staff/downtime.tsx
 msgid "Working out the credits…"
 msgstr "Credits worden berekend…"
+
+#: app/projects/[id]/edit/page.tsx
+#: app/settings/page.tsx
+#: app/settings/working-week/page.tsx
+msgid "Working week"
+msgstr "Werkweek"
 
 #: components/settings/google-calendar.tsx
 msgid "Workspace domain"
