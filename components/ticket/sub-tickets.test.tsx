@@ -2,7 +2,7 @@ import { expect, test } from 'bun:test';
 import { render as renderToStaticMarkup } from '@/test/i18n';
 import { i18nFor } from '@/lib/i18n';
 import type { TicketDetail } from '@/lib/api';
-import { PartOf, SubTickets, subTicketSummary } from './sub-tickets';
+import { ParentSection, SubTickets, subTicketSummary } from './sub-tickets';
 
 const base = { id: 't', project_id: 'p', blocked_by: [], blocks: [] } as unknown as TicketDetail;
 
@@ -17,14 +17,25 @@ test('parent shows children with progress and detach buttons', () => {
   expect(html).toContain('Detach api');
 });
 
-test('sub-ticket links to its parent; top-level shows nothing', () => {
-  expect(renderToStaticMarkup(<PartOf ticket={{ ...base, parent: { id: 'e', title: 'Epic', done: false } }} />)).toContain('href="/tickets/e"');
-  expect(renderToStaticMarkup(<PartOf ticket={base} />)).toBe('');
+test('the parent has its own section, only when there is one: "Epic" for its epic, linked, with detach (TL-686)', () => {
+  const parent = { id: 'e', title: 'Audit', done: false };
+  const epic = renderToStaticMarkup(<ParentSection token="x" onChanged={() => {}} ticket={{ ...base, parent, epic_id: 'e' }} />);
+  for (const s of ['>Epic<', 'href="/tickets/e"', 'Audit', 'aria-label="Detach from Audit"']) expect(epic).toContain(s);
+  const plain = renderToStaticMarkup(<ParentSection token="x" onChanged={() => {}} ticket={{ ...base, parent, epic_id: 'other' }} />);
+  expect(plain).toContain('>Parent ticket<');
+  expect(renderToStaticMarkup(<ParentSection token="x" onChanged={() => {}} ticket={base} />)).toBe('');
+});
+
+test('linking an existing ticket and making a new one say which they do (TL-686)', () => {
+  const html = renderToStaticMarkup(<SubTickets token="x" onChanged={() => {}} ticket={base} />);
+  expect(html).toContain('Link sub-ticket…');
+  expect(html).toContain('New sub-ticket…');
+  expect(html).not.toContain('Add a sub-ticket');
 });
 
 test('a done ticket offers no new sub-tickets, but children can still be detached (TL-528)', () => {
   const html = renderToStaticMarkup(<SubTickets token="x" onChanged={() => {}} ticket={{ ...base, done: true, children: [{ id: 'a', title: 'schema', done: true }] }} />);
-  expect(html).not.toContain('Add a sub-ticket');
+  expect(html).not.toContain('Link sub-ticket');
   expect(html).not.toContain('New sub-ticket');
   expect(html).toContain('Detach schema');
 });

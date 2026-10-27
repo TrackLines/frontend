@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import type { I18n } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
@@ -31,17 +30,38 @@ export function byBoard<C extends Child>(i18n: I18n, children: C[]): { board: st
     .map(([board, children]) => ({ board: board || i18n._(msg`Backlog`), children }));
 }
 
-// PartOf: "Part of <parent>" under a sub-ticket's title.
-export function PartOf({ ticket }: { ticket: TicketDetail }) {
-  if (!ticket.parent) return null;
+// ParentSection: the ticket this one is part of (TL-686) — "Epic" when the parent is its epic, "Parent
+// ticket" otherwise — linked, with its done state and a way to detach. Nothing for a top-level ticket.
+export function ParentSection({ ticket, token, onChanged }: { ticket: TicketDetail; token: string; onChanged: () => void }) {
+  const { t } = useLingui();
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const parent = ticket.parent;
+  if (!parent) return null;
+  const title = parent.title;
+  async function detach() {
+    setSaving(true);
+    setError('');
+    try {
+      await tickets.setParent(ticket.id, null, token);
+      onChanged();
+    } catch (err) {
+      setError(err instanceof ApiError && (err.status === 400 || err.status === 409) ? err.message : t`Couldn’t detach it. Please try again.`);
+    } finally {
+      setSaving(false);
+    }
+  }
   return (
-    <p className="text-sm text-muted-foreground">
-      <Trans>Part of <Link href={`/tickets/${ticket.parent.id}`} className="font-medium text-foreground hover:underline">{ticket.parent.title}</Link></Trans>
-    </p>
+    <section aria-labelledby={`parent-${ticket.id}`} className="grid gap-2" data-parent>
+      <h2 id={`parent-${ticket.id}`} className="text-sm font-semibold">{ticket.epic_id === parent.id ? <Trans>Epic</Trans> : <Trans>Parent ticket</Trans>}</h2>
+      <ul className="grid gap-1"><DepRow d={parent} removeLabel={t`Detach from ${title}`} onRemove={saving ? undefined : () => void detach()} /></ul>
+      {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+    </section>
   );
 }
 
-// SubTickets: this ticket's children (with progress), add an existing or brand-new ticket as a child, or detach one.
+// SubTickets: this ticket's children (with progress), link an existing ticket or make a brand-new one as a
+// child, or detach one. The Ticket links tab names it (TL-686).
 export function SubTickets({ ticket, token, onChanged }: { ticket: TicketDetail; token: string; onChanged: () => void }) {
   const { t, i18n } = useLingui();
   const children = ticket.children ?? [];
@@ -78,11 +98,8 @@ export function SubTickets({ ticket, token, onChanged }: { ticket: TicketDetail;
   const choices = (options ?? []).filter((o) => o.id !== ticket.id && o.id !== ticket.parent?.id && !children.some((c) => c.id === o.id));
 
   return (
-    <section aria-labelledby={`subs-${ticket.id}`} className="grid gap-3">
-      <div className="flex items-baseline justify-between gap-3">
-        <h2 id={`subs-${ticket.id}`} className="text-sm font-semibold"><Trans>Sub-tickets</Trans></h2>
-        {children.length > 0 && <span className="text-sm text-muted-foreground">{ticket.epic ? epicSize(ticket.epic, i18n) : subTicketSummary(i18n, children)}</span>}
-      </div>
+    <div className="grid gap-3">
+      {children.length > 0 && <p className="text-sm text-muted-foreground">{ticket.epic ? epicSize(ticket.epic, i18n) : subTicketSummary(i18n, children)}</p>}
       {children.length === 0 ? (
         <p className="text-sm text-muted-foreground">{ticket.done ? <Trans>None.</Trans> : ticket.type === 'epic' ? <Trans>None yet. Add the work this epic is made of; it can sit on any board.</Trans> : <Trans>None — split bigger work into sub-tickets here.</Trans>}</p>
       ) : ticket.type === 'epic' ? (
@@ -106,7 +123,7 @@ export function SubTickets({ ticket, token, onChanged }: { ticket: TicketDetail;
       {!ticket.done && <div className="flex items-center gap-2">
         {options === null ? (
           <Button size="sm" variant="outline" disabled={saving} onClick={() => projectTickets(ticket.project_id, token).then(setOptions, () => setError(t`Couldn’t load the project’s tickets.`))}>
-            <Trans>Add a sub-ticket…</Trans>
+            <Trans>Link sub-ticket…</Trans>
           </Button>
         ) : (
           <Select items={Object.fromEntries(choices.map((o) => [o.id, o.title]))} value={null} onValueChange={(v) => v && setParent(String(v), ticket.id)} disabled={saving}>
@@ -130,12 +147,7 @@ export function SubTickets({ ticket, token, onChanged }: { ticket: TicketDetail;
           onSaved={(created) => void setParent(created.id, ticket.id)}
         />
       )}
-      {ticket.parent && (
-        <Button size="sm" variant="ghost" className="justify-self-start text-muted-foreground" disabled={saving} onClick={() => setParent(ticket.id, null)}>
-          <Trans>Detach from “{ticket.parent.title}”</Trans>
-        </Button>
-      )}
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-    </section>
+    </div>
   );
 }

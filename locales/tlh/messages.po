@@ -882,10 +882,6 @@ msgstr "QIn yIchel"
 msgid "Add a label"
 msgstr "per yIchel"
 
-#: components/ticket/sub-tickets.tsx
-msgid "Add a sub-ticket…"
-msgstr "ticket puq yIchel…"
-
 #: components/board/ticket-dialog.tsx
 msgid "Add a ticket"
 msgstr "ticket yIchel"
@@ -1432,10 +1428,14 @@ msgstr "Bitbucket workspacemey"
 msgid "Blocked"
 msgstr "botlu'"
 
-#: components/ticket/dependencies.tsx
 #: components/ticket/relations.tsx
 msgid "Blocked by"
 msgstr "botwI'"
+
+#. placeholder {0}: ticket.blocked_by.length
+#: components/ticket/ticket-links.tsx
+msgid "Blocked by ({0})"
+msgstr "bot ({0})"
 
 #: lib/error-codes.ts
 msgid "blocked must be exclude"
@@ -1445,10 +1445,14 @@ msgstr "blocked'e' exclude 'oHnIS"
 msgid "Blocked: see what it's waiting on"
 msgstr "bot! loSbogh yIlegh"
 
-#: components/ticket/dependencies.tsx
 #: components/ticket/relations.tsx
 msgid "Blocks"
 msgstr "bot"
+
+#. placeholder {0}: ticket.blocks.length
+#: components/ticket/ticket-links.tsx
+msgid "Blocks ({0})"
+msgstr "botbogh ({0})"
 
 #: app/reports/page.tsx
 msgid "board"
@@ -2321,6 +2325,10 @@ msgstr "'echlet Qaw'lu'laHbe'. yInIDqa'."
 msgid "Couldn’t delete the template. Please try again."
 msgstr "mIllogh Qaw'lu'laHbe'. yInIDqa'."
 
+#: components/ticket/sub-tickets.tsx
+msgid "Couldn’t detach it. Please try again."
+msgstr "teqlaHbe'. yInIDqa'."
+
 #. placeholder {0}: account ?? name
 #: components/settings/integrations.tsx
 msgid "Couldn’t disconnect {0}."
@@ -3035,10 +3043,6 @@ msgstr "jar ngeHlu'pu'bogh"
 msgid "Deliveries"
 msgstr "ngeHmey"
 
-#: components/ticket/dependencies.tsx
-msgid "Dependencies"
-msgstr "botwI'mey"
-
 #: components/settings/csv-import.tsx
 #: components/settings/organization.tsx
 msgid "Description"
@@ -3057,10 +3061,9 @@ msgstr "Del <0>(DaneHchugh)</0>"
 msgid "Detach {title}"
 msgstr "{title} yIchevmoH"
 
-#. placeholder {0}: ticket.parent.title
 #: components/ticket/sub-tickets.tsx
-msgid "Detach from “{0}”"
-msgstr "“{0}” vo' yIchevmoH"
+msgid "Detach from {title}"
+msgstr "{title} vo' yIteq"
 
 #: app/roadmaps/[id]/edit/page.tsx
 msgid "Details"
@@ -3517,6 +3520,7 @@ msgstr "lut'a'"
 
 #: components/board/epic-filter.tsx
 #: components/ticket-type.tsx
+#: components/ticket/sub-tickets.tsx
 msgid "Epic"
 msgstr "lut'a'"
 
@@ -4489,6 +4493,10 @@ msgstr "jInmolmeyDaq repositorymey tIrar. ticket ngaQHa'moHwI' (rur: TL-123) pon
 #: components/settings/integrations.tsx
 msgid "Link repositories to projects. Pull requests that mention a ticket’s key (e.g. TL-123) show on the ticket, and merging one closes it. Connect each GitHub organization your projects’ repositories live in."
 msgstr "jInmolmeyDaq repositorymey tIrar. ticket ngaQHa'moHwI' (rur: TL-123) pongbogh pull requestmey ticketDaq 'anglu', 'ej wa' mungDI' SoQmoH. jInmolmeylIj repositorymey ngaSbogh Hoch GitHub ghom'a' yIrar."
+
+#: components/ticket/sub-tickets.tsx
+msgid "Link sub-ticket…"
+msgstr "Segh mach yIrar…"
 
 #: components/settings/organization.tsx
 msgid "Link team"
@@ -5589,6 +5597,10 @@ msgstr "Hogh loS ngeHlu'pu'be'."
 msgid "Nothing unplanned in the backlog. Planned tickets are on their board’s Next sprints."
 msgstr "backlogDaq pagh nablu'be'bogh. ticketmey nablu'pu'bogh 'echletchaj sprintmey vebDaq tu'lu'."
 
+#: components/ticket/dependencies.tsx
+msgid "Nothing waits on it."
+msgstr "pa' loSbe' vay'."
+
 #: components/board/past-sprints.tsx
 msgid "Nothing was finished in this sprint."
 msgstr "sprintvamDaq pagh rIn."
@@ -6055,14 +6067,17 @@ msgstr "page'e' 1 pagh law' 'oHnIS"
 msgid "pagination"
 msgstr "navmey"
 
+#: components/ticket/sub-tickets.tsx
+msgid "Parent ticket"
+msgstr "Segh vav"
+
 #: lib/error-codes.ts
 msgid "parent_comment_id must be a comment on the same ticket"
 msgstr "parent_comment_id'e' ticket rapDaq QIn 'oHnIS"
 
 #. placeholder {0}: parent.title
-#. placeholder {0}: ticket.parent.title
+#: components/board/ticket-dialog.tsx
 #: components/ticket/relations.tsx
-#: components/ticket/sub-tickets.tsx
 msgid "Part of <0>{0}</0>"
 msgstr "<0>{0}</0> 'ay'"
 
@@ -7498,9 +7513,9 @@ msgstr "mIw"
 msgid "style must be sprints or kanban"
 msgstr "style'e' sprints pagh kanban 'oHnIS"
 
-#: components/ticket/sub-tickets.tsx
-msgid "Sub-tickets"
-msgstr "ticket puqmey"
+#: components/ticket/ticket-links.tsx
+msgid "Sub-tickets ({subs})"
+msgstr "Segh machmey ({subs})"
 
 #: components/ticket/labels.tsx
 msgid "Suggested labels"
@@ -8140,6 +8155,10 @@ msgstr "ticket ngaQHa'moHwI'mey"
 #: components/ticket/labels.tsx
 msgid "Ticket labels"
 msgstr "ticket permey"
+
+#: components/ticket/ticket-links.tsx
+msgid "Ticket links"
+msgstr "Segh rarwI'mey"
 
 #: components/load-error.tsx
 msgid "Ticket not found"

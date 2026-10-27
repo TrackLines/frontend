@@ -33,5 +33,5 @@ test('the board\'s ticket view loads the parent and blockers, and the page links
   expect(view).toContain('tickets.get(ticket.id, token)');
   expect(view).toContain('<TicketRelations parent={detail.parent} blockedBy={detail.blocked_by} blocks={detail.blocks} />');
   expect(await read('../../app/tickets/[id]/page.tsx')).toContain('<BlockedBadge href="#blocked-by" />');
-  expect(await read('./dependencies.tsx')).toContain('id="blocked-by"');
+  expect(await read('./ticket-links.tsx')).toContain('id="blocked-by"'); // the Ticket links panel, opening its Blocked by tab (TL-686)
 });

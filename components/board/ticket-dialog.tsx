@@ -1,6 +1,7 @@
 'use client';
 
 import type { I18n } from '@lingui/core';
+import Link from 'next/link';
 import { msg, plural } from '@lingui/core/macro';
 import { Plural, Trans, useLingui } from '@lingui/react/macro';
 import { MarkdownTextarea } from '@/components/markdown';
@@ -24,7 +25,7 @@ import { missingTicketFields } from './ticket-validation';
 import { TicketKey } from '@/components/ticket/ticket-key';
 import { MoveToBoard } from '@/components/project/move-to-board';
 import type { EstimateScale } from '@/lib/estimates';
-import type { Board, MovedTicket, Ticket, TicketType } from '@/lib/api';
+import type { Board, Dep, MovedTicket, Ticket, TicketType } from '@/lib/api';
 import { ApiError, backlog, tickets } from '@/lib/api';
 
 type Props = {
@@ -82,6 +83,15 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
   const [missing, setMissing] = useState<{ title: boolean; estimate: boolean }>({ title: false, estimate: false });
   const titleInput = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<PendingFile[]>([]); // create mode only
+  // the ticket it's part of (TL-686): the backlog opens tickets straight into this dialog, so it says where
+  // they belong, as the board's ticket view does
+  const [parent, setParent] = useState<Dep | null>(null);
+  useEffect(() => {
+    if (!open || !ticket?.id) return;
+    let live = true;
+    tickets.get(ticket.id, token).then((d) => { if (live) setParent(d.parent ?? null); }, () => {});
+    return () => { live = false; };
+  }, [open, ticket?.id]); // token refreshes must not refetch
   const editing = Boolean(ticket);
   // the board has a scale, so an estimate is required; epics take none (their sub-tickets are sized)
   const estimating = scale !== 'none' && type !== 'epic';
@@ -210,6 +220,11 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
         <DialogHeader>
           <DialogTitle>{editing ? t`Edit ticket` : t`Add a ticket`}</DialogTitle>
           <DialogDescription className="flex flex-wrap items-center gap-2"><TicketKey value={ticket?.key} copy /><Trans>Give the work a clear title. Details are optional.</Trans></DialogDescription>
+          {parent && (
+            <p className="text-sm text-muted-foreground" data-parent>
+              <Trans>Part of <Link href={`/tickets/${parent.id}`} className="font-medium text-foreground hover:underline">{parent.title}</Link></Trans>
+            </p>
+          )}
         </DialogHeader>
         <form onSubmit={save} className="grid gap-4">
           <label className="grid gap-1.5 text-sm font-medium">

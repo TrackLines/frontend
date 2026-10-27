@@ -17,8 +17,8 @@ import { PullRequestsPanel } from '@/components/ticket/pull-requests-panel';
 import { HistoryPanel } from '@/components/ticket/history-panel';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
 import { AssigneeSelect } from '@/components/ticket/assignee-select';
-import { Dependencies } from '@/components/ticket/dependencies';
-import { PartOf, SubTickets } from '@/components/ticket/sub-tickets';
+import { ParentSection } from '@/components/ticket/sub-tickets';
+import { TicketLinks } from '@/components/ticket/ticket-links';
 import { DuplicateLinks, MarkDuplicate } from '@/components/ticket/duplicates';
 import { TicketComments } from '@/components/ticket/comments';
 import { LabelDrawer, TicketLabels } from '@/components/ticket/labels';
@@ -132,7 +132,6 @@ export default function TicketPage() {
           {/* board and backlog tickets alike: edit (and delete, inside the dialog) right here */}
           {token && <Button type="button" variant="outline" size="sm" className="ml-auto" onClick={() => setEditing(true)}><Trans>Edit</Trans></Button>}
         </div>
-        <PartOf ticket={tk} />
       <DuplicateLinks ticket={tk} />
         <p className="text-sm text-muted-foreground">
           {tk.created_at ? <Trans>Created by {creator} <When iso={tk.created_at} /></Trans> : <Trans>Created by {creator}</Trans>}
@@ -163,8 +162,9 @@ export default function TicketPage() {
           void tickets.update(tk.id, { title: tk.title, description: next }, token).catch(() => setT(tk));
         } : undefined}>{tk.description}</Markdown> : <p className="text-muted-foreground"><Trans>No details provided.</Trans></p>}
       </section>
-      {token && <SubTickets ticket={tk} token={token} onChanged={() => tickets.get(id, token).then(setT)} />}
-      {token && <Dependencies ticket={tk} token={token} onChanged={() => tickets.get(id, token).then(setT)} />}
+      {/* where it belongs, only when it does; then its links, as tabs (TL-686) */}
+      {token && <ParentSection ticket={tk} token={token} onChanged={() => tickets.get(id, token).then(setT)} />}
+      {token && <TicketLinks ticket={tk} token={token} onChanged={() => tickets.get(id, token).then(setT)} />}
       {token && <MarkDuplicate ticket={tk} token={token} onChanged={() => { void tickets.get(tk.id, token).then(setT); }} />}
       {token && <BugfixesPanel ticket={tk} token={token} />}
       {token && <Attachments ticketId={tk.id} token={token} locked={tk.done} />}
