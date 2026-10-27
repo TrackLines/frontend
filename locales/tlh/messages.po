@@ -1345,6 +1345,10 @@ msgstr "Dub 'e' ghom'a' loHwI' yItlhob."
 msgid "asked for a review"
 msgstr "nuDmeH tlhobpu'"
 
+#: components/work/dashboard-work.tsx
+msgid "Assigned"
+msgstr "nob"
+
 #: components/ticket/history-panel.tsx
 msgid "assigned it to {to}"
 msgstr "{to} nob"
@@ -2949,6 +2953,7 @@ msgid "Create team"
 msgstr "beq yIchenmoH"
 
 #: components/settings/csv-import.tsx
+#: components/work/dashboard-work.tsx
 msgid "Created"
 msgstr "chenmoHlu'pu'"
 

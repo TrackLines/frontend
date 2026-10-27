@@ -1345,6 +1345,10 @@ msgstr "Ask an organization admin to upgrade."
 msgid "asked for a review"
 msgstr "asked for a review"
 
+#: components/work/dashboard-work.tsx
+msgid "Assigned"
+msgstr "Assigned"
+
 #: components/ticket/history-panel.tsx
 msgid "assigned it to {to}"
 msgstr "assigned it to {to}"
@@ -2949,6 +2953,7 @@ msgid "Create team"
 msgstr "Create team"
 
 #: components/settings/csv-import.tsx
+#: components/work/dashboard-work.tsx
 msgid "Created"
 msgstr "Created"
 
