@@ -34,6 +34,26 @@ test('project tour follows the real name dialog and waits for successful creatio
   expect(guideCovered(tour.completed)).toBe(false);
 });
 
+test('a member tour skips unavailable chapters and completes only its permitted scope', () => {
+  const allowed = ['ticket', 'tui', 'mcp'] as const;
+  let tour = startTour('all', projectId, [], allowed);
+  expect(tour.chapters).toEqual([...allowed]);
+  expect(tour.stage).toBe('ticket-project');
+  tour = advanceTour(tour, { type:'project-opened', projectId });
+  tour = advanceTour(tour, { type:'backlog-tab' });
+  tour = advanceTour(tour, { type:'add-backlog' });
+  tour = advanceTour(tour, { type:'ticket-created' });
+  expect(tour.stage).toBe('tui');
+  tour = advanceTour(tour, { type:'next' });
+  tour = advanceTour(tour, { type:'next' });
+  expect(tour.stage).toBe('done');
+  expect(guideCovered(tour.completed, allowed)).toBe(true);
+  expect(guideCovered(tour.completed)).toBe(false);
+  expect(startTour('github', projectId, [], allowed).chapters).toEqual([]);
+  expect(startTour('ticket', null, [], allowed).chapters).toEqual([]);
+  expect(guideCovered([], [])).toBe(false);
+});
+
 test('real project-card click leads through Backlog and the real Add to backlog form', async () => {
   const project = { id: projectId, name: 'Website', description: '', key_prefix: 'WEB' } as Project;
   const html = renderToStaticMarkup(createElement(I18nProvider, { i18n: i18nFor('en') }, createElement(ProjectCard, { project })));

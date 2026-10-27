@@ -10,16 +10,16 @@ import { CheckIcon, CompassIcon } from 'lucide-react';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { onboarding, projects, type OnboardingState } from '@/lib/api';
 import { useToken } from '@/lib/hooks/use-token';
-import { boardDestination, finishedGuide, GUIDE, mergeGuideStatus, needsSetup, offerGuide } from '@/lib/org/onboarding';
+import { boardDestination, finishedGuide, GUIDE, GUIDE_RESET, GuideRequests, mergeGuideStatus, needsSetup, offerGuide, permittedChapters, resetForIdentity } from '@/lib/org/onboarding';
 import { advanceTour, guideCovered, listenForGuideActions, startTour, tourStep, waitForGuideTarget, type Chapter, type GuideAction, type Tour } from '@/lib/org/guide-tour';
 
 // The layout stays mounted across page changes. Tours follow real controls and successful writes.
 export function OnboardingGuide({ nonce }: { nonce?: string }) {
   const { orgId, userId } = useAuth();
-  return orgId && userId ? <Guide key={`${orgId}:${userId}`} nonce={nonce} /> : null;
+  return orgId && userId ? <Guide key={`${orgId}:${userId}`} orgId={orgId} userId={userId} nonce={nonce} /> : null;
 }
 
-function Guide({ nonce }: { nonce?: string }) {
+function Guide({ nonce, orgId, userId }: { nonce?: string; orgId: string; userId: string }) {
   const { t } = useLingui();
   const token = useToken();
   const path = usePathname();
@@ -35,25 +35,50 @@ function Guide({ nonce }: { nonce?: string }) {
   const inFlight = useRef(false);
   const autoStarted = useRef(false);
   const chosenProject = useRef<string | null>(null);
+  const requests = useRef(new GuideRequests());
 
   useEffect(() => {
     if (!token) return;
     let live = true;
-    onboarding.status(token).then((s) => {
-      if (!live) return;
-      setState((current) => mergeGuideStatus(current, s));
-      chosenProject.current ??= s.project_id;
-      if (needsSetup(s) && path === '/dashboard') router.replace('/onboarding');
-      if (offerGuide(s) && !autoStarted.current && s.board_id && path === boardDestination(s) && new URLSearchParams(window.location.search).get('guide') === '1') {
-        autoStarted.current = true;
-        setCompleted(['project']);
-        // Setup has created the project already. Continue with its real backlog.
-        setTour({ ...startTour('all', s.project_id, ['project']), chapters: ['ticket', 'github', 'tui', 'mcp'], stage: 'ticket-project' });
-        router.replace(path, { scroll: false });
-      }
-    }, () => { /* retry status on navigation; optional guides do not prevent using the app */ });
-    return () => { live = false; };
+    const load = () => {
+      const request = requests.current.read();
+      void onboarding.status(token).then((s) => {
+        if (!live || !requests.current.currentRead(request)) return;
+        setState((current) => mergeGuideStatus(current, s));
+        chosenProject.current ??= s.project_id;
+        if (needsSetup(s) && path === '/dashboard') router.replace('/onboarding');
+        if (offerGuide(s) && !autoStarted.current && s.board_id && path === boardDestination(s) && new URLSearchParams(window.location.search).get('guide') === '1') {
+          autoStarted.current = true;
+          setCompleted(['project']);
+          // Setup has created the project already. Continue with its real backlog.
+          setTour(startTour('all', s.project_id, ['project'], permittedChapters(s).filter((chapter) => chapter !== 'project')));
+          router.replace(path, { scroll: false });
+        }
+      }, () => { /* retry status on navigation; optional guides do not prevent using the app */ });
+    };
+    load();
+    window.addEventListener('focus', load);
+    return () => { live = false; window.removeEventListener('focus', load); };
   }, [token !== null, path, router]);
+
+  useEffect(() => {
+    const reset = (event: Event) => {
+      const next = resetForIdentity((event as CustomEvent).detail, orgId, userId);
+      if (!next) return;
+      requests.current.change();
+      setState(next); setCompleted([]); setTour(null); setPending(false);
+      setSaving(false); setOpen(false); setError('');
+    };
+    window.addEventListener(GUIDE_RESET, reset);
+    return () => window.removeEventListener(GUIDE_RESET, reset);
+  }, [orgId, userId]);
+
+  useEffect(() => {
+    if (!state || !tour || tour.stage === 'done') return;
+    if (!permittedChapters(state).includes(tour.chapters[tour.chapter])) {
+      setCompleted(tour.completed); setTour(null); setOpen(true);
+    }
+  }, [state, tour]);
 
   const dispatch = useCallback((action: GuideAction) => {
     if ('projectId' in action) chosenProject.current = action.projectId;
@@ -64,44 +89,58 @@ function Guide({ nonce }: { nonce?: string }) {
   async function complete() {
     if (!token || inFlight.current) return;
     inFlight.current = true;
+    const action = requests.current.change();
     setSaving(true); setError('');
     try {
-      setState(await onboarding.completeGuide(GUIDE, token));
+      const saved = await onboarding.completeGuide(GUIDE, token);
+      if (!requests.current.currentChange(action)) return;
+      setState(saved);
       setPending(false); setOpen(false);
     } catch {
+      if (!requests.current.currentChange(action)) return;
       setError(t`Couldn’t save guide completion. Please try again.`);
       setPending(true);
-    } finally { inFlight.current = false; setSaving(false); }
+    } finally { inFlight.current = false; if (requests.current.currentChange(action)) setSaving(false); }
   }
 
   useEffect(() => {
     if (tour?.stage !== 'done') return;
     setCompleted(tour.completed);
     setTour(null); setOpen(true);
-    if (guideCovered(tour.completed)) { setPending(true); void complete(); }
+    if (state && guideCovered(tour.completed, permittedChapters(state))) { setPending(true); void complete(); }
   }, [tour]);
 
   async function start(chapter: Chapter | 'all') {
     if (!token || starting) return;
     setStarting(true); setError('');
+    const request = requests.current.read();
     try {
-      const list = await projects.list(token);
+      const fresh = await onboarding.status(token);
+      if (!requests.current.currentRead(request)) return;
+      setState(fresh);
+      if (needsSetup(fresh)) { router.push('/onboarding'); return; }
+      if (!offerGuide(fresh)) { setOpen(false); return; }
+      const allowed = permittedChapters(fresh);
+      if (chapter !== 'all' && !allowed.includes(chapter)) return;
+      const list = chapter === 'all' || chapter === 'project' || chapter === 'ticket' ? await projects.list(token) : [];
+      if (!requests.current.currentRead(request)) return;
       const current = path.match(/^\/projects\/([^/]+)/)?.[1];
       const projectId = [current, chosenProject.current, list[0]?.id].find((id) => id && list.some((p) => p.id === id)) ?? null;
-      chosenProject.current = projectId;
-      setTour(startTour(chapter, projectId, completed));
+      chosenProject.current = projectId ?? chosenProject.current;
+      setTour(startTour(chapter, projectId, completed, allowed));
       setOpen(false);
     } catch { setError(t`Couldn’t start the guide. Please try again.`); }
     finally { setStarting(false); }
   }
 
-  if (!state?.admin) return null;
+  if (!state) return null;
   if (needsSetup(state)) return <Link href="/onboarding" aria-label={t`Continue setup`} title={t`Continue setup`} className={buttonVariants({ variant: 'ghost', size: 'sm' })}><CompassIcon /><span className="hidden sm:inline"><Trans>Continue setup</Trans></span></Link>;
   if (!offerGuide(state)) return null;
-  const chapters: { id: Chapter; label: string }[] = [
+  const allowed = permittedChapters(state);
+  const chapters = ([
     { id: 'project', label: t`Create a project` }, { id: 'ticket', label: t`Create your first ticket` },
     { id: 'github', label: t`Connect GitHub` }, { id: 'tui', label: t`Try the terminal app` }, { id: 'mcp', label: t`Connect an AI agent` },
-  ];
+  ] as { id: Chapter; label: string }[]).filter((chapter) => allowed.includes(chapter.id));
   return <>
     <Button size="sm" variant="ghost" onClick={() => { setTour(null); setOpen(true); }} aria-label={t`Guide`} title={t`Guide`}>
       <CompassIcon /><span className="hidden sm:inline"><Trans>Guide</Trans></span>
@@ -120,11 +159,11 @@ function Guide({ nonce }: { nonce?: string }) {
         <Button size="sm" variant="ghost" disabled={saving} onClick={() => setOpen(false)}><Trans>Close</Trans></Button>
       </div>
     </aside>}
-    {tour && tour.stage !== 'done' && <TourStep nonce={nonce} tour={tour} dispatch={dispatch} onStop={() => { setCompleted(tour.completed); setTour(null); setOpen(true); }} />}
+    {tour && tour.stage !== 'done' && allowed.includes(tour.chapters[tour.chapter]) && <TourStep nonce={nonce} tour={tour} allowed={allowed} dispatch={dispatch} onStop={() => { setCompleted(tour.completed); setTour(null); setOpen(true); }} />}
   </>;
 }
 
-function TourStep({ nonce, tour, dispatch, onStop }: { nonce?: string; tour: Tour; dispatch: (action: GuideAction) => void; onStop: () => void }) {
+function TourStep({ nonce, tour, allowed, dispatch, onStop }: { nonce?: string; tour: Tour; allowed: Chapter[]; dispatch: (action: GuideAction) => void; onStop: () => void }) {
   const { t } = useLingui();
   const path = usePathname();
   const router = useRouter();
@@ -167,7 +206,7 @@ function TourStep({ nonce, tour, dispatch, onStop }: { nonce?: string; tour: Tou
   }
   const target = ready?.stage === tour.stage && path === step.path ? ready.element : null;
   const next = advanceTour(tour, { type: 'next' });
-  const last = next.stage === 'done' ? (guideCovered(next.completed) ? t`Finish guide` : t`Got it`) : t`Next`;
+  const last = next.stage === 'done' ? (guideCovered(next.completed, allowed) ? t`Finish guide` : t`Got it`) : t`Next`;
   return <>
     {(!target || failed) && <aside role={failed ? 'alert' : 'status'} className="fixed bottom-4 left-4 z-50 max-w-sm rounded-lg border bg-card p-4 text-sm shadow-lg">
       <p>{failed ? t`This guide step couldn’t load. Retry or close the guide.` : t`Opening the next guide step…`}</p>

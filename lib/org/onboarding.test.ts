@@ -1,8 +1,8 @@
 import { afterEach, expect, test } from 'bun:test';
 import { onboarding, type OnboardingState } from '@/lib/api';
-import { boardDestination, finishedGuide, GUIDE, mergeGuideStatus, needsSetup, offerGuide } from './onboarding';
+import { boardDestination, finishedGuide, GUIDE, GuideRequests, mergeGuideStatus, needsSetup, offerGuide, permittedChapters, requestGuideReset, resetForIdentity } from './onboarding';
 
-const state: OnboardingState = { admin: true, step: 'complete', project_id: 'project', board_id: 'board', completed_at: '2026-10-27T00:00:00Z', guide: { ...GUIDE, available: true } };
+const state: OnboardingState = { admin: true, chapters: ['project', 'ticket', 'github', 'tui', 'mcp'], step: 'complete', project_id: 'project', board_id: 'board', completed_at: '2026-10-27T00:00:00Z', guide: { ...GUIDE, available: true } };
 const realFetch = globalThis.fetch;
 afterEach(() => { globalThis.fetch = realFetch; });
 
@@ -19,8 +19,50 @@ test('setup resumes only for admins and ends independently of guide completion',
   expect(needsSetup(state)).toBe(false);
   expect(needsSetup({ ...state, admin: false, step: 'project' })).toBe(false);
   expect(offerGuide({ ...state, step: 'invite' })).toBe(false);
-  expect(offerGuide({ ...state, admin: false })).toBe(false);
+  expect(offerGuide({ ...state, admin: false })).toBe(true);
   expect(offerGuide(state)).toBe(true);
+});
+
+test('members get permitted guides, admin-only chapters and unknown/missing capabilities are filtered', () => {
+  const member = { ...state, admin: false };
+  expect(permittedChapters(member)).toEqual(['project', 'ticket', 'tui', 'mcp']);
+  expect(permittedChapters({ ...state, chapters: ['github', 'not-shipped'] })).toEqual(['github']);
+  expect(offerGuide({ ...member, chapters: ['github'] })).toBe(false);
+  expect(offerGuide({ ...state, chapters: [] })).toBe(false);
+  expect(offerGuide({ ...state, chapters: undefined } as unknown as OnboardingState)).toBe(false);
+});
+
+test('reset is announced only after a scoped server success, and only to the matching user/org', async () => {
+  const events: unknown[] = [];
+  let body: unknown;
+  globalThis.fetch = (async (_url: string, init: RequestInit) => { body = JSON.parse(String(init.body)); return Response.json(state); }) as typeof fetch;
+  expect(await requestGuideReset('org-1', 'user-1', 'token', (event) => events.push(event))).toEqual(state);
+  expect(body).toEqual({ org_id: 'org-1' }); // a user ID is never supplied to the reset API
+  expect(resetForIdentity(events[0], 'org-1', 'user-1')).toEqual(state);
+  expect(resetForIdentity(events[0], 'org-2', 'user-1')).toBeNull();
+  expect(resetForIdentity(events[0], 'org-1', 'user-2')).toBeNull();
+  expect(resetForIdentity(null, 'org-1', 'user-1')).toBeNull();
+  expect(resetForIdentity({ orgId:'org-1', userId:'user-1', state:{} }, 'org-1', 'user-1')).toBeNull();
+  globalThis.fetch = (async () => new Response('forbidden', { status: 403 })) as unknown as typeof fetch;
+  await expect(requestGuideReset('org-1', 'user-1', 'token', (event) => events.push(event))).rejects.toThrow();
+  expect(events).toHaveLength(1);
+});
+
+test('reset invalidates stale status/completion responses, while later reads cannot discard a completion', () => {
+  const requests = new GuideRequests();
+  const before = requests.read();
+  const completing = requests.change();
+  expect(requests.currentRead(before)).toBe(false);
+  const duringCompletion = requests.read();
+  expect(requests.currentChange(completing)).toBe(true);
+  const resetting = requests.change();
+  expect(requests.currentRead(duringCompletion)).toBe(false);
+  expect(requests.currentChange(completing)).toBe(false);
+  expect(requests.currentChange(resetting)).toBe(true);
+  const after = requests.read();
+  expect(requests.currentRead(after)).toBe(true);
+  const resetState = resetForIdentity({ orgId:'org', userId:'user', state }, 'org', 'user')!;
+  expect(offerGuide(resetState)).toBe(true);
 });
 
 test('only matching, uncompleted published versions expose the guide button', () => {

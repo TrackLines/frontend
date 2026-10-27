@@ -7,6 +7,7 @@ import { msg } from '@lingui/core/macro';
 // names) aren't here: those show the backend's English until it sends the values separately.
 // ponytail: copied by hand from openapi.yaml; generate it if the codes start changing often.
 export const ERROR_MESSAGES: Record<string, MessageDescriptor> = {
+  guide_organization: msg`refresh after switching organizations`,
   onboarding_board: msg`choose a board in this organization`,
   onboarding_incomplete: msg`finish organization setup before completing the guide`,
   guide_version: msg`refresh to load the current guide`,

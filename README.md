@@ -46,7 +46,16 @@ Or bring up the whole stack from the repo root with `docker compose up --build`.
 New organization admins resume setup at `/onboarding`. React Joyride supplies the tour;
 organization setup and each user's guide completion are persisted separately by the backend.
 Members skip setup, imports reuse their created boards, and completing the tour hides its button
-across sessions and devices. Closing or skipping a tour does not mark it complete.
+across sessions and devices. Closing or skipping a tour does not mark it complete. All signed-in
+members can use the chapters permitted by the backend: project creation follows plan capacity,
+GitHub connection is admin-only, and ticket creation/TUI/MCP are available to members. The menu,
+full tour and completion check use that same filtered list. Capabilities refresh on navigation,
+window focus and before starting a chapter.
+
+Your settings (`/account`) includes **Reset guide**. It resets only the current person's completion
+in the active organization and restores the Guide button. It preserves organization setup and
+everyone else's progress. A scoped reset event updates the layout immediately; stale requests and
+events from another user/organization cannot hide or reset the current person's guide.
 
 Each guide chapter navigates to the actual page and spotlights its controls. Create a project
 opens Projects and follows the name dialog; Create your first ticket follows a project card,

@@ -2893,6 +2893,10 @@ msgstr "Der geplante Sprint konnte nicht entfernt werden. Bitte versuch es noch 
 msgid "Couldn’t rename the {label}. Please try again."
 msgstr "{label} konnte nicht umbenannt werden. Bitte versuch es noch einmal."
 
+#: components/settings/guide.tsx
+msgid "Couldn’t reset the guide. Please try again."
+msgstr "Die Tour konnte nicht zurückgesetzt werden. Bitte versuche es erneut."
+
 #. placeholder {0}: b.name
 #: components/project/archived-boards.tsx
 msgid "Couldn’t restore {0}. Only organization admins and the board’s team leaders can."
@@ -4413,8 +4417,13 @@ msgid "Got it"
 msgstr "Verstanden"
 
 #: components/onboarding/guide.tsx
+#: components/settings/guide.tsx
 msgid "Guide"
 msgstr "Tour"
+
+#: components/settings/guide.tsx
+msgid "Guide progress reset for this organization."
+msgstr "Der Tourfortschritt wurde für diese Organisation zurückgesetzt."
 
 #: components/settings/mcp-connect.tsx
 msgid "Header"
@@ -7154,6 +7163,10 @@ msgid "Refinement"
 msgstr "Refinement"
 
 #: lib/api/error-codes.ts
+msgid "refresh after switching organizations"
+msgstr "lade die Seite nach dem Wechsel der Organisation neu"
+
+#: lib/api/error-codes.ts
 msgid "refresh to load the current guide"
 msgstr "lade die Seite neu, um die aktuelle Tour zu laden"
 
@@ -7347,6 +7360,18 @@ msgstr "Anfragen"
 #: lib/api/error-codes.ts
 msgid "requires a signed-in session, not an API key"
 msgstr "Dafür musst du angemeldet sein; ein API-Schlüssel reicht nicht."
+
+#: components/settings/guide.tsx
+msgid "Reset guide"
+msgstr "Tour zurücksetzen"
+
+#: components/settings/guide.tsx
+msgid "Reset your guide progress for this organization to show the Guide button again."
+msgstr "Setze deinen Tourfortschritt für diese Organisation zurück, damit der Tour-Button wieder erscheint."
+
+#: components/settings/guide.tsx
+msgid "Resetting…"
+msgstr "Wird zurückgesetzt…"
 
 #: lib/api/error-codes.ts
 msgid "resolution must be done or wont_do"
