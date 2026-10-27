@@ -1074,6 +1074,10 @@ msgstr "ghIq ngaQHa'moHwI' Qapbe'choH 'ej chu' DachenmoH."
 msgid "agent key"
 msgstr "jopwI' ngoq"
 
+#: lib/org/audit.ts
+msgid "agent review"
+msgstr "jopwI' nuD"
+
 #: app/boards/[id]/edit/page.tsx
 msgid "Agent work needs review"
 msgstr "AI Qu' nuDnIS"
@@ -1145,6 +1149,10 @@ msgstr "Hoch He navmey"
 #: components/board/import-review.tsx
 msgid "All settled: the board can start its first sprint."
 msgstr "Hoch rInpu': wa'DIch sprint taghlaH Som."
+
+#: lib/org/audit.ts
+msgid "Allowed {origin} to embed"
+msgstr "{origin} DuHmoH"
 
 #: components/settings/embedding.tsx
 msgid "Allowed sites"
@@ -1246,9 +1254,17 @@ msgstr "Hoch DaH jaj"
 msgid "Any MCP client that supports remote servers over Streamable HTTP:"
 msgstr "MCP client Streamable HTTP vegh Hop servermey lo'laHbogh Hoch:"
 
+#: lib/org/audit.ts
+msgid "anyone"
+msgstr "Hoch"
+
 #: components/settings/audit-log.tsx
 msgid "Anyone"
 msgstr "Hoch"
+
+#: lib/org/audit.ts
+msgid "anyone signed in"
+msgstr "Hoch 'elpu'bogh"
 
 #: components/intake/intake-settings.tsx
 msgid "Anyone with the link can send a bug report or feature request, without an account. Requests wait in the project's request inbox until someone adds them to the backlog or dismisses them. The form shows nothing about the project."
@@ -1731,9 +1747,17 @@ msgstr "tIqghach yIchoH"
 msgid "Change sprint {0} length"
 msgstr "sprint {0} tIqghach yIchoH"
 
+#: lib/org/audit.ts
+msgid "Changed {name}’s settings: {fields}"
+msgstr "{name} SeHlaw choH: {fields}"
+
 #: components/ticket/history-panel.tsx
 msgid "changed the {field}"
 msgstr "{field} choHpu'"
+
+#: lib/org/audit.ts
+msgid "Changed the {provider} settings"
+msgstr "{provider} SeHlaw choH"
 
 #: components/ticket/history-panel.tsx
 msgid "changed the estimate from {a} to {b}"
@@ -2015,6 +2039,10 @@ msgstr "pull request {pr} SoQmoHpu'"
 #: lib/org/audit.ts
 msgid "Closed sprint {n} on {board}"
 msgstr "{board}Daq sprint {n} rIn"
+
+#: lib/org/audit.ts
+msgid "Closed the request form of {name}"
+msgstr "{name} tlhobmeH ghItlh SoQmoH"
 
 #: components/sprint/sprint-bar.tsx
 msgid "Closing it now:"
@@ -3008,6 +3036,10 @@ msgid "Created the board {name}"
 msgstr "{name} 'echlet chenmoH"
 
 #: lib/org/audit.ts
+msgid "Created the embed key “{label}”"
+msgstr "rarmeH ngoq “{label}” chenmoH"
+
+#: lib/org/audit.ts
 msgid "Created the project {name}"
 msgstr "{name} jInmol chenmoH"
 
@@ -3215,6 +3247,10 @@ msgstr "pollu'be'chugh {due} Qaw'lu'"
 #: lib/org/audit.ts
 msgid "Deleted the board {name}"
 msgstr "{name} 'echlet Qaw'"
+
+#: lib/org/audit.ts
+msgid "Deleted the embed key “{label}”"
+msgstr "rarmeH ngoq “{label}” Qaw'"
 
 #: lib/org/audit.ts
 msgid "Deleted the organization"
@@ -3676,6 +3712,7 @@ msgid "Embed name"
 msgstr "embed pong"
 
 #: app/projects/[id]/edit/page.tsx
+#: lib/org/audit.ts
 msgid "Embedding"
 msgstr "embed"
 
@@ -3816,6 +3853,10 @@ msgstr "estimate_scale'e' none, fibonacci, tshirt, powers pagh linear 'oHnIS"
 #: components/ticket/history-panel.tsx
 msgid "estimated it at {b}"
 msgstr "{b} ngoQ nobpu'"
+
+#: lib/org/audit.ts
+msgid "estimates"
+msgstr "ngoQmey"
 
 #: app/boards/[id]/edit/page.tsx
 msgid "Estimates"
@@ -4042,6 +4083,10 @@ msgstr "ticket wa'DIch yInej"
 #: components/live/standup.tsx
 msgid "Finish"
 msgstr "yIrInmoH"
+
+#: lib/org/audit.ts
+msgid "finish on release"
+msgstr "chu'DI' rIn"
 
 #: app/boards/[id]/edit/page.tsx
 msgid "Finish tickets on release"
@@ -4815,6 +4860,10 @@ msgstr "rarlu'pu'"
 msgid "linked pull request {pr}"
 msgstr "pull request {pr} rarpu'"
 
+#: lib/org/audit.ts
+msgid "Linked the repository {repo}"
+msgstr "{repo} rar"
+
 #: components/roadmap/item-tickets.tsx
 msgid "Linked tickets"
 msgstr "ticketmey rarlu'pu'bogh"
@@ -5057,9 +5106,17 @@ msgstr "vay' choHpu'"
 msgid "Made a change ({action})"
 msgstr "vay' choH ({action})"
 
+#: lib/org/audit.ts
+msgid "Made a new request form link for {name}"
+msgstr "{name} tlhobmeH ghItlh rar chu' chenmoH"
+
 #: components/ticket/history-panel.tsx
 msgid "made it part of {to}"
 msgstr "{to} 'ay' moHpu'"
+
+#: lib/org/audit.ts
+msgid "Made the roadmap {title} visible to {seenBy}"
+msgstr "{seenBy}vaD {title} He leghlu'moH"
 
 #. placeholder {0}: column.name
 #: components/board/column-list.tsx
@@ -6329,6 +6386,10 @@ msgstr "ticket naQ yIpoSmoH"
 msgid "Open the ticket"
 msgstr "ticket yIpoSmoH"
 
+#: lib/org/audit.ts
+msgid "Opened the request form of {name}"
+msgstr "{name} tlhobmeH ghItlh poSmoH"
+
 #: components/intake/intake-settings.tsx
 #: components/settings/integrations.tsx
 msgid "Opening…"
@@ -6920,6 +6981,10 @@ msgstr "Dubghach"
 msgid "Refresh to see changes others have made."
 msgstr "latlhpu' choHmey DaleghmeH yIchu'moH."
 
+#: lib/org/audit.ts
+msgid "Refused attempts"
+msgstr "ta' QIjlu'pu'bogh"
+
 #: components/ticket/bugfixes-panel.tsx
 msgid "Regressed"
 msgstr "cheghpu'"
@@ -7085,6 +7150,7 @@ msgstr "ja'ghach"
 #: app/projects/[id]/edit/page.tsx
 #: components/project/repositories.tsx
 #: components/settings/integrations.tsx
+#: lib/org/audit.ts
 msgid "Repositories"
 msgstr "repositorymey"
 
@@ -7150,6 +7216,10 @@ msgstr "yItaH"
 #: components/board/review.tsx
 msgid "Review"
 msgstr "nuDghach"
+
+#: lib/org/audit.ts
+msgid "review column"
+msgstr "nuDmeH tlhegh"
 
 #: components/sprint/sprint-bar.tsx
 msgid "Review the imported tickets first"
@@ -7220,6 +7290,7 @@ msgstr "He nav legh"
 #: app/dashboard/page.tsx
 #: app/roadmaps/page.tsx
 #: components/project/work-tabs.tsx
+#: lib/org/audit.ts
 msgid "Roadmaps"
 msgstr "He navmey"
 
@@ -8028,9 +8099,17 @@ msgstr "{title} yIloSQo'"
 msgid "Stop watching"
 msgstr "yIbejQo'"
 
+#: lib/org/audit.ts
+msgid "Stopped {origin} embedding"
+msgstr "{origin} DuHmoHbe'"
+
 #: lib/api/error-codes.ts
 msgid "Stripe isn't configured"
 msgstr "Stripe ghItlhbe'lu'"
+
+#: lib/org/audit.ts
+msgid "style"
+msgstr "Segh"
 
 #: app/boards/[id]/edit/page.tsx
 msgid "Style"
@@ -8106,6 +8185,7 @@ msgstr "Qu'"
 msgid "Tasks"
 msgstr "Qu'mey"
 
+#: lib/org/audit.ts
 #: lib/org/organization-settings.ts
 msgid "team"
 msgstr "beq"
@@ -8267,6 +8347,10 @@ msgstr "latlh jInmol ticket moHaqvetlh lo'pu'."
 msgid "that would make tickets block each other in a loop"
 msgstr "rIntaHvIS ticketmey bot'eghchuq ghet"
 
+#: lib/org/audit.ts
+msgid "The {kind} “{name}” expired"
+msgstr "{kind} “{name}” Dotlh lo'laHbe'"
+
 #: components/staff/help-editor.tsx
 msgid "The answers in the help panel, in this order: the first ones for a page are suggested there before anyone types."
 msgstr "QaH jangmey, mIw: Daq wa'DIch jangmey cha'lu' ghItlh pa'."
@@ -8425,6 +8509,10 @@ msgstr "slug: machbogh ngutlhmey, mI'mey, tlheghmey je"
 #: app/boards/[id]/page.tsx
 msgid "The sprint ends today, so “{0}” went to the backlog."
 msgstr "DaHjaj rIn sprint, vaj backlogDaq ghoS “{0}”."
+
+#: lib/org/audit.ts
+msgid "the team"
+msgstr "ghom"
 
 #: components/intake/request-form.tsx
 msgid "The team will look at your request."
@@ -9024,6 +9112,10 @@ msgstr "{0} DararHa''a'? jInmolvam ticketmeyDaq pull requestmeyDaj rarbe'choH."
 msgid "unlinked pull request {pr}"
 msgstr "pull request {pr} rarbe'pu'"
 
+#: lib/org/audit.ts
+msgid "Unlinked the repository {repo}"
+msgstr "{repo} rarHa'"
+
 #: components/settings/chat-dm.tsx
 msgid "Unlinking…"
 msgstr "rarHa'lI'…"
@@ -9215,6 +9307,14 @@ msgstr "taghmeH loSlI'"
 msgid "Was waiting on (all done)"
 msgstr "loSpu' (Hoch rIn)"
 
+#: lib/org/audit.ts
+msgid "Wasn’t allowed: {route}"
+msgstr "chaw'be'lu': {route}"
+
+#: lib/org/audit.ts
+msgid "Wasn’t allowed: {route} ({why})"
+msgstr "chaw'be'lu': {route} ({why})"
+
 #: components/work/mentions.tsx
 msgid "Watch again"
 msgstr "yIbejqa'"
@@ -9354,6 +9454,10 @@ msgstr "nuq lughbe' / nuq poQlu'?"
 #: components/settings/audit-log.tsx
 msgid "When"
 msgstr "ghorgh"
+
+#: lib/org/audit.ts
+msgid "when a sprint ends"
+msgstr "sprint rInDI'"
 
 #: app/boards/[id]/edit/page.tsx
 msgid "When a sprint ends"

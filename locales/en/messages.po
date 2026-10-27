@@ -1074,6 +1074,10 @@ msgstr "After that the key stops working and you make a new one."
 msgid "agent key"
 msgstr "agent key"
 
+#: lib/org/audit.ts
+msgid "agent review"
+msgstr "agent review"
+
 #: app/boards/[id]/edit/page.tsx
 msgid "Agent work needs review"
 msgstr "Agent work needs review"
@@ -1145,6 +1149,10 @@ msgstr "All roadmaps"
 #: components/board/import-review.tsx
 msgid "All settled: the board can start its first sprint."
 msgstr "All settled: the board can start its first sprint."
+
+#: lib/org/audit.ts
+msgid "Allowed {origin} to embed"
+msgstr "Allowed {origin} to embed"
 
 #: components/settings/embedding.tsx
 msgid "Allowed sites"
@@ -1246,9 +1254,17 @@ msgstr "Any due date"
 msgid "Any MCP client that supports remote servers over Streamable HTTP:"
 msgstr "Any MCP client that supports remote servers over Streamable HTTP:"
 
+#: lib/org/audit.ts
+msgid "anyone"
+msgstr "anyone"
+
 #: components/settings/audit-log.tsx
 msgid "Anyone"
 msgstr "Anyone"
+
+#: lib/org/audit.ts
+msgid "anyone signed in"
+msgstr "anyone signed in"
 
 #: components/intake/intake-settings.tsx
 msgid "Anyone with the link can send a bug report or feature request, without an account. Requests wait in the project's request inbox until someone adds them to the backlog or dismisses them. The form shows nothing about the project."
@@ -1731,9 +1747,17 @@ msgstr "Change length"
 msgid "Change sprint {0} length"
 msgstr "Change sprint {0} length"
 
+#: lib/org/audit.ts
+msgid "Changed {name}’s settings: {fields}"
+msgstr "Changed {name}’s settings: {fields}"
+
 #: components/ticket/history-panel.tsx
 msgid "changed the {field}"
 msgstr "changed the {field}"
+
+#: lib/org/audit.ts
+msgid "Changed the {provider} settings"
+msgstr "Changed the {provider} settings"
 
 #: components/ticket/history-panel.tsx
 msgid "changed the estimate from {a} to {b}"
@@ -2015,6 +2039,10 @@ msgstr "closed pull request {pr}"
 #: lib/org/audit.ts
 msgid "Closed sprint {n} on {board}"
 msgstr "Closed sprint {n} on {board}"
+
+#: lib/org/audit.ts
+msgid "Closed the request form of {name}"
+msgstr "Closed the request form of {name}"
 
 #: components/sprint/sprint-bar.tsx
 msgid "Closing it now:"
@@ -3008,6 +3036,10 @@ msgid "Created the board {name}"
 msgstr "Created the board {name}"
 
 #: lib/org/audit.ts
+msgid "Created the embed key “{label}”"
+msgstr "Created the embed key “{label}”"
+
+#: lib/org/audit.ts
 msgid "Created the project {name}"
 msgstr "Created the project {name}"
 
@@ -3215,6 +3247,10 @@ msgstr "Deleted on {due} unless kept"
 #: lib/org/audit.ts
 msgid "Deleted the board {name}"
 msgstr "Deleted the board {name}"
+
+#: lib/org/audit.ts
+msgid "Deleted the embed key “{label}”"
+msgstr "Deleted the embed key “{label}”"
 
 #: lib/org/audit.ts
 msgid "Deleted the organization"
@@ -3676,6 +3712,7 @@ msgid "Embed name"
 msgstr "Embed name"
 
 #: app/projects/[id]/edit/page.tsx
+#: lib/org/audit.ts
 msgid "Embedding"
 msgstr "Embedding"
 
@@ -3816,6 +3853,10 @@ msgstr "estimate_scale must be none, fibonacci, tshirt, powers or linear"
 #: components/ticket/history-panel.tsx
 msgid "estimated it at {b}"
 msgstr "estimated it at {b}"
+
+#: lib/org/audit.ts
+msgid "estimates"
+msgstr "estimates"
 
 #: app/boards/[id]/edit/page.tsx
 msgid "Estimates"
@@ -4042,6 +4083,10 @@ msgstr "Find the original ticket"
 #: components/live/standup.tsx
 msgid "Finish"
 msgstr "Finish"
+
+#: lib/org/audit.ts
+msgid "finish on release"
+msgstr "finish on release"
 
 #: app/boards/[id]/edit/page.tsx
 msgid "Finish tickets on release"
@@ -4815,6 +4860,10 @@ msgstr "Linked"
 msgid "linked pull request {pr}"
 msgstr "linked pull request {pr}"
 
+#: lib/org/audit.ts
+msgid "Linked the repository {repo}"
+msgstr "Linked the repository {repo}"
+
 #: components/roadmap/item-tickets.tsx
 msgid "Linked tickets"
 msgstr "Linked tickets"
@@ -5057,9 +5106,17 @@ msgstr "made a change"
 msgid "Made a change ({action})"
 msgstr "Made a change ({action})"
 
+#: lib/org/audit.ts
+msgid "Made a new request form link for {name}"
+msgstr "Made a new request form link for {name}"
+
 #: components/ticket/history-panel.tsx
 msgid "made it part of {to}"
 msgstr "made it part of {to}"
+
+#: lib/org/audit.ts
+msgid "Made the roadmap {title} visible to {seenBy}"
+msgstr "Made the roadmap {title} visible to {seenBy}"
 
 #. placeholder {0}: column.name
 #: components/board/column-list.tsx
@@ -6329,6 +6386,10 @@ msgstr "Open the full ticket"
 msgid "Open the ticket"
 msgstr "Open the ticket"
 
+#: lib/org/audit.ts
+msgid "Opened the request form of {name}"
+msgstr "Opened the request form of {name}"
+
 #: components/intake/intake-settings.tsx
 #: components/settings/integrations.tsx
 msgid "Opening…"
@@ -6920,6 +6981,10 @@ msgstr "Refinement"
 msgid "Refresh to see changes others have made."
 msgstr "Refresh to see changes others have made."
 
+#: lib/org/audit.ts
+msgid "Refused attempts"
+msgstr "Refused attempts"
+
 #: components/ticket/bugfixes-panel.tsx
 msgid "Regressed"
 msgstr "Regressed"
@@ -7085,6 +7150,7 @@ msgstr "Reporting"
 #: app/projects/[id]/edit/page.tsx
 #: components/project/repositories.tsx
 #: components/settings/integrations.tsx
+#: lib/org/audit.ts
 msgid "Repositories"
 msgstr "Repositories"
 
@@ -7150,6 +7216,10 @@ msgstr "Resume"
 #: components/board/review.tsx
 msgid "Review"
 msgstr "Review"
+
+#: lib/org/audit.ts
+msgid "review column"
+msgstr "review column"
 
 #: components/sprint/sprint-bar.tsx
 msgid "Review the imported tickets first"
@@ -7220,6 +7290,7 @@ msgstr "Roadmap view"
 #: app/dashboard/page.tsx
 #: app/roadmaps/page.tsx
 #: components/project/work-tabs.tsx
+#: lib/org/audit.ts
 msgid "Roadmaps"
 msgstr "Roadmaps"
 
@@ -8028,9 +8099,17 @@ msgstr "Stop waiting on {title}"
 msgid "Stop watching"
 msgstr "Stop watching"
 
+#: lib/org/audit.ts
+msgid "Stopped {origin} embedding"
+msgstr "Stopped {origin} embedding"
+
 #: lib/api/error-codes.ts
 msgid "Stripe isn't configured"
 msgstr "Stripe isn't configured"
+
+#: lib/org/audit.ts
+msgid "style"
+msgstr "style"
 
 #: app/boards/[id]/edit/page.tsx
 msgid "Style"
@@ -8106,6 +8185,7 @@ msgstr "Task"
 msgid "Tasks"
 msgstr "Tasks"
 
+#: lib/org/audit.ts
 #: lib/org/organization-settings.ts
 msgid "team"
 msgstr "team"
@@ -8267,6 +8347,10 @@ msgstr "That ticket prefix is already used by another project."
 msgid "that would make tickets block each other in a loop"
 msgstr "that would make tickets block each other in a loop"
 
+#: lib/org/audit.ts
+msgid "The {kind} “{name}” expired"
+msgstr "The {kind} “{name}” expired"
+
 #: components/staff/help-editor.tsx
 msgid "The answers in the help panel, in this order: the first ones for a page are suggested there before anyone types."
 msgstr "The answers in the help panel, in this order: the first ones for a page are suggested there before anyone types."
@@ -8425,6 +8509,10 @@ msgstr "the slug is lower-case letters, digits and dashes"
 #: app/boards/[id]/page.tsx
 msgid "The sprint ends today, so “{0}” went to the backlog."
 msgstr "The sprint ends today, so “{0}” went to the backlog."
+
+#: lib/org/audit.ts
+msgid "the team"
+msgstr "the team"
 
 #: components/intake/request-form.tsx
 msgid "The team will look at your request."
@@ -9024,6 +9112,10 @@ msgstr "Unlink {0}? Its pull requests stop linking to this project's tickets."
 msgid "unlinked pull request {pr}"
 msgstr "unlinked pull request {pr}"
 
+#: lib/org/audit.ts
+msgid "Unlinked the repository {repo}"
+msgstr "Unlinked the repository {repo}"
+
 #: components/settings/chat-dm.tsx
 msgid "Unlinking…"
 msgstr "Unlinking…"
@@ -9215,6 +9307,14 @@ msgstr "waiting to start"
 msgid "Was waiting on (all done)"
 msgstr "Was waiting on (all done)"
 
+#: lib/org/audit.ts
+msgid "Wasn’t allowed: {route}"
+msgstr "Wasn’t allowed: {route}"
+
+#: lib/org/audit.ts
+msgid "Wasn’t allowed: {route} ({why})"
+msgstr "Wasn’t allowed: {route} ({why})"
+
 #: components/work/mentions.tsx
 msgid "Watch again"
 msgstr "Watch again"
@@ -9354,6 +9454,10 @@ msgstr "What's wrong / what's needed?"
 #: components/settings/audit-log.tsx
 msgid "When"
 msgstr "When"
+
+#: lib/org/audit.ts
+msgid "when a sprint ends"
+msgstr "when a sprint ends"
 
 #: app/boards/[id]/edit/page.tsx
 msgid "When a sprint ends"
