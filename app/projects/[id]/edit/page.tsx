@@ -95,7 +95,7 @@ export default function EditProjectPage() {
           </Tabs>
         </SettingsCard>
         <SettingsCard wide icon={PlugIcon} title={t`Integrations`} description={t`Other tools this project works with: its team’s Google Chat space, and the repositories whose pull requests link to its tickets.`}>
-          <Tabs defaultValue="chat">
+          <Tabs defaultValue="repos">
             <TabsList>
               <TabsTrigger value="chat">Google Chat</TabsTrigger>
               <TabsTrigger value="repos"><Trans>Repositories</Trans></TabsTrigger>
