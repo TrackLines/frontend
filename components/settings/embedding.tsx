@@ -25,9 +25,9 @@ export function normalizeOrigin(raw: string): string | null {
 
 type Data = { origins: EmbedOrigin[]; can_manage: boolean };
 
-// EmbeddingSettings: the org's allowed embed origins and the snippets to paste on a site. The list is
-// the opt-in — a widget only works from an origin that's on it (TL-494).
-export function EmbeddingSettings() {
+// EmbeddingSettings: a project's allowed embed origins and the snippets to paste on a site (per project
+// since TL-683). The list is the opt-in — a widget only works from an origin that's on it (TL-494).
+export function EmbeddingSettings({ projectId }: { projectId: string }) {
   const token = useToken();
   const { t } = useLingui();
   const [data, setData] = useState<Data | null>(null);
@@ -35,8 +35,8 @@ export function EmbeddingSettings() {
   const [error, setError] = useState('');
   const signedIn = token !== null;
   useEffect(() => {
-    if (token) embed.origins(token).then(setData, () => setError(t`Couldn’t load embedding settings.`));
-  }, [signedIn]);
+    if (token) embed.origins(projectId, token).then(setData, () => setError(t`Couldn’t load embedding settings.`));
+  }, [signedIn, projectId]);
 
   async function add(raw: string) {
     const origin = normalizeOrigin(raw);
@@ -51,7 +51,7 @@ export function EmbeddingSettings() {
     setBusy(true);
     setError('');
     try {
-      const created = await embed.addOrigin(origin, token!);
+      const created = await embed.addOrigin(projectId, origin, token!);
       setData((d) => (d ? { ...d, origins: [...d.origins, created].sort((a, b) => a.origin.localeCompare(b.origin)) } : d));
       return true;
     } catch {
@@ -66,7 +66,7 @@ export function EmbeddingSettings() {
     setBusy(true);
     setError('');
     try {
-      await embed.removeOrigin(id, token!);
+      await embed.removeOrigin(projectId, id, token!);
       setData((d) => (d ? { ...d, origins: d.origins.filter((o) => o.id !== id) } : d));
     } catch {
       setError(t`Couldn’t remove that origin. Please try again.`);
@@ -81,14 +81,14 @@ export function EmbeddingSettings() {
   const [keyBusy, setKeyBusy] = useState(false);
   const [keyError, setKeyError] = useState('');
   useEffect(() => {
-    if (token) embed.keys(token).then(setKeys, () => setKeyError(t`Couldn’t load embed keys.`));
-  }, [signedIn]);
+    if (token) embed.keys(projectId, token).then(setKeys, () => setKeyError(t`Couldn’t load embed keys.`));
+  }, [signedIn, projectId]);
 
   async function createKey(label: string) {
     setKeyBusy(true);
     setKeyError('');
     try {
-      const created = await embed.createKey(label.trim(), token!);
+      const created = await embed.createKey(projectId, label.trim(), token!);
       setKeys((k) => (k ? { ...k, keys: [created, ...k.keys] } : k));
       return true;
     } catch {
@@ -103,7 +103,7 @@ export function EmbeddingSettings() {
     setKeyBusy(true);
     setKeyError('');
     try {
-      await embed.deleteKey(id, token!);
+      await embed.deleteKey(projectId, id, token!);
       setKeys((k) => (k ? { ...k, keys: k.keys.filter((x) => x.id !== id) } : k));
       setUsage((u) => { const { [id]: _drop, ...rest } = u; return rest; });
     } catch {
@@ -115,7 +115,7 @@ export function EmbeddingSettings() {
 
   function showUsage(id: string) {
     if (!token || usage[id]) return;
-    embed.keyUsage(id, token).then((rows) => setUsage((u) => ({ ...u, [id]: rows })), () => {});
+    embed.keyUsage(projectId, id, token).then((rows) => setUsage((u) => ({ ...u, [id]: rows })), () => {});
   }
 
   return (
@@ -158,9 +158,9 @@ export function EmbeddingView({ data, busy, error, onAdd, onRemove, origin }: {
   return (
     <div className="grid gap-5 text-sm">
       <p className="text-muted-foreground">
-        <Trans>Put a public roadmap or your request form on your own site. A widget runs on your page and calls TrackLin.es, so
-        every site it runs on must be listed here first — otherwise the browser blocks it. Adding a site is what turns
-        embedding on.</Trans>
+        <Trans>Put this project’s public roadmaps or its request form on your own site. A widget runs on your page and calls
+        TrackLin.es, so every site it runs on must be listed here first — otherwise the browser blocks it. Adding a site is
+        what turns embedding on, for this project only.</Trans>
       </p>
 
       <section className="grid gap-2">
@@ -187,15 +187,16 @@ export function EmbeddingView({ data, busy, error, onAdd, onRemove, origin }: {
             <Button type="submit" size="sm" disabled={busy || !value.trim()}><Trans>Add site</Trans></Button>
           </form>
         ) : (
-          data !== null && <p className="text-muted-foreground"><Trans>Only organization admins can add or remove sites.</Trans></p>
+          data !== null && <p className="text-muted-foreground"><Trans>Only people who manage this project can add or remove sites.</Trans></p>
         )}
         {error && <p role="alert" className="text-destructive">{error}</p>}
       </section>
 
       <section className="grid gap-3">
         <h2 className="font-semibold"><Trans>Paste on your site</Trans></h2>
+        <p className="text-muted-foreground"><Trans>They work only on the sites allowed above.</Trans></p>
         <Snippet label={t`Roadmap`} hint={t`Replace YOUR_ROADMAP_ID with the roadmap’s id (it’s in the roadmap’s share link, /r/<id>).`} code={roadmapSnippet} />
-        <Snippet label={t`Request form`} hint={t`Replace YOUR_REQUEST_TOKEN with your form’s token (Settings → project → request form).`} code={requestSnippet} />
+        <Snippet label={t`Request form`} hint={t`Replace YOUR_REQUEST_TOKEN with the token in this project’s request form link (Edit project → Request form).`} code={requestSnippet} />
       </section>
     </div>
   );
@@ -274,7 +275,7 @@ export function EmbedsView({ data, usage, busy, error, onCreate, onDelete, onSho
                 )
               )}
               <Snippet label={t`Roadmap`} hint={t`Replace YOUR_ROADMAP_ID with the roadmap’s id (its share link, /r/<id>).`} code={`<script src="${site}/embed.js" data-roadmap="YOUR_ROADMAP_ID" data-key="${k.key}"></script>`} />
-              <Snippet label={t`Request form`} hint={t`Replace YOUR_REQUEST_TOKEN with your form’s token (Settings → project → request form).`} code={`<script src="${site}/embed.js" data-request="YOUR_REQUEST_TOKEN" data-key="${k.key}"></script>`} />
+              <Snippet label={t`Request form`} hint={t`Replace YOUR_REQUEST_TOKEN with the token in this project’s request form link (Edit project → Request form).`} code={`<script src="${site}/embed.js" data-request="YOUR_REQUEST_TOKEN" data-key="${k.key}"></script>`} />
             </li>
           ))}
         </ul>

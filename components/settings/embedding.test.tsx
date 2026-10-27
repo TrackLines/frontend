@@ -37,7 +37,7 @@ test('an admin gets the add form and remove buttons; a member does not', () => {
   expect(member).toContain('https://shop.example');
   expect(member).not.toContain('Add site');
   expect(member).not.toContain('>Remove<');
-  expect(member).toContain('Only organization admins');
+  expect(member).toContain('Only people who manage this project can add or remove sites.');
 });
 
 test('empty list tells an admin to add a site; loading shows a status', () => {
@@ -84,4 +84,22 @@ test('create and delete are for admins only', () => {
   const member = renderKeys({ data: { keys: [key()], can_manage: false } });
   expect(member).not.toContain('Create key');
   expect(member).not.toContain('>Delete<');
+});
+
+// TL-683: embedding belongs to the project — its own page from Edit project, gone from org settings, and
+// every call is the project's
+test('embedding lives in the project, not the organization (source)', async () => {
+  const read = (p: string) => Bun.file(new URL(p, import.meta.url)).text();
+  const edit = await read('../../app/projects/[id]/edit/page.tsx');
+  expect(edit).toContain("is('embedding').enabled() && <SettingsCard icon={CodeIcon} title={t`Embedding`} href={`/projects/${project.id}/embedding`}");
+  expect(await read('../../app/projects/[id]/embedding/page.tsx')).toContain('<EmbeddingSettings projectId={id} />');
+  expect(await read('../../app/settings/page.tsx')).not.toContain('/settings/embedding');
+  expect(await Bun.file(new URL('../../app/settings/embedding/page.tsx', import.meta.url)).exists()).toBe(false);
+  const api = await read('../../lib/api.ts');
+  expect(api).toContain('`/projects/${encodeURIComponent(project)}/embed/${rest}`');
+  expect(api).not.toContain("'/embed/origins'");
+});
+
+test('the snippets say they work only on the allowed sites', () => {
+  expect(render({ data: { origins: [], can_manage: true } })).toContain('They work only on the sites allowed above.');
 });
