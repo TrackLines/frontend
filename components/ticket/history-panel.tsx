@@ -7,15 +7,17 @@ import { Trans } from '@lingui/react/macro';
 import { HistoryIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { When } from '@/components/when';
-import { tickets, type Assignee, type HistoryEntry } from '@/lib/api';
+import { ApiError, tickets, type Assignee, type HistoryEntry } from '@/lib/api';
 import { personLabel } from '@/lib/people';
 
 // HistoryPanel: the ticket's lifecycle (TL-76), on the full ticket page only: it's detail for looking
 // back, not for working the board, so the board's dialog and side view leave it out.
 export function HistoryPanel({ ticketId, token, people }: { ticketId: string; token: string; people: Assignee[] | null }) {
-  const [entries, setEntries] = useState<HistoryEntry[] | null>(null);
+  const [entries, setEntries] = useState<HistoryEntry[] | 'unavailable' | null>(null);
   useEffect(() => {
-    tickets.history(ticketId, token).then(setEntries, () => setEntries(null)); // no panel rather than an error
+    // no panel rather than an error, except when the history is held elsewhere and can't be reached
+    // (TL-667): then say so, so it doesn't look like there's none
+    tickets.history(ticketId, token).then(setEntries, (err) => setEntries(err instanceof ApiError && err.code === 'history_unavailable' ? 'unavailable' : null));
   }, [ticketId]); // token refreshes must not refetch
   // opened from the board's History button (/tickets/<id>#history): the panel loads after the page,
   // so the browser's own jump to #history found nothing; go there once it's here
@@ -57,13 +59,15 @@ export function historySteps(i18n: I18n, entries: HistoryEntry[], people: Assign
 }
 
 // HistoryPanelView: the list (pure, for tests).
-export function HistoryPanelView({ entries, people }: { entries: HistoryEntry[]; people: Assignee[] | null }) {
+export function HistoryPanelView({ entries, people }: { entries: HistoryEntry[] | 'unavailable'; people: Assignee[] | null }) {
   const { i18n } = useLingui();
-  const steps = historySteps(i18n, entries, people);
+  const steps = entries === 'unavailable' ? [] : historySteps(i18n, entries, people);
   return (
     <section id="history" aria-label={i18n._(msg`History`)} className="grid scroll-mt-4 gap-2 rounded-lg border p-3 text-sm">
       <h2 className="flex items-center gap-1.5 font-semibold"><HistoryIcon className="size-4" aria-hidden /> <Trans>History</Trans></h2>
-      {steps.length === 0 ? (
+      {entries === 'unavailable' ? (
+        <p role="status" className="text-muted-foreground"><Trans>History can’t be loaded right now. Try again shortly.</Trans></p>
+      ) : steps.length === 0 ? (
         <p className="text-muted-foreground"><Trans>Nothing recorded yet. History is kept from October 2026.</Trans></p>
       ) : (
         <ol className="grid gap-1.5">

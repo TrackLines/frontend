@@ -4032,6 +4032,10 @@ msgstr "Alta"
 msgid "History"
 msgstr "Histórico"
 
+#: components/ticket/history-panel.tsx
+msgid "History can’t be loaded right now. Try again shortly."
+msgstr "Não foi possível carregar o histórico agora. Tente novamente em instantes."
+
 #: components/hosted-bar.tsx
 msgid "Host"
 msgstr "Condutor"
@@ -8081,6 +8085,10 @@ msgstr "este ticket não está aguardando revisão"
 #: components/board/review.tsx
 msgid "This ticket isn’t waiting for review any more."
 msgstr "Este ticket não está mais aguardando revisão."
+
+#: lib/error-codes.ts
+msgid "this ticket’s history can’t be loaded right now: try again shortly"
+msgstr "não foi possível carregar o histórico deste ticket agora: tente novamente em instantes"
 
 #: lib/google-chat.ts
 msgid "Ticket assigned (“assigned TL-12 to Sam”)"

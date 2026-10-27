@@ -4032,6 +4032,10 @@ msgstr "High"
 msgid "History"
 msgstr "History"
 
+#: components/ticket/history-panel.tsx
+msgid "History can’t be loaded right now. Try again shortly."
+msgstr "History can’t be loaded right now. Try again shortly."
+
 #: components/hosted-bar.tsx
 msgid "Host"
 msgstr "Host"
@@ -8081,6 +8085,10 @@ msgstr "this ticket isn't waiting for review"
 #: components/board/review.tsx
 msgid "This ticket isn’t waiting for review any more."
 msgstr "This ticket isn’t waiting for review any more."
+
+#: lib/error-codes.ts
+msgid "this ticket’s history can’t be loaded right now: try again shortly"
+msgstr "this ticket’s history can’t be loaded right now: try again shortly"
 
 #: lib/google-chat.ts
 msgid "Ticket assigned (“assigned TL-12 to Sam”)"
