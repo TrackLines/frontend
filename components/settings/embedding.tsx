@@ -3,11 +3,11 @@
 import { plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
-import { CopyButton } from '@/components/copy-link';
+import { CopyButton } from '@/components/common/copy-link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { embed, type EmbedKey, type EmbedOrigin, type EmbedUsage } from '@/lib/api';
-import { useToken } from '@/lib/use-token';
+import { useToken } from '@/lib/hooks/use-token';
 
 // normalizeOrigin mirrors the backend: a bare web origin (scheme://host[:port]), lowercased, no path,
 // or null. Uses the platform URL parser rather than hand-rolling one.

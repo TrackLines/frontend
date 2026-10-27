@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { SettingsCard } from './settings-card';
 import type { Assignee, FileCleanup } from '@/lib/api';
-import { personLabel } from '@/lib/people';
+import { personLabel } from '@/lib/work/people';
 import { dates } from '@/lib/i18n';
 
 // hasCleanup: is there anything to show? Settings only links the page when there is (TL-261).

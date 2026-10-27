@@ -1,5 +1,5 @@
 import { useLingui } from '@lingui/react/macro';
-import { CopyButton } from '@/components/copy-link';
+import { CopyButton } from '@/components/common/copy-link';
 
 export function TicketKey({ value, copy = false }: { value?: string | null; copy?: boolean }) {
   const { t } = useLingui();

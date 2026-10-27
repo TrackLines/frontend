@@ -1,4 +1,4 @@
-import { HISTORY, type LegalDoc } from '@/lib/legal-history';
+import { HISTORY, type LegalDoc } from '@/lib/legal/legal-history';
 
 // /legal-versions.json: every published version (no text), for the backend, which tells everyone
 // in-app the first time it sees a new one (TL-424).

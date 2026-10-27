@@ -102,7 +102,7 @@ test('embedding lives in the project, in the External panel beside the request f
   for (const gone of ['title={t`Request form`}', 'title="Google Chat"', 'title={t`Repositories`}', '/embedding`}']) expect(edit).not.toContain(gone);
   expect(await Bun.file(new URL('../../app/projects/[id]/embedding/page.tsx', import.meta.url)).exists()).toBe(false);
   expect(await read('../../app/settings/page.tsx')).not.toContain('/settings/embedding');
-  const api = await read('../../lib/api.ts');
+  const api = await read('../../lib/api/index.ts');
   expect(api).toContain('`/projects/${encodeURIComponent(project)}/embed/${rest}`');
   expect(api).not.toContain("'/embed/origins'");
 });

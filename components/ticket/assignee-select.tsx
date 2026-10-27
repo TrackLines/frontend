@@ -6,8 +6,8 @@ import { useLingui } from '@lingui/react';
 import { useEffect, useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { tickets, type Assignee, type Ticket } from '@/lib/api';
-import { awayText } from '@/lib/away';
-import { personLabel, shownLabel } from '@/lib/people';
+import { awayText } from '@/lib/work/away';
+import { personLabel, shownLabel } from '@/lib/work/people';
 
 const NONE = '__unassigned';
 

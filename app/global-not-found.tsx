@@ -3,9 +3,9 @@ import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { ThemeProvider } from 'next-themes';
 import { msg } from '@lingui/core/macro';
-import { serverI18n, serverLocale } from '@/lib/server-i18n';
+import { serverI18n, serverLocale } from '@/lib/i18n/server-i18n';
 import { Geist } from 'next/font/google';
-import { THEME } from '@/lib/theme';
+import { THEME } from '@/lib/site/theme';
 import { cn } from '@/lib/utils';
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' }); // the layout's font too

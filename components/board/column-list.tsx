@@ -8,7 +8,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { addColumn, changeColumn, MAX_COLUMN_NAME, movable, moveColumn, pickReview, removeColumn, reviewKey, type Draft, type DraftColumn } from '@/lib/board-edit';
+import { addColumn, changeColumn, MAX_COLUMN_NAME, movable, moveColumn, pickReview, removeColumn, reviewKey, type Draft, type DraftColumn } from '@/lib/board/board-edit';
 
 // ColumnList: the edit board page's columns, as a sortable list (TL-470). Drag the handle (or use the
 // arrows, or the keyboard) to reorder; rename; set a WIP limit; add (before Done); remove an empty

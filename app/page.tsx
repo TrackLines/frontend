@@ -2,15 +2,15 @@ import { redirect } from 'next/navigation';
 import { auth } from '@clerk/nextjs/server';
 import Link from 'next/link';
 import { buttonVariants } from '@/components/ui/button';
-import { McpConnect } from '@/components/mcp-connect';
+import { McpConnect } from '@/components/settings/mcp-connect';
 import { FEATURES } from '@/components/landing/features';
 import { BoardPreview } from '@/components/landing/board-preview';
 import { Card } from '@/components/ui/card';
 
-import { OUR_REQUEST_FORM, OUR_ROADMAP } from '@/lib/our-links';
+import { OUR_REQUEST_FORM, OUR_ROADMAP } from '@/lib/site/our-links';
 import { billing, type PlanInfo } from '@/lib/api';
-import { formatPrice } from '@/lib/plans';
-import { serverI18n } from '@/lib/server-i18n';
+import { formatPrice } from '@/lib/org/plans';
+import { serverI18n } from '@/lib/i18n/server-i18n';
 
 export default async function Home() {
   const { userId } = await auth();

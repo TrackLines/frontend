@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ContactForm } from '@/components/contact-form';
-import { OUR_REQUEST_FORM } from '@/lib/our-links';
+import { ContactForm } from '@/components/landing/contact-form';
+import { OUR_REQUEST_FORM } from '@/lib/site/our-links';
 
 export const metadata: Metadata = { title: 'Contact · TrackLin.es', description: 'Questions about TrackLin.es, billing, privacy or deleting your data.' };
 

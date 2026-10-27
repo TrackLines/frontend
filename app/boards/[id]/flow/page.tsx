@@ -3,11 +3,11 @@
 import { useParams } from 'next/navigation';
 import { useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
-import { FlowReport } from '@/components/board/flow-report';
-import { LoadError } from '@/components/load-error';
+import { FlowReport } from '@/components/sprint/flow-report';
+import { LoadError } from '@/components/layout/load-error';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ApiError, boards, type Board, type BoardFlow } from '@/lib/api';
-import { useToken } from '@/lib/use-token';
+import { useToken } from '@/lib/hooks/use-token';
 
 // /boards/<id>/flow: a Kanban board's flow report (TL-622): its charts on one page, to save as a PDF
 // (the browser's print) or as Markdown (the server's, TL-621).

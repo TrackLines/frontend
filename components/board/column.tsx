@@ -4,7 +4,7 @@ import { Plural, Trans, useLingui } from '@lingui/react/macro';
 import type { ReactNode } from 'react';
 import { Badge } from '@/components/ui/badge';
 import type { Column as BoardColumn } from '@/lib/api';
-import { points, type EstimateScale } from '@/lib/estimates';
+import { points, type EstimateScale } from '@/lib/board/estimates';
 
 type ColumnProps = {
   column: BoardColumn;

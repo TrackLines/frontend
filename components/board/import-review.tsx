@@ -2,7 +2,7 @@
 
 import { Plural, Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
-import { When } from '@/components/when';
+import { When } from '@/components/common/when';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { ApiError, importReview, tickets, type Board, type ReviewTicket } from '@/lib/api';

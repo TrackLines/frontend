@@ -1,9 +1,9 @@
 import Link from 'next/link';
-import { sprintStatus } from '@/components/board/sprint-status';
+import { sprintStatus } from '@/components/sprint/sprint-status';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useLingui } from '@lingui/react';
 import { Trans } from '@lingui/react/macro';
-import { ago } from '@/lib/ago';
+import { ago } from '@/lib/i18n/ago';
 import type { Board } from '@/lib/api';
 import { DoneBar, UrgentBadge } from './project-card';
 

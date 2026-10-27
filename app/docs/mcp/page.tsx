@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { B } from '@/components/docs/prose';
-import { MCP_URL, McpInstructions } from '@/components/mcp-connect';
+import { MCP_URL, McpInstructions } from '@/components/settings/mcp-connect';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 export const metadata: Metadata = {

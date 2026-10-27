@@ -2,7 +2,7 @@ import { afterEach, expect, test } from 'bun:test';
 import { render } from '@/test/i18n';
 import { importReview, tickets, type Board, type ReviewTicket } from '@/lib/api';
 import { ImportReview, ReviewList } from './import-review';
-import { SprintBar } from './sprint-bar';
+import { SprintBar } from '../sprint/sprint-bar';
 
 const realFetch = globalThis.fetch;
 afterEach(() => { globalThis.fetch = realFetch; });

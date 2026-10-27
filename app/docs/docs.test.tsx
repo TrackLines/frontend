@@ -2,7 +2,7 @@ import { expect, mock, test } from 'bun:test';
 import { render as renderToStaticMarkup } from '@/test/i18n';
 import DocsPage, { guides } from './page';
 import EpicsDocs, { differences } from './epics/page';
-import { SiteFooter } from '@/components/site-footer';
+import { SiteFooter } from '@/components/layout/site-footer';
 
 test('the docs list each guide, linked', () => {
   const html = renderToStaticMarkup(<DocsPage />);
@@ -37,7 +37,7 @@ test('the docs are public and linked from every page’s footer', async () => {
 
 test('the MCP guide: keys, every client’s setup (the same steps as Connect AI), the tools and how agents work', async () => {
   const { default: McpDocs, keys, tools, chain } = await import('./mcp/page');
-  const { AGENTS, MCP_URL } = await import('@/components/mcp-connect');
+  const { AGENTS, MCP_URL } = await import('@/components/settings/mcp-connect');
   const { render } = await import('@/test/i18n');
   const prompts = { instructions: 'Work like a member of the team.', tools: [{ name: 'claim_ticket', title: 'Claim ticket', description: 'Assign it to the caller, atomically.' }] };
   const realFetch = globalThis.fetch;
@@ -77,7 +77,7 @@ test('the Google Chat guides: linking your own account, and setting up spaces as
   const { default: You } = await import('./google-chat/page');
   const { default: Org } = await import('./google-chat-org/page');
   mock.module('next/headers', () => ({ cookies: async () => ({ get: () => undefined }) })); // serverI18n outside a request: English
-  const { CHAT_KINDS } = await import('@/lib/google-chat');
+  const { CHAT_KINDS } = await import('@/lib/org/google-chat');
   const { i18nFor } = await import('@/lib/i18n');
   const you = renderToStaticMarkup(<You />);
   for (const s of ['Link your TrackLin.es account', 'You’re linked', '30 minutes', 'Your settings', 'Unlink', 'href="/docs/google-chat-org"']) expect(you).toContain(s);

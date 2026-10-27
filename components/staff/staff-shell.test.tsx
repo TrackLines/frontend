@@ -1,7 +1,7 @@
 import { afterEach, expect, test } from 'bun:test';
 import { render } from '@/test/i18n';
 import { StaffGate } from './staff-shell';
-import { askStaff, forgetStaff } from '@/lib/use-staff';
+import { askStaff, forgetStaff } from '@/lib/hooks/use-staff';
 
 const realFetch = globalThis.fetch;
 afterEach(() => { globalThis.fetch = realFetch; forgetStaff(); });
@@ -26,7 +26,7 @@ test('the backend decides who is staff, asked once a visit: a 404 is no', async 
 });
 
 test('the user menu offers the admin panel to staff only (source)', async () => {
-  const menu = await Bun.file(new URL('../user-menu.tsx', import.meta.url)).text();
+  const menu = await Bun.file(new URL('../layout/user-menu.tsx', import.meta.url)).text();
   expect(menu).toContain("{staff && <UserButton.Action label={t`Admin panel`}");
   expect(menu).toContain("router.push('/staff')");
 });

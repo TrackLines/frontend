@@ -3,9 +3,9 @@
 import { Trans, useLingui } from '@lingui/react/macro';
 import { NeedsReviewBadge, ReviewActions } from './review';
 import { DueBadge } from '@/components/ticket/due-badge';
-import { Markdown } from '@/components/markdown';
-import { When } from '@/components/when';
-import { CopyLink } from '@/components/copy-link';
+import { Markdown } from '@/components/common/markdown';
+import { When } from '@/components/common/when';
+import { CopyLink } from '@/components/common/copy-link';
 import { Attachments } from '@/components/ticket/attachments';
 import { BugfixesPanel } from '@/components/ticket/bugfixes-panel';
 import { PullRequestsPanel } from '@/components/ticket/pull-requests-panel';
@@ -17,15 +17,15 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { tickets, type Ticket, type TicketDetail } from '@/lib/api';
 import { EstimateBadge } from './estimate';
 import { TICKET_DIALOG_WIDTH } from './ticket-dialog';
-import { personLabel } from '@/lib/people';
-import { awayText } from '@/lib/away';
-import { usePeople } from '@/lib/use-people';
+import { personLabel } from '@/lib/work/people';
+import { awayText } from '@/lib/work/away';
+import { usePeople } from '@/lib/hooks/use-people';
 import { TicketKey, ticketPath, linkTitle } from '@/components/ticket/ticket-key';
 import Link from 'next/link';
 import { useEffect, useState, type ReactNode } from 'react';
 import { TicketRelations } from '@/components/ticket/relations';
 import { ChecklistCount } from '@/components/ticket/checklist-count';
-import { toggleTask } from '@/lib/checklist';
+import { toggleTask } from '@/lib/ticket/checklist';
 
 type Props = {
   open: boolean;

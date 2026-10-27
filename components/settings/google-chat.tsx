@@ -8,9 +8,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import { CopyButton } from '@/components/copy-link';
+import { CopyButton } from '@/components/common/copy-link';
 import { ApiError, googleChat, type ChatKind, type ChatSpace } from '@/lib/api';
-import { CHAT_KINDS } from '@/lib/google-chat';
+import { CHAT_KINDS } from '@/lib/org/google-chat';
 
 export { CHAT_KINDS }; // the form's own list, kept in lib/google-chat for the docs
 

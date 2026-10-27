@@ -9,8 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ApiError, importsApi, type CSVField, type ImportJob } from '@/lib/api';
-import { CSV_FIELDS, guessMapping, headerOf, prefixFor } from '@/lib/csv-import';
-import { useToken } from '@/lib/use-token';
+import { CSV_FIELDS, guessMapping, headerOf, prefixFor } from '@/lib/org/csv-import';
+import { useToken } from '@/lib/hooks/use-token';
 
 const NONE = '-'; // a Select value for "not used"
 

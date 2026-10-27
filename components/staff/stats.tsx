@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { staff, type StaffCount, type SystemStats } from '@/lib/api';
-import { useToken } from '@/lib/use-token';
+import { useToken } from '@/lib/hooks/use-token';
 
 const TAGS: Record<string, string> = { en: 'en-GB', pt: 'pt-BR', tlh: 'en-GB' };
 const number = (i18n: I18n, n: number) => new Intl.NumberFormat(TAGS[i18n.locale] ?? i18n.locale).format(n);

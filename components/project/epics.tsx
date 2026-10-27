@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { TicketKey } from '@/components/ticket/ticket-key';
 import { tickets, type EpicProgress, type EpicSummary } from '@/lib/api';
-import { useAutoRefresh } from '@/lib/use-auto-refresh';
+import { useAutoRefresh } from '@/lib/hooks/use-auto-refresh';
 
 // epicSize: "3 of 5 done · 13 points · 2 not sized" (TL-214).
 export function epicSize(p: EpicProgress, i18n: I18n): string {

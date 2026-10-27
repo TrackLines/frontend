@@ -6,8 +6,8 @@ import { EstimateSelect } from '@/components/board/estimate';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ApiError, boards as boardsApi, plannedSprints, sprints, tickets, type Board, type PlannedSprint, type Velocity } from '@/lib/api';
-import { scaleValues, type EstimateScale } from '@/lib/estimates';
-import { fullness, moveTargets, overNote } from '@/lib/move-to-board';
+import { scaleValues, type EstimateScale } from '@/lib/board/estimates';
+import { fullness, moveTargets, overNote } from '@/lib/ticket/move-to-board';
 
 type Loaded = { board: Board; velocity?: Velocity; planned: PlannedSprint[] }; // no velocity: a kanban board
 

@@ -7,7 +7,7 @@ import { msg, plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
 import { projectTickets, type TicketOption } from '@/components/ticket/dependencies';
-import { TypeBadge } from '@/components/ticket-type';
+import { TypeBadge } from '@/components/ticket/ticket-type';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { roadmaps, tickets, type EpicSummary, type TicketType } from '@/lib/api';

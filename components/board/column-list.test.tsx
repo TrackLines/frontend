@@ -1,7 +1,7 @@
 import { expect, test } from 'bun:test';
 import { render as renderToStaticMarkup } from '@/test/i18n';
 import { ColumnList } from './column-list';
-import { addColumn, draftOf } from '@/lib/board-edit';
+import { addColumn, draftOf } from '@/lib/board/board-edit';
 import type { Board } from '@/lib/api';
 
 const board = {

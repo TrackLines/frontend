@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress, ProgressLabel } from '@/components/ui/progress';
 import { Plural, Trans, useLingui } from '@lingui/react/macro';
-import { ago } from '@/lib/ago';
+import { ago } from '@/lib/i18n/ago';
 import type { Project } from '@/lib/api';
 
 // ProjectCard is one project on the projects page: name, urgent count, sizes and progress.

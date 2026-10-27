@@ -1,6 +1,6 @@
 'use client';
 
-import { MarkdownTextarea } from '@/components/markdown';
+import { MarkdownTextarea } from '@/components/common/markdown';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { EyeIcon } from 'lucide-react';

@@ -2,8 +2,8 @@
 
 import { Trans } from '@lingui/react/macro';
 import { useEffect } from 'react';
-import { I18n } from '@/components/i18n-provider';
-import { reportClient } from '@/lib/report';
+import { I18n } from '@/components/layout/i18n-provider';
+import { reportClient } from '@/lib/server/report';
 
 // The root layout itself crashed: reported to Bugfixes (TL-292). It replaces the whole page, so it
 // brings its own html and body, without the app's styles.

@@ -2,7 +2,7 @@ import { expect, test } from 'bun:test';
 import { render as renderToStaticMarkup } from '@/test/i18n';
 import { i18nFor } from '@/lib/i18n';
 import { agentName, ApiKeyList, DEFAULT_DAYS, expiry, FreshKey, keyInput, LifetimeField, LIFETIMES, NewKeyFields, splitSecret } from './api-keys';
-import { McpInstructions } from '@/components/mcp-connect';
+import { McpInstructions } from '@/components/settings/mcp-connect';
 import type { ApiKey } from '@/lib/api';
 
 const i18n = i18nFor('en');

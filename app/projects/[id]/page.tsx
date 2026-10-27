@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { LoadError } from '@/components/load-error';
+import { LoadError } from '@/components/layout/load-error';
 import { RoadmapRow } from '@/components/project/roadmap-row';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -11,14 +11,14 @@ import { BoardCard } from '@/components/project/board-card';
 import { NewBoardButton } from '@/components/project/new-board';
 import { RequestsLink } from '@/components/intake/requests-link';
 import { ProjectReportLink } from '@/components/reports/report-links';
-import { RoadmapEditorForm } from '@/components/roadmap-editor-form';
+import { RoadmapEditorForm } from '@/components/roadmap/roadmap-editor-form';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { ApiError, boards, organization, projects, roadmaps, type Project } from '@/lib/api';
-import { canManageRoadmaps } from '@/lib/board-access';
-import { useToken } from '@/lib/use-token';
-import { prefetch, useCachedState } from '@/lib/page-cache';
-import { ProjectSkeleton } from '@/components/page-skeletons';
-import { CopyButton } from '@/components/copy-link';
+import { canManageRoadmaps } from '@/lib/board/board-access';
+import { useToken } from '@/lib/hooks/use-token';
+import { prefetch, useCachedState } from '@/lib/api/page-cache';
+import { ProjectSkeleton } from '@/components/layout/page-skeletons';
+import { CopyButton } from '@/components/common/copy-link';
 
 export default function ProjectPage() {
   const { t } = useLingui();

@@ -2,7 +2,7 @@ import { expect, test } from 'bun:test';
 import { render } from '@/test/i18n';
 import { PlannedBadge } from './planned-badge';
 import { BacklogRow } from '@/components/project/backlog';
-import { DashboardWorkView } from '@/components/dashboard-work';
+import { DashboardWorkView } from '@/components/work/dashboard-work';
 import type { BacklogTicket, TicketSearchResult } from '@/lib/api';
 
 // TL-582: a backlog ticket planned into an upcoming sprint says which.

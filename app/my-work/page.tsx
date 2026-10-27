@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
-import { ListPageSkeleton } from '@/components/page-skeletons';
-import { MyWork } from '@/components/my-work';
-import { useToken } from '@/lib/use-token';
+import { ListPageSkeleton } from '@/components/layout/page-skeletons';
+import { MyWork } from '@/components/work/my-work';
+import { useToken } from '@/lib/hooks/use-token';
 
 export default function MyWorkPage() {
   const { t } = useLingui();

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
-import { When } from '@/components/when';
+import { When } from '@/components/common/when';
 import { Button } from '@/components/ui/button';
 import { boards, type Board } from '@/lib/api';
 

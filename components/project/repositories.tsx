@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, ComboboxList } from '@/components/ui/combobox';
 import { integrations, projectRepos, type GitRepo, type ProjectRepo } from '@/lib/api';
-import { PROVIDER_NAMES, connectHint, GIT_PROVIDERS, integrationError } from '@/lib/integrations';
+import { PROVIDER_NAMES, connectHint, GIT_PROVIDERS, integrationError } from '@/lib/org/integrations';
 
 type GitProvider = ProjectRepo['provider'];
 

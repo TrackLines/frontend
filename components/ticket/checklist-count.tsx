@@ -2,7 +2,7 @@
 
 import { useLingui } from '@lingui/react/macro';
 import { ListChecksIcon } from 'lucide-react';
-import { checklistCount } from '@/lib/checklist';
+import { checklistCount } from '@/lib/ticket/checklist';
 
 // ChecklistCount: "7/19" for a ticket whose details have a checklist; nothing otherwise.
 export function ChecklistCount({ markdown, className = '' }: { markdown: string; className?: string }) {

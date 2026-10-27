@@ -1,10 +1,10 @@
 'use client';
 
 import { Textarea } from '@/components/ui/textarea';
-import { FormPageSkeleton } from '@/components/page-skeletons';
+import { FormPageSkeleton } from '@/components/layout/page-skeletons';
 import Link from 'next/link';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { LoadError } from '@/components/load-error';
+import { LoadError } from '@/components/layout/load-error';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState, type FormEvent } from 'react';
 import { ItemEditor } from '@/components/roadmap/item-editor';
@@ -13,8 +13,8 @@ import { VisibilitySelect } from '@/components/roadmap/visibility';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ApiError, roadmaps, type Roadmap, type Visibility } from '@/lib/api';
-import { useIsAdmin } from '@/lib/use-is-admin';
-import { useToken } from '@/lib/use-token';
+import { useIsAdmin } from '@/lib/hooks/use-is-admin';
+import { useToken } from '@/lib/hooks/use-token';
 
 export default function EditRoadmapPage() {
   const { t } = useLingui();

@@ -1,7 +1,7 @@
 import { expect, test } from 'bun:test';
 import { render as renderToStaticMarkup } from '@/test/i18n';
 import { EpicFilter, epicQuery, filterTicketsByEpic, parseEpic } from './epic-filter';
-import { shownTickets } from '@/lib/board-view';
+import { shownTickets } from '@/lib/board/board-view';
 import { backlog, type EpicSummary, type Ticket } from '@/lib/api';
 
 const epic = (id: string, title: string, done = false): EpicSummary =>

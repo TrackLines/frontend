@@ -4,7 +4,7 @@ import { useLingui } from '@lingui/react/macro';
 import { CalendarClockIcon } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { dates } from '@/lib/i18n';
-import { dueState, dueText, localDay } from '@/lib/due';
+import { dueState, dueText, localDay } from '@/lib/ticket/due';
 
 // DueBadge: a ticket's due date as a countdown (TL-632): red once overdue, highlighted today and
 // tomorrow, plain further out; the date itself on hover. Nothing without a date, or once it's done.

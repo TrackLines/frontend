@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { B, Guide, H2, Items, P, Steps } from '@/components/docs/prose';
-import { REVIEW_MS, TURN_MS } from '@/lib/standup';
+import { REVIEW_MS, TURN_MS } from '@/lib/live/standup';
 
 export const metadata: Metadata = {
   title: 'Standup · TrackLin.es docs',

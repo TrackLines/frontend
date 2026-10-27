@@ -16,8 +16,8 @@ const backend = Bun.serve({
 });
 process.env.BACKEND_URL = `http://localhost:${backend.port}`;
 const reported: string[] = [];
-const realReport = await import('@/lib/report'); // module mocks reach every test file: keep the rest real
-mock.module('@/lib/report', () => ({ ...realReport, reportServer: async (message: string, detail: string) => { reported.push(`${message} | ${detail}`); } }));
+const realReport = await import('@/lib/server/report'); // module mocks reach every test file: keep the rest real
+mock.module('@/lib/server/report', () => ({ ...realReport, reportServer: async (message: string, detail: string) => { reported.push(`${message} | ${detail}`); } }));
 afterAll(() => backend.stop());
 const { GET, POST } = await import('./route');
 
@@ -52,7 +52,7 @@ test('.. never reaches the backend; a 429 keeps Retry-After', async () => {
 });
 
 test('bodies are capped before they are buffered: over 5 MiB is a 413 and never reaches the backend (TL-382)', async () => {
-  const { MAX_PROXY_BODY } = await import('@/lib/proxy');
+  const { MAX_PROXY_BODY } = await import('@/lib/api/proxy');
   const before = seen.length;
   const exact = await POST(new NextRequest('https://tracklin.es/api/big', { method: 'POST', body: 'a'.repeat(MAX_PROXY_BODY) }), ctx(['big']));
   expect(exact.status).toBe(200);

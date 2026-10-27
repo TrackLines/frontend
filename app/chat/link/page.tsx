@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { ChatLinkView, linkError, type LinkResult } from '@/components/settings/chat-dm';
 import { ApiError, chatApp } from '@/lib/api';
-import { useToken } from '@/lib/use-token';
+import { useToken } from '@/lib/hooks/use-token';
 
 // /chat/link?code=…: where the Tracklines Google Chat app's "Link your Tracklines account" goes
 // (TL-289). Signed in (proxy.ts), it asks before linking this account to the Google account the code was made for.

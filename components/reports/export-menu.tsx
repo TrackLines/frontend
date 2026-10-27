@@ -6,7 +6,7 @@ import { CopyIcon, DownloadIcon, FileTextIcon, PrinterIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { reports } from '@/lib/api';
-import type { Range, Scope } from '@/lib/sprint-report';
+import type { Range, Scope } from '@/lib/sprint/sprint-report';
 import { dates } from '@/lib/i18n';
 
 // markdownFile: the download's name, as the server names it: "backend-sprints-2026-08-01-to-2026-09-30.md".

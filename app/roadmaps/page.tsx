@@ -1,15 +1,15 @@
 'use client';
 
-import { ListPageSkeleton } from '@/components/page-skeletons';
+import { ListPageSkeleton } from '@/components/layout/page-skeletons';
 import Link from 'next/link';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
-import { Pager } from '@/components/pager';
+import { Pager } from '@/components/common/pager';
 import { VisibilityBadge } from '@/components/roadmap/visibility';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { projects, roadmaps, type Project, type Roadmap } from '@/lib/api';
-import { useIsAdmin } from '@/lib/use-is-admin';
-import { useToken } from '@/lib/use-token';
+import { useIsAdmin } from '@/lib/hooks/use-is-admin';
+import { useToken } from '@/lib/hooks/use-token';
 
 type RoadmapEntry = { roadmap: Roadmap; project?: Project };
 

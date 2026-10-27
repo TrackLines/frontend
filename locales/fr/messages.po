@@ -12,11 +12,11 @@ msgstr ""
 msgid "“{0}” was added, but some files didn’t attach — add them from the ticket."
 msgstr "« {0} » a été ajouté, mais certains fichiers n’ont pas été joints — ajoutez-les depuis le ticket."
 
-#: lib/attachment-limits.ts
+#: lib/ticket/attachment-limits.ts
 msgid "“{name}” is too big: files can be up to {mb} MB."
 msgstr "« {name} » est trop volumineux : les fichiers peuvent faire jusqu’à {mb} Mo."
 
-#: lib/board-edit.ts
+#: lib/board/board-edit.ts
 msgid "“{name}”: a WIP limit is a whole number from 1 to 999, or none."
 msgstr "« {name} » : une limite WIP est un nombre entier de 1 à 999, ou aucune."
 
@@ -45,7 +45,7 @@ msgstr "(privé)"
 msgid "(skipped {0})"
 msgstr "({0} ignoré)"
 
-#: components/hosted-bar.tsx
+#: components/live/hosted-bar.tsx
 msgid "(you)"
 msgstr "(vous)"
 
@@ -60,16 +60,16 @@ msgid "{0, plural, one {# board} other {# boards}}, one per team. To archive or 
 msgstr "{0, plural, one {# tableau} other {# tableaux}}, un par équipe. Pour en archiver ou en supprimer un, ouvrez-le et utilisez Modifier le tableau."
 
 #. placeholder {0}: -d
-#: lib/due.ts
+#: lib/ticket/due.ts
 msgid "{0, plural, one {# day overdue} other {# days overdue}}"
 msgstr "{0, plural, one {# jour de retard} other {# jours de retard}}"
 
 #. placeholder {0}: Number(days.toFixed(1))
 #. placeholder {0}: plan.length_days
 #. placeholder {0}: sprint.length_days
-#: components/board/flow-charts.tsx
-#: components/board/sprint-bar.tsx
 #: components/project/refinement.tsx
+#: components/sprint/flow-charts.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "{0, plural, one {# day} other {# days}}"
 msgstr "{0, plural, one {# jour} other {# jours}}"
 
@@ -109,12 +109,12 @@ msgid "{0, plural, one {# roadmap} other {# roadmaps}}"
 msgstr "{0, plural, one {# feuille de route} other {# feuilles de route}}"
 
 #. placeholder {0}: results.length
-#: components/ticket-search.tsx
+#: components/ticket/ticket-search.tsx
 msgid "{0, plural, one {# ticket found} other {# tickets found}}"
 msgstr "{0, plural, one {# ticket trouvé} other {# tickets trouvés}}"
 
 #. placeholder {0}: burn.unestimated
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "{0, plural, one {# ticket has no estimate and counts as 0.} other {# tickets have no estimate and count as 0.}}"
 msgstr "{0, plural, one {# ticket n’a pas d’estimation et compte pour 0.} other {# tickets n’ont pas d’estimation et comptent pour 0.}}"
 
@@ -135,13 +135,13 @@ msgid "{0, plural, one {# timeboxed spike} other {# timeboxed spikes}} finished:
 msgstr "{0, plural, one {# spike limité dans le temps terminé} other {# spikes limités dans le temps terminés}} : <0>{within} dans</0> leur timebox."
 
 #. placeholder {0}: d.tickets.length
-#: components/board/past-sprints.tsx
+#: components/sprint/past-sprints.tsx
 msgid "{0, plural, one {finished # ticket} other {finished # tickets}}"
 msgstr "{0, plural, one {# ticket terminé} other {# tickets terminés}}"
 
 #. placeholder {0}: d.tickets.length
 #. placeholder {1}: d.carried_over
-#: components/board/past-sprints.tsx
+#: components/sprint/past-sprints.tsx
 msgid "{0, plural, one {finished # ticket} other {finished # tickets}}, {1} carried over to the next sprint"
 msgstr "{0, plural, one {# ticket terminé} other {# tickets terminés}}, {1} reporté(s) au sprint suivant"
 
@@ -172,7 +172,7 @@ msgid "{0} column"
 msgstr "Colonne {0}"
 
 #. placeholder {0}: d.toFixed(1)
-#: components/board/flow-report.tsx
+#: components/sprint/flow-report.tsx
 msgid "{0} days"
 msgstr "{0} jours"
 
@@ -264,7 +264,7 @@ msgstr "{0} sprints ouverts"
 
 #. placeholder {0}: PROVIDER_NAMES.github
 #. placeholder {1}: PROVIDER_NAMES.bitbucket
-#: lib/integrations.ts
+#: lib/org/integrations.ts
 msgid "{0} or {1}"
 msgstr "{0} ou {1}"
 
@@ -308,7 +308,7 @@ msgstr "{0} à faire"
 
 #. placeholder {0}: board.name
 #. placeholder {1}: flow.weeks
-#: components/board/flow-report.tsx
+#: components/sprint/flow-report.tsx
 msgid "{0}, the last {1} weeks"
 msgstr "{0}, les {1} dernières semaines"
 
@@ -328,11 +328,11 @@ msgstr "{0} : du {startLabel} au {endLabel}"
 msgid "{0}’s name, ticket keys, boards, export, what people outside your organization can reach, and integrations."
 msgstr "Nom, clés de tickets, tableaux, export, ce que les personnes extérieures à votre organisation peuvent atteindre, et intégrations de {0}."
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "{carry, plural, one {unfinished ticket stays on the board} other {unfinished tickets stay on the board}}"
 msgstr "{carry, plural, one {le ticket non terminé reste sur le tableau} other {les tickets non terminés restent sur le tableau}}"
 
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "{closed} closed so far."
 msgstr "{closed} fermé(s) jusqu’à présent."
 
@@ -340,7 +340,7 @@ msgstr "{closed} fermé(s) jusqu’à présent."
 msgid "{column} on {board}"
 msgstr "{column} sur {board}"
 
-#: lib/refinement.ts
+#: lib/live/refinement.ts
 msgid "{count} unestimated"
 msgstr "{count} non estimé(s)"
 
@@ -348,32 +348,32 @@ msgstr "{count} non estimé(s)"
 msgid "{count} urgent"
 msgstr "{count} urgent(s)"
 
-#: lib/due.ts
+#: lib/ticket/due.ts
 msgid "{d, plural, one {Due in # day} other {Due in # days}}"
 msgstr "{d, plural, one {Échéance dans # jour} other {Échéance dans # jours}}"
 
-#: lib/timebox.ts
+#: lib/ticket/timebox.ts
 msgid "{d}d"
 msgstr "{d} j"
 
-#: components/board/sprint-bar.tsx
 #: components/board/ticket-dialog.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "{days, plural, one {# day} other {# days}}"
 msgstr "{days, plural, one {# jour} other {# jours}}"
 
-#: components/ticket-type.tsx
+#: components/ticket/ticket-type.tsx
 msgid "{days}d"
 msgstr "{days} j"
 
-#: components/board/past-sprints.tsx
+#: components/sprint/past-sprints.tsx
 msgid "{done, plural, one {# point done} other {# points done}}"
 msgstr "{done, plural, one {# point terminé} other {# points terminés}}"
 
-#: components/board/past-sprints.tsx
+#: components/sprint/past-sprints.tsx
 msgid "{done, plural, one {# ticket done} other {# tickets done}}"
 msgstr "{done, plural, one {# ticket terminé} other {# tickets terminés}}"
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "{done, plural, one {in “{doneName}” stays with sprint {number}} other {in “{doneName}” stay with sprint {number}}}"
 msgstr "{done, plural, one {dans « {doneName} » reste avec le sprint {number}} other {dans « {doneName} » restent avec le sprint {number}}}"
 
@@ -392,11 +392,11 @@ msgstr "{done} sur {total, plural, one {# ticket terminé} other {# tickets term
 msgid "{done} of {total} done"
 msgstr "{done} sur {total} terminés"
 
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "{doneN} of {total} points done in sprint {number}"
 msgstr "{doneN} sur {total} points terminés dans le sprint {number}"
 
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "{doneN} of {total} tickets done in sprint {number}"
 msgstr "{doneN} sur {total} tickets terminés dans le sprint {number}"
 
@@ -408,27 +408,27 @@ msgstr "{due, plural, one {# fichier vieux d’un an va être supprimé sauf si 
 msgid "{due} due"
 msgstr "{due} à échéance"
 
-#: components/quick-add-ticket.tsx
+#: components/ticket/quick-add-ticket.tsx
 msgid "{failed, plural, one {# file didn’t attach — add it from the ticket.} other {# files didn’t attach — add them from the ticket.}}"
 msgstr "{failed, plural, one {# fichier n’a pas été joint — ajoutez-le depuis le ticket.} other {# fichiers n’ont pas été joints — ajoutez-les depuis le ticket.}}"
 
-#: lib/timebox.ts
+#: lib/ticket/timebox.ts
 msgid "{h}h"
 msgstr "{h} h"
 
-#: components/hosted-bar.tsx
+#: components/live/hosted-bar.tsx
 msgid "{here} here"
 msgstr "{here} présent(s)"
 
-#: components/hosted-bar.tsx
+#: components/live/hosted-bar.tsx
 msgid "{host} is hosting · {here} here"
 msgstr "{host} anime · {here} présent(s)"
 
-#: components/hosted-bar.tsx
+#: components/live/hosted-bar.tsx
 msgid "{host} is hosting the refinement"
 msgstr "{host} anime l’affinage"
 
-#: components/hosted-bar.tsx
+#: components/live/hosted-bar.tsx
 msgid "{host} is hosting the standup"
 msgstr "{host} anime le standup"
 
@@ -436,7 +436,7 @@ msgstr "{host} anime le standup"
 msgid "{hours, plural, one {# hour} other {# hours}}"
 msgstr "{hours, plural, one {# heure} other {# heures}}"
 
-#: components/ticket-type.tsx
+#: components/ticket/ticket-type.tsx
 msgid "{hours}h"
 msgstr "{hours} h"
 
@@ -453,35 +453,35 @@ msgstr "{kind} pour « {0} » — copiez-la maintenant, elle ne sera plus affich
 msgid "{label} · AI"
 msgstr "{label} · IA"
 
-#: components/editable-title.tsx
+#: components/common/editable-title.tsx
 msgid "{Label} name"
 msgstr "Nom de {Label}"
 
-#: components/timebox-countdown.tsx
+#: components/ticket/timebox-countdown.tsx
 msgid "{left} of timebox left"
 msgstr "{left} restant(s) dans la timebox"
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "{length, plural, one {# day} other {# days}}"
 msgstr "{length, plural, one {# jour} other {# jours}}"
 
-#: lib/plans.ts
+#: lib/org/plans.ts
 msgid "{limit, plural, one {# project} other {# projects}}"
 msgstr "{limit, plural, one {# projet} other {# projets}}"
 
-#: lib/organization-settings.ts
+#: lib/org/organization-settings.ts
 msgid "{members, plural, one {# member} other {# members}}"
 msgstr "{members, plural, one {# membre} other {# membres}}"
 
-#: lib/organization-settings.ts
+#: lib/org/organization-settings.ts
 msgid "{members, plural, one {# member} other {# members}} and {pending, plural, one {# invitation} other {# invitations}} pending, of up to {limit} on your plan"
 msgstr "{members, plural, one {# membre} other {# membres}} et {pending, plural, one {# invitation en attente} other {# invitations en attente}}, sur {limit} maximum avec votre offre"
 
-#: lib/organization-settings.ts
+#: lib/org/organization-settings.ts
 msgid "{members, plural, one {# member} other {# members}}, of up to {limit} on your plan"
 msgstr "{members, plural, one {# membre} other {# membres}}, sur {limit} maximum avec votre offre"
 
-#: lib/timebox.ts
+#: lib/ticket/timebox.ts
 msgid "{mm}m"
 msgstr "{mm} min"
 
@@ -509,23 +509,23 @@ msgstr "{name} connecté"
 msgid "{name} is {away}."
 msgstr "{name} est {away}."
 
-#: lib/standup.ts
+#: lib/live/standup.ts
 msgid "{name}’s turn"
 msgstr "Au tour de {name}"
 
-#: components/board/past-sprints.tsx
+#: components/sprint/past-sprints.tsx
 msgid "{of, plural, one {{done} of # point done} other {{done} of # points done}}"
 msgstr "{of, plural, one {{done} sur # point terminé} other {{done} sur # points terminés}}"
 
-#: components/board/past-sprints.tsx
+#: components/sprint/past-sprints.tsx
 msgid "{of, plural, one {{done} of # ticket done} other {{done} of # tickets done}}"
 msgstr "{of, plural, one {{done} sur # ticket terminé} other {{done} sur # tickets terminés}}"
 
-#: lib/refinement.ts
+#: lib/live/refinement.ts
 msgid "{over} over: approved"
 msgstr "{over} en trop : approuvé"
 
-#: lib/refinement.ts
+#: lib/live/refinement.ts
 msgid "{over} over: needs approval to start, or move tickets out"
 msgstr "{over} en trop : nécessite une approbation pour démarrer, ou retirez des tickets"
 
@@ -538,7 +538,7 @@ msgid "{pct}% done, overdue, was due {due}"
 msgstr "{pct} % terminé, en retard, échéance au {due}"
 
 #. placeholder {0}: fmt(a.person_days_away)
-#: lib/refinement.ts
+#: lib/live/refinement.ts
 msgid "{percent}% available · {0, plural, one {# person-day away} other {# person-days away}}"
 msgstr "{percent} % disponible · {0, plural, one {# jour-personne d’absence} other {# jours-personne d’absence}}"
 
@@ -558,7 +558,7 @@ msgstr "{projects} et {members}, avec tableaux et feuilles de route illimités. 
 msgid "{shown} and {more} more"
 msgstr "{shown} et {more} de plus"
 
-#: components/dashboard-work.tsx
+#: components/work/dashboard-work.tsx
 msgid "{shown} of {total, plural, one {# ticket} other {# tickets}} · <0>See all</0>"
 msgstr "{shown} sur {total, plural, one {# ticket} other {# tickets}} · <0>Tout voir</0>"
 
@@ -578,33 +578,33 @@ msgstr "{total, plural, one {# pt restant} other {# pts restants}}"
 msgid "{unestimated} not sized"
 msgstr "{unestimated} non dimensionné(s)"
 
-#: lib/refinement.ts
+#: lib/live/refinement.ts
 msgid "{used, plural, one {# point} other {# points}} · no velocity yet"
 msgstr "{used, plural, one {# point} other {# points}} · pas encore de vélocité"
 
-#: lib/move-to-board.ts
+#: lib/ticket/move-to-board.ts
 msgid "{used, plural, one {# point} other {# points}}, no limit yet"
 msgstr "{used, plural, one {# point} other {# points}}, pas encore de limite"
 
-#: lib/refinement.ts
+#: lib/live/refinement.ts
 msgid "{used, plural, one {# ticket} other {# tickets}} · no velocity yet"
 msgstr "{used, plural, one {# ticket} other {# tickets}} · pas encore de vélocité"
 
-#: lib/move-to-board.ts
+#: lib/ticket/move-to-board.ts
 msgid "{used, plural, one {# ticket} other {# tickets}}, no limit yet"
 msgstr "{used, plural, one {# ticket} other {# tickets}}, pas encore de limite"
 
-#: lib/move-to-board.ts
-#: lib/refinement.ts
+#: lib/live/refinement.ts
+#: lib/ticket/move-to-board.ts
 msgid "{used} / {cap} points"
 msgstr "{used} / {cap} points"
 
-#: lib/move-to-board.ts
-#: lib/refinement.ts
+#: lib/live/refinement.ts
+#: lib/ticket/move-to-board.ts
 msgid "{used} / {cap} tickets"
 msgstr "{used} / {cap} tickets"
 
-#: components/board/flow-charts.tsx
+#: components/sprint/flow-charts.tsx
 msgid "{value}d"
 msgstr "{value} j"
 
@@ -632,7 +632,7 @@ msgstr "← Projets"
 msgid "← Settings"
 msgstr "← Paramètres"
 
-#: components/ticket-search.tsx
+#: components/ticket/ticket-search.tsx
 msgid "↑↓ to move · Enter to open · Esc to close"
 msgstr "↑↓ pour naviguer · Entrée pour ouvrir · Échap pour fermer"
 
@@ -663,19 +663,19 @@ msgstr "<0>À vérifier.</0> Un agent a terminé ceci. Approuvez-le pour le pass
 msgid "<0>Status:</0> {0} <1>(from its linked tickets)</1>"
 msgstr "<0>Statut :</0> {0} <1>(d’après ses tickets liés)</1>"
 
-#: components/notifications-bell.tsx
+#: components/work/notifications-bell.tsx
 msgid "<0>Turn on desktop notifications</0><1> while TrackLin.es is open</1>"
 msgstr "<0>Activer les notifications de bureau</0><1> tant que TrackLin.es est ouvert</1>"
 
-#: lib/timebox.ts
+#: lib/ticket/timebox.ts
 msgid "0m"
 msgstr "0 min"
 
-#: lib/estimates.ts
+#: lib/board/estimates.ts
 msgid "1 to 5"
 msgstr "1 à 5"
 
-#: components/board/sprint-status.ts
+#: components/sprint/sprint-status.ts
 msgid "1 week"
 msgstr "1 semaine"
 
@@ -691,7 +691,7 @@ msgstr "180 jours"
 msgid "2 to 6 capital letters or digits, starting with a letter."
 msgstr "De 2 à 6 lettres majuscules ou chiffres, en commençant par une lettre."
 
-#: components/board/sprint-status.ts
+#: components/sprint/sprint-status.ts
 msgid "2 weeks"
 msgstr "2 semaines"
 
@@ -703,12 +703,12 @@ msgstr "2 à 6 lettres ou chiffres, commençant par une lettre. Les clés exista
 msgid "30 days"
 msgstr "30 jours"
 
-#: components/board/flow-report.tsx
+#: components/sprint/flow-report.tsx
 msgid "85th percentile"
 msgstr "85e centile"
 
 #. placeholder {0}: fmtDays(flow.p85_cycle_days)
-#: components/board/flow-charts.tsx
+#: components/sprint/flow-charts.tsx
 msgid "85th percentile: <0>{0}</0> (dotted line)"
 msgstr "85e centile : <0>{0}</0> (ligne pointillée)"
 
@@ -716,7 +716,7 @@ msgstr "85e centile : <0>{0}</0> (ligne pointillée)"
 msgid "90 days"
 msgstr "90 jours"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "a board needs at least two columns: To do and Done"
 msgstr "un tableau nécessite au moins deux colonnes : À faire et Terminé"
 
@@ -724,7 +724,7 @@ msgstr "un tableau nécessite au moins deux colonnes : À faire et Terminé"
 msgid "A board on TrackLin.es"
 msgstr "Un tableau sur TrackLin.es"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "a board plans at most 2 sprints ahead"
 msgstr "un tableau planifie au maximum 2 sprints à l’avance"
 
@@ -732,15 +732,15 @@ msgstr "un tableau planifie au maximum 2 sprints à l’avance"
 msgid "a column"
 msgstr "une colonne"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "a done ticket can't get new blockers; move it out of Done first"
 msgstr "un ticket terminé ne peut pas recevoir de nouveaux bloqueurs ; sortez-le d’abord de Terminé"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "a done ticket can't get new sub-tickets; move it out of Done first"
 msgstr "un ticket terminé ne peut pas recevoir de nouveaux sous-tickets ; sortez-le d’abord de Terminé"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "a duplicate ticket is already closed"
 msgstr "un ticket en double est déjà fermé"
 
@@ -748,7 +748,7 @@ msgstr "un ticket en double est déjà fermé"
 msgid "A key labels an embed so you can see how often it’s used and on which sites. Add it to the snippet as<0>data-key</0>. It isn’t a secret and doesn’t grant access — a site still has to be in the allowed list above."
 msgstr "Une clé identifie une intégration pour que vous puissiez voir à quelle fréquence elle est utilisée et sur quels sites. Ajoutez-la à l’extrait sous la forme<0>data-key</0>. Ce n’est pas un secret et elle ne donne aucun accès — un site doit toujours figurer dans la liste autorisée ci-dessus."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "a link must be an app route, starting with /"
 msgstr "un lien doit être une page de l’app, commençant par /"
 
@@ -768,44 +768,44 @@ msgstr "Un projet contient un tableau par équipe, un backlog partagé et les fe
 msgid "A public form for customers to suggest features and report bugs; you choose what reaches the backlog."
 msgstr "Un formulaire public permettant aux clients de suggérer des fonctionnalités et de signaler des bugs ; vous choisissez ce qui arrive dans le backlog."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "a session is already running"
 msgstr "une session est déjà en cours"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "a standup is already running: join it"
 msgstr "un standup est déjà en cours : rejoignez-le"
 
-#: lib/people.ts
-#: lib/standup.ts
+#: lib/live/standup.ts
+#: lib/work/people.ts
 msgid "A teammate"
 msgstr "Un coéquipier"
 
-#: lib/labels.ts
+#: lib/ticket/labels.ts
 msgid "A ticket can have at most {MAX_TICKET_LABELS} labels."
 msgstr "Un ticket peut avoir au maximum {MAX_TICKET_LABELS} étiquettes."
 
-#: lib/attachment-limits.ts
+#: lib/ticket/attachment-limits.ts
 msgid "A ticket can hold {MAX_FILES_PER_TICKET} files, so only {room} more can be added here."
 msgstr "Un ticket peut contenir {MAX_FILES_PER_TICKET} fichiers, donc seuls {room} de plus peuvent être ajoutés ici."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "a ticket can't be a duplicate of itself"
 msgstr "un ticket ne peut pas être un doublon de lui-même"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "a ticket can't be its own parent"
 msgstr "un ticket ne peut pas être son propre parent"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "a ticket can't block itself"
 msgstr "un ticket ne peut pas se bloquer lui-même"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "a title (up to 200 characters) and a type (bug or feature) are required"
 msgstr "un titre (200 caractères maximum) et un type (bug ou fonctionnalité) sont requis"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "a valid email address is required"
 msgstr "une adresse e-mail valide est requise"
 
@@ -822,11 +822,11 @@ msgid "Accept in Clerk"
 msgstr "Accepter dans Clerk"
 
 #: components/settings/organization.tsx
-#: lib/organization-settings.ts
+#: lib/org/organization-settings.ts
 msgid "Accept the Clerk email invitation first, then complete the TrackLin.es membership here."
 msgstr "Acceptez d’abord l’invitation Clerk reçue par e-mail, puis finalisez votre adhésion à TrackLin.es ici."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "accept the organization invitation through Clerk before completing this invitation"
 msgstr "acceptez l’invitation de l’organisation via Clerk avant de finaliser cette invitation"
 
@@ -847,7 +847,7 @@ msgstr "Jeton d’accès"
 msgid "Account"
 msgstr "Compte"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "action must be next, previous, jump, pause, resume or end"
 msgstr "action doit être next, previous, jump, pause, resume ou end"
 
@@ -943,15 +943,15 @@ msgstr "Ajouter un site"
 msgid "Add target dates to roadmap items to see them on the Gantt chart."
 msgstr "Ajoutez des dates cibles aux éléments de la feuille de route pour les voir sur le diagramme de Gantt."
 
-#: components/mcp-connect.tsx
+#: components/settings/mcp-connect.tsx
 msgid "Add the server to <0>~/.codex/config.toml</0>:"
 msgstr "Ajoutez le serveur à <0>~/.codex/config.toml</0> :"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "add the team to this board's project first"
 msgstr "ajoutez d’abord l’équipe au projet de ce tableau"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "add them to the team before making them a leader"
 msgstr "ajoutez-les à l’équipe avant d’en faire un responsable"
 
@@ -959,17 +959,17 @@ msgstr "ajoutez-les à l’équipe avant d’en faire un responsable"
 msgid "Add ticket"
 msgstr "Ajouter un ticket"
 
-#: components/mcp-connect.tsx
+#: components/settings/mcp-connect.tsx
 msgid "Add to <0>~/.cursor/mcp.json</0> (or <1>.cursor/mcp.json</1> in a project):"
 msgstr "Ajoutez à <0>~/.cursor/mcp.json</0> (ou <1>.cursor/mcp.json</1> dans un projet) :"
 
-#: components/mcp-connect.tsx
+#: components/settings/mcp-connect.tsx
 msgid "Add to <0>~/.gemini/settings.json</0>:"
 msgstr "Ajoutez à <0>~/.gemini/settings.json</0> :"
 
 #: components/intake/triage.tsx
 #: components/project/backlog.tsx
-#: components/quick-add-ticket.tsx
+#: components/ticket/quick-add-ticket.tsx
 msgid "Add to backlog"
 msgstr "Ajouter au backlog"
 
@@ -986,11 +986,11 @@ msgstr "Ajouter le webhook"
 msgid "Added"
 msgstr "Ajouté"
 
-#: components/quick-add-ticket.tsx
+#: components/ticket/quick-add-ticket.tsx
 msgid "Added “{added}” to {where}’s backlog."
 msgstr "« {added} » ajouté au backlog de {where}."
 
-#: components/quick-add-ticket.tsx
+#: components/ticket/quick-add-ticket.tsx
 msgid "Added “{added}” to the backlog."
 msgstr "« {added} » ajouté au backlog."
 
@@ -1007,7 +1007,7 @@ msgstr "ajouté après le début des sprints"
 msgid "Added as <0>{0}</0>"
 msgstr "Ajouté en tant que <0>{0}</0>"
 
-#: lib/organization-settings.ts
+#: lib/org/organization-settings.ts
 msgid "added by {name}"
 msgstr "ajouté par {name}"
 
@@ -1025,7 +1025,7 @@ msgid "Added to the backlog as <0>{0}</0>."
 msgstr "Ajouté au backlog en tant que <0>{0}</0>."
 
 #: components/project/backlog.tsx
-#: components/quick-add-ticket.tsx
+#: components/ticket/quick-add-ticket.tsx
 msgid "Adding…"
 msgstr "Ajout…"
 
@@ -1037,8 +1037,8 @@ msgstr "Administrateur"
 msgid "Admin email <0>(a user in that domain, to check access with)</0>"
 msgstr "E-mail administrateur <0>(un utilisateur de ce domaine, pour vérifier l’accès)</0>"
 
+#: components/layout/user-menu.tsx
 #: components/staff/staff-shell.tsx
-#: components/user-menu.tsx
 msgid "Admin panel"
 msgstr "Panneau d’administration"
 
@@ -1050,7 +1050,7 @@ msgstr "Ensuite la clé cesse de fonctionner et vous en créez une nouvelle."
 msgid "Agent work needs review"
 msgstr "Le travail d’agent doit être vérifié"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "agents cannot bypass human review"
 msgstr "les agents ne peuvent pas contourner la vérification humaine"
 
@@ -1064,7 +1064,7 @@ msgid "Agents’ finished work waits in {0}"
 msgstr "Le travail terminé des agents attend dans {0}"
 
 #: components/settings/api-keys.tsx
-#: lib/people.ts
+#: lib/work/people.ts
 msgid "AI agent"
 msgstr "Agent IA"
 
@@ -1080,12 +1080,12 @@ msgstr "Clé IA"
 msgid "AI keys can be assigned tickets."
 msgstr "Les clés IA peuvent se voir assigner des tickets."
 
-#: components/mentions.tsx
 #: components/project/backlog.tsx
+#: components/work/mentions.tsx
 msgid "All"
 msgstr "Tous"
 
-#: components/my-work.tsx
+#: components/work/my-work.tsx
 msgid "All boards"
 msgstr "Tous les tableaux"
 
@@ -1093,20 +1093,20 @@ msgstr "Tous les tableaux"
 msgid "All closed"
 msgstr "Tous fermés"
 
-#: components/dashboard-work.tsx
+#: components/work/dashboard-work.tsx
 msgid "All mentions"
 msgstr "Toutes les mentions"
 
-#: components/dashboard-work.tsx
+#: components/work/dashboard-work.tsx
 msgid "All my work"
 msgstr "Tout mon travail"
 
-#: components/board/past-sprints.tsx
+#: components/sprint/past-sprints.tsx
 msgid "All past sprints"
 msgstr "Tous les sprints passés"
 
-#: components/my-work.tsx
-#: components/ticket-search.tsx
+#: components/ticket/ticket-search.tsx
+#: components/work/my-work.tsx
 msgid "All projects"
 msgstr "Tous les projets"
 
@@ -1122,7 +1122,7 @@ msgstr "Tout est traité : le tableau peut lancer son premier sprint."
 msgid "Allowed sites"
 msgstr "Sites autorisés"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "already subscribed — manage it from the billing portal"
 msgstr "déjà abonné — gérez l’abonnement depuis le portail de facturation"
 
@@ -1130,7 +1130,7 @@ msgstr "déjà abonné — gérez l’abonnement depuis le portail de facturatio
 msgid "An agent finished this; a person needs to approve it"
 msgstr "Un agent a terminé ceci ; une personne doit l’approuver"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "an AI agent can't close a ticket on a board with agent review: ask a person to mark it as a duplicate"
 msgstr "un agent IA ne peut pas fermer un ticket sur un tableau avec vérification des agents : demandez à une personne de le marquer comme doublon"
 
@@ -1138,7 +1138,7 @@ msgstr "un agent IA ne peut pas fermer un ticket sur un tableau avec vérificati
 msgid "An AI agent's ticket moved to Done waits for a person to approve it."
 msgstr "Un ticket d’agent IA passé en Terminé attend qu’une personne l’approuve."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "an epic can't be inside another epic"
 msgstr "une epic ne peut pas se trouver dans une autre epic"
 
@@ -1146,7 +1146,7 @@ msgstr "une epic ne peut pas se trouver dans une autre epic"
 msgid "An hour or less"
 msgstr "Une heure ou moins"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "an item's start date must be on or before its target date"
 msgstr "la date de début d’un élément doit être antérieure ou égale à sa date cible"
 
@@ -1162,7 +1162,7 @@ msgstr "Un administrateur de l’organisation peut connecter votre Google Worksp
 msgid "An organization admin or this board’s team leader settles these."
 msgstr "Un administrateur de l’organisation ou le responsable d’équipe de ce tableau les traite."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "an organization can have up to 10 webhook endpoints"
 msgstr "une organisation peut avoir jusqu’à 10 points de terminaison de webhook"
 
@@ -1170,19 +1170,19 @@ msgstr "une organisation peut avoir jusqu’à 10 points de terminaison de webho
 msgid "An organization can have up to 10 webhooks."
 msgstr "Une organisation peut avoir jusqu’à 10 webhooks."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "an organization needs at least one admin"
 msgstr "une organisation nécessite au moins un administrateur"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "an origin like https://example.com is required"
 msgstr "une origine comme https://example.com est requise"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "an outage ends after it starts, and not in the future"
 msgstr "une panne se termine après son début, et pas dans le futur"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "another answer has that slug"
 msgstr "une autre réponse a ce slug"
 
@@ -1190,7 +1190,7 @@ msgstr "une autre réponse a ce slug"
 msgid "another organization"
 msgstr "une autre organisation"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "another project in this organization already uses that key prefix"
 msgstr "un autre projet de cette organisation utilise déjà ce préfixe de clé"
 
@@ -1202,15 +1202,15 @@ msgstr "un autre ticket"
 msgid "Answer"
 msgstr "Réponse"
 
-#: components/ticket-search.tsx
+#: components/ticket/ticket-search.tsx
 msgid "Any assignee"
 msgstr "N’importe quel assigné"
 
-#: components/ticket-search.tsx
+#: components/ticket/ticket-search.tsx
 msgid "Any due date"
 msgstr "Toute échéance"
 
-#: components/mcp-connect.tsx
+#: components/settings/mcp-connect.tsx
 msgid "Any MCP client that supports remote servers over Streamable HTTP:"
 msgstr "Tout client MCP prenant en charge les serveurs distants via Streamable HTTP :"
 
@@ -1226,7 +1226,7 @@ msgstr "Toute personne disposant du lien, sans connexion"
 msgid "API key"
 msgstr "Clé d’API"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "api key expired: create a new one in Settings → API keys"
 msgstr "clé API expirée : créez-en une nouvelle dans Paramètres → Clés API"
 
@@ -1245,7 +1245,7 @@ msgstr "Jeton d’API"
 msgid "API URL <0>(optional)</0>"
 msgstr "URL de l’API <0>(facultatif)</0>"
 
-#: components/theme-chooser.tsx
+#: components/layout/theme-chooser.tsx
 msgid "Appearance"
 msgstr "Apparence"
 
@@ -1257,7 +1257,7 @@ msgstr "Appliquer les crédits"
 msgid "Approve"
 msgstr "Approuver"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "approve (true or false) is required"
 msgstr "approve (true ou false) est requis"
 
@@ -1321,13 +1321,13 @@ msgstr "Assigné à"
 msgid "assigned to {assignee}"
 msgstr "assigné à {assignee}"
 
-#: components/dashboard-work.tsx
-#: components/my-work.tsx
-#: components/ticket-search.tsx
+#: components/ticket/ticket-search.tsx
+#: components/work/dashboard-work.tsx
+#: components/work/my-work.tsx
 msgid "Assigned to me"
 msgstr "Assignés à moi"
 
-#: components/notification-icon.tsx
+#: components/work/notification-icon.tsx
 msgid "Assigned to you"
 msgstr "Assigné à vous"
 
@@ -1336,11 +1336,11 @@ msgstr "Assigné à vous"
 msgid "Assignee"
 msgstr "Assigné"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "assignee must be an active organization member or AI agent"
 msgstr "l’assigné doit être un membre actif de l’organisation ou un agent IA"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "assignee must be unassigned or me"
 msgstr "l’assigné doit être non assigné ou moi"
 
@@ -1383,19 +1383,19 @@ msgstr "URL de l’avatar"
 msgid "Avatar URL <0>(paste it when adding the webhook, so posts show our logo)</0>"
 msgstr "URL de l’avatar <0>(collez-la lors de l’ajout du webhook, pour que les messages affichent notre logo)</0>"
 
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "Average {mean} points per sprint over the last {MIN_SPRINTS_FOR_VELOCITY}"
 msgstr "Moyenne de {mean} points par sprint sur les {MIN_SPRINTS_FOR_VELOCITY} derniers"
 
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "Average {mean} tickets per sprint over the last {MIN_SPRINTS_FOR_VELOCITY}"
 msgstr "Moyenne de {mean} tickets par sprint sur les {MIN_SPRINTS_FOR_VELOCITY} derniers"
 
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "Average of the last {MIN_SPRINTS_FOR_VELOCITY} sprints: <0>{mean} points</0> (dashed line). Bars are labelled by sprint number."
 msgstr "Moyenne des {MIN_SPRINTS_FOR_VELOCITY} derniers sprints : <0>{mean} points</0> (ligne en tirets). Les barres sont libellées par numéro de sprint."
 
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "Average of the last {MIN_SPRINTS_FOR_VELOCITY} sprints: <0>{mean} tickets</0> (dashed line). Bars are labelled by sprint number."
 msgstr "Moyenne des {MIN_SPRINTS_FOR_VELOCITY} derniers sprints : <0>{mean} tickets</0> (ligne en tirets). Les barres sont libellées par numéro de sprint."
 
@@ -1404,7 +1404,7 @@ msgid "Back to integrations"
 msgstr "Retour aux intégrations"
 
 #: app/roadmaps/page.tsx
-#: components/load-error.tsx
+#: components/layout/load-error.tsx
 #: components/ticket/other-org.tsx
 msgid "Back to projects"
 msgstr "Retour aux projets"
@@ -1418,21 +1418,21 @@ msgid "Back to the project"
 msgstr "Retour au projet"
 
 #: app/tickets/[id]/page.tsx
-#: components/dashboard-work.tsx
-#: components/hosted-bar.tsx
-#: components/my-work.tsx
+#: components/live/hosted-bar.tsx
 #: components/project/work-tabs.tsx
-#: components/ticket-search.tsx
 #: components/ticket/sub-tickets.tsx
-#: lib/my-work.ts
+#: components/ticket/ticket-search.tsx
+#: components/work/dashboard-work.tsx
+#: components/work/my-work.tsx
+#: lib/work/my-work.ts
 msgid "Backlog"
 msgstr "Backlog"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "backlog tickets can't be estimated; estimates follow the board's scale"
 msgstr "les tickets du backlog ne peuvent pas être estimés ; les estimations suivent l’échelle du tableau"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "billing is not configured"
 msgstr "la facturation n’est pas configurée"
 
@@ -1440,11 +1440,11 @@ msgstr "la facturation n’est pas configurée"
 msgid "Billing isn’t set up on this server yet."
 msgstr "La facturation n’est pas encore configurée sur ce serveur."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "billing provider unavailable"
 msgstr "fournisseur de facturation indisponible"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "billing unavailable"
 msgstr "facturation indisponible"
 
@@ -1465,7 +1465,7 @@ msgstr "Bloqué par"
 msgid "Blocked by ({0})"
 msgstr "Bloqué par ({0})"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "blocked must be exclude"
 msgstr "blocked doit valoir exclude"
 
@@ -1493,19 +1493,19 @@ msgstr "tableau"
 msgid "Board"
 msgstr "Tableau"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "board already has an open sprint"
 msgstr "le tableau a déjà un sprint ouvert"
 
-#: components/load-error.tsx
+#: components/layout/load-error.tsx
 msgid "Board not found"
 msgstr "Tableau introuvable"
 
-#: components/board/standup.tsx
+#: components/live/standup.tsx
 msgid "Board Review"
 msgstr "Revue de tableau"
 
-#: components/board/standup.tsx
+#: components/live/standup.tsx
 msgid "Board Review: everything, together"
 msgstr "Revue de tableau : tout, ensemble"
 
@@ -1556,11 +1556,11 @@ msgstr "Parcourir les projets"
 msgid "Browser default"
 msgstr "Valeur par défaut du navigateur"
 
-#: components/ticket-type.tsx
+#: components/ticket/ticket-type.tsx
 msgid "bug"
 msgstr "bug"
 
-#: components/ticket-type.tsx
+#: components/ticket/ticket-type.tsx
 msgid "Bug"
 msgstr "Bug"
 
@@ -1584,9 +1584,9 @@ msgstr "Bugfixes est injoignable pour le moment, les détails ne sont donc pas a
 msgid "Bugfixes report"
 msgstr "Rapport Bugfixes"
 
-#: components/ticket-search.tsx
-#: components/ticket-type.tsx
-#: lib/sprint-report.ts
+#: components/ticket/ticket-search.tsx
+#: components/ticket/ticket-type.tsx
+#: lib/sprint/sprint-report.ts
 msgid "Bugs"
 msgstr "Bugs"
 
@@ -1594,16 +1594,16 @@ msgstr "Bugs"
 msgid "Built-in"
 msgstr "Intégré"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "built-in templates can't be deleted"
 msgstr "les modèles intégrés ne peuvent pas être supprimés"
 
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "Burn-down"
 msgstr "Burn-down"
 
-#: components/board/velocity.tsx
 #: components/roadmap/report.tsx
+#: components/sprint/velocity.tsx
 msgid "Burn-up"
 msgstr "Burn-up"
 
@@ -1618,19 +1618,19 @@ msgstr "Agendas"
 
 #: app/boards/[id]/edit/page.tsx
 #: components/board/review.tsx
-#: components/board/sprint-bar.tsx
 #: components/board/ticket-dialog.tsx
 #: components/project/backlog.tsx
 #: components/project/key-prefix.tsx
 #: components/project/move-to-board.tsx
 #: components/settings/csv-import.tsx
+#: components/sprint/sprint-bar.tsx
 #: components/staff/downtime.tsx
 #: components/staff/help-editor.tsx
 #: components/ticket/duplicates.tsx
 msgid "Cancel"
 msgstr "Annuler"
 
-#: components/editable-title.tsx
+#: components/common/editable-title.tsx
 msgid "Cancel renaming"
 msgstr "Annuler le renommage"
 
@@ -1655,12 +1655,12 @@ msgstr "Reportés"
 msgid "Change"
 msgstr "Modifier"
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Change length"
 msgstr "Modifier la durée"
 
 #. placeholder {0}: sprint.number
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Change sprint {0} length"
 msgstr "Modifier la durée du sprint {0}"
 
@@ -1684,7 +1684,7 @@ msgstr "a changé le timebox"
 msgid "changed the type from {a} to {b}"
 msgstr "a changé le type de {a} à {b}"
 
-#: lib/live-status.ts
+#: lib/live/live-status.ts
 msgid "Changes others make appear here as they happen."
 msgstr "Les modifications des autres apparaissent ici en temps réel."
 
@@ -1696,16 +1696,16 @@ msgstr "Changer l’échelle d’estimation efface {estimated, plural, one {# es
 msgid "Changing the length or goal applies straight away."
 msgstr "La modification de la durée ou de l’objectif s’applique immédiatement."
 
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "Chart type"
 msgstr "Type de graphique"
 
-#: components/board/flow-charts.tsx
-#: components/board/velocity.tsx
+#: components/sprint/flow-charts.tsx
+#: components/sprint/velocity.tsx
 msgid "Charts"
 msgstr "Graphiques"
 
-#: components/mcp-connect.tsx
+#: components/settings/mcp-connect.tsx
 msgid "Check it with <0>/mcp</0> in a new session."
 msgstr "Vérifiez-le avec <0>/mcp</0> dans une nouvelle session."
 
@@ -1744,7 +1744,7 @@ msgstr "Choisir un dépôt {0}"
 msgid "Choose a board…"
 msgstr "Choisir un tableau…"
 
-#: components/quick-add-ticket.tsx
+#: components/ticket/quick-add-ticket.tsx
 msgid "Choose a project"
 msgstr "Choisir un projet"
 
@@ -1780,7 +1780,7 @@ msgstr "Choisissez une estimation."
 msgid "Choose an estimate…"
 msgstr "Choisir une estimation…"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "choose an organization first"
 msgstr "choisissez d’abord une organisation"
 
@@ -1788,7 +1788,7 @@ msgstr "choisissez d’abord une organisation"
 msgid "Choose an organization to manage its members and teams."
 msgstr "Choisissez une organisation pour gérer ses membres et ses équipes."
 
-#: components/theme-chooser.tsx
+#: components/layout/theme-chooser.tsx
 msgid "Choose appearance"
 msgstr "Choisir l’apparence"
 
@@ -1808,7 +1808,7 @@ msgstr "Choisissez le ticket d’origine dans ce projet. Ce ticket sera fermé."
 msgid "chosen"
 msgstr "choisi"
 
-#: components/notifications-bell.tsx
+#: components/work/notifications-bell.tsx
 msgid "Clear"
 msgstr "Effacer"
 
@@ -1823,11 +1823,11 @@ msgstr "Effacer le filtre"
 #: app/boards/[id]/page.tsx
 #: components/project/backlog.tsx
 #: components/project/refinement.tsx
-#: components/ticket-search.tsx
+#: components/ticket/ticket-search.tsx
 msgid "Clear filters"
 msgstr "Effacer les filtres"
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Clear goal"
 msgstr "Effacer l’objectif"
 
@@ -1839,7 +1839,7 @@ msgstr "Effacer le filtre d’étiquette"
 msgid "Clear priority filter"
 msgstr "Effacer le filtre de priorité"
 
-#: components/notifications-bell.tsx
+#: components/work/notifications-bell.tsx
 msgid "Clear read"
 msgstr "Effacer les lues"
 
@@ -1848,11 +1848,11 @@ msgid "Clear the due date"
 msgstr "Effacer l’échéance"
 
 #. placeholder {0}: notificationLine(i18n, n, people)
-#: components/notifications-bell.tsx
+#: components/work/notifications-bell.tsx
 msgid "Clear: {0}"
 msgstr "Effacer : {0}"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "Clerk invitation is no longer valid"
 msgstr "L’invitation Clerk n’est plus valide"
 
@@ -1860,12 +1860,12 @@ msgstr "L’invitation Clerk n’est plus valide"
 msgid "Client ID"
 msgstr "ID client"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "client must be one of claude-code, claude-desktop, codex, cursor, vscode, gemini or other"
 msgstr "client doit être l’un de claude-code, claude-desktop, codex, cursor, vscode, gemini ou other"
 
 #: components/board/ticket-view.tsx
-#: components/hosted-bar.tsx
+#: components/live/hosted-bar.tsx
 #: components/ticket/attachments.tsx
 #: components/ui/dialog.tsx
 msgid "Close"
@@ -1876,12 +1876,12 @@ msgstr "Fermer"
 msgid "Close as won’t do"
 msgstr "Fermer comme ne sera pas fait"
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Close sprint"
 msgstr "Clôturer le sprint"
 
 #. placeholder {0}: sprint.number
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Close sprint {0}?"
 msgstr "Clôturer le sprint {0} ?"
 
@@ -1901,11 +1901,11 @@ msgstr "Fermé"
 msgid "Closed as decided against"
 msgstr "Fermé, décision de ne pas le faire"
 
-#: lib/ticket-page.ts
+#: lib/ticket/ticket-page.ts
 msgid "closed as won’t do"
 msgstr "fermé comme ne sera pas fait"
 
-#: lib/google-chat.ts
+#: lib/org/google-chat.ts
 msgid "Closed as won’t do"
 msgstr "Fermé comme ne sera pas fait"
 
@@ -1929,12 +1929,12 @@ msgstr "l’a fermé comme ne sera pas fait"
 msgid "closed pull request {pr}"
 msgstr "a fermé la pull request {pr}"
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Closing it now:"
 msgstr "Fermeture immédiate :"
 
-#: components/board/sprint-bar.tsx
 #: components/board/ticket-dialog.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Closing…"
 msgstr "Fermeture…"
 
@@ -1948,11 +1948,11 @@ msgstr "Série le {0} : à vous de décider"
 msgid "Column name: {0}"
 msgstr "Nom de la colonne : {0}"
 
-#: lib/board-edit.ts
+#: lib/board/board-edit.ts
 msgid "Column names can be up to {MAX_COLUMN_NAME} characters."
 msgstr "Les noms de colonne peuvent compter jusqu’à {MAX_COLUMN_NAME} caractères."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "column_id is required"
 msgstr "column_id est requis"
 
@@ -1968,11 +1968,11 @@ msgstr "Colonnes, dans l’ordre"
 msgid "Coming soon"
 msgstr "Bientôt disponible"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "comment can't be empty or longer than 10000 characters"
 msgstr "le commentaire ne peut pas être vide ni dépasser 10000 caractères"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "comment is too long"
 msgstr "le commentaire est trop long"
 
@@ -1988,7 +1988,7 @@ msgstr "Commentaires"
 msgid "Communication"
 msgstr "Communication"
 
-#: lib/away.ts
+#: lib/work/away.ts
 msgid "Company day off {until}"
 msgstr "Jour férié de l’entreprise {until}"
 
@@ -2008,7 +2008,7 @@ msgstr "Finaliser l’acceptation"
 msgid "Complete the highlighted required fields before adding this ticket."
 msgstr "Remplissez les champs obligatoires en surbrillance avant d’ajouter ce ticket."
 
-#: components/board/flow-charts.tsx
+#: components/sprint/flow-charts.tsx
 msgid "Completed tickets plotted by completion date and cycle time"
 msgstr "Tickets terminés représentés selon leur date d’achèvement et leur temps de cycle"
 
@@ -2033,7 +2033,7 @@ msgstr "Connecter {name}"
 msgid "Connect AI"
 msgstr "Connecter une IA"
 
-#: components/mcp-connect.tsx
+#: components/settings/mcp-connect.tsx
 msgid "Connect an AI agent"
 msgstr "Connecter un agent IA"
 
@@ -2041,7 +2041,7 @@ msgstr "Connecter un agent IA"
 msgid "Connect GitHub, Bitbucket, Google Chat and Bugfixes."
 msgstr "Connectez GitHub, Bitbucket, Google Chat et Bugfixes."
 
-#: lib/integrations.ts
+#: lib/org/integrations.ts
 msgid "Connect it first."
 msgstr "Connectez-le d’abord."
 
@@ -2097,11 +2097,11 @@ msgstr "Connecté. Les absences sont en cours de synchronisation."
 msgid "Connecting {name}…"
 msgstr "Connexion à {name}…"
 
-#: lib/live-status.ts
+#: lib/live/live-status.ts
 msgid "Connecting to live updates…"
 msgstr "Connexion aux mises à jour en direct…"
 
-#: components/site-footer.tsx
+#: components/layout/site-footer.tsx
 msgid "Contact"
 msgstr "Contact"
 
@@ -2115,7 +2115,7 @@ msgid "Conversation"
 msgstr "Conversation"
 
 #: app/roadmaps/page.tsx
-#: components/copy-link.tsx
+#: components/common/copy-link.tsx
 #: components/project/roadmap-row.tsx
 #: components/settings/api-keys.tsx
 msgid "Copied"
@@ -2130,11 +2130,11 @@ msgstr "{files} fichiers copiés."
 msgid "Copied as Markdown."
 msgstr "Copié au format Markdown."
 
-#: components/mcp-connect.tsx
 #: components/settings/api-keys.tsx
 #: components/settings/embedding.tsx
 #: components/settings/google-calendar.tsx
 #: components/settings/google-chat.tsx
+#: components/settings/mcp-connect.tsx
 msgid "Copy"
 msgstr "Copier"
 
@@ -2144,7 +2144,7 @@ msgid "Copy {0} key"
 msgstr "Copier la clé {0}"
 
 #. placeholder {0}: a.name
-#: components/mcp-connect.tsx
+#: components/settings/mcp-connect.tsx
 msgid "Copy {0} snippet"
 msgstr "Copier l’extrait {0}"
 
@@ -2178,8 +2178,8 @@ msgid "Copy ID"
 msgstr "Copier l’ID"
 
 #: components/settings/embedding.tsx
-#: components/ticket-search.tsx
 #: components/ticket/ticket-key.tsx
+#: components/ticket/ticket-search.tsx
 msgid "Copy key"
 msgstr "Copier la clé"
 
@@ -2188,7 +2188,7 @@ msgid "Copy labels to the original"
 msgstr "Copier les étiquettes vers l’original"
 
 #: app/roadmaps/page.tsx
-#: components/copy-link.tsx
+#: components/common/copy-link.tsx
 #: components/intake/intake-settings.tsx
 #: components/project/roadmap-row.tsx
 msgid "Copy link"
@@ -2207,7 +2207,7 @@ msgid "Copy secret"
 msgstr "Copier le secret"
 
 #. placeholder {0}: ticket.key
-#: components/ticket-search.tsx
+#: components/ticket/ticket-search.tsx
 msgid "Copy ticket key {0}"
 msgstr "Copier la clé du ticket {0}"
 
@@ -2215,7 +2215,7 @@ msgstr "Copier la clé du ticket {0}"
 msgid "Copy ticket key {value}"
 msgstr "Copier la clé du ticket {value}"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "could not check organization admins"
 msgstr "impossible de vérifier les administrateurs de l’organisation"
 
@@ -2227,7 +2227,7 @@ msgstr "Impossible de fermer ce ticket. Veuillez réessayer."
 msgid "Could not copy"
 msgstr "Copie impossible"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "could not count"
 msgstr "impossible de compter"
 
@@ -2243,15 +2243,15 @@ msgstr "Impossible de supprimer la feuille de route. Veuillez réessayer."
 msgid "Could not delete this ticket. Try again."
 msgstr "Impossible de supprimer ce ticket. Réessayez."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "could not load help answers"
 msgstr "impossible de charger les réponses d’aide"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "could not load organization members"
 msgstr "impossible de charger les membres de l’organisation"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "could not load outages"
 msgstr "impossible de charger les pannes"
 
@@ -2275,7 +2275,7 @@ msgstr "Impossible d’enregistrer ce ticket. Vérifiez votre connexion et rées
 msgid "Could not save. Please try again."
 msgstr "Impossible d’enregistrer. Veuillez réessayer."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "could not verify organization membership"
 msgstr "impossible de vérifier l’appartenance à l’organisation"
 
@@ -2284,7 +2284,7 @@ msgid "Couldn’t add that origin. Please try again."
 msgstr "Impossible d’ajouter cette origine. Veuillez réessayer."
 
 #: components/project/backlog.tsx
-#: components/quick-add-ticket.tsx
+#: components/ticket/quick-add-ticket.tsx
 msgid "Couldn’t add the ticket. Please try again."
 msgstr "Impossible d’ajouter le ticket. Veuillez réessayer."
 
@@ -2300,7 +2300,7 @@ msgstr "Impossible d’archiver le tableau. Veuillez réessayer."
 msgid "Couldn’t assign that ticket. Please try again."
 msgstr "Impossible d’assigner ce ticket. Veuillez réessayer."
 
-#: lib/push.ts
+#: lib/org/push.ts
 msgid "Couldn’t change notifications on this device. Please try again."
 msgstr "Impossible de modifier les notifications sur cet appareil. Veuillez réessayer."
 
@@ -2312,7 +2312,7 @@ msgstr "Impossible de changer l’assigné. Veuillez réessayer."
 msgid "Couldn’t change the request form. Please try again."
 msgstr "Impossible de modifier le formulaire de demande. Veuillez réessayer."
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Couldn’t change the sprint length. Please try again."
 msgstr "Impossible de modifier la durée du sprint. Veuillez réessayer."
 
@@ -2320,7 +2320,7 @@ msgstr "Impossible de modifier la durée du sprint. Veuillez réessayer."
 msgid "Couldn’t check the connection."
 msgstr "Impossible de vérifier la connexion."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "couldn't check your email addresses; try again in a minute"
 msgstr "impossible de vérifier vos adresses e-mail ; réessayez dans une minute"
 
@@ -2332,7 +2332,7 @@ msgstr "Impossible de vérifier votre connexion Jira. Veuillez réessayer."
 msgid "Couldn’t check your Linear connection. Please try again."
 msgstr "Impossible de vérifier votre connexion Linear. Veuillez réessayer."
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Couldn’t close the sprint. Please try again."
 msgstr "Impossible de clôturer le sprint. Veuillez réessayer."
 
@@ -2402,7 +2402,7 @@ msgstr "Impossible de terminer le standup. Veuillez réessayer."
 msgid "Couldn’t export the tickets. Please try again."
 msgstr "Impossible d’exporter les tickets. Veuillez réessayer."
 
-#: components/quick-add-ticket.tsx
+#: components/ticket/quick-add-ticket.tsx
 msgid "Couldn’t find this board’s project."
 msgstr "Impossible de trouver le projet de ce tableau."
 
@@ -2453,7 +2453,7 @@ msgstr "Impossible de charger les clés d’intégration."
 msgid "Couldn’t load embedding settings."
 msgstr "Impossible de charger les paramètres d’intégration."
 
-#: components/notifications-bell.tsx
+#: components/work/notifications-bell.tsx
 msgid "Couldn't load notifications."
 msgstr "Impossible de charger les notifications."
 
@@ -2465,7 +2465,7 @@ msgstr "Impossible de charger les membres et agents de l’organisation."
 msgid "Couldn’t load organization settings. Please try again."
 msgstr "Impossible de charger les paramètres de l’organisation. Veuillez réessayer."
 
-#: components/board/past-sprints.tsx
+#: components/sprint/past-sprints.tsx
 msgid "Couldn't load past sprints. Please try again."
 msgstr "Impossible de charger les sprints passés. Veuillez réessayer."
 
@@ -2493,8 +2493,8 @@ msgstr "Impossible de charger le backlog. Actualisez la page pour réessayer."
 msgid "Couldn't load the Bugfixes report."
 msgstr "Impossible de charger le rapport Bugfixes."
 
-#: components/board/flow-charts.tsx
-#: components/board/velocity.tsx
+#: components/sprint/flow-charts.tsx
+#: components/sprint/velocity.tsx
 msgid "Couldn't load the charts. Please try again."
 msgstr "Impossible de charger les graphiques. Veuillez réessayer."
 
@@ -2522,7 +2522,7 @@ msgstr "Impossible de charger les réponses d’aide."
 msgid "Couldn’t load the linked repositories."
 msgstr "Impossible de charger les dépôts liés."
 
-#: components/board/next-sprints.tsx
+#: components/sprint/next-sprints.tsx
 msgid "Couldn’t load the next sprints. Please try again."
 msgstr "Impossible de charger les prochains sprints. Veuillez réessayer."
 
@@ -2548,7 +2548,7 @@ msgstr "Impossible de charger les statistiques."
 msgid "Couldn’t load the updates. Please refresh to try again."
 msgstr "Impossible de charger les mises à jour. Actualisez la page pour réessayer."
 
-#: components/load-error.tsx
+#: components/layout/load-error.tsx
 msgid "Couldn't load this board"
 msgstr "Impossible de charger ce tableau"
 
@@ -2556,7 +2556,7 @@ msgstr "Impossible de charger ce tableau"
 msgid "Couldn't load this board. Please refresh to try again."
 msgstr "Impossible de charger ce tableau. Actualisez la page pour réessayer."
 
-#: components/load-error.tsx
+#: components/layout/load-error.tsx
 msgid "Couldn't load this project"
 msgstr "Impossible de charger ce projet"
 
@@ -2572,19 +2572,19 @@ msgstr "Impossible de charger ce projet. Il appartient peut-être à une autre o
 msgid "Couldn't load this project. Please refresh to try again."
 msgstr "Impossible de charger ce projet. Actualisez la page pour réessayer."
 
-#: components/load-error.tsx
+#: components/layout/load-error.tsx
 msgid "Couldn't load this roadmap"
 msgstr "Impossible de charger cette feuille de route"
 
-#: components/board/past-sprints.tsx
+#: components/sprint/past-sprints.tsx
 msgid "Couldn't load this sprint. Please try again."
 msgstr "Impossible de charger ce sprint. Veuillez réessayer."
 
-#: components/load-error.tsx
+#: components/layout/load-error.tsx
 msgid "Couldn't load this ticket"
 msgstr "Impossible de charger ce ticket"
 
-#: components/dashboard-work.tsx
+#: components/work/dashboard-work.tsx
 msgid "Couldn’t load this. Please refresh to try again."
 msgstr "Impossible de charger ceci. Actualisez la page pour réessayer."
 
@@ -2592,7 +2592,7 @@ msgstr "Impossible de charger ceci. Actualisez la page pour réessayer."
 msgid "Couldn't load your API keys. Please refresh to try again."
 msgstr "Impossible de charger vos clés API. Actualisez la page pour réessayer."
 
-#: components/mentions.tsx
+#: components/work/mentions.tsx
 msgid "Couldn't load your mentions. Please try again."
 msgstr "Impossible de charger vos mentions. Veuillez réessayer."
 
@@ -2600,7 +2600,7 @@ msgstr "Impossible de charger vos mentions. Veuillez réessayer."
 msgid "Couldn't load your plan. Please refresh to try again."
 msgstr "Impossible de charger votre offre. Actualisez la page pour réessayer."
 
-#: components/quick-add-ticket.tsx
+#: components/ticket/quick-add-ticket.tsx
 msgid "Couldn’t load your projects."
 msgstr "Impossible de charger vos projets."
 
@@ -2620,7 +2620,7 @@ msgstr "Impossible de charger vos webhooks (HTTP {status}). Veuillez réessayer.
 msgid "Couldn’t load your webhooks."
 msgstr "Impossible de charger vos webhooks."
 
-#: components/my-work.tsx
+#: components/work/my-work.tsx
 msgid "Couldn't load your work. Please try again."
 msgstr "Impossible de charger votre travail. Veuillez réessayer."
 
@@ -2665,7 +2665,7 @@ msgstr "Impossible de publier la mise à jour. Veuillez réessayer."
 msgid "Couldn’t reach billing. Please try again."
 msgstr "Impossible de joindre le service de facturation. Veuillez réessayer."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "couldn't reach Google; try again in a minute"
 msgstr "impossible de joindre Google ; réessayez dans une minute"
 
@@ -2689,7 +2689,7 @@ msgstr "Impossible de retirer cette origine. Veuillez réessayer."
 msgid "Couldn’t remove the planned sprint. Please try again."
 msgstr "Impossible de retirer le sprint planifié. Veuillez réessayer."
 
-#: components/editable-title.tsx
+#: components/common/editable-title.tsx
 msgid "Couldn’t rename the {label}. Please try again."
 msgstr "Impossible de renommer {label}. Veuillez réessayer."
 
@@ -2706,7 +2706,7 @@ msgstr "Impossible de restaurer le tableau. Veuillez réessayer."
 msgid "Couldn’t save labels. Please try again."
 msgstr "Impossible d’enregistrer les étiquettes. Veuillez réessayer."
 
-#: lib/organization-settings.ts
+#: lib/org/organization-settings.ts
 msgid "Couldn’t save that change. Please try again."
 msgstr "Impossible d’enregistrer cette modification. Veuillez réessayer."
 
@@ -2718,8 +2718,8 @@ msgstr "Impossible d’enregistrer. Veuillez réessayer."
 msgid "Couldn’t save the board. Please try again."
 msgstr "Impossible d’enregistrer le tableau. Veuillez réessayer."
 
-#: components/board/sprint-bar.tsx
 #: components/project/refinement.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Couldn’t save the goal. Please try again."
 msgstr "Impossible d’enregistrer l’objectif. Veuillez réessayer."
 
@@ -2739,7 +2739,7 @@ msgstr "Impossible d’enregistrer votre langue. Veuillez réessayer."
 msgid "Couldn’t save. Please try again."
 msgstr "Impossible d’enregistrer. Veuillez réessayer."
 
-#: components/ticket-search.tsx
+#: components/ticket/ticket-search.tsx
 msgid "Couldn’t search tickets. Please try again."
 msgstr "Impossible de rechercher les tickets. Veuillez réessayer."
 
@@ -2747,7 +2747,7 @@ msgstr "Impossible de rechercher les tickets. Veuillez réessayer."
 msgid "Couldn’t send the test message."
 msgstr "Impossible d’envoyer le message de test."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "couldn't send your message; please try again"
 msgstr "impossible d’envoyer votre message ; veuillez réessayer"
 
@@ -2755,7 +2755,7 @@ msgstr "impossible d’envoyer votre message ; veuillez réessayer"
 msgid "Couldn’t send your request. Please try again."
 msgstr "Impossible d’envoyer votre demande. Veuillez réessayer."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "couldn't shorten the link"
 msgstr "impossible de raccourcir le lien"
 
@@ -2776,7 +2776,7 @@ msgstr "Impossible de démarrer la session partagée ; affinage en solo."
 msgid "Couldn’t start the shared standup. Please try again."
 msgstr "Impossible de démarrer le standup partagé. Veuillez réessayer."
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Couldn’t start the sprint. Please try again."
 msgstr "Impossible de démarrer le sprint. Veuillez réessayer."
 
@@ -2824,11 +2824,11 @@ msgstr "Impossible de calculer les crédits."
 msgid "Couldn’t work these out"
 msgstr "Impossible de calculer ceux-ci"
 
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "Counted in estimate points."
 msgstr "Compté en points d’estimation."
 
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "Counted in tickets. Pick an estimate scale in Edit board to count points."
 msgstr "Compté en tickets. Choisissez une échelle d’estimation dans Modifier le tableau pour compter des points."
 
@@ -2857,7 +2857,7 @@ msgstr "Créer la clé"
 msgid "Create project"
 msgstr "Créer le projet"
 
-#: components/roadmap-editor-form.tsx
+#: components/roadmap/roadmap-editor-form.tsx
 msgid "Create roadmap"
 msgstr "Créer la feuille de route"
 
@@ -2885,8 +2885,8 @@ msgstr "Créé par {creator}"
 msgid "Created by {creator} <0/>"
 msgstr "Créé par {creator} <0/>"
 
-#: components/dashboard-work.tsx
-#: components/my-work.tsx
+#: components/work/dashboard-work.tsx
+#: components/work/my-work.tsx
 msgid "Created by me"
 msgstr "Créés par moi"
 
@@ -2939,19 +2939,19 @@ msgstr "Colonne actuelle"
 msgid "Current sprint"
 msgstr "Sprint en cours"
 
-#: components/board/flow-charts.tsx
+#: components/sprint/flow-charts.tsx
 msgid "Cycle time"
 msgstr "Temps de cycle"
 
-#: components/board/flow-charts.tsx
+#: components/sprint/flow-charts.tsx
 msgid "Cycle time and tickets completed per week over the last 12 weeks."
 msgstr "Temps de cycle et tickets terminés par semaine au cours des 12 dernières semaines."
 
-#: components/board/flow-charts.tsx
+#: components/sprint/flow-charts.tsx
 msgid "Cycle time will appear after a ticket with a recorded start is completed."
 msgstr "Le temps de cycle apparaîtra une fois qu’un ticket avec un début enregistré sera terminé."
 
-#: components/theme-chooser.tsx
+#: components/layout/theme-chooser.tsx
 msgid "Dark"
 msgstr "Sombre"
 
@@ -2959,11 +2959,11 @@ msgstr "Sombre"
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "Dashed line: ideal pace."
 msgstr "Ligne en tirets : rythme idéal."
 
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "Dashed line: scope."
 msgstr "Ligne en tirets : périmètre."
 
@@ -2979,7 +2979,7 @@ msgstr "Dates"
 msgid "Day (UTC)"
 msgstr "Jour (UTC)"
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "days"
 msgstr "jours"
 
@@ -3137,7 +3137,7 @@ msgstr "l’a détaché de son parent"
 msgid "Details"
 msgstr "Détails"
 
-#: components/quick-add-ticket.tsx
+#: components/ticket/quick-add-ticket.tsx
 msgid "Details (optional)"
 msgstr "Détails (facultatif)"
 
@@ -3195,11 +3195,11 @@ msgstr "Ignorée"
 msgid "Dismissed <0/>"
 msgstr "Ignorée <0/>"
 
-#: components/site-footer.tsx
+#: components/layout/site-footer.tsx
 msgid "Docs"
 msgstr "Documentation"
 
-#: components/site-footer.tsx
+#: components/layout/site-footer.tsx
 msgid "Docs and legal"
 msgstr "Documentation et mentions légales"
 
@@ -3211,27 +3211,27 @@ msgstr "Ne pas joindre {0}"
 #: components/roadmap/item-tickets.tsx
 #: components/roadmap/timeline.tsx
 #: components/ticket/dependencies.tsx
-#: lib/ticket-page.ts
+#: lib/ticket/ticket-page.ts
 msgid "done"
 msgstr "terminé"
 
-#: components/board/sprint-bar.tsx
 #: components/board/ticket-view.tsx
-#: components/mentions.tsx
-#: components/my-work.tsx
 #: components/project/backlog.tsx
 #: components/project/epics.tsx
-#: components/quick-add-ticket.tsx
 #: components/reports/report-view.tsx
 #: components/roadmap/item-editor.tsx
 #: components/roadmap/report.tsx
 #: components/roadmap/timeline.tsx
 #: components/settings/csv-import.tsx
+#: components/sprint/sprint-bar.tsx
 #: components/ticket/labels.tsx
+#: components/ticket/quick-add-ticket.tsx
+#: components/work/mentions.tsx
+#: components/work/my-work.tsx
 msgid "Done"
 msgstr "Terminé"
 
-#: components/board/flow-charts.tsx
+#: components/sprint/flow-charts.tsx
 msgid "Done by type"
 msgstr "Terminés par type"
 
@@ -3239,7 +3239,7 @@ msgstr "Terminés par type"
 msgid "Done refining"
 msgstr "Affinage terminé"
 
-#: components/markdown.tsx
+#: components/common/markdown.tsx
 msgid "Done: click to mark not done"
 msgstr "Terminé : cliquez pour marquer comme non terminé"
 
@@ -3270,7 +3270,7 @@ msgstr "Téléchargé."
 msgid "Downtime"
 msgstr "Pannes"
 
-#: components/notification-icon.tsx
+#: components/work/notification-icon.tsx
 msgid "Downtime credited"
 msgstr "Panne créditée"
 
@@ -3279,7 +3279,7 @@ msgid "Draft"
 msgstr "Brouillon"
 
 #. placeholder {0}: personLabel(i18n, id, people)
-#: components/board/person-face.tsx
+#: components/live/person-face.tsx
 msgid "Drag {0} onto a ticket to assign them"
 msgstr "Faites glisser {0} sur un ticket pour l’assigner"
 
@@ -3288,7 +3288,7 @@ msgstr "Faites glisser {0} sur un ticket pour l’assigner"
 msgid "Drag {0} to reorder"
 msgstr "Faites glisser {0} pour réorganiser"
 
-#: components/board/person-face.tsx
+#: components/live/person-face.tsx
 msgid "Drag onto a ticket to assign"
 msgstr "Faites glisser sur un ticket pour assigner"
 
@@ -3321,15 +3321,15 @@ msgstr "À supprimer"
 msgid "Due soonest"
 msgstr "Échéance la plus proche"
 
-#: lib/due.ts
+#: lib/ticket/due.ts
 msgid "Due today"
 msgstr "Échéance aujourd’hui"
 
-#: components/ticket-search.tsx
+#: components/ticket/ticket-search.tsx
 msgid "Due today or tomorrow"
 msgstr "Échéance aujourd’hui ou demain"
 
-#: lib/due.ts
+#: lib/ticket/due.ts
 msgid "Due tomorrow"
 msgstr "Échéance demain"
 
@@ -3361,7 +3361,7 @@ msgstr "Doublon d’un ticket qui a été supprimé"
 msgid "Duplicate tickets"
 msgstr "Tickets en double"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "duplicate_of is required"
 msgstr "duplicate_of est requis"
 
@@ -3370,11 +3370,11 @@ msgstr "duplicate_of est requis"
 msgid "Duplicates"
 msgstr "Doublons"
 
-#: components/roadmap-editor-form.tsx
+#: components/roadmap/roadmap-editor-form.tsx
 msgid "e.g. 2027 plan"
 msgstr "ex. Plan 2027"
 
-#: components/help-bot.tsx
+#: components/layout/help-bot.tsx
 msgid "e.g. add a board"
 msgstr "ex. ajouter un tableau"
 
@@ -3463,7 +3463,7 @@ msgstr "Modifier {0}"
 msgid "Edit board"
 msgstr "Modifier le tableau"
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Edit goal"
 msgstr "Modifier l’objectif"
 
@@ -3514,7 +3514,7 @@ msgstr "Adresse e-mail"
 msgid "Email or name"
 msgstr "E-mail ou nom"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "email_address must be a valid email address"
 msgstr "email_address doit être une adresse e-mail valide"
 
@@ -3530,15 +3530,15 @@ msgstr "Intégration"
 msgid "Embeds & usage"
 msgstr "Intégrations et utilisation"
 
-#: components/board/standup.tsx
+#: components/live/standup.tsx
 msgid "End"
 msgstr "Terminer"
 
-#: components/hosted-bar.tsx
+#: components/live/hosted-bar.tsx
 msgid "End refinement"
 msgstr "Terminer l’affinage"
 
-#: components/hosted-bar.tsx
+#: components/live/hosted-bar.tsx
 msgid "End standup"
 msgstr "Terminer le standup"
 
@@ -3546,7 +3546,7 @@ msgstr "Terminer le standup"
 msgid "Ended (UTC)"
 msgstr "Fin (UTC)"
 
-#: components/mcp-connect.tsx
+#: components/settings/mcp-connect.tsx
 msgid "Endpoint"
 msgstr "Point de terminaison"
 
@@ -3554,23 +3554,23 @@ msgstr "Point de terminaison"
 msgid "Endpoint URL"
 msgstr "URL du point de terminaison"
 
-#: components/board/sprint-status.ts
+#: components/sprint/sprint-status.ts
 msgid "ends in {days} days"
 msgstr "se termine dans {days} jours"
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Ends on"
 msgstr "Se termine le"
 
-#: components/board/sprint-status.ts
+#: components/sprint/sprint-status.ts
 msgid "ends today"
 msgstr "se termine aujourd’hui"
 
-#: components/board/sprint-status.ts
+#: components/sprint/sprint-status.ts
 msgid "ends tomorrow"
 msgstr "se termine demain"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "enquiries aren't available right now"
 msgstr "les demandes de renseignements ne sont pas disponibles pour le moment"
 
@@ -3586,7 +3586,7 @@ msgstr "Saisissez une adresse https, comme https://example.com/hooks/tracklines.
 msgid "Enter an origin like https://example.com."
 msgstr "Saisissez une origine comme https://example.com."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "enter your Google Workspace domain, e.g. example.com"
 msgstr "saisissez votre domaine Google Workspace, ex. example.com"
 
@@ -3594,31 +3594,31 @@ msgstr "saisissez votre domaine Google Workspace, ex. example.com"
 msgid "Enterprise has unlimited projects and members."
 msgstr "Enterprise inclut projets et membres illimités."
 
-#: components/ticket-type.tsx
+#: components/ticket/ticket-type.tsx
 msgid "epic"
 msgstr "epic"
 
 #: components/board/epic-filter.tsx
-#: components/ticket-type.tsx
 #: components/ticket/sub-tickets.tsx
+#: components/ticket/ticket-type.tsx
 msgid "Epic"
 msgstr "Epic"
 
 #: components/project/work-tabs.tsx
-#: components/ticket-type.tsx
-#: lib/sprint-report.ts
+#: components/ticket/ticket-type.tsx
+#: lib/sprint/sprint-report.ts
 msgid "Epics"
 msgstr "Epics"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "epics stay in the backlog: plan their sub-tickets instead"
 msgstr "les epics restent dans le backlog : planifiez plutôt leurs sous-tickets"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "epics stay in the backlog: they can't go on a board or into a sprint"
 msgstr "les epics restent dans le backlog : elles ne peuvent pas aller sur un tableau ni dans un sprint"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "epics take no estimate: their size comes from their sub-tickets"
 msgstr "les epics ne reçoivent pas d’estimation : leur taille provient de leurs sous-tickets"
 
@@ -3648,7 +3648,7 @@ msgstr "Estimation {estimate}"
 msgid "Estimate <0>({0} needs one)</0>"
 msgstr "Estimation <0>({0} en exige une)</0>"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "estimate isn't on this board's scale"
 msgstr "l’estimation ne fait pas partie de l’échelle de ce tableau"
 
@@ -3656,7 +3656,7 @@ msgstr "l’estimation ne fait pas partie de l’échelle de ce tableau"
 msgid "Estimate scale"
 msgstr "Échelle d’estimation"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "estimate_scale must be none, fibonacci, tshirt, powers or linear"
 msgstr "estimate_scale doit valoir none, fibonacci, tshirt, powers ou linear"
 
@@ -3672,11 +3672,11 @@ msgstr "Estimations"
 msgid "every board estimates"
 msgstr "tous les tableaux estiment"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "every column needs a name"
 msgstr "chaque colonne a besoin d’un nom"
 
-#: lib/board-edit.ts
+#: lib/board/board-edit.ts
 msgid "Every column needs a name."
 msgstr "Chaque colonne a besoin d’un nom."
 
@@ -3756,11 +3756,11 @@ msgstr "Exporter en CSV"
 msgid "External"
 msgstr "Externe"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "external is set by integrations (API keys)"
 msgstr "external est défini par les intégrations (clés API)"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "external needs source (bugfixes), project and id; url must be http(s)"
 msgstr "external nécessite source (bugfixes), project et id ; url doit être en http(s)"
 
@@ -3776,11 +3776,11 @@ msgstr "Échouée"
 msgid "Fallback link"
 msgstr "Lien de secours"
 
-#: components/ticket-type.tsx
+#: components/ticket/ticket-type.tsx
 msgid "feature"
 msgstr "fonctionnalité"
 
-#: components/ticket-type.tsx
+#: components/ticket/ticket-type.tsx
 msgid "Feature"
 msgstr "Fonctionnalité"
 
@@ -3788,13 +3788,13 @@ msgstr "Fonctionnalité"
 msgid "Feature request"
 msgstr "Demande de fonctionnalité"
 
-#: components/ticket-search.tsx
-#: components/ticket-type.tsx
-#: lib/sprint-report.ts
+#: components/ticket/ticket-search.tsx
+#: components/ticket/ticket-type.tsx
+#: lib/sprint/sprint-report.ts
 msgid "Features"
 msgstr "Fonctionnalités"
 
-#: lib/estimates.ts
+#: lib/board/estimates.ts
 msgid "Fibonacci"
 msgstr "Fibonacci"
 
@@ -3803,16 +3803,16 @@ msgstr "Fibonacci"
 msgid "File clean-up"
 msgstr "Nettoyage des fichiers"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "file must be an UploadThing upload (https, *.ufs.sh or utfs.io) with a key and name"
 msgstr "le fichier doit être un envoi UploadThing (https, *.ufs.sh ou utfs.io) avec une clé et un nom"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "files can be up to 10 MB"
 msgstr "les fichiers peuvent faire jusqu’à 10 Mo"
 
-#: components/notification-icon.tsx
-#: lib/google-chat.ts
+#: components/work/notification-icon.tsx
+#: lib/org/google-chat.ts
 msgid "Files due for deletion"
 msgstr "Fichiers à supprimer"
 
@@ -3820,15 +3820,15 @@ msgstr "Fichiers à supprimer"
 msgid "Filled as its tickets get done"
 msgstr "Se remplit à mesure que ses tickets sont terminés"
 
-#: components/ticket-search.tsx
+#: components/ticket/ticket-search.tsx
 msgid "Filter by assignee"
 msgstr "Filtrer par assigné"
 
-#: components/my-work.tsx
+#: components/work/my-work.tsx
 msgid "Filter by board"
 msgstr "Filtrer par tableau"
 
-#: components/ticket-search.tsx
+#: components/ticket/ticket-search.tsx
 msgid "Filter by due date"
 msgstr "Filtrer par échéance"
 
@@ -3844,12 +3844,12 @@ msgstr "Filtrer par étiquette"
 msgid "Filter by priority"
 msgstr "Filtrer par priorité"
 
-#: components/my-work.tsx
-#: components/ticket-search.tsx
+#: components/ticket/ticket-search.tsx
+#: components/work/my-work.tsx
 msgid "Filter by project"
 msgstr "Filtrer par projet"
 
-#: components/ticket-search.tsx
+#: components/ticket/ticket-search.tsx
 msgid "Filter by ticket type"
 msgstr "Filtrer par type de ticket"
 
@@ -3861,7 +3861,7 @@ msgstr "Filtrer par type"
 msgid "Find the original ticket"
 msgstr "Trouver le ticket d’origine"
 
-#: components/board/standup.tsx
+#: components/live/standup.tsx
 msgid "Finish"
 msgstr "Terminer"
 
@@ -3869,8 +3869,8 @@ msgstr "Terminer"
 msgid "Finish tickets on release"
 msgstr "Terminer les tickets à la publication"
 
-#: components/board/past-sprints.tsx
-#: components/notification-icon.tsx
+#: components/sprint/past-sprints.tsx
+#: components/work/notification-icon.tsx
 msgid "Finished"
 msgstr "Terminés"
 
@@ -3898,19 +3898,19 @@ msgstr "première : les nouveaux tickets commencent ici"
 msgid "Fix these first:"
 msgstr "Corrigez d’abord ceci :"
 
-#: components/board/flow-report.tsx
+#: components/sprint/flow-report.tsx
 msgid "Flow report"
 msgstr "Rapport de flux"
 
-#: components/hosted-bar.tsx
+#: components/live/hosted-bar.tsx
 msgid "Follow host"
 msgstr "Suivre l’hôte"
 
-#: components/hosted-bar.tsx
+#: components/live/hosted-bar.tsx
 msgid "Following"
 msgstr "Suivis"
 
-#: components/hosted-bar.tsx
+#: components/live/hosted-bar.tsx
 msgid "Following ({following})"
 msgstr "Suivis ({following})"
 
@@ -3918,7 +3918,7 @@ msgstr "Suivis ({following})"
 msgid "For ChewedFeed staff: the whole of TrackLin.es, not one organization."
 msgstr "Pour l’équipe ChewedFeed : tout TrackLin.es, pas une seule organisation."
 
-#: components/mcp-connect.tsx
+#: components/settings/mcp-connect.tsx
 msgid "For GitHub Copilot agent mode, add to <0>.vscode/mcp.json</0>; VS Code asks for the key once and stores it securely:"
 msgstr "Pour le mode agent de GitHub Copilot, ajoutez à <0>.vscode/mcp.json</0> ; VS Code demande la clé une fois et la stocke en sécurité :"
 
@@ -3926,11 +3926,11 @@ msgstr "Pour le mode agent de GitHub Copilot, ajoutez à <0>.vscode/mcp.json</0>
 msgid "For servers, scripts and integrations such as Bugfixes (tl_s_…). They can create and update tickets, but can’t be assigned work."
 msgstr "Pour les serveurs, scripts et intégrations comme Bugfixes (tl_s_…). Elles peuvent créer et mettre à jour des tickets, mais ne peuvent pas se voir assigner de travail."
 
-#: lib/people.ts
+#: lib/work/people.ts
 msgid "Former member"
 msgstr "Ancien membre"
 
-#: lib/plans.ts
+#: lib/org/plans.ts
 msgid "Free"
 msgstr "Free"
 
@@ -3953,7 +3953,7 @@ msgstr "De"
 msgid "From (UTC)"
 msgstr "De (UTC)"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "from and to are dates (YYYY-MM-DD), from before to, at most two years apart"
 msgstr "from et to sont des dates (AAAA-MM-JJ), from avant to, à deux ans d’écart au maximum"
 
@@ -3982,7 +3982,7 @@ msgstr "Diagramme de Gantt"
 msgid "Generated {when} by TrackLin.es"
 msgstr "Généré {when} par TrackLin.es"
 
-#: components/notifications-bell.tsx
+#: components/work/notifications-bell.tsx
 msgid "Get notifications even when TrackLin.es is closed"
 msgstr "Recevez des notifications même lorsque TrackLin.es est fermé"
 
@@ -3994,7 +3994,7 @@ msgstr "Recevez des notifications sur cet appareil, même lorsque TrackLin.es es
 msgid "Get your notifications in Google Chat: find “TrackLin.es” in Google Chat, send it a message, and open the link it sends you."
 msgstr "Recevez vos notifications dans Google Chat : cherchez « TrackLin.es » dans Google Chat, envoyez-lui un message, et ouvrez le lien qu’il vous envoie."
 
-#: lib/live-status.ts
+#: lib/live/live-status.ts
 msgid "Getting ready to show changes others make as they happen."
 msgstr "Préparation de l’affichage en temps réel des modifications des autres."
 
@@ -4022,7 +4022,7 @@ msgstr "Aller à vos projets"
 msgid "Go to Your settings"
 msgstr "Aller à Vos paramètres"
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Goal <0>(optional)</0>"
 msgstr "Objectif <0>(facultatif)</0>"
 
@@ -4030,13 +4030,13 @@ msgstr "Objectif <0>(facultatif)</0>"
 msgid "Goal for this sprint (optional)"
 msgstr "Objectif de ce sprint (facultatif)"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "goal must be at most 200 characters"
 msgstr "l’objectif doit compter au maximum 200 caractères"
 
-#: components/board/past-sprints.tsx
-#: components/board/sprint-bar.tsx
 #: components/project/refinement.tsx
+#: components/sprint/past-sprints.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Goal:"
 msgstr "Objectif :"
 
@@ -4044,15 +4044,15 @@ msgstr "Objectif :"
 msgid "Goals met"
 msgstr "Objectifs atteints"
 
-#: components/quick-add-ticket.tsx
+#: components/ticket/quick-add-ticket.tsx
 msgid "Goes into the project backlog — move it onto a board when a team picks it up."
 msgstr "Va dans le backlog du projet — déplacez-le sur un tableau lorsqu’une équipe le prend en charge."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "Google Calendar isn't connected"
 msgstr "Google Agenda n’est pas connecté"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "Google Calendar isn't set up on this server"
 msgstr "Google Agenda n’est pas configuré sur ce serveur"
 
@@ -4068,7 +4068,7 @@ msgstr "Google Chat n’est pas configuré sur ce serveur."
 msgid "Google still lets TrackLin.es read your calendars."
 msgstr "Google autorise toujours TrackLin.es à lire vos agendas."
 
-#: components/mcp-connect.tsx
+#: components/settings/mcp-connect.tsx
 msgid "Header"
 msgstr "En-tête"
 
@@ -4076,7 +4076,7 @@ msgstr "En-tête"
 msgid "Health"
 msgstr "Santé"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "health must be on_track, at_risk or off_track and note must be 1 to 2000 characters"
 msgstr "health doit valoir on_track, at_risk ou off_track et note doit compter de 1 à 2000 caractères"
 
@@ -4084,11 +4084,11 @@ msgstr "health doit valoir on_track, at_risk ou off_track et note doit compter d
 msgid "Health over time"
 msgstr "Santé dans le temps"
 
-#: components/help-bot.tsx
+#: components/layout/help-bot.tsx
 msgid "Help"
 msgstr "Aide"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "help answer not found"
 msgstr "réponse d’aide introuvable"
 
@@ -4096,7 +4096,7 @@ msgstr "réponse d’aide introuvable"
 msgid "Help answers"
 msgstr "Réponses d’aide"
 
-#: components/help-bot.tsx
+#: components/layout/help-bot.tsx
 msgid "Help couldn’t load. Try the <0>docs</0>."
 msgstr "L’aide n’a pas pu se charger. Essayez la <0>documentation</0>."
 
@@ -4108,7 +4108,7 @@ msgstr "Masquée"
 msgid "Hide deliveries"
 msgstr "Masquer les livraisons"
 
-#: components/notifications-bell.tsx
+#: components/work/notifications-bell.tsx
 msgid "Hide read"
 msgstr "Masquer les lues"
 
@@ -4127,7 +4127,7 @@ msgstr "Historique"
 msgid "History can’t be loaded right now. Try again shortly."
 msgstr "L’historique ne peut pas être chargé pour le moment. Réessayez dans un instant."
 
-#: components/hosted-bar.tsx
+#: components/live/hosted-bar.tsx
 msgid "Host"
 msgstr "Hôte"
 
@@ -4135,7 +4135,7 @@ msgstr "Hôte"
 msgid "Hours"
 msgstr "Heures"
 
-#: components/help-bot.tsx
+#: components/layout/help-bot.tsx
 msgid "How can we help?"
 msgstr "Comment pouvons-nous vous aider ?"
 
@@ -4159,7 +4159,7 @@ msgstr "Comment vous êtes informé des tickets qui vous sont assignés, des men
 msgid "I’ve saved it"
 msgstr "Je l’ai enregistré"
 
-#: components/markdown.tsx
+#: components/common/markdown.tsx
 msgid "image"
 msgstr "image"
 
@@ -4169,7 +4169,7 @@ msgstr "image"
 msgid "Import"
 msgstr "Importer"
 
-#: lib/people.ts
+#: lib/work/people.ts
 msgid "Imported"
 msgstr "Importé"
 
@@ -4195,11 +4195,11 @@ msgstr "En cours"
 msgid "In the Google Chat space: Apps & integrations → Webhooks → Add webhook, then copy its URL. It’s stored encrypted and never shown again."
 msgstr "Dans l’espace Google Chat : Applications et intégrations → Webhooks → Ajouter un webhook, puis copiez son URL. Elle est stockée chiffrée et ne sera plus jamais affichée."
 
-#: components/my-work.tsx
+#: components/work/my-work.tsx
 msgid "Include done"
 msgstr "Inclure les terminés"
 
-#: lib/organization-settings.ts
+#: lib/org/organization-settings.ts
 msgid "initial admin: {who}"
 msgstr "administrateur initial : {who}"
 
@@ -4209,31 +4209,31 @@ msgstr "administrateur initial : {who}"
 msgid "Integrations"
 msgstr "Intégrations"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "integrations are not configured on this server"
 msgstr "les intégrations ne sont pas configurées sur ce serveur"
 
-#: lib/integrations.ts
+#: lib/org/integrations.ts
 msgid "Integrations aren’t set up on this server yet (see docs/integrations.md)."
 msgstr "Les intégrations ne sont pas encore configurées sur ce serveur (voir docs/integrations.md)."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "invalid api key"
 msgstr "clé API invalide"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "invalid column order"
 msgstr "ordre des colonnes invalide"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "invalid labels"
 msgstr "étiquettes invalides"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "invalid template"
 msgstr "modèle invalide"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "invitation acceptance requires a signed-in session"
 msgstr "l’acceptation d’une invitation nécessite une session connectée"
 
@@ -4241,19 +4241,19 @@ msgstr "l’acceptation d’une invitation nécessite une session connectée"
 msgid "Invitation accepted."
 msgstr "Invitation acceptée."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "invitation details do not match"
 msgstr "les détails de l’invitation ne correspondent pas"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "invitation has already been accepted"
 msgstr "l’invitation a déjà été acceptée"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "invitation is no longer available"
 msgstr "l’invitation n’est plus disponible"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "invitation is no longer pending"
 msgstr "l’invitation n’est plus en attente"
 
@@ -4286,7 +4286,7 @@ msgstr "Les invitations sont envoyées par e-mail et expirent au bout de sept jo
 msgid "Invitations for you"
 msgstr "Invitations pour vous"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "invitations require a signed-in session"
 msgstr "les invitations nécessitent une session connectée"
 
@@ -4306,7 +4306,7 @@ msgstr "Elle ne peut plus être annulée : quelqu’un a travaillé sur ce qu’
 msgid "It isn't taking requests right now, or the link has changed. Ask whoever shared it for a new one."
 msgstr "Il n’accepte pas de demandes pour le moment, ou le lien a changé. Demandez-en un nouveau à la personne qui l’a partagé."
 
-#: components/load-error.tsx
+#: components/layout/load-error.tsx
 msgid "It may have been deleted, or it belongs to another organization."
 msgstr "Il a peut-être été supprimé, ou il appartient à une autre organisation."
 
@@ -4324,11 +4324,11 @@ msgstr "Il porte le nom de l’agent : vous verrez « {0} », et les autres le v
 msgid "It’s public: only organization admins can take it off public."
 msgstr "Il est public : seuls les administrateurs de l’organisation peuvent le rendre non public."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "item manual_status must be not_started, in_progress or done"
 msgstr "manual_status de l’élément doit valoir not_started, in_progress ou done"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "item title is required"
 msgstr "le titre de l’élément est requis"
 
@@ -4356,7 +4356,7 @@ msgstr "Site Jira"
 msgid "Join standup"
 msgstr "Rejoindre le standup"
 
-#: lib/ago.ts
+#: lib/i18n/ago.ts
 msgid "just now"
 msgstr "à l’instant"
 
@@ -4369,11 +4369,11 @@ msgstr "Kanban"
 msgid "Kanban board: work flows continuously. Keep each column within its WIP limit."
 msgstr "Tableau Kanban : le travail s’écoule en continu. Maintenez chaque colonne dans sa limite WIP."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "kanban boards don't run sprints"
 msgstr "les tableaux Kanban n’ont pas de sprints"
 
-#: components/board/flow-charts.tsx
+#: components/sprint/flow-charts.tsx
 msgid "Kanban charts"
 msgstr "Graphiques Kanban"
 
@@ -4397,7 +4397,7 @@ msgstr "Le conserver une année de plus"
 msgid "Keep it open"
 msgstr "Le garder ouvert"
 
-#: components/mcp-connect.tsx
+#: components/settings/mcp-connect.tsx
 msgid "Keep the key in an environment variable (e.g. in your shell profile):"
 msgstr "Conservez la clé dans une variable d’environnement (ex. dans le profil de votre shell) :"
 
@@ -4413,7 +4413,7 @@ msgstr "a gardé {f} un an de plus"
 msgid "Key prefix"
 msgstr "Préfixe de clé"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "key prefix must be 2–6 capital letters or digits, starting with a letter"
 msgstr "le préfixe de clé doit compter 2 à 6 lettres majuscules ou chiffres, en commençant par une lettre"
 
@@ -4433,7 +4433,7 @@ msgstr "Clés qui agissent en votre nom, pour vos propres scripts et écrans. Co
 msgid "Keys that act as you, for your own scripts, displays and AI agents. Send one as <0>Authorization: Bearer tl_p_…</0> (or <1>tl_ai_…</1> for an agent) to <2>/api</2>."
 msgstr "Clés qui agissent en votre nom, pour vos propres scripts, écrans et agents IA. Envoyez-en une sous la forme <0>Authorization: Bearer tl_p_…</0> (ou <1>tl_ai_…</1> pour un agent) à <2>/api</2>."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "kind must be ai, service or personal"
 msgstr "kind doit valoir ai, service ou personal"
 
@@ -4447,7 +4447,7 @@ msgstr "Étiquettes"
 msgid "Labels <0>(optional)</0>"
 msgstr "Étiquettes <0>(facultatif)</0>"
 
-#: lib/labels.ts
+#: lib/ticket/labels.ts
 msgid "Labels can be at most {MAX_TICKET_LABEL_LENGTH} characters."
 msgstr "Les étiquettes peuvent compter au maximum {MAX_TICKET_LABEL_LENGTH} caractères."
 
@@ -4455,7 +4455,7 @@ msgstr "Les étiquettes peuvent compter au maximum {MAX_TICKET_LABEL_LENGTH} car
 msgid "Language"
 msgstr "Langue"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "language must be one of en, nl, de, es, pt, fr, tlh, or null"
 msgstr "language doit valoir en, nl, de, es, pt, fr, tlh ou null"
 
@@ -4463,11 +4463,11 @@ msgstr "language doit valoir en, nl, de, es, pt, fr, tlh ou null"
 msgid "Large pieces of work across boards. Their sub-tickets go on the boards; the epic shows how far they've got."
 msgstr "De gros chantiers couvrant plusieurs tableaux. Leurs sous-tickets vont sur les tableaux ; l’epic montre leur avancement."
 
-#: lib/sprint-report.ts
+#: lib/sprint/sprint-report.ts
 msgid "Last 30 days"
 msgstr "30 derniers jours"
 
-#: lib/sprint-report.ts
+#: lib/sprint/sprint-report.ts
 msgid "Last 90 days"
 msgstr "90 derniers jours"
 
@@ -4475,7 +4475,7 @@ msgstr "90 derniers jours"
 msgid "last changed <0/>"
 msgstr "dernière modification <0/>"
 
-#: lib/sprint-report.ts
+#: lib/sprint/sprint-report.ts
 msgid "Last quarter"
 msgstr "Dernier trimestre"
 
@@ -4512,11 +4512,11 @@ msgstr "Plus tard"
 msgid "Leader"
 msgstr "Responsable"
 
-#: components/hosted-bar.tsx
+#: components/live/hosted-bar.tsx
 msgid "Leave refinement"
 msgstr "Quitter l’affinage"
 
-#: components/hosted-bar.tsx
+#: components/live/hosted-bar.tsx
 msgid "Leave standup"
 msgstr "Quitter le standup"
 
@@ -4524,16 +4524,16 @@ msgstr "Quitter le standup"
 msgid "Leave without saving your changes?"
 msgstr "Quitter sans enregistrer vos modifications ?"
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 #: components/staff/downtime.tsx
 msgid "Length"
 msgstr "Durée"
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Length in days"
 msgstr "Durée en jours"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "length_days must be between 1 and 365"
 msgstr "length_days doit être compris entre 1 et 365"
 
@@ -4541,15 +4541,15 @@ msgstr "length_days doit être compris entre 1 et 365"
 msgid "Level"
 msgstr "Niveau"
 
-#: components/theme-chooser.tsx
+#: components/layout/theme-chooser.tsx
 msgid "Light"
 msgstr "Clair"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "limit must be 1–50"
 msgstr "limit doit être compris entre 1 et 50"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "limit must be between 1 and 500"
 msgstr "limit doit être compris entre 1 et 500"
 
@@ -4619,7 +4619,7 @@ msgstr "Tickets liés terminés par rapport à tous les tickets liés, pour chaq
 msgid "Linked tickets done each week (the solid line) against all linked tickets (dashed): the gap is what's left."
 msgstr "Tickets liés terminés chaque semaine (ligne pleine) par rapport à tous les tickets liés (pointillés) : l’écart est ce qui reste."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "linked tickets must be in the roadmap's project"
 msgstr "les tickets liés doivent appartenir au projet de la feuille de route"
 
@@ -4631,27 +4631,27 @@ msgstr "Liaison de votre Google Chat…"
 msgid "Live details appear once an organization admin connects Bugfixes."
 msgstr "Les détails en direct apparaissent une fois qu’un administrateur de l’organisation a connecté Bugfixes."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "live session unavailable"
 msgstr "session en direct indisponible"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "live sessions unavailable"
 msgstr "sessions en direct indisponibles"
 
-#: lib/live-status.ts
+#: lib/live/live-status.ts
 msgid "Live updates"
 msgstr "Mises à jour en direct"
 
-#: lib/live-status.ts
+#: lib/live/live-status.ts
 msgid "Live updates dropped; changes from others will appear when they’re back."
 msgstr "Mises à jour en direct interrompues ; les modifications des autres apparaîtront à leur retour."
 
-#: lib/live-status.ts
+#: lib/live/live-status.ts
 msgid "Live updates unavailable"
 msgstr "Mises à jour en direct indisponibles"
 
-#: components/my-work.tsx
+#: components/work/my-work.tsx
 msgid "Load more"
 msgstr "Charger plus"
 
@@ -4666,12 +4666,12 @@ msgstr "Chargement des clés API…"
 msgid "Loading archived boards…"
 msgstr "Chargement des tableaux archivés…"
 
-#: components/page-skeletons.tsx
+#: components/layout/page-skeletons.tsx
 msgid "Loading board…"
 msgstr "Chargement du tableau…"
 
-#: components/board/flow-charts.tsx
-#: components/board/velocity.tsx
+#: components/sprint/flow-charts.tsx
+#: components/sprint/velocity.tsx
 msgid "Loading charts…"
 msgstr "Chargement des graphiques…"
 
@@ -4711,7 +4711,7 @@ msgid "Loading plan…"
 msgstr "Chargement de l’offre…"
 
 #: app/projects/[id]/edit/page.tsx
-#: components/page-skeletons.tsx
+#: components/layout/page-skeletons.tsx
 msgid "Loading project…"
 msgstr "Chargement du projet…"
 
@@ -4742,11 +4742,11 @@ msgstr "Chargement de la feuille de route…"
 msgid "Loading roadmaps…"
 msgstr "Chargement des feuilles de route…"
 
-#: components/board/past-sprints.tsx
+#: components/sprint/past-sprints.tsx
 msgid "Loading sprint…"
 msgstr "Chargement du sprint…"
 
-#: components/board/past-sprints.tsx
+#: components/sprint/past-sprints.tsx
 msgid "Loading sprints…"
 msgstr "Chargement des sprints…"
 
@@ -4758,7 +4758,7 @@ msgstr "Chargement du rapport Bugfixes…"
 msgid "Loading the report…"
 msgstr "Chargement du rapport…"
 
-#: components/page-skeletons.tsx
+#: components/layout/page-skeletons.tsx
 msgid "Loading ticket…"
 msgstr "Chargement du ticket…"
 
@@ -4771,41 +4771,41 @@ msgid "Loading your Jira projects…"
 msgstr "Chargement de vos projets Jira…"
 
 #: app/mentions/page.tsx
-#: components/mentions.tsx
+#: components/work/mentions.tsx
 msgid "Loading your mentions…"
 msgstr "Chargement de vos mentions…"
 
 #: app/my-work/page.tsx
-#: components/my-work.tsx
+#: components/work/my-work.tsx
 msgid "Loading your work…"
 msgstr "Chargement de votre travail…"
 
 #: app/account/page.tsx
 #: components/board/import-review.tsx
-#: components/board/next-sprints.tsx
-#: components/dashboard-work.tsx
-#: components/help-bot.tsx
 #: components/intake/intake-settings.tsx
 #: components/intake/request-form.tsx
-#: components/notifications-bell.tsx
-#: components/page-skeletons.tsx
+#: components/layout/help-bot.tsx
+#: components/layout/page-skeletons.tsx
 #: components/project/archived-boards.tsx
 #: components/project/move-to-board.tsx
 #: components/project/refinement.tsx
 #: components/project/repositories.tsx
-#: components/quick-add-ticket.tsx
 #: components/settings/embedding.tsx
 #: components/settings/jira-import.tsx
 #: components/settings/linear-import.tsx
 #: components/settings/webhooks.tsx
+#: components/sprint/next-sprints.tsx
 #: components/staff/downtime.tsx
 #: components/staff/help-editor.tsx
 #: components/staff/staff-shell.tsx
 #: components/staff/stats.tsx
+#: components/ticket/quick-add-ticket.tsx
+#: components/work/dashboard-work.tsx
+#: components/work/notifications-bell.tsx
 msgid "Loading…"
 msgstr "Chargement…"
 
-#: components/hosted-bar.tsx
+#: components/live/hosted-bar.tsx
 msgid "Look around on your own; the host's tickets stop opening for you"
 msgstr "Explorez de votre côté ; les tickets de l’hôte ne s’ouvrent plus pour vous"
 
@@ -4838,7 +4838,7 @@ msgstr "l’a rattaché à {to}"
 msgid "Make {0} the review column"
 msgstr "Faire de {0} la colonne de revue"
 
-#: components/hosted-bar.tsx
+#: components/live/hosted-bar.tsx
 msgid "Make {name} the host"
 msgstr "Désigner {name} comme hôte"
 
@@ -4850,7 +4850,7 @@ msgstr "Créer un nouveau lien ? L’actuel cesse de fonctionner, donc toute per
 msgid "Make admin"
 msgstr "Nommer administrateur"
 
-#: components/hosted-bar.tsx
+#: components/live/hosted-bar.tsx
 msgid "Make host"
 msgstr "Désigner comme hôte"
 
@@ -4887,7 +4887,7 @@ msgstr "Ordre manuel"
 msgid "Manual status for milestone {n}"
 msgstr "Statut manuel du jalon {n}"
 
-#: components/notifications-bell.tsx
+#: components/work/notifications-bell.tsx
 msgid "Mark all read"
 msgstr "Tout marquer comme lu"
 
@@ -4903,7 +4903,7 @@ msgstr "Marquer comme doublon…"
 msgid "Marked as a duplicate"
 msgstr "Marqué comme doublon"
 
-#: lib/ticket-page.ts
+#: lib/ticket/ticket-page.ts
 msgid "marked duplicate"
 msgstr "marqué comme doublon"
 
@@ -4923,12 +4923,12 @@ msgstr "Marquage…"
 msgid "Matched to members by email:"
 msgstr "Associés à des membres par e-mail :"
 
-#: components/board/flow-report.tsx
+#: components/sprint/flow-report.tsx
 msgid "Median cycle time"
 msgstr "Temps de cycle médian"
 
 #. placeholder {0}: fmtDays(flow.median_cycle_days)
-#: components/board/flow-charts.tsx
+#: components/sprint/flow-charts.tsx
 msgid "Median: <0>{0}</0> (dashed line)"
 msgstr "Médiane : <0>{0}</0> (ligne en tirets)"
 
@@ -4952,12 +4952,12 @@ msgstr "Membre retiré de l’équipe."
 msgid "Members"
 msgstr "Membres"
 
-#: components/notification-icon.tsx
+#: components/work/notification-icon.tsx
 msgid "Mentioned you"
 msgstr "Vous a mentionné"
 
 #: app/mentions/page.tsx
-#: components/dashboard-work.tsx
+#: components/work/dashboard-work.tsx
 msgid "Mentions"
 msgstr "Mentions"
 
@@ -5038,7 +5038,7 @@ msgstr "Descendre le jalon {n}"
 msgid "Move milestone {n} up"
 msgstr "Monter le jalon {n}"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "move or delete tickets before deleting this column"
 msgstr "déplacez ou supprimez les tickets avant de supprimer cette colonne"
 
@@ -5100,23 +5100,23 @@ msgstr "Mon travail"
 msgid "Name"
 msgstr "Nom"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "name and message are required"
 msgstr "name et message sont requis"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "name can't be empty"
 msgstr "le nom ne peut pas être vide"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "name is required"
 msgstr "le nom est requis"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "name is required (e.g. the script using it)"
 msgstr "le nom est requis (ex. le script qui l’utilise)"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "name or wip_limit is required"
 msgstr "name ou wip_limit est requis"
 
@@ -5124,7 +5124,7 @@ msgstr "name ou wip_limit est requis"
 msgid "Name this embed, e.g. Marketing site"
 msgstr "Nommez cette intégration, ex. Site marketing"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "name, estimate_scale, style, agent_review, dev_complete_column_id or review_column_id is required"
 msgstr "name, estimate_scale, style, agent_review, dev_complete_column_id ou review_column_id est requis"
 
@@ -5133,15 +5133,15 @@ msgid "Needs approval"
 msgstr "Nécessite une approbation"
 
 #: components/board/review.tsx
-#: lib/google-chat.ts
+#: lib/org/google-chat.ts
 msgid "Needs review"
 msgstr "À vérifier"
 
-#: components/notification-icon.tsx
+#: components/work/notification-icon.tsx
 msgid "Needs your approval"
 msgstr "Nécessite votre approbation"
 
-#: components/notification-icon.tsx
+#: components/work/notification-icon.tsx
 msgid "Needs your review"
 msgstr "Nécessite votre vérification"
 
@@ -5192,7 +5192,7 @@ msgid "New project"
 msgstr "Nouveau projet"
 
 #: app/projects/[id]/page.tsx
-#: components/roadmap-editor-form.tsx
+#: components/roadmap/roadmap-editor-form.tsx
 msgid "New roadmap"
 msgstr "Nouvelle feuille de route"
 
@@ -5208,11 +5208,11 @@ msgstr "Nouveau sous-ticket…"
 msgid "New team name"
 msgstr "Nom de la nouvelle équipe"
 
-#: components/quick-add-ticket.tsx
+#: components/ticket/quick-add-ticket.tsx
 msgid "New ticket"
 msgstr "Nouveau ticket"
 
-#: lib/google-chat.ts
+#: lib/org/google-chat.ts
 msgid "New tickets"
 msgstr "Nouveaux tickets"
 
@@ -5220,7 +5220,7 @@ msgstr "Nouveaux tickets"
 msgid "Newest first"
 msgstr "Plus récents d’abord"
 
-#: components/board/standup.tsx
+#: components/live/standup.tsx
 #: components/ui/pagination.tsx
 msgid "Next"
 msgstr "Suivant"
@@ -5229,7 +5229,7 @@ msgstr "Suivant"
 msgid "Next sprints"
 msgstr "Prochains sprints"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "next_starts_at must be in the future"
 msgstr "next_starts_at doit être dans le futur"
 
@@ -5261,7 +5261,7 @@ msgstr "Aucun tableau pour le moment."
 msgid "No boards yet. Add one for each team, e.g. Backend, Design."
 msgstr "Aucun tableau pour le moment. Ajoutez-en un pour chaque équipe, ex. Backend, Design."
 
-#: lib/refinement.ts
+#: lib/live/refinement.ts
 msgid "No closed sprints yet, so there’s no limit."
 msgstr "Aucun sprint clôturé pour le moment, il n’y a donc pas de limite."
 
@@ -5282,11 +5282,11 @@ msgstr "Aucun détail fourni."
 msgid "No done tickets in the backlog."
 msgstr "Aucun ticket terminé dans le backlog."
 
-#: components/mentions.tsx
+#: components/work/mentions.tsx
 msgid "No done tickets mention you."
 msgstr "Aucun ticket terminé ne vous mentionne."
 
-#: components/ticket-search.tsx
+#: components/ticket/ticket-search.tsx
 msgid "No due date"
 msgstr "Sans échéance"
 
@@ -5306,7 +5306,7 @@ msgstr "Aucune clé d’intégration pour le moment. Créez-en une pour suivre l
 msgid "No epics yet. Add one to the backlog with the Epic type, or make a big ticket an epic from its edit form."
 msgstr "Aucune epic pour le moment. Ajoutez-en une au backlog avec le type Epic, ou transformez un gros ticket en epic depuis son formulaire de modification."
 
-#: lib/estimates.ts
+#: lib/board/estimates.ts
 msgid "No estimates"
 msgstr "Aucune estimation"
 
@@ -5338,7 +5338,7 @@ msgstr "Aucune étiquette sur ces tickets pour le moment."
 msgid "No linked tickets yet; roadmap item statuses are manual."
 msgstr "Aucun ticket lié pour le moment ; les statuts des éléments de la feuille de route sont manuels."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "no live session"
 msgstr "aucune session en direct"
 
@@ -5362,7 +5362,7 @@ msgstr "Plus aucun ticket dans ce projet"
 msgid "No open tickets in the backlog."
 msgstr "Aucun ticket ouvert dans le backlog."
 
-#: components/mentions.tsx
+#: components/work/mentions.tsx
 msgid "No open tickets mention you."
 msgstr "Aucun ticket ouvert ne vous mentionne."
 
@@ -5379,7 +5379,7 @@ msgstr "Aucun autre ticket dans ce projet"
 msgid "No outages recorded."
 msgstr "Aucune panne enregistrée."
 
-#: components/board/past-sprints.tsx
+#: components/sprint/past-sprints.tsx
 msgid "No past sprints yet."
 msgstr "Aucun sprint passé pour le moment."
 
@@ -5415,7 +5415,7 @@ msgstr "Aucune feuille de route pour le moment. Créez-en une depuis un projet."
 msgid "No service keys yet."
 msgstr "Aucune clé de service pour le moment."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "no session running"
 msgstr "aucune session en cours"
 
@@ -5439,15 +5439,15 @@ msgstr "Aucun tableau à sprints à planifier pour le moment."
 msgid "No sprint is open on this board: it goes to the first column."
 msgstr "Aucun sprint n’est ouvert sur ce tableau : il va dans la première colonne."
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "No sprint running — tickets aren't time-boxed."
 msgstr "Aucun sprint en cours — les tickets ne sont pas limités dans le temps."
 
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "No sprint running, so there's nothing to burn down."
 msgstr "Aucun sprint en cours, il n’y a donc rien à afficher en burn-down."
 
-#: components/board/next-sprints.tsx
+#: components/sprint/next-sprints.tsx
 msgid "No sprints are planned yet."
 msgstr "Aucun sprint n’est encore planifié."
 
@@ -5471,7 +5471,7 @@ msgstr "Aucun sprint planifié pour le moment. Un administrateur de l’organisa
 msgid "No sub-tickets yet"
 msgstr "Aucun sous-ticket pour le moment"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "no subscription yet — upgrade first"
 msgstr "pas encore d’abonnement — passez d’abord à une offre supérieure"
 
@@ -5487,11 +5487,11 @@ msgstr "Pas encore d’équipe"
 msgid "No teams yet."
 msgstr "Aucune équipe pour le moment."
 
-#: components/board/flow-charts.tsx
+#: components/sprint/flow-charts.tsx
 msgid "No tickets have been completed in the last 12 weeks yet. Charts will appear when work is finished."
 msgstr "Aucun ticket n’a encore été terminé au cours des 12 dernières semaines. Les graphiques apparaîtront lorsque du travail sera terminé."
 
-#: components/board/flow-report.tsx
+#: components/sprint/flow-report.tsx
 msgid "No tickets have been completed in this period yet."
 msgstr "Aucun ticket n’a encore été terminé sur cette période."
 
@@ -5508,7 +5508,7 @@ msgstr "Aucun ticket ne correspond à ces filtres."
 msgid "No tickets match these priorities."
 msgstr "Aucun ticket ne correspond à ces priorités."
 
-#: components/ticket-search.tsx
+#: components/ticket/ticket-search.tsx
 msgid "No tickets match this search."
 msgstr "Aucun ticket ne correspond à cette recherche."
 
@@ -5536,12 +5536,12 @@ msgstr "Aucun webhook pour l’instant."
 msgid "No won’t do tickets in the backlog."
 msgstr "Aucun ticket « ne sera pas fait » dans le backlog."
 
-#: components/hosted-bar.tsx
+#: components/live/hosted-bar.tsx
 msgid "Nobody else has joined yet."
 msgstr "Personne d’autre n’a encore rejoint."
 
-#: components/dashboard-work.tsx
-#: components/mentions.tsx
+#: components/work/dashboard-work.tsx
+#: components/work/mentions.tsx
 msgid "Nobody has mentioned you yet."
 msgstr "Personne ne vous a encore mentionné."
 
@@ -5553,7 +5553,7 @@ msgstr "Aucun"
 msgid "None — split bigger work into sub-tickets here."
 msgstr "Aucun — découpez ici le travail plus important en sous-tickets."
 
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "None closed yet."
 msgstr "Aucun fermé pour le moment."
 
@@ -5573,11 +5573,11 @@ msgstr "Aucune : suggérée sur les autres pages, comme un ticket ou Mon travail
 msgid "None."
 msgstr "Aucun."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "not a browser push subscription"
 msgstr "pas un abonnement push de navigateur"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "not connected"
 msgstr "non connecté"
 
@@ -5590,11 +5590,11 @@ msgstr "Non connecté"
 msgid "not done"
 msgstr "non terminé"
 
-#: components/mentions.tsx
+#: components/work/mentions.tsx
 msgid "Not done"
 msgstr "Non terminé"
 
-#: components/markdown.tsx
+#: components/common/markdown.tsx
 msgid "Not done: click to mark done"
 msgstr "Non terminé : cliquez pour marquer comme terminé"
 
@@ -5664,7 +5664,7 @@ msgstr "Note"
 msgid "Nothing — it can be picked up."
 msgstr "Rien — il peut être pris en charge."
 
-#: components/help-bot.tsx
+#: components/layout/help-bot.tsx
 msgid "Nothing about that yet. Try the <0>docs</0>, or <1>ask us</1>."
 msgstr "Rien à ce sujet pour le moment. Consultez la <0>documentation</0>, ou <1>posez-nous la question</1>."
 
@@ -5672,8 +5672,8 @@ msgstr "Rien à ce sujet pour le moment. Consultez la <0>documentation</0>, ou <
 msgid "Nothing added to the backlog from requests yet."
 msgstr "Rien n’a encore été ajouté au backlog depuis les demandes."
 
-#: components/dashboard-work.tsx
-#: components/my-work.tsx
+#: components/work/dashboard-work.tsx
+#: components/work/my-work.tsx
 msgid "Nothing assigned to you right now."
 msgstr "Rien ne vous est assigné pour le moment."
 
@@ -5697,7 +5697,7 @@ msgstr "Plus rien à planifier."
 msgid "Nothing of this type in the backlog."
 msgstr "Rien de ce type dans le backlog."
 
-#: components/my-work.tsx
+#: components/work/my-work.tsx
 msgid "Nothing of yours matches these filters."
 msgstr "Rien de ce qui vous concerne ne correspond à ces filtres."
 
@@ -5721,7 +5721,7 @@ msgstr "Rien de non planifié dans le backlog. Les tickets planifiés se trouven
 msgid "Nothing waits on it."
 msgstr "Rien n’attend ce ticket."
 
-#: components/board/past-sprints.tsx
+#: components/sprint/past-sprints.tsx
 msgid "Nothing was finished in this sprint."
 msgstr "Rien n’a été terminé dans ce sprint."
 
@@ -5729,33 +5729,33 @@ msgstr "Rien n’a été terminé dans ce sprint."
 msgid "Nothing."
 msgstr "Rien."
 
-#: components/notifications-bell.tsx
+#: components/work/notifications-bell.tsx
 msgid "Notification settings"
 msgstr "Paramètres de notification"
 
-#: components/notifications-bell.tsx
+#: components/work/notifications-bell.tsx
 msgid "Notifications"
 msgstr "Notifications"
 
-#: lib/push.ts
+#: lib/org/push.ts
 msgid "Notifications are allowed, but this browser has no push service to deliver them when TrackLin.es is closed (plain Chromium builds don’t include one). Chrome, Edge, Firefox and Safari do."
 msgstr "Les notifications sont autorisées, mais ce navigateur n’a pas de service push pour les délivrer lorsque TrackLin.es est fermé (les versions de base de Chromium n’en incluent pas). Chrome, Edge, Firefox et Safari en ont un."
 
-#: components/notifications-bell.tsx
 #: components/settings/device-push.tsx
-#: lib/push.ts
+#: components/work/notifications-bell.tsx
+#: lib/org/push.ts
 msgid "Notifications are blocked for this site in your browser settings."
 msgstr "Les notifications sont bloquées pour ce site dans les paramètres de votre navigateur."
 
-#: components/notifications-bell.tsx
+#: components/work/notifications-bell.tsx
 msgid "Notifications are on while TrackLin.es is open (this browser can’t get them when it’s closed)."
 msgstr "Les notifications sont actives tant que TrackLin.es est ouvert (ce navigateur ne peut pas les recevoir lorsqu’il est fermé)."
 
-#: components/notifications-bell.tsx
+#: components/work/notifications-bell.tsx
 msgid "Notifications, {count} unread"
 msgstr "Notifications, {count} non lues"
 
-#: components/notifications-bell.tsx
+#: components/work/notifications-bell.tsx
 msgid "Notify me on this device"
 msgstr "M’avertir sur cet appareil"
 
@@ -5795,7 +5795,7 @@ msgstr "du travail planifié terminé, sur {sprints, plural, one {# sprint} othe
 msgid "Off"
 msgstr "Désactivé"
 
-#: lib/away.ts
+#: lib/work/away.ts
 msgid "Off from {when}"
 msgstr "Absent à partir de {when}"
 
@@ -5803,7 +5803,7 @@ msgstr "Absent à partir de {when}"
 msgid "Off track"
 msgstr "Hors trajectoire"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "offset must be a non-negative integer"
 msgstr "offset doit être un entier non négatif"
 
@@ -5821,11 +5821,11 @@ msgstr "Plus anciens d’abord"
 msgid "On"
 msgstr "Activé"
 
-#: components/board/standup.tsx
+#: components/live/standup.tsx
 msgid "On holiday"
 msgstr "En congé"
 
-#: lib/away.ts
+#: lib/work/away.ts
 msgid "On holiday {until}"
 msgstr "En congé {until}"
 
@@ -5841,7 +5841,7 @@ msgstr "À la fusion : une pull request fusionnée déplace ses tickets vers Ter
 msgid "On track"
 msgstr "En bonne voie"
 
-#: components/notifications-bell.tsx
+#: components/work/notifications-bell.tsx
 msgid "On, even when TrackLin.es is closed"
 msgstr "Activé, même lorsque TrackLin.es est fermé"
 
@@ -5853,11 +5853,11 @@ msgstr "Un tableau par équipe."
 msgid "One key per AI agent (tl_ai_…). Agents can be assigned tickets, and their work shows as theirs."
 msgstr "Une clé par agent IA (tl_ai_…). Les agents peuvent se voir assigner des tickets, et leur travail apparaît comme le leur."
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "One line the team is working towards. It shows on the board and in standup."
 msgstr "Une phrase vers laquelle l’équipe travaille. Elle apparaît sur le tableau et pendant le standup."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "only an organization admin or whoever uploaded it can keep this file"
 msgstr "seul un administrateur de l’organisation ou la personne qui l’a envoyé peut conserver ce fichier"
 
@@ -5865,7 +5865,7 @@ msgstr "seul un administrateur de l’organisation ou la personne qui l’a envo
 msgid "Only an organization admin or whoever uploaded it can keep this file."
 msgstr "Seul un administrateur de l’organisation ou la personne qui l’a envoyé peut conserver ce fichier."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "only an organization admin or whoever uploaded it can remove this file"
 msgstr "seul un administrateur de l’organisation ou la personne qui a importé le fichier peut le retirer"
 
@@ -5873,15 +5873,15 @@ msgstr "seul un administrateur de l’organisation ou la personne qui a importé
 msgid "Only an organization admin or whoever uploaded it can remove this file."
 msgstr "Seul un administrateur de l’organisation ou la personne qui a importé le fichier peut le retirer."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "only an organization admin, signed in, can open, close or reset the request form"
 msgstr "seul un administrateur de l’organisation, connecté, peut ouvrir, fermer ou réinitialiser le formulaire de demande"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "only an organization admin, signed in, can publish, unpublish or delete a roadmap"
 msgstr "seul un administrateur de l’organisation, connecté, peut publier, dépublier ou supprimer une feuille de route"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "only backlog tickets can be planned into a sprint"
 msgstr "seuls les tickets du backlog peuvent être planifiés dans un sprint"
 
@@ -5889,7 +5889,7 @@ msgstr "seuls les tickets du backlog peuvent être planifiés dans un sprint"
 msgid "Only link it if that’s your own Google account and you asked the TrackLin.es app for this link yourself. If someone sent it to you, don’t."
 msgstr "Ne le liez que s’il s’agit de votre propre compte Google et que vous avez vous-même demandé ce lien à l’application TrackLin.es. Si quelqu’un vous l’a envoyé, ne le faites pas."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "only org admins can see the file clean-up"
 msgstr "seuls les administrateurs de l’organisation peuvent voir le nettoyage des fichiers"
 
@@ -5905,11 +5905,11 @@ msgstr "Seuls les administrateurs de l’organisation et les responsables d’é
 msgid "Only organization admins and this board’s team leaders can edit it."
 msgstr "Seuls les administrateurs de l’organisation et les responsables d’équipe de ce tableau peuvent le modifier."
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Only organization admins and this board’s team leaders can manage sprints."
 msgstr "Seuls les administrateurs de l’organisation et les responsables d’équipe de ce tableau peuvent gérer les sprints."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "only organization admins and this project's team leaders can change its roadmaps"
 msgstr "seuls les administrateurs de l’organisation et les responsables d’équipe de ce projet peuvent modifier ses feuilles de route"
 
@@ -5938,7 +5938,7 @@ msgstr "Seuls les administrateurs de l’organisation peuvent fermer le formulai
 msgid "Only organization admins can delete templates."
 msgstr "Seuls les administrateurs de l’organisation peuvent supprimer des modèles."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "only organization admins can do this"
 msgstr "seuls les administrateurs de l’organisation peuvent faire ceci"
 
@@ -5950,19 +5950,19 @@ msgstr "Seuls les administrateurs de l’organisation peuvent rendre une feuille
 msgid "Only organization admins can make or revoke them."
 msgstr "Seuls les administrateurs de l’organisation peuvent les créer ou les révoquer."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "only organization admins can make service keys"
 msgstr "seuls les administrateurs de l’organisation peuvent créer des clés de service"
 
-#: lib/organization-settings.ts
+#: lib/org/organization-settings.ts
 msgid "Only organization admins can make this change."
 msgstr "Seuls les administrateurs de l’organisation peuvent effectuer cette modification."
 
-#: lib/integrations.ts
+#: lib/org/integrations.ts
 msgid "Only organization admins can manage integrations."
 msgstr "Seuls les administrateurs de l’organisation peuvent gérer les intégrations."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "only organization admins can manage the plan"
 msgstr "seuls les administrateurs de l’organisation peuvent gérer l’offre"
 
@@ -5982,23 +5982,23 @@ msgstr "Seuls les administrateurs de l’organisation peuvent voir le nettoyage 
 msgid "Only organization admins can see the organization’s report."
 msgstr "Seuls les administrateurs de l’organisation peuvent voir le rapport de l’organisation."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "only organization admins or a team leader of this project's boards can run refinement"
 msgstr "seuls les administrateurs de l’organisation ou un responsable d’équipe des tableaux de ce projet peuvent mener l’affinage"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "only organization admins or this board's team leaders can do this"
 msgstr "seuls les administrateurs de l’organisation ou les responsables d’équipe de ce tableau peuvent faire ceci"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "only pending invitations can be revoked"
 msgstr "seules les invitations en attente peuvent être révoquées"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "only people and AI keys can assign tickets"
 msgstr "seuls les personnes et les clés IA peuvent assigner des tickets"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "only people review agent work"
 msgstr "seules des personnes vérifient le travail des agents"
 
@@ -6006,19 +6006,19 @@ msgstr "seules des personnes vérifient le travail des agents"
 msgid "Only people who manage this project can add or remove sites."
 msgstr "Seules les personnes qui gèrent ce projet peuvent ajouter ou retirer des sites."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "only someone who manages this project, signed in, can change where its roadmaps and request form can be embedded"
 msgstr "seule une personne qui gère ce projet, connectée, peut changer où ses roadmaps et son formulaire de demandes peuvent être intégrés"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "only the host can do that"
 msgstr "seul l’hôte peut faire cela"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "only the host can run the standup"
 msgstr "seul l’hôte peut animer le standup"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "only TrackLin.es links can be shortened"
 msgstr "seuls les liens TrackLin.es peuvent être raccourcis"
 
@@ -6035,7 +6035,7 @@ msgstr "Ouvrez un rapport depuis les sprints passés d’un tableau, un projet o
 msgid "Open board"
 msgstr "Ouvrir le tableau"
 
-#: components/board/flow-charts.tsx
+#: components/sprint/flow-charts.tsx
 msgid "Open by column"
 msgstr "Ouverts par colonne"
 
@@ -6059,7 +6059,7 @@ msgstr "Ouvrir le projet"
 msgid "Open the form"
 msgstr "Ouvrir le formulaire"
 
-#: components/board/flow-charts.tsx
+#: components/sprint/flow-charts.tsx
 msgid "Open the full report, to save as PDF or Markdown →"
 msgstr "Ouvrir le rapport complet, pour l’enregistrer en PDF ou en Markdown →"
 
@@ -6105,16 +6105,16 @@ msgstr "Administrateurs de l’organisation"
 msgid "Organization admins connect integrations. You can see what's connected."
 msgstr "Les administrateurs de l’organisation connectent les intégrations. Vous pouvez voir ce qui est connecté."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "organization has no members to make admin"
 msgstr "l’organisation n’a aucun membre à nommer administrateur"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "organization membership is not active yet"
 msgstr "l’adhésion à l’organisation n’est pas encore active"
 
+#: components/layout/user-menu.tsx
 #: components/staff/help-editor.tsx
-#: components/user-menu.tsx
 msgid "Organization settings"
 msgstr "Paramètres de l’organisation"
 
@@ -6134,7 +6134,7 @@ msgstr "Original :"
 msgid "Other tools this project works with: its team’s Google Chat space, and the repositories whose pull requests link to its tickets."
 msgstr "Les autres outils avec lesquels ce projet travaille : l’espace Google Chat de son équipe et les dépôts dont les pull requests renvoient à ses tickets."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "outage not found"
 msgstr "panne introuvable"
 
@@ -6146,7 +6146,7 @@ msgstr "Pannes"
 msgid "Over an hour: credited"
 msgstr "Plus d’une heure : créditée"
 
-#: lib/standup.ts
+#: lib/live/standup.ts
 msgid "over by {text}"
 msgstr "dépassement de {text}"
 
@@ -6154,7 +6154,7 @@ msgstr "dépassement de {text}"
 msgid "Over the limit of {limit}: finish something before starting more."
 msgstr "Au-delà de la limite de {limit} : terminez quelque chose avant d’en commencer davantage."
 
-#: components/timebox-countdown.tsx
+#: components/ticket/timebox-countdown.tsx
 msgid "over timebox by {over}"
 msgstr "timebox dépassée de {over}"
 
@@ -6163,15 +6163,15 @@ msgid "Overall progress"
 msgstr "Progression globale"
 
 #: components/roadmap/timeline.tsx
-#: components/ticket-search.tsx
+#: components/ticket/ticket-search.tsx
 msgid "Overdue"
 msgstr "En retard"
 
-#: components/board/sprint-status.ts
+#: components/sprint/sprint-status.ts
 msgid "overdue — closes automatically"
 msgstr "en retard — se ferme automatiquement"
 
-#: components/board/sprint-status.ts
+#: components/sprint/sprint-status.ts
 msgid "overdue by {late, plural, one {# day} other {# days}}"
 msgstr "en retard de {late, plural, one {# jour} other {# jours}}"
 
@@ -6179,7 +6179,7 @@ msgstr "en retard de {late, plural, one {# jour} other {# jours}}"
 msgid "overdue, was due {due}"
 msgstr "en retard, échéance au {due}"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "page must be 1 or more"
 msgstr "page doit être supérieur ou égal à 1"
 
@@ -6191,7 +6191,7 @@ msgstr "pagination"
 msgid "Parent ticket"
 msgstr "Ticket parent"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "parent_comment_id must be a comment on the same ticket"
 msgstr "parent_comment_id doit être un commentaire du même ticket"
 
@@ -6201,7 +6201,7 @@ msgstr "parent_comment_id doit être un commentaire du même ticket"
 msgid "Part of <0>{0}</0>"
 msgstr "Fait partie de <0>{0}</0>"
 
-#: components/board/past-sprints.tsx
+#: components/sprint/past-sprints.tsx
 msgid "Past sprints"
 msgstr "Sprints passés"
 
@@ -6209,15 +6209,15 @@ msgstr "Sprints passés"
 msgid "Paste on your site"
 msgstr "Collez sur votre site"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "paste the space's webhook URL first"
 msgstr "collez d’abord l’URL du webhook de l’espace"
 
-#: components/board/standup.tsx
+#: components/live/standup.tsx
 msgid "Pause"
 msgstr "Pause"
 
-#: components/board/standup.tsx
+#: components/live/standup.tsx
 msgid "paused"
 msgstr "en pause"
 
@@ -6225,7 +6225,7 @@ msgstr "en pause"
 msgid "Pending"
 msgstr "En attente"
 
-#: components/mention-textarea.tsx
+#: components/common/mention-textarea.tsx
 #: components/settings/jira-import.tsx
 msgid "People"
 msgstr "Personnes"
@@ -6254,7 +6254,7 @@ msgstr "Les clés personnelles agissent en votre nom, pour vos propres scripts e
 msgid "Pick at least one event."
 msgstr "Choisissez au moins un événement."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "pick at least one known event"
 msgstr "choisissez au moins un événement connu"
 
@@ -6279,7 +6279,7 @@ msgstr "Planifiez les tickets du backlog dans les prochains sprints de chaque é
 msgid "Plan into sprint"
 msgstr "Planifier dans un sprint"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "plan must be pro or enterprise"
 msgstr "plan doit valoir pro ou enterprise"
 
@@ -6308,7 +6308,7 @@ msgstr "Planifié dans le sprint {n} sur {board}"
 msgid "planned it for a later sprint"
 msgstr "l’a planifié pour un sprint ultérieur"
 
-#: lib/google-chat.ts
+#: lib/org/google-chat.ts
 msgid "Planned sprint needs approval"
 msgstr "Le sprint planifié nécessite une approbation"
 
@@ -6325,12 +6325,12 @@ msgid "Please add a title."
 msgstr "Veuillez ajouter un titre."
 
 #: app/roadmaps/page.tsx
-#: components/load-error.tsx
+#: components/layout/load-error.tsx
 msgid "Please refresh to try again."
 msgstr "Actualisez la page pour réessayer."
 
-#: components/board/velocity.tsx
 #: components/reports/rollup-view.tsx
+#: components/sprint/velocity.tsx
 msgid "Points"
 msgstr "Points"
 
@@ -6350,11 +6350,11 @@ msgstr "Points livrés par tableau"
 msgid "Points delivered by project"
 msgstr "Points livrés par projet"
 
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "points done"
 msgstr "points terminés"
 
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "points left"
 msgstr "points restants"
 
@@ -6416,7 +6416,7 @@ msgstr "Publication dans un espace"
 msgid "Posting…"
 msgstr "Publication…"
 
-#: lib/estimates.ts
+#: lib/board/estimates.ts
 msgid "Powers of two"
 msgstr "Puissances de deux"
 
@@ -6434,7 +6434,7 @@ msgstr "Prévisibilité %"
 msgid "Predictability by month"
 msgstr "Prévisibilité par mois"
 
-#: components/markdown.tsx
+#: components/common/markdown.tsx
 #: components/settings/csv-import.tsx
 #: components/settings/jira-import.tsx
 #: components/settings/linear-import.tsx
@@ -6458,7 +6458,7 @@ msgstr "Aperçu de {name}"
 msgid "Preview again"
 msgstr "Relancer l’aperçu"
 
-#: components/board/standup.tsx
+#: components/live/standup.tsx
 #: components/ui/pagination.tsx
 msgid "Previous"
 msgstr "Précédent"
@@ -6472,11 +6472,11 @@ msgstr "Priorité"
 msgid "Priority <0>(optional)</0>"
 msgstr "Priorité <0>(facultatif)</0>"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "priority must be low, medium, high or urgent"
 msgstr "priority doit valoir low, medium, high ou urgent"
 
-#: components/site-footer.tsx
+#: components/layout/site-footer.tsx
 msgid "Privacy"
 msgstr "Confidentialité"
 
@@ -6485,16 +6485,16 @@ msgid "Progress by item"
 msgstr "Avancement par élément"
 
 #: app/reports/page.tsx
-#: lib/organization-settings.ts
+#: lib/org/organization-settings.ts
 msgid "project"
 msgstr "projet"
 
 #: app/boards/[id]/page.tsx
 #: app/roadmaps/page.tsx
 #: app/settings/organization/page.tsx
-#: components/quick-add-ticket.tsx
 #: components/reports/rollup-view.tsx
 #: components/staff/help-editor.tsx
+#: components/ticket/quick-add-ticket.tsx
 msgid "Project"
 msgstr "Projet"
 
@@ -6506,7 +6506,7 @@ msgstr "Tableaux du projet"
 msgid "Project ID"
 msgstr "ID du projet"
 
-#: components/load-error.tsx
+#: components/layout/load-error.tsx
 msgid "Project not found"
 msgstr "Projet introuvable"
 
@@ -6523,11 +6523,11 @@ msgstr "Projets"
 msgid "Projects side by side"
 msgstr "Projets côte à côte"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "provider call failed"
 msgstr "l’appel au fournisseur a échoué"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "provider must be github or bitbucket"
 msgstr "provider doit valoir github ou bitbucket"
 
@@ -6555,7 +6555,7 @@ msgstr "Les pull requests de ces dépôts sont liées aux tickets qu’elles men
 msgid "Pull requests in these repositories that mention a ticket's key (e.g. in the branch name) show on the ticket; merging one closes it."
 msgstr "Les pull requests de ces dépôts qui mentionnent la clé d’un ticket (ex. dans le nom de la branche) s’affichent sur le ticket ; la fusion de l’une d’elles le ferme."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "push notifications aren't set up on this server"
 msgstr "les notifications push ne sont pas configurées sur ce serveur"
 
@@ -6579,7 +6579,7 @@ msgstr "Lecture seule"
 msgid "Read only<0>It can see tickets but not change anything. Best for displays and anything run by someone else.</0>"
 msgstr "Lecture seule<0>Elle peut voir les tickets mais ne rien modifier. Idéal pour les écrans et tout ce qui est exécuté par quelqu’un d’autre.</0>"
 
-#: components/board/past-sprints.tsx
+#: components/sprint/past-sprints.tsx
 msgid "Read-only: what each sprint finished and how it burned down."
 msgstr "Lecture seule : ce que chaque sprint a terminé et comment il a évolué en burn-down."
 
@@ -6587,7 +6587,7 @@ msgstr "Lecture seule : ce que chaque sprint a terminé et comment il a évolué
 msgid "Reason <0>(optional, added as a comment)</0>"
 msgstr "Raison <0>(facultatif, ajoutée en commentaire)</0>"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "reason is too long"
 msgstr "la raison est trop longue"
 
@@ -6603,7 +6603,7 @@ msgstr "Reçue <0/>"
 msgid "Recently closed"
 msgstr "Récemment fermés"
 
-#: lib/live-status.ts
+#: lib/live/live-status.ts
 msgid "Reconnecting…"
 msgstr "Reconnexion…"
 
@@ -6628,7 +6628,7 @@ msgstr "Enregistré avant les rapports : ce qu’il contenait à sa clôture"
 msgid "Refinement"
 msgstr "Affinage"
 
-#: lib/live-status.ts
+#: lib/live/live-status.ts
 msgid "Refresh to see changes others have made."
 msgstr "Actualisez pour voir les modifications apportées par les autres."
 
@@ -6642,7 +6642,7 @@ msgid "Released in {0}"
 msgstr "Publié dans {0}"
 
 #. placeholder {0}: n.text
-#: lib/notifications.ts
+#: lib/work/notifications.ts
 msgid "Reminder: {0}"
 msgstr "Rappel : {0}"
 
@@ -6713,7 +6713,7 @@ msgstr "Retiré."
 msgid "Removes it and its items; the shared link stops working."
 msgstr "La supprime avec ses éléments ; le lien partagé cesse de fonctionner."
 
-#: components/editable-title.tsx
+#: components/common/editable-title.tsx
 msgid "Rename {label}"
 msgstr "Renommer {label}"
 
@@ -6786,15 +6786,15 @@ msgstr "Formulaire de demande"
 msgid "Requests"
 msgstr "Demandes"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "requires a signed-in session, not an API key"
 msgstr "nécessite une session connectée, pas une clé API"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "resolution must be done or wont_do"
 msgstr "resolution doit valoir done ou wont_do"
 
-#: lib/ticket-page.ts
+#: lib/ticket/ticket-page.ts
 msgid "resolved"
 msgstr "résolu"
 
@@ -6802,7 +6802,7 @@ msgstr "résolu"
 msgid "Response"
 msgstr "Réponse"
 
-#: components/mcp-connect.tsx
+#: components/settings/mcp-connect.tsx
 msgid "Restart Claude Desktop; TrackLin.es appears in the tools menu."
 msgstr "Redémarrez Claude Desktop ; TrackLin.es apparaît dans le menu des outils."
 
@@ -6823,7 +6823,7 @@ msgstr "l’a restauré"
 msgid "Restoring…"
 msgstr "Restauration…"
 
-#: components/board/standup.tsx
+#: components/live/standup.tsx
 msgid "Resume"
 msgstr "Reprendre"
 
@@ -6831,7 +6831,7 @@ msgstr "Reprendre"
 msgid "Review"
 msgstr "Vérification"
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Review the imported tickets first"
 msgstr "Revoyez d’abord les tickets importés"
 
@@ -6869,7 +6869,7 @@ msgstr "Éléments de la feuille de route enregistrés."
 msgid "Roadmap navigation"
 msgstr "Navigation de la feuille de route"
 
-#: components/load-error.tsx
+#: components/layout/load-error.tsx
 msgid "Roadmap not found"
 msgstr "Feuille de route introuvable"
 
@@ -6899,19 +6899,19 @@ msgstr "Vue feuille de route"
 msgid "Roadmaps"
 msgstr "Feuilles de route"
 
-#: components/mcp-connect.tsx
+#: components/settings/mcp-connect.tsx
 msgid "Run this once in a terminal. -s user makes it available in every project."
 msgstr "Exécutez ceci une fois dans un terminal. -s user le rend disponible dans tous les projets."
 
-#: components/board/standup.tsx
+#: components/live/standup.tsx
 msgid "Running order"
 msgstr "Ordre de passage"
 
-#: components/hosted-bar.tsx
+#: components/live/hosted-bar.tsx
 msgid "Running the refinement"
 msgstr "Animation de l’affinage"
 
-#: components/hosted-bar.tsx
+#: components/live/hosted-bar.tsx
 msgid "Running the standup"
 msgstr "Animation du standup"
 
@@ -6939,7 +6939,7 @@ msgstr "Enregistrer les modifications"
 msgid "Save details"
 msgstr "Enregistrer les détails"
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Save goal"
 msgstr "Enregistrer l’objectif"
 
@@ -6955,11 +6955,11 @@ msgstr "Enregistrez les éléments pour lier des tickets à ce jalon."
 msgid "Save labels"
 msgstr "Enregistrer les étiquettes"
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Save length"
 msgstr "Enregistrer la durée"
 
-#: components/editable-title.tsx
+#: components/common/editable-title.tsx
 msgid "Save name"
 msgstr "Enregistrer le nom"
 
@@ -6990,20 +6990,20 @@ msgstr "Enregistrement des étiquettes…"
 #: app/boards/[id]/edit/page.tsx
 #: app/roadmaps/[id]/edit/page.tsx
 #: components/board/review.tsx
-#: components/board/sprint-bar.tsx
 #: components/board/ticket-dialog.tsx
+#: components/common/name-dialog.tsx
 #: components/intake/triage.tsx
-#: components/name-dialog.tsx
 #: components/project/key-prefix.tsx
-#: components/roadmap-editor-form.tsx
 #: components/roadmap/item-editor.tsx
+#: components/roadmap/roadmap-editor-form.tsx
 #: components/settings/google-chat.tsx
 #: components/settings/integrations.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Saving…"
 msgstr "Enregistrement…"
 
 #. placeholder {0}: day.format(new Date(sprint.starts_at))
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Scheduled · starts {0}"
 msgstr "Programmé · commence {0}"
 
@@ -7011,19 +7011,19 @@ msgstr "Programmé · commence {0}"
 msgid "Scope change"
 msgstr "Changement de périmètre"
 
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "Scope is today's; tickets added mid-sprint move the whole line."
 msgstr "Le périmètre est celui d’aujourd’hui ; les tickets ajoutés en cours de sprint déplacent toute la ligne."
 
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "Scope is what the sprint held when it closed."
 msgstr "Le périmètre correspond au contenu du sprint à sa clôture."
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Scope locked: the sprint ends today, so new tickets go to the backlog."
 msgstr "Périmètre verrouillé : le sprint se termine aujourd’hui, les nouveaux tickets vont donc dans le backlog."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "scope must be organization, team, or project"
 msgstr "scope doit valoir organization, team ou project"
 
@@ -7041,11 +7041,11 @@ msgstr "Annuler cet import ? Tout ce qu’il a créé sera supprimé."
 msgid "Scrapped: everything the import made is gone."
 msgstr "Annulé : tout ce que l’import a créé a disparu."
 
-#: components/ticket-search.tsx
+#: components/ticket/ticket-search.tsx
 msgid "Search"
 msgstr "Rechercher"
 
-#: components/help-bot.tsx
+#: components/layout/help-bot.tsx
 msgid "Search help"
 msgstr "Rechercher dans l’aide"
 
@@ -7061,11 +7061,11 @@ msgstr "Rechercher dans les réponses"
 msgid "Search the answers, in any language"
 msgstr "Rechercher dans les réponses, dans toutes les langues"
 
-#: components/ticket-search.tsx
+#: components/ticket/ticket-search.tsx
 msgid "Search tickets"
 msgstr "Rechercher des tickets"
 
-#: components/ticket-search.tsx
+#: components/ticket/ticket-search.tsx
 msgid "Search tickets (Ctrl+K)"
 msgstr "Rechercher des tickets (Ctrl+K)"
 
@@ -7073,15 +7073,15 @@ msgstr "Rechercher des tickets (Ctrl+K)"
 msgid "Search tickets by title or key…"
 msgstr "Rechercher des tickets par titre ou clé…"
 
-#: components/ticket-search.tsx
+#: components/ticket/ticket-search.tsx
 msgid "Search tickets…"
 msgstr "Rechercher des tickets…"
 
-#: components/ticket-search.tsx
+#: components/ticket/ticket-search.tsx
 msgid "Search titles, details, comments, or enter a ticket key or number, such as TL-123 or 123."
 msgstr "Recherchez dans les titres, détails, commentaires, ou saisissez une clé ou un numéro de ticket, comme TL-123 ou 123."
 
-#: components/ticket-search.tsx
+#: components/ticket/ticket-search.tsx
 msgid "Searching…"
 msgstr "Recherche…"
 
@@ -7118,7 +7118,7 @@ msgstr "En envoyer une autre"
 msgid "Send back"
 msgstr "Renvoyer"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "send every answer's id, once each"
 msgstr "envoyez l’id de chaque réponse, une seule fois"
 
@@ -7126,7 +7126,7 @@ msgstr "envoyez l’id de chaque réponse, une seule fois"
 msgid "Send invite"
 msgstr "Envoyer l’invitation"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "send length_days and/or goal"
 msgstr "envoyez length_days et/ou goal"
 
@@ -7166,11 +7166,11 @@ msgstr "Envoi…"
 msgid "Sent"
 msgstr "Envoyé"
 
-#: components/notification-icon.tsx
+#: components/work/notification-icon.tsx
 msgid "Sent back"
 msgstr "Renvoyé"
 
-#: lib/google-chat.ts
+#: lib/org/google-chat.ts
 msgid "Sent back from review"
 msgstr "Renvoyé depuis la vérification"
 
@@ -7198,11 +7198,11 @@ msgstr "Clés de service"
 msgid "Service keys are for servers and integrations."
 msgstr "Les clés de service sont destinées aux serveurs et aux intégrations."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "service keys can't claim tickets"
 msgstr "les clés de service ne peuvent pas prendre en charge de tickets"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "service keys can't release tickets"
 msgstr "les clés de service ne peuvent pas libérer de tickets"
 
@@ -7214,11 +7214,11 @@ msgstr "Clés de service pour les serveurs et les intégrations : envoyez-en une
 msgid "Service keys for servers and integrations. Your own keys and AI agents (Claude, Codex…) are in <0>Your settings</0>."
 msgstr "Clés de service pour les serveurs et les intégrations. Vos propres clés et vos agents IA (Claude, Codex…) se trouvent dans <0>Vos paramètres</0>."
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Set goal"
 msgstr "Définir l’objectif"
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Set it in days, or pick an end date — either way it’s measured from the sprint’s original start date."
 msgstr "Indiquez-la en jours, ou choisissez une date de fin — dans les deux cas, elle est mesurée à partir de la date de début initiale du sprint."
 
@@ -7247,7 +7247,7 @@ msgstr "Configurer {0}"
 msgid "Settings"
 msgstr "Paramètres"
 
-#: components/mcp-connect.tsx
+#: components/settings/mcp-connect.tsx
 msgid "Settings → Developer → Edit Config, then add this to <0>claude_desktop_config.json</0> (it bridges to the remote server with <1>mcp-remote</1>, which needs Node.js):"
 msgstr "Settings → Developer → Edit Config, puis ajoutez ceci à <0>claude_desktop_config.json</0> (il fait le lien avec le serveur distant via <1>mcp-remote</1>, qui nécessite Node.js) :"
 
@@ -7271,8 +7271,8 @@ msgstr "Part du travail planifié réalisée à chaque sprint. La bande, 80–10
 msgid "Short, dated notes on how the roadmap is going, shown on the roadmap with the newest first."
 msgstr "Notes courtes et datées sur l’avancement de la feuille de route, affichées sur celle-ci, les plus récentes en premier."
 
-#: components/mentions.tsx
 #: components/project/backlog.tsx
+#: components/work/mentions.tsx
 msgid "Show"
 msgstr "Afficher"
 
@@ -7289,7 +7289,7 @@ msgstr "Afficher les tickets ouverts ou fermés"
 msgid "Show planned tickets"
 msgstr "Afficher les tickets planifiés"
 
-#: components/notifications-bell.tsx
+#: components/work/notifications-bell.tsx
 msgid "Show read ({readCount})"
 msgstr "Afficher les lues ({readCount})"
 
@@ -7298,7 +7298,7 @@ msgstr "Afficher les lues ({readCount})"
 msgid "Showing {firstItem}–{lastItem} of {0} items"
 msgstr "Affichage de {firstItem}–{lastItem} sur {0} éléments"
 
-#: lib/my-work.ts
+#: lib/work/my-work.ts
 msgid "Showing {shown} of {total, plural, one {# ticket} other {# tickets}}"
 msgstr "Affichage de {shown} sur {total, plural, one {# ticket} other {# tickets}}"
 
@@ -7311,35 +7311,35 @@ msgstr "Indique qui est en congé, d’après leurs événements Absent du burea
 msgid "Sign in"
 msgstr "Se connecter"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "sign in as an organization admin to do this"
 msgstr "connectez-vous en tant qu’administrateur de l’organisation pour faire ceci"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "sign in to an organization"
 msgstr "connectez-vous à une organisation"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "sign in to an organization to manage its plan"
 msgstr "connectez-vous à une organisation pour gérer son offre"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "sign in to do this"
 msgstr "connectez-vous pour faire ceci"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "sign in to keep a file"
 msgstr "connectez-vous pour conserver un fichier"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "sign in to link Google Chat"
 msgstr "connectez-vous pour lier Google Chat"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "sign in to run a standup"
 msgstr "connectez-vous pour animer un standup"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "sign in to turn on notifications for a device"
 msgstr "connectez-vous pour activer les notifications sur un appareil"
 
@@ -7347,7 +7347,7 @@ msgstr "connectez-vous pour activer les notifications sur un appareil"
 msgid "Sign in to view this roadmap"
 msgstr "Connectez-vous pour voir cette feuille de route"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "signed-in account must have the invited verified email address"
 msgstr "le compte connecté doit avoir l’adresse e-mail vérifiée invitée"
 
@@ -7371,11 +7371,11 @@ msgstr "Origine du site"
 msgid "Slug"
 msgstr "Slug"
 
-#: lib/notifications.ts
+#: lib/work/notifications.ts
 msgid "Someone"
 msgstr "Quelqu’un"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "someone else in this organization already has a key with that name: choose another"
 msgstr "quelqu’un d’autre dans cette organisation a déjà une clé portant ce nom : choisissez-en un autre"
 
@@ -7388,8 +7388,8 @@ msgstr "Quelqu’un a déjà traité cette demande."
 msgid "Something went wrong"
 msgstr "Une erreur s’est produite"
 
-#: components/name-dialog.tsx
-#: components/roadmap-editor-form.tsx
+#: components/common/name-dialog.tsx
+#: components/roadmap/roadmap-editor-form.tsx
 msgid "Something went wrong. Please try again."
 msgstr "Une erreur s’est produite. Veuillez réessayer."
 
@@ -7401,32 +7401,32 @@ msgstr "Trier"
 msgid "Sort backlog by date"
 msgstr "Trier le backlog par date"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "sort must be manual, newest or oldest"
 msgstr "sort doit valoir manual, newest ou oldest"
 
-#: components/ticket-type.tsx
+#: components/ticket/ticket-type.tsx
 msgid "spike"
 msgstr "spike"
 
-#: components/ticket-type.tsx
+#: components/ticket/ticket-type.tsx
 msgid "Spike"
 msgstr "Spike"
 
-#: components/ticket-type.tsx
-#: components/timebox-countdown.tsx
+#: components/ticket/ticket-type.tsx
+#: components/ticket/timebox-countdown.tsx
 msgid "Spike timebox"
 msgstr "Timebox du spike"
 
 #: components/reports/report-view.tsx
-#: components/ticket-type.tsx
-#: lib/sprint-report.ts
+#: components/ticket/ticket-type.tsx
+#: lib/sprint/sprint-report.ts
 msgid "Spikes"
 msgstr "Spikes"
 
-#: components/board/past-sprints.tsx
 #: components/project/move-to-board.tsx
 #: components/reports/report-view.tsx
+#: components/sprint/past-sprints.tsx
 msgid "Sprint"
 msgstr "Sprint"
 
@@ -7434,10 +7434,10 @@ msgstr "Sprint"
 #. placeholder {0}: plan.number
 #. placeholder {0}: s.number
 #: app/tickets/[id]/page.tsx
-#: components/board/past-sprints.tsx
-#: components/board/sprint-bar.tsx
 #: components/project/board-card.tsx
 #: components/project/refinement.tsx
+#: components/sprint/past-sprints.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Sprint {0}"
 msgstr "Sprint {0}"
 
@@ -7448,8 +7448,8 @@ msgstr "Capacité du sprint {0}"
 
 #. placeholder {0}: plan.number
 #. placeholder {0}: sprint.number
-#: components/board/sprint-bar.tsx
 #: components/project/refinement.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Sprint {0} goal"
 msgstr "Objectif du sprint {0}"
 
@@ -7466,27 +7466,27 @@ msgstr "Sprint {n} · {board}"
 msgid "Sprint {n} (so far)"
 msgstr "Sprint {n} (jusqu’à présent)"
 
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "Sprint {number}"
 msgstr "Sprint {number}"
 
-#: lib/move-to-board.ts
+#: lib/ticket/move-to-board.ts
 msgid "Sprint {number} (current, {left, plural, one {# day left} other {# days left}})"
 msgstr "Sprint {number} (en cours, {left, plural, one {# jour restant} other {# jours restants}})"
 
-#: lib/move-to-board.ts
+#: lib/ticket/move-to-board.ts
 msgid "Sprint {number} (current, last day)"
 msgstr "Sprint {number} (en cours, dernier jour)"
 
-#: lib/move-to-board.ts
+#: lib/ticket/move-to-board.ts
 msgid "Sprint {number} (planned)"
 msgstr "Sprint {number} (planifié)"
 
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "Sprint {number}: burn-down"
 msgstr "Sprint {number} : burn-down"
 
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "Sprint {number}: burn-up"
 msgstr "Sprint {number} : burn-up"
 
@@ -7494,15 +7494,15 @@ msgstr "Sprint {number} : burn-up"
 msgid "Sprint by sprint"
 msgstr "Sprint par sprint"
 
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "Sprint charts"
 msgstr "Graphiques de sprint"
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Sprint end date"
 msgstr "Date de fin du sprint"
 
-#: components/board/standup.tsx
+#: components/live/standup.tsx
 msgid "Sprint goal:"
 msgstr "Objectif du sprint :"
 
@@ -7515,13 +7515,13 @@ msgstr "Objectifs de sprint"
 msgid "Sprint goals met"
 msgstr "Objectifs de sprint atteints"
 
-#: components/notification-icon.tsx
+#: components/work/notification-icon.tsx
 msgid "Sprint over capacity"
 msgstr "Sprint au-delà de la capacité"
 
 #: app/reports/page.tsx
-#: components/board/past-sprints.tsx
 #: components/reports/report-links.tsx
+#: components/sprint/past-sprints.tsx
 msgid "Sprint report"
 msgstr "Rapport de sprint"
 
@@ -7529,7 +7529,7 @@ msgstr "Rapport de sprint"
 msgid "Sprint report · {kind}"
 msgstr "Rapport de sprint · {kind}"
 
-#: lib/google-chat.ts
+#: lib/org/google-chat.ts
 msgid "Sprint started over capacity"
 msgstr "Sprint démarré au-delà de la capacité"
 
@@ -7552,27 +7552,27 @@ msgid "Sprints: time boxes. Kanban: continuous flow."
 msgstr "Sprints : périodes limitées dans le temps. Kanban : flux continu."
 
 #: app/boards/[id]/page.tsx
-#: components/board/standup.tsx
+#: components/live/standup.tsx
 msgid "Standup"
 msgstr "Standup"
 
-#: components/board/standup.tsx
+#: components/live/standup.tsx
 msgid "Start"
 msgstr "Démarrer"
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Start {days}-day sprint"
 msgstr "Démarrer un sprint de {days} jours"
 
-#: components/mcp-connect.tsx
+#: components/settings/mcp-connect.tsx
 msgid "Start a new Codex session; check it with <0>/mcp</0>."
 msgstr "Démarrez une nouvelle session Codex ; vérifiez-la avec <0>/mcp</0>."
 
-#: components/mcp-connect.tsx
+#: components/settings/mcp-connect.tsx
 msgid "Start a new session and check it with <0>/mcp</0>."
 msgstr "Démarrez une nouvelle session et vérifiez-la avec <0>/mcp</0>."
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Start a sprint"
 msgstr "Démarrer un sprint"
 
@@ -7584,11 +7584,11 @@ msgstr "Date de début <0>(facultatif)</0>"
 msgid "Start from a template; you can change columns and settings afterwards."
 msgstr "Partez d’un modèle ; vous pourrez modifier les colonnes et les paramètres ensuite."
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Start sprint"
 msgstr "Démarrer le sprint"
 
-#: components/board/standup.tsx
+#: components/live/standup.tsx
 msgid "Start the clock once everyone has joined"
 msgstr "Lancez le chrono une fois que tout le monde a rejoint"
 
@@ -7601,7 +7601,7 @@ msgid "Started (UTC)"
 msgstr "Début (UTC)"
 
 #: app/boards/[id]/page.tsx
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Starting…"
 msgstr "Démarrage…"
 
@@ -7610,11 +7610,11 @@ msgstr "Démarrage…"
 msgid "Starts {0}"
 msgstr "Commence {0}"
 
-#: components/roadmap-editor-form.tsx
+#: components/roadmap/roadmap-editor-form.tsx
 msgid "Starts public by default — anyone with the link can read it."
 msgstr "Publique par défaut — toute personne disposant du lien peut la lire."
 
-#: components/roadmap-editor-form.tsx
+#: components/roadmap/roadmap-editor-form.tsx
 msgid "Starts visible to your organization; an organization admin can make it public."
 msgstr "Visible par votre organisation au départ ; un administrateur de l’organisation peut la rendre publique."
 
@@ -7634,15 +7634,15 @@ msgstr "Statut (devient les colonnes du tableau)"
 msgid "Status <0>(set by hand until tickets are linked)</0>"
 msgstr "Statut <0>(défini manuellement jusqu’à ce que des tickets soient liés)</0>"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "status must be open or done"
 msgstr "status doit valoir open ou done"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "status must be open, done, wont_do, duplicate or closed"
 msgstr "status doit valoir open, done, wont_do, duplicate ou closed"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "status must be pending, promoted or dismissed"
 msgstr "status doit valoir pending, promoted ou dismissed"
 
@@ -7650,7 +7650,7 @@ msgstr "status doit valoir pending, promoted ou dismissed"
 msgid "Stays in place"
 msgstr "Reste en place"
 
-#: components/hosted-bar.tsx
+#: components/live/hosted-bar.tsx
 msgid "Stop following"
 msgstr "Ne plus suivre"
 
@@ -7666,11 +7666,11 @@ msgstr "Ne plus publier dans cet espace Google Chat ?"
 msgid "Stop waiting on {title}"
 msgstr "Ne plus attendre {title}"
 
-#: components/mentions.tsx
+#: components/work/mentions.tsx
 msgid "Stop watching"
 msgstr "Ne plus suivre"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "Stripe isn't configured"
 msgstr "Stripe n’est pas configuré"
 
@@ -7678,7 +7678,7 @@ msgstr "Stripe n’est pas configuré"
 msgid "Style"
 msgstr "Style"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "style must be sprints or kanban"
 msgstr "style doit valoir sprints ou kanban"
 
@@ -7714,15 +7714,15 @@ msgstr "Synchronisé."
 msgid "Syncing…"
 msgstr "Synchronisation…"
 
-#: components/theme-chooser.tsx
+#: components/layout/theme-chooser.tsx
 msgid "System"
 msgstr "Système"
 
-#: lib/estimates.ts
+#: lib/board/estimates.ts
 msgid "T-shirt sizes"
 msgstr "Tailles de t-shirt"
 
-#: components/help-bot.tsx
+#: components/layout/help-bot.tsx
 msgid "Take me there →"
 msgstr "Y aller →"
 
@@ -7730,25 +7730,25 @@ msgstr "Y aller →"
 msgid "Target date <0>(optional)</0>"
 msgstr "Date cible <0>(facultatif)</0>"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "target_id is required for team and project invitations and omitted for organization invitations"
 msgstr "target_id est requis pour les invitations d’équipe et de projet, et omis pour les invitations d’organisation"
 
-#: components/ticket-type.tsx
+#: components/ticket/ticket-type.tsx
 msgid "task"
 msgstr "tâche"
 
-#: components/ticket-type.tsx
+#: components/ticket/ticket-type.tsx
 msgid "Task"
 msgstr "Tâche"
 
-#: components/ticket-search.tsx
-#: components/ticket-type.tsx
-#: lib/sprint-report.ts
+#: components/ticket/ticket-search.tsx
+#: components/ticket/ticket-type.tsx
+#: lib/sprint/sprint-report.ts
 msgid "Tasks"
 msgstr "Tâches"
 
-#: lib/organization-settings.ts
+#: lib/org/organization-settings.ts
 msgid "team"
 msgstr "équipe"
 
@@ -7817,15 +7817,15 @@ msgstr "Prévenez vos propres outils quand le travail change : TrackLin.es envoi
 msgid "Template"
 msgstr "Modèle"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "template not found"
 msgstr "modèle introuvable"
 
-#: components/site-footer.tsx
+#: components/layout/site-footer.tsx
 msgid "Terms"
 msgstr "Conditions"
 
-#: components/notification-icon.tsx
+#: components/work/notification-icon.tsx
 msgid "Terms or Privacy policy updated"
 msgstr "Conditions ou politique de confidentialité mises à jour"
 
@@ -7856,23 +7856,23 @@ msgstr "Ce compte ne fait partie d’aucun espace de travail Bitbucket."
 msgid "That didn’t work. Please try again."
 msgstr "Cela n’a pas marché. Veuillez réessayer."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "that GitHub installation is already connected to another organization"
 msgstr "cette installation GitHub est déjà connectée à une autre organisation"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "that GitHub installation isn't one you can access; install the app on your own account or organization"
 msgstr "vous n’avez pas accès à cette installation GitHub ; installez l’application sur votre propre compte ou organisation"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "that isn't a Google Chat webhook: copy it from the space's Apps & integrations → Webhooks (https://chat.googleapis.com/v1/spaces/…)"
 msgstr "ce n’est pas un webhook Google Chat : copiez-le depuis Applications et intégrations → Webhooks de l’espace (https://chat.googleapis.com/v1/spaces/…)"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "that name is reserved: choose a name for the agent or script using the key"
 msgstr "ce nom est réservé : choisissez un nom pour l’agent ou le script qui utilise la clé"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "that name is reserved: choose the agent's name"
 msgstr "ce nom est réservé : choisissez le nom de l’agent"
 
@@ -7880,7 +7880,7 @@ msgstr "ce nom est réservé : choisissez le nom de l’agent"
 msgid "That origin is already allowed."
 msgstr "Cette origine est déjà autorisée."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "that parent is already a sub-ticket of this ticket"
 msgstr "ce parent est déjà un sous-ticket de ce ticket"
 
@@ -7888,7 +7888,7 @@ msgstr "ce parent est déjà un sous-ticket de ce ticket"
 msgid "That prefix is already used."
 msgstr "Ce préfixe est déjà utilisé."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "that repository is already linked to a project in this organization"
 msgstr "ce dépôt est déjà lié à un projet de cette organisation"
 
@@ -7904,7 +7904,7 @@ msgstr "Ce ticket n’est pas dans la vue actuelle de ce tableau (il appartient 
 msgid "That ticket prefix is already used by another project."
 msgstr "Ce préfixe de ticket est déjà utilisé par un autre projet."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "that would make tickets block each other in a loop"
 msgstr "cela ferait se bloquer les tickets mutuellement en boucle"
 
@@ -7928,23 +7928,23 @@ msgstr "le backlog"
 msgid "The backlog is empty."
 msgstr "Le backlog est vide."
 
-#: lib/board-edit.ts
+#: lib/board/board-edit.ts
 msgid "The board needs a name."
 msgstr "Le tableau a besoin d’un nom."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "the columns don't match this board: reload and try again"
 msgstr "les colonnes ne correspondent pas à ce tableau : rechargez et réessayez"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "the connect link has expired or wasn't for this organization; start again"
 msgstr "le lien de connexion a expiré ou n’était pas destiné à cette organisation ; recommencez"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "the connection can't see that repository"
 msgstr "la connexion ne peut pas voir ce dépôt"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "the Dev complete column must be one of this board's columns, other than To do and Done"
 msgstr "la colonne Développement terminé doit être l’une des colonnes de ce tableau, autre que À faire et Terminé"
 
@@ -7952,11 +7952,11 @@ msgstr "la colonne Développement terminé doit être l’une des colonnes de ce
 msgid "The English question and answer are needed."
 msgstr "La question et la réponse en anglais sont nécessaires."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "the English question and answer are required"
 msgstr "la question et la réponse en anglais sont obligatoires"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "the first column (To do) stays first"
 msgstr "la première colonne (À faire) reste en premier"
 
@@ -7968,15 +7968,15 @@ msgstr "Le formulaire est fermé."
 msgid "The form is closed. An organization admin can open it."
 msgstr "Le formulaire est fermé. Un administrateur de l’organisation peut l’ouvrir."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "the Google Chat app isn't set up on this server"
 msgstr "l’application Google Chat n’est pas configurée sur ce serveur"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "the holidays calendar must be a public holiday calendar (…#holiday@group.v.calendar.google.com) or a shared calendar (…@group.calendar.google.com)"
 msgstr "l’agenda des jours fériés doit être un agenda de jours fériés public (…#holiday@group.v.calendar.google.com) ou un agenda partagé (…@group.calendar.google.com)"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "the holidays calendar should be a calendar ID, e.g. en.uk#holiday@group.v.calendar.google.com"
 msgstr "l’agenda des jours fériés doit être un ID d’agenda, ex. en.uk#holiday@group.v.calendar.google.com"
 
@@ -7989,11 +7989,11 @@ msgstr "L’import a échoué et rien n’a été conservé : {0}"
 msgid "The language TrackLin.es is in for you, on every device."
 msgstr "La langue dans laquelle TrackLin.es s’affiche pour vous, sur tous vos appareils."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "the last column (Done) stays last"
 msgstr "la dernière colonne (Terminé) reste en dernier"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "the last column is Done and stays last: move the other columns around it"
 msgstr "la dernière colonne est Terminé et reste en dernier : déplacez les autres colonnes autour d’elle"
 
@@ -8001,7 +8001,7 @@ msgstr "la dernière colonne est Terminé et reste en dernier : déplacez les au
 msgid "The link may be old, or the address mistyped."
 msgstr "Le lien est peut-être ancien, ou l’adresse mal saisie."
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "The next sprint won’t start until you start it, so you can choose its length then. A planned next sprint joins when it starts."
 msgstr "Le prochain sprint ne démarrera pas tant que vous ne l’aurez pas démarré, vous pourrez donc choisir sa durée à ce moment-là. Un prochain sprint planifié est intégré à son démarrage."
 
@@ -8009,7 +8009,7 @@ msgstr "Le prochain sprint ne démarrera pas tant que vous ne l’aurez pas dém
 msgid "The organization creator starts as its first admin."
 msgstr "Le créateur de l’organisation en est le premier administrateur."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "the original ticket must not itself be a duplicate"
 msgstr "le ticket d’origine ne doit pas lui-même être un doublon"
 
@@ -8017,11 +8017,11 @@ msgstr "le ticket d’origine ne doit pas lui-même être un doublon"
 msgid "The owner has shared this roadmap with signed-in users only."
 msgstr "Le propriétaire a partagé cette feuille de route uniquement avec les utilisateurs connectés."
 
-#: lib/integrations.ts
+#: lib/org/integrations.ts
 msgid "The provider refused or couldn’t be reached. Try again."
 msgstr "Le fournisseur a refusé ou était injoignable. Réessayez."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "the review column must be one of this board's columns, other than To do and Done"
 msgstr "la colonne de vérification doit être l’une des colonnes de ce tableau, autre que À faire et Terminé"
 
@@ -8034,11 +8034,11 @@ msgstr "Le robot indique la colonne où le ticket terminé d’un agent attend l
 msgid "the same as the period before"
 msgstr "identique à la période précédente"
 
-#: components/mcp-connect.tsx
+#: components/settings/mcp-connect.tsx
 msgid "The server is stateless and answers with JSON, so no session handling is needed. Tools mirror the REST API, with the same permissions."
 msgstr "Le serveur est sans état et répond en JSON, aucune gestion de session n’est donc nécessaire. Les outils reflètent l’API REST, avec les mêmes autorisations."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "the slug is lower-case letters, digits and dashes"
 msgstr "le slug ne contient que des minuscules, des chiffres et des tirets"
 
@@ -8059,7 +8059,7 @@ msgstr "L’équipe examinera votre demande. Si elle a besoin de plus d’inform
 msgid "The TrackLin.es app messages you in Google Chat when you’re assigned a ticket, mentioned, or something needs your review."
 msgstr "L’application TrackLin.es vous envoie un message dans Google Chat lorsqu’un ticket vous est assigné, que vous êtes mentionné, ou que quelque chose nécessite votre vérification."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "the URL must be https and not a private address"
 msgstr "l’URL doit être en https et ne pas être une adresse privée"
 
@@ -8067,7 +8067,7 @@ msgstr "l’URL doit être en https et ne pas être une adresse privée"
 msgid "The whole {workspace} workspace becomes one project: each team a board, each Linear project an epic. The team with the most issues keeps its key and numbers; the others are numbered after it."
 msgstr "Tout l’espace de travail {workspace} devient un projet : chaque équipe un tableau, chaque projet Linear un epic. L’équipe qui a le plus de tickets garde sa clé et ses numéros ; les autres sont numérotées à la suite."
 
-#: components/mcp-connect.tsx
+#: components/settings/mcp-connect.tsx
 msgid "Then enable it under Settings → MCP."
 msgstr "Activez-le ensuite dans Settings → MCP."
 
@@ -8075,7 +8075,7 @@ msgstr "Activez-le ensuite dans Settings → MCP."
 msgid "Then tell us your Workspace:"
 msgstr "Indiquez-nous ensuite votre Workspace :"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "there's no subscription to change: upgrade with checkout, or this plan was granted by hand"
 msgstr "il n’y a aucun abonnement à modifier : passez à une offre supérieure via le paiement, ou cette offre a été accordée manuellement"
 
@@ -8091,7 +8091,7 @@ msgstr "Ces actions s’appliquent immédiatement."
 msgid "These failed: apply again to retry them"
 msgstr "Ceux-ci ont échoué : appliquez à nouveau pour réessayer"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "they haven't joined the session"
 msgstr "ils n’ont pas rejoint la session"
 
@@ -8099,15 +8099,15 @@ msgstr "ils n’ont pas rejoint la session"
 msgid "They work only on the sites allowed above."
 msgstr "Ils ne fonctionnent que sur les sites autorisés ci-dessus."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "this api key is read-only"
 msgstr "cette clé API est en lecture seule"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "this board has been used; archive it instead, so its history is kept"
 msgstr "ce tableau a été utilisé ; archivez-le plutôt, afin de conserver son historique"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "this board is archived; restore it first"
 msgstr "ce tableau est archivé ; restaurez-le d’abord"
 
@@ -8119,11 +8119,11 @@ msgstr "Ce tableau est archivé : restaurez-le pour le modifier."
 msgid "This board is archived. Its history is kept, but it takes no new work."
 msgstr "Ce tableau est archivé. Son historique est conservé, mais il n’accepte plus de nouveau travail."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "this board still has unfinished tickets; finish them or move them first"
 msgstr "ce tableau a encore des tickets non terminés ; terminez-les ou déplacez-les d’abord"
 
-#: lib/integrations.ts
+#: lib/org/integrations.ts
 msgid "This connect link expired or was for another organization. Start again."
 msgstr "Ce lien de connexion a expiré ou était destiné à une autre organisation. Recommencez."
 
@@ -8135,7 +8135,7 @@ msgstr "Cet appareil"
 msgid "This form is closed"
 msgstr "Ce formulaire est fermé"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "this form isn't taking requests"
 msgstr "ce formulaire n’accepte pas de demandes"
 
@@ -8143,7 +8143,7 @@ msgstr "ce formulaire n’accepte pas de demandes"
 msgid "This form isn’t taking requests any more."
 msgstr "Ce formulaire n’accepte plus de demandes."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "this integration isn't configured on the server"
 msgstr "cette intégration n’est pas configurée sur le serveur"
 
@@ -8155,7 +8155,7 @@ msgstr "Ce jeton Jira ne voit aucun projet."
 msgid "This lets TrackLin.es read calendars, nothing else. It can take a few minutes to apply."
 msgstr "Cela permet à TrackLin.es de lire les agendas, rien d’autre. La prise en compte peut prendre quelques minutes."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "this link has expired or was already used: message the TrackLin.es app in Google Chat for a new one"
 msgstr "ce lien a expiré ou a déjà été utilisé : envoyez un message à l’application TrackLin.es dans Google Chat pour en obtenir un nouveau"
 
@@ -8180,7 +8180,7 @@ msgstr "Cela crée {0} projets, {1} tableaux et {2} tickets, avec {3} commentair
 msgid "This makes the project <0>{0}</0> ({1}) with {2} tickets, {3} boards and {4} columns."
 msgstr "Cela crée le projet <0>{0}</0> ({1}) avec {2} tickets, {3} tableaux et {4} colonnes."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "this outage has credits, so it stays on record"
 msgstr "cette panne a des crédits, elle reste donc enregistrée"
 
@@ -8192,7 +8192,7 @@ msgstr "Cette panne a duré une heure ou moins, mais fait partie d’une série.
 msgid "This outage was an hour or less, so the Terms don’t credit it."
 msgstr "Cette panne a duré une heure ou moins, les Conditions ne la créditent donc pas."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "this outage was an hour or less: only a cluster staff decide on is credited"
 msgstr "cette panne a duré une heure ou moins : seule une série décidée par l’équipe est créditée"
 
@@ -8200,7 +8200,7 @@ msgstr "cette panne a duré une heure ou moins : seule une série décidée par 
 msgid "This page doesn’t exist"
 msgstr "Cette page n’existe pas"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "this plan isn't billed through Stripe, so there's nothing to manage"
 msgstr "cette offre n’est pas facturée via Stripe, il n’y a donc rien à gérer"
 
@@ -8208,47 +8208,47 @@ msgstr "cette offre n’est pas facturée via Stripe, il n’y a donc rien à g�
 msgid "This project’s events go to this space."
 msgstr "Les événements de ce projet sont envoyés dans cet espace."
 
-#: lib/sprint-report.ts
+#: lib/sprint/sprint-report.ts
 msgid "This quarter"
 msgstr "Ce trimestre"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "this request has already been triaged"
 msgstr "cette demande a déjà été triée"
 
-#: lib/move-to-board.ts
+#: lib/ticket/move-to-board.ts
 msgid "This takes the current sprint {by, plural, one {# point} other {# points}} over capacity ({after} / {cap})."
 msgstr "Cela fait dépasser la capacité du sprint en cours de {by, plural, one {# point} other {# points}} ({after} / {cap})."
 
-#: lib/move-to-board.ts
+#: lib/ticket/move-to-board.ts
 msgid "This takes the current sprint {by, plural, one {# ticket} other {# tickets}} over capacity ({after} / {cap})."
 msgstr "Cela fait dépasser la capacité du sprint en cours de {by, plural, one {# ticket} other {# tickets}} ({after} / {cap})."
 
-#: lib/move-to-board.ts
+#: lib/ticket/move-to-board.ts
 msgid "This takes the sprint {by, plural, one {# point} other {# points}} over capacity ({after} / {cap}), within what was approved."
 msgstr "Cela fait dépasser la capacité du sprint de {by, plural, one {# point} other {# points}} ({after} / {cap}), dans la limite de ce qui a été approuvé."
 
-#: lib/move-to-board.ts
+#: lib/ticket/move-to-board.ts
 msgid "This takes the sprint {by, plural, one {# point} other {# points}} over capacity ({after} / {cap}): it will need approval before it can start."
 msgstr "Cela fait dépasser la capacité du sprint de {by, plural, one {# point} other {# points}} ({after} / {cap}) : il devra être approuvé avant de pouvoir démarrer."
 
-#: lib/move-to-board.ts
+#: lib/ticket/move-to-board.ts
 msgid "This takes the sprint {by, plural, one {# ticket} other {# tickets}} over capacity ({after} / {cap}), within what was approved."
 msgstr "Cela fait dépasser la capacité du sprint de {by, plural, one {# ticket} other {# tickets}} ({after} / {cap}), dans la limite de ce qui a été approuvé."
 
-#: lib/move-to-board.ts
+#: lib/ticket/move-to-board.ts
 msgid "This takes the sprint {by, plural, one {# ticket} other {# tickets}} over capacity ({after} / {cap}): it will need approval before it can start."
 msgstr "Cela fait dépasser la capacité du sprint de {by, plural, one {# ticket} other {# tickets}} ({after} / {cap}) : il devra être approuvé avant de pouvoir démarrer."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "this ticket already has as many files as it can hold: remove one to add another"
 msgstr "ce ticket contient déjà le nombre maximal de fichiers : retirez-en un pour en ajouter un autre"
 
-#: lib/attachment-limits.ts
+#: lib/ticket/attachment-limits.ts
 msgid "This ticket has as many files as it can hold ({MAX_FILES_PER_TICKET}). Remove one to add another."
 msgstr "Ce ticket contient le nombre maximal de fichiers ({MAX_FILES_PER_TICKET}). Retirez-en un pour en ajouter un autre."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "this ticket has no Bugfixes report"
 msgstr "ce ticket n’a pas de rapport Bugfixes"
 
@@ -8260,11 +8260,11 @@ msgstr "Ce ticket est terminé — sortez-le de Terminé pour ajouter ou retirer
 msgid "This ticket is in {orgName}"
 msgstr "Ce ticket se trouve dans {orgName}"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "this ticket is on a board: move it to the board's Done column instead"
 msgstr "ce ticket est sur un tableau : déplacez-le plutôt dans la colonne Terminé du tableau"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "this ticket isn't waiting for review"
 msgstr "ce ticket n’attend pas de vérification"
 
@@ -8272,11 +8272,11 @@ msgstr "ce ticket n’attend pas de vérification"
 msgid "This ticket isn’t waiting for review any more."
 msgstr "Ce ticket n’attend plus de vérification."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "this ticket’s history can’t be loaded right now: try again shortly"
 msgstr "l’historique de ce ticket ne peut pas être chargé pour le moment : réessayez dans un instant"
 
-#: lib/google-chat.ts
+#: lib/org/google-chat.ts
 msgid "Ticket assigned (“assigned TL-12 to Sam”)"
 msgstr "Ticket assigné (« a assigné TL-12 à Sam »)"
 
@@ -8289,27 +8289,27 @@ msgstr "Conversation du ticket"
 msgid "Ticket details"
 msgstr "Détails du ticket"
 
-#: lib/google-chat.ts
+#: lib/org/google-chat.ts
 msgid "Ticket finished"
 msgstr "Ticket terminé"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "ticket is already assigned"
 msgstr "le ticket est déjà assigné"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "ticket is already marked as a duplicate"
 msgstr "le ticket est déjà marqué comme doublon"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "ticket is blocked by tickets that aren't done yet"
 msgstr "le ticket est bloqué par des tickets qui ne sont pas encore terminés"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "ticket is done — move it out of Done to change its attachments"
 msgstr "le ticket est terminé — sortez-le de Terminé pour modifier ses pièces jointes"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "ticket is not assigned to caller"
 msgstr "le ticket n’est pas assigné à l’appelant"
 
@@ -8329,17 +8329,17 @@ msgstr "Étiquettes du ticket"
 msgid "Ticket links"
 msgstr "Liens du ticket"
 
-#: components/load-error.tsx
+#: components/layout/load-error.tsx
 msgid "Ticket not found"
 msgstr "Ticket introuvable"
 
-#: components/ticket-search.tsx
+#: components/ticket/ticket-search.tsx
 msgid "Ticket search results"
 msgstr "Résultats de recherche de tickets"
 
 #: components/board/column.tsx
-#: components/board/velocity.tsx
 #: components/reports/rollup-view.tsx
+#: components/sprint/velocity.tsx
 #: components/staff/stats.tsx
 msgid "Tickets"
 msgstr "Tickets"
@@ -8348,15 +8348,15 @@ msgstr "Tickets"
 msgid "Tickets / work-in-progress limit"
 msgstr "Tickets / limite de travail en cours"
 
-#: components/board/flow-charts.tsx
+#: components/sprint/flow-charts.tsx
 msgid "Tickets completed"
 msgstr "Tickets terminés"
 
-#: components/board/flow-charts.tsx
+#: components/sprint/flow-charts.tsx
 msgid "Tickets completed each week. The chart includes weeks with no completions."
 msgstr "Tickets terminés chaque semaine. Le graphique inclut les semaines sans aucun ticket terminé."
 
-#: components/board/flow-charts.tsx
+#: components/sprint/flow-charts.tsx
 msgid "Tickets completed per week"
 msgstr "Tickets terminés par semaine"
 
@@ -8372,24 +8372,24 @@ msgstr "Tickets livrés par tableau"
 msgid "Tickets delivered by project"
 msgstr "Tickets livrés par projet"
 
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "tickets done"
 msgstr "tickets terminés"
 
-#: components/board/flow-report.tsx
 #: components/project/project-card.tsx
+#: components/sprint/flow-report.tsx
 msgid "Tickets done"
 msgstr "Tickets terminés"
 
-#: components/board/flow-charts.tsx
+#: components/sprint/flow-charts.tsx
 msgid "Tickets finished in the period, by type."
 msgstr "Tickets terminés sur la période, par type."
 
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "tickets left"
 msgstr "tickets restants"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "tickets must belong to the same project"
 msgstr "les tickets doivent appartenir au même projet"
 
@@ -8397,7 +8397,7 @@ msgstr "les tickets doivent appartenir au même projet"
 msgid "Tickets not on a board yet. Move one to a board to put it in that team's sprint, or refine to plan the next sprints."
 msgstr "Tickets pas encore sur un tableau. Déplacez-en un sur un tableau pour le mettre dans le sprint de cette équipe, ou affinez pour planifier les prochains sprints."
 
-#: components/board/flow-charts.tsx
+#: components/sprint/flow-charts.tsx
 msgid "Tickets open in each column now, Done left out."
 msgstr "Tickets ouverts dans chaque colonne en ce moment, hors Terminé."
 
@@ -8405,7 +8405,7 @@ msgstr "Tickets ouverts dans chaque colonne en ce moment, hors Terminé."
 msgid "tickets per sprint"
 msgstr "tickets par sprint"
 
-#: components/board/next-sprints.tsx
+#: components/sprint/next-sprints.tsx
 msgid "Tickets planned for this board’s next sprints. They join the board when their sprint starts. Plan more with <0>Refine</0> on the project’s backlog."
 msgstr "Tickets planifiés pour les prochains sprints de ce tableau. Ils rejoignent le tableau au démarrage de leur sprint. Planifiez-en davantage avec <0>Affiner</0> dans le backlog du projet."
 
@@ -8418,19 +8418,19 @@ msgstr "tickets planifiés, sur {0, plural, one {# sprint} other {# sprints}}"
 msgid "tickets unfinished at the end"
 msgstr "tickets non terminés à la fin"
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "Tickets waiting on this board join it, and so does a planned next sprint. If it runs out it closes itself and the next one starts with the same length; close it yourself to choose the next one’s length."
 msgstr "Les tickets en attente pour ce tableau le rejoignent, tout comme un prochain sprint planifié. S’il arrive à échéance, il se clôture de lui-même et le suivant démarre avec la même durée ; clôturez-le vous-même pour choisir la durée du suivant."
 
-#: components/timebox-countdown.tsx
+#: components/ticket/timebox-countdown.tsx
 msgid "timebox {tb}"
 msgstr "timebox {tb}"
 
-#: components/timebox-countdown.tsx
+#: components/ticket/timebox-countdown.tsx
 msgid "Timebox {tb} (business hours)"
 msgstr "Timebox {tb} (heures ouvrées)"
 
-#: components/ticket-type.tsx
+#: components/ticket/ticket-type.tsx
 msgid "timebox {timebox}"
 msgstr "timebox {timebox}"
 
@@ -8442,7 +8442,7 @@ msgstr "Timebox <0>(facultatif)</0>"
 msgid "Timebox days"
 msgstr "Jours de timebox"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "timebox days must be 0–60 and hours 0–23"
 msgstr "les jours de timebox doivent être compris entre 0 et 60 et les heures entre 0 et 23"
 
@@ -8470,7 +8470,7 @@ msgstr "Les heures sont en UTC, comme sur la <0>page d’état</0>. Plus d’une
 msgid "Title"
 msgstr "Titre"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "title is required"
 msgstr "le titre est requis"
 
@@ -8490,15 +8490,15 @@ msgstr "À planifier"
 msgid "Today"
 msgstr "Aujourd’hui"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "token is required; base_url must be an https address like https://bugfix.es"
 msgstr "token est requis ; base_url doit être une adresse https comme https://bugfix.es"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "too many embed origins for this project"
 msgstr "trop d’origines d’intégration pour ce projet"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "too many requests from you; please try again later"
 msgstr "trop de requêtes de votre part ; veuillez réessayer plus tard"
 
@@ -8519,31 +8519,31 @@ msgstr "Total"
 msgid "Total: {0}"
 msgstr "Total : {0}"
 
-#: components/mcp-connect.tsx
+#: components/settings/mcp-connect.tsx
 msgid "TrackLin.es has a built-in MCP server, so agents can read boards, claim tickets, move them and comment."
 msgstr "TrackLin.es dispose d’un serveur MCP intégré, pour que les agents puissent lire les tableaux, prendre en charge des tickets, les déplacer et les commenter."
 
-#: components/site-footer.tsx
+#: components/layout/site-footer.tsx
 msgid "TrackLin.es is run by {company}."
 msgstr "TrackLin.es est exploité par {company}."
 
 #: app/error.tsx
 #: app/global-error.tsx
 #: components/staff/stats.tsx
-#: components/ticket-search.tsx
 #: components/ticket/comments.tsx
+#: components/ticket/ticket-search.tsx
 msgid "Try again"
 msgstr "Réessayer"
 
-#: components/notifications-bell.tsx
 #: components/settings/device-push.tsx
 #: components/settings/webhooks.tsx
+#: components/work/notifications-bell.tsx
 msgid "Turn off"
 msgstr "Désactiver"
 
-#: components/notifications-bell.tsx
 #: components/settings/device-push.tsx
 #: components/settings/webhooks.tsx
+#: components/work/notifications-bell.tsx
 msgid "Turn on"
 msgstr "Activer"
 
@@ -8552,7 +8552,7 @@ msgid "Turned off after repeated failed deliveries. Fix the endpoint, then turn 
 msgstr "Désactivé après des échecs de livraison répétés. Corrigez le point de terminaison, puis réactivez-le."
 
 #: components/settings/csv-import.tsx
-#: components/ticket-type.tsx
+#: components/ticket/ticket-type.tsx
 msgid "Type"
 msgstr "Type"
 
@@ -8560,7 +8560,7 @@ msgstr "Type"
 msgid "Type a label and press Enter or comma"
 msgstr "Saisissez une étiquette et appuyez sur Entrée ou virgule"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "type must be bug, feature or task"
 msgstr "type doit valoir bug, feature ou task"
 
@@ -8571,9 +8571,9 @@ msgstr "non assigné"
 #: app/boards/[id]/page.tsx
 #: components/board/ticket-card.tsx
 #: components/board/ticket-view.tsx
-#: components/ticket-search.tsx
 #: components/ticket/assignee-select.tsx
-#: lib/people.ts
+#: components/ticket/ticket-search.tsx
+#: lib/work/people.ts
 msgid "Unassigned"
 msgstr "Non assigné"
 
@@ -8597,23 +8597,23 @@ msgstr "Éléments de la feuille de route sans date"
 msgid "Unknown integration."
 msgstr "Intégration inconnue."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "unknown language"
 msgstr "langue inconnue"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "unknown page kind"
 msgstr "type de page inconnu"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "unknown provider"
 msgstr "fournisseur inconnu"
 
-#: lib/plans.ts
+#: lib/org/plans.ts
 msgid "unlimited members"
 msgstr "membres illimités"
 
-#: lib/plans.ts
+#: lib/org/plans.ts
 msgid "Unlimited projects"
 msgstr "Projets illimités"
 
@@ -8644,19 +8644,19 @@ msgstr "Suppression du lien…"
 msgid "Unplanned"
 msgstr "Non planifiés"
 
-#: components/notifications-bell.tsx
+#: components/work/notifications-bell.tsx
 msgid "Unread"
 msgstr "Non lues"
 
-#: lib/away.ts
+#: lib/work/away.ts
 msgid "until {day}"
 msgstr "jusqu’au {day}"
 
-#: lib/away.ts
+#: lib/work/away.ts
 msgid "until {day}, {time}"
 msgstr "jusqu’au {day}, {time}"
 
-#: lib/away.ts
+#: lib/work/away.ts
 msgid "until {time}"
 msgstr "jusqu’à {time}"
 
@@ -8669,7 +8669,7 @@ msgstr "Intégration sans titre"
 msgid "up on the period before"
 msgstr "en hausse par rapport à la période précédente"
 
-#: lib/plans.ts
+#: lib/org/plans.ts
 msgid "up to {limit} members"
 msgstr "jusqu’à {limit} membres"
 
@@ -8740,16 +8740,16 @@ msgstr "Utilisez votre e-mail Jira et un jeton d’API. <0>Créez un jeton chez 
 msgid "Used when they aren’t on a project or board."
 msgstr "Utilisé quand ils ne sont pas sur un projet ou un tableau."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "user is already an organization member; add them to the team directly"
 msgstr "l’utilisateur est déjà membre de l’organisation ; ajoutez-le directement à l’équipe"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "user is not a member of this organization"
 msgstr "l’utilisateur n’est pas membre de cette organisation"
 
-#: components/board/velocity.tsx
 #: components/reports/report-view.tsx
+#: components/sprint/velocity.tsx
 msgid "Velocity"
 msgstr "Vélocité"
 
@@ -8757,7 +8757,7 @@ msgstr "Vélocité"
 msgid "Velocity (3-sprint average)"
 msgstr "Vélocité (moyenne sur 3 sprints)"
 
-#: components/board/velocity.tsx
+#: components/sprint/velocity.tsx
 msgid "Velocity shows up after {MIN_SPRINTS_FOR_VELOCITY} closed sprints, so there's enough to compare."
 msgstr "La vélocité s’affiche après {MIN_SPRINTS_FOR_VELOCITY} sprints clôturés, pour avoir suffisamment d’éléments de comparaison."
 
@@ -8783,7 +8783,7 @@ msgstr "Voir les sites"
 msgid "View the roadmap"
 msgstr "Voir la feuille de route"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "visibility must be public, login_only or team"
 msgstr "visibility doit valoir public, login_only ou team"
 
@@ -8795,7 +8795,7 @@ msgstr "En attente"
 msgid "Waiting on tickets that aren't done yet"
 msgstr "En attente de tickets qui ne sont pas encore terminés"
 
-#: components/board/standup.tsx
+#: components/live/standup.tsx
 msgid "waiting to start"
 msgstr "en attente de démarrage"
 
@@ -8803,7 +8803,7 @@ msgstr "en attente de démarrage"
 msgid "Was waiting on (all done)"
 msgstr "Attendait (tout est terminé)"
 
-#: components/mentions.tsx
+#: components/work/mentions.tsx
 msgid "Watch again"
 msgstr "Suivre à nouveau"
 
@@ -8833,15 +8833,15 @@ msgstr "Les webhooks ne sont pas encore activés pour votre organisation."
 msgid "Webhooks come with the Pro and Enterprise plans. <0>Change your plan</0> to use them."
 msgstr "Les webhooks sont inclus dans les offres Pro et Enterprise. <0>Changez d’offre</0> pour les utiliser."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "webhooks need the Pro or Enterprise plan"
 msgstr "les webhooks nécessitent l’offre Pro ou Enterprise"
 
-#: components/board/flow-charts.tsx
+#: components/sprint/flow-charts.tsx
 msgid "Weekly throughput"
 msgstr "Débit hebdomadaire"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "weeks must be between 1 and 52"
 msgstr "weeks doit être compris entre 1 et 52"
 
@@ -8893,7 +8893,7 @@ msgstr "Que faut-il faire ?"
 msgid "What people outside your organization can reach: the request form, and this project’s roadmaps and form on your own sites."
 msgstr "Ce que les personnes extérieures à votre organisation peuvent atteindre : le formulaire de demandes, ainsi que les roadmaps et le formulaire de ce projet sur vos propres sites."
 
-#: components/board/sprint-bar.tsx
+#: components/sprint/sprint-bar.tsx
 msgid "What should this sprint achieve?"
 msgstr "Que doit accomplir ce sprint ?"
 
@@ -8917,12 +8917,12 @@ msgstr "Qu’est-ce qui a changé depuis la dernière mise à jour ?"
 msgid "What's the agent called?"
 msgstr "Comment s’appelle l’agent ?"
 
-#: components/roadmap-editor-form.tsx
+#: components/roadmap/roadmap-editor-form.tsx
 msgid "What's this roadmap about? (optional)"
 msgstr "De quoi parle cette feuille de route ? (facultatif)"
 
 #: components/project/backlog.tsx
-#: components/quick-add-ticket.tsx
+#: components/ticket/quick-add-ticket.tsx
 msgid "What's wrong / what's needed?"
 msgstr "Qu’est-ce qui ne va pas / de quoi avez-vous besoin ?"
 
@@ -8946,11 +8946,11 @@ msgstr "Quelle colonne est quoi"
 msgid "Who can see this roadmap?"
 msgstr "Qui peut voir cette feuille de route ?"
 
-#: components/hosted-bar.tsx
+#: components/live/hosted-bar.tsx
 msgid "Who's in the refinement"
 msgstr "Participants à l’affinage"
 
-#: components/hosted-bar.tsx
+#: components/live/hosted-bar.tsx
 msgid "Who's in the standup"
 msgstr "Participants au standup"
 
@@ -8958,21 +8958,21 @@ msgstr "Participants au standup"
 msgid "WIP limit"
 msgstr "Limite WIP"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "WIP limits are from 1 to 999, or none"
 msgstr "Les limites WIP vont de 1 à 999, ou aucune"
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "wip_limit must be between 1 and 999, or 0 to remove it"
 msgstr "wip_limit doit être compris entre 1 et 999, ou 0 pour la supprimer"
 
-#: components/timebox-countdown.tsx
+#: components/ticket/timebox-countdown.tsx
 msgid "within timebox · {left} spare"
 msgstr "dans la timebox · {left} de marge"
 
 #: app/tickets/[id]/page.tsx
 #: components/board/ticket-dialog.tsx
-#: components/notification-icon.tsx
+#: components/work/notification-icon.tsx
 msgid "Won't do"
 msgstr "Ne sera pas fait"
 
@@ -9005,10 +9005,10 @@ msgstr "Écrire une réponse…"
 msgid "Year-old files the clean-up has deleted."
 msgstr "Fichiers vieux d’un an supprimés par le nettoyage."
 
-#: components/board/person-face.tsx
-#: lib/notifications.ts
-#: lib/people.ts
-#: lib/standup.ts
+#: components/live/person-face.tsx
+#: lib/live/standup.ts
+#: lib/work/notifications.ts
+#: lib/work/people.ts
 msgid "You"
 msgstr "Vous"
 
@@ -9036,11 +9036,11 @@ msgstr "Vous recevez des notifications sur cet appareil, même lorsque TrackLin.
 msgid "You get notifications while TrackLin.es is open. This browser has no push service, so not when it’s closed."
 msgstr "Vous recevez des notifications tant que TrackLin.es est ouvert. Ce navigateur n’a pas de service push, donc pas lorsqu’il est fermé."
 
-#: components/my-work.tsx
+#: components/work/my-work.tsx
 msgid "You haven’t created any tickets yet."
 msgstr "Vous n’avez encore créé aucun ticket."
 
-#: components/dashboard-work.tsx
+#: components/work/dashboard-work.tsx
 msgid "You haven’t created any tickets."
 msgstr "Vous n’avez créé aucun ticket."
 
@@ -9048,19 +9048,19 @@ msgstr "Vous n’avez créé aucun ticket."
 msgid "You’re {away}."
 msgstr "Vous êtes {away}."
 
-#: components/notifications-bell.tsx
+#: components/work/notifications-bell.tsx
 msgid "You're all caught up."
 msgstr "Vous êtes à jour."
 
-#: components/hosted-bar.tsx
+#: components/live/hosted-bar.tsx
 msgid "You’re hosting · {here} here"
 msgstr "Vous animez · {here} présent(s)"
 
-#: components/hosted-bar.tsx
+#: components/live/hosted-bar.tsx
 msgid "You’re hosting the refinement"
 msgstr "Vous animez l’affinage"
 
-#: components/hosted-bar.tsx
+#: components/live/hosted-bar.tsx
 msgid "You’re hosting the standup"
 msgstr "Vous animez le standup"
 
@@ -9109,11 +9109,11 @@ msgstr "L’offre, les personnes et les connexions de votre organisation."
 msgid "Your own keys and AI agents are in <0>Your settings</0>."
 msgstr "Vos propres clés et vos agents IA se trouvent dans <0>Vos paramètres</0>."
 
-#: lib/organization-settings.ts
+#: lib/org/organization-settings.ts
 msgid "Your plan includes up to 20 members, counting invitations not yet accepted. Upgrade to Enterprise in Settings for unlimited members."
 msgstr "Votre offre inclut jusqu’à 20 membres, invitations non encore acceptées comprises. Passez à Enterprise dans Paramètres pour des membres illimités."
 
-#: lib/error-codes.ts
+#: lib/api/error-codes.ts
 msgid "your plan's project limit is reached — upgrade for more"
 msgstr "la limite de projets de votre offre est atteinte — passez à une offre supérieure pour en avoir plus"
 
@@ -9127,8 +9127,8 @@ msgstr "Vos feuilles de route dans tous les projets. Les feuilles de route publi
 
 #: app/account/api-keys/page.tsx
 #: app/account/page.tsx
+#: components/layout/user-menu.tsx
 #: components/staff/help-editor.tsx
-#: components/user-menu.tsx
 msgid "Your settings"
 msgstr "Vos paramètres"
 
@@ -9140,6 +9140,6 @@ msgstr "Votre secret de signature. Copiez-le maintenant : il ne sera plus affich
 msgid "Your tickets across every board and project, most recently changed first — assigned to you, or raised by you."
 msgstr "Vos tickets sur tous les tableaux et projets, les plus récemment modifiés en premier — qui vous sont assignés, ou que vous avez soumis."
 
-#: lib/standup.ts
+#: lib/live/standup.ts
 msgid "Your turn"
 msgstr "À vous"

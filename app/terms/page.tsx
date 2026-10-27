@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import { LegalPage } from '@/components/legal-page';
-import { TERMS } from '@/lib/terms';
+import { LegalPage } from '@/components/legal/legal-page';
+import { TERMS } from '@/lib/legal/terms';
 
 export const metadata: Metadata = { title: 'Terms of service · TrackLin.es' };
 

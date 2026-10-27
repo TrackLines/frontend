@@ -2,15 +2,15 @@
 
 import { DueBadge } from '@/components/ticket/due-badge';
 import { NeedsReviewBadge, ReviewActions } from '@/components/board/review';
-import { Markdown } from '@/components/markdown';
-import { When } from '@/components/when';
+import { Markdown } from '@/components/common/markdown';
+import { When } from '@/components/common/when';
 import Link from 'next/link';
 import { Elsewhere } from '@/components/ticket/other-org';
-import { LoadError } from '@/components/load-error';
+import { LoadError } from '@/components/layout/load-error';
 import { useParams, useRouter } from 'next/navigation';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState } from 'react';
-import { CopyLink } from '@/components/copy-link';
+import { CopyLink } from '@/components/common/copy-link';
 import { Attachments } from '@/components/ticket/attachments';
 import { BugfixesPanel } from '@/components/ticket/bugfixes-panel';
 import { PullRequestsPanel } from '@/components/ticket/pull-requests-panel';
@@ -25,22 +25,22 @@ import { LabelDrawer, TicketLabels } from '@/components/ticket/labels';
 import { Button } from '@/components/ui/button';
 import { PriorityBadge } from '@/components/board/priority-badge';
 import { EstimateBadge } from '@/components/board/estimate';
-import { TypeBadge } from '@/components/ticket-type';
+import { TypeBadge } from '@/components/ticket/ticket-type';
 import { PlannedBadge } from '@/components/ticket/planned-badge';
-import { TimeboxCountdown } from '@/components/timebox-countdown';
+import { TimeboxCountdown } from '@/components/ticket/timebox-countdown';
 import { Badge } from '@/components/ui/badge';
 import { buttonVariants } from '@/components/ui/button';
 import { ApiError, tickets, type Ticket, type TicketDetail } from '@/lib/api';
 import { TicketDialog } from '@/components/board/ticket-dialog';
-import { personLabel } from '@/lib/people';
-import { usePeople } from '@/lib/use-people';
-import { useToken } from '@/lib/use-token';
-import { useCachedState } from '@/lib/page-cache';
-import { TicketSkeleton } from '@/components/page-skeletons';
+import { personLabel } from '@/lib/work/people';
+import { usePeople } from '@/lib/hooks/use-people';
+import { useToken } from '@/lib/hooks/use-token';
+import { useCachedState } from '@/lib/api/page-cache';
+import { TicketSkeleton } from '@/components/layout/page-skeletons';
 import { isTicketKey, TicketKey, ticketPath, linkTitle } from '@/components/ticket/ticket-key';
-import { afterDelete, closedAs, ticketActions } from '@/lib/ticket-page';
+import { afterDelete, closedAs, ticketActions } from '@/lib/ticket/ticket-page';
 import { ChecklistCount } from '@/components/ticket/checklist-count';
-import { toggleTask } from '@/lib/checklist';
+import { toggleTask } from '@/lib/ticket/checklist';
 
 // A shareable page for one ticket — works for board and backlog tickets.
 export default function TicketPage() {

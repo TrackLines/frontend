@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils';
 import { dates } from '@/lib/i18n';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Pager } from '@/components/pager';
+import { Pager } from '@/components/common/pager';
 
 const statusLabel: Record<NonNullable<RoadmapItem['status']>, MessageDescriptor> = {
   not_started: msg`Not started`,

@@ -6,21 +6,21 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { TypeBadge } from '@/components/ticket-type';
+import { TypeBadge } from '@/components/ticket/ticket-type';
 import { EstimateSelect } from '@/components/board/estimate';
-import { LiveToast } from '@/components/live-toast';
-import { combined, dropped, type LiveState } from '@/lib/live-status';
-import { keepStreaming } from '@/lib/use-board-live';
-import { unchanged } from '@/lib/unchanged';
+import { LiveToast } from '@/components/live/live-toast';
+import { combined, dropped, type LiveState } from '@/lib/live/live-status';
+import { keepStreaming } from '@/lib/hooks/use-board-live';
+import { unchanged } from '@/lib/api/unchanged';
 import { ApiError, backlog, organization, plannedSprints, streamBoardLive, type BacklogSort, type BacklogTicket, type Board, type OrganizationRole, type PlannedSprint, type Ticket } from '@/lib/api';
-import { canManageBoard } from '@/lib/board-access';
-import type { EstimateScale } from '@/lib/estimates';
-import { capacityView, MAX_PLANNED } from '@/lib/refinement';
+import { canManageBoard } from '@/lib/board/board-access';
+import type { EstimateScale } from '@/lib/board/estimates';
+import { capacityView, MAX_PLANNED } from '@/lib/live/refinement';
 import { PriorityFilter } from '@/components/board/priority-filter';
 import { BacklogSortSelect } from './backlog-sort';
 import { TicketKey, ticketPath } from '@/components/ticket/ticket-key';
 import { Input } from '@/components/ui/input';
-import { GOAL_MAX } from '@/components/board/sprint-bar';
+import { GOAL_MAX } from '@/components/sprint/sprint-bar';
 
 type Props = {
   projectId: string; boards: Board[]; token: string; onClose: () => void;

@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import { VersionPage } from '@/components/legal-history';
-import { HISTORY } from '@/lib/legal-history';
+import { VersionPage } from '@/components/legal/legal-history';
+import { HISTORY } from '@/lib/legal/legal-history';
 
 export const metadata: Metadata = { title: 'Terms of service (earlier version) · TrackLin.es' };
 export const dynamicParams = false; // only published versions

@@ -9,8 +9,8 @@ import { CSS } from '@dnd-kit/utilities';
 import { useLingui } from '@lingui/react/macro';
 import { useRef, useState, type ReactNode } from 'react';
 import type { Assignee, Column } from '@/lib/api';
-import { draggedPerson } from '@/lib/person-drag';
-import { PersonFace } from './person-face';
+import { draggedPerson } from '@/lib/live/person-drag';
+import { PersonFace } from '../live/person-face';
 import { moveTicket, placement } from './move';
 
 type Props = {

@@ -1,15 +1,15 @@
 'use client';
 
-import { Markdown, MarkdownTextarea } from '@/components/markdown';
-import { ListSkeleton } from '@/components/page-skeletons';
-import { When } from '@/components/when';
+import { Markdown, MarkdownTextarea } from '@/components/common/markdown';
+import { ListSkeleton } from '@/components/layout/page-skeletons';
+import { When } from '@/components/common/when';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import type { Assignee, TicketComment } from '@/lib/api';
-import { usePeople } from '@/lib/use-people';
+import { usePeople } from '@/lib/hooks/use-people';
 import { ticketComments } from '@/lib/api';
-import { personLabel } from '@/lib/people';
+import { personLabel } from '@/lib/work/people';
 import { commentThread, type CommentNode } from './comment-thread';
 
 const maxLength = 10000;

@@ -25,10 +25,20 @@ Or bring up the whole stack from the repo root with `docker compose up --build`.
 
 - `app/` — App Router pages and layouts (`app/settings/*`, board/ticket/roadmap routes, the public
   roadmap/request pages).
-- `components/` — UI built from shadcn primitives; don't hand-roll widgets shadcn already provides.
-  Settings features follow the `SettingsCard` → own-page pattern.
-- `lib/api.ts` — the typed API client. `base()` resolves `NEXT_PUBLIC_API_URL ?? '/api'` in the
-  browser; `useToken()` and `useFlags().is('flag-name').enabled()` (kebab-case) gate calls and UI.
+- `components/` — UI built from shadcn primitives (`components/ui/`); don't hand-roll widgets shadcn
+  already provides. Everything else is in a domain folder, never loose at the top: `layout` (header,
+  footer, menus, providers, skeletons), `common` (markdown, mention box, copy link, pager…), `ticket`,
+  `board`, `sprint`, `live` (standups, refinement), `work` (my work, mentions, notifications),
+  `project`, `roadmap`, `reports`, `settings`, `intake`, `billing`, `staff`, `landing`, `legal`, `docs`.
+  Related project settings share one panel with tabs (Edit project: External, Integrations).
+- `lib/` — logic, kept pure for tests, in the same domain folders: `api` (the typed client in
+  `lib/api/index.ts`, error codes, the proxy rules, the page cache), `hooks` (`useToken`, `usePeople`…),
+  `i18n`, `server` (1Password, security headers, redirects, error reports), `legal` (and its published
+  `versions/`), `ticket`, `board`, `sprint`, `live`, `work`, `org`, `site`. `lib/utils.ts` stays where
+  shadcn expects it. The API client's `base()` resolves `NEXT_PUBLIC_API_URL ?? '/api'` in the browser;
+  `useToken()` and `useFlags().is('flag-name').enabled()` (kebab-case) gate calls and UI.
+- `test/` — test helpers, and the repo-wide rule tests (form labels, one input model, the embed widget).
+  Every other test sits next to its code.
 - `public/` — static assets, including `embed.js` (the embeddable roadmap/request widget).
 
 ## Config

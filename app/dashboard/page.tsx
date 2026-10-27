@@ -4,17 +4,17 @@ import Link from 'next/link';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { DashboardWork } from '@/components/dashboard-work';
-import { NameDialog } from '@/components/name-dialog';
+import { DashboardWork } from '@/components/work/dashboard-work';
+import { NameDialog } from '@/components/common/name-dialog';
 import { atProjectLimit, UpgradeDialog } from '@/components/billing/upgrade-dialog';
 import { ProjectCard } from '@/components/project/project-card';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Loading } from '@/components/page-skeletons';
+import { Loading } from '@/components/layout/page-skeletons';
 import { FolderKanbanIcon, PlusIcon } from 'lucide-react';
 import { projects, type Project } from '@/lib/api';
-import { useToken } from '@/lib/use-token';
-import { useCachedState } from '@/lib/page-cache';
+import { useToken } from '@/lib/hooks/use-token';
+import { useCachedState } from '@/lib/api/page-cache';
 
 // Signed-in home: your projects. A project holds a board per team plus its roadmaps.
 export default function Dashboard() {

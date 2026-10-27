@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
-import { NameDialog } from '@/components/name-dialog';
+import { NameDialog } from '@/components/common/name-dialog';
 import { DEFAULT_TEMPLATE, TemplatePicker } from '@/components/board/template-picker';
 import { Button } from '@/components/ui/button';
 import { boards } from '@/lib/api';

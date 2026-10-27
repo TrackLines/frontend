@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import type { BoardReport, ReportSpikes, SprintReport } from '@/lib/api';
-import { num, pct, scopeChange, trend, TYPE_LABEL } from '@/lib/sprint-report';
+import { num, pct, scopeChange, trend, TYPE_LABEL } from '@/lib/sprint/sprint-report';
 import { Donut } from './donut';
 import { dates } from '@/lib/i18n';
 

@@ -4,7 +4,7 @@ mockDialog();
 const { render } = await import('@/test/i18n');
 const { CreditsView, OutageList, fromUTCInput, toCredit } = await import('./downtime');
 const { staff } = await import('@/lib/api');
-const { notificationLine } = await import('@/lib/notifications');
+const { notificationLine } = await import('@/lib/work/notifications');
 const { i18nFor } = await import('@/lib/i18n');
 import type { CreditPreview, DowntimeCredit, Outage } from '@/lib/api';
 

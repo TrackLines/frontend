@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Markdown } from '@/components/markdown';
+import { Markdown } from '@/components/common/markdown';
 import { B, Guide, H2, Items, P } from '@/components/docs/prose';
 
 export const metadata: Metadata = {

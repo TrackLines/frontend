@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server';
-import { backendURL, MAX_PROXY_BODY, readCapped, requestHeaders, responseHeaders } from '@/lib/proxy';
-import { reportServer } from '@/lib/report';
+import { backendURL, MAX_PROXY_BODY, readCapped, requestHeaders, responseHeaders } from '@/lib/api/proxy';
+import { reportServer } from '@/lib/server/report';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -8,7 +8,7 @@ export const runtime = 'nodejs';
 type RouteContext = { params: Promise<{ path: string[] }> };
 
 // Browser → backend for /api/…: only /api paths, without the browser's cookies or made-up client
-// addresses, and only safe response headers back (lib/proxy.ts has the rules and their tests).
+// addresses, and only safe response headers back (lib/api/proxy.ts has the rules and their tests).
 async function forward(request: NextRequest, context: RouteContext): Promise<Response> {
   const { path } = await context.params;
   const destination = backendURL(path, request.nextUrl.search, process.env.BACKEND_URL ?? 'http://backend:8080');

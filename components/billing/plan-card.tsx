@@ -10,8 +10,8 @@ import { useEffect, useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ApiError, billing, type Subscription } from '@/lib/api';
-import { MEMBER_LIMIT, membersText, PLAN_NAMES, planOf, projectsText } from '@/lib/plans';
-import { stripeRedirect } from '@/lib/stripe-redirect';
+import { MEMBER_LIMIT, membersText, PLAN_NAMES, planOf, projectsText } from '@/lib/org/plans';
+import { stripeRedirect } from '@/lib/server/stripe-redirect';
 
 // billingError turns checkout/portal failures into something a person can act on.
 export function billingError(i18n: I18n, err: unknown, action: 'checkout' | 'portal'): string {
