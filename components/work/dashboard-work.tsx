@@ -96,19 +96,57 @@ export function DashboardWorkView({ assigned, created, mentioned, people, totals
       footer={<More items={assigned} total={totals.assigned} href="/my-work" />}>{ticketRow}</Panel>
   );
 
-  const mentionsPanel = !(pending(mentioned) || has(mentioned)) ? null : (
-    <Panel title={t`Mentions`} more={{ href: '/mentions', label: t`All mentions` }} items={mentioned} empty={t`Nobody has mentioned you yet.`}>
-      {(m: Mention) => (
-        <Row key={m.ticket_id} href={`/tickets/${m.ticket_id}`} ticketKey={m.key} title={m.title} done={m.done} action={<WatchToggle mention={m} token={token} hover />}>
-          <span className="truncate">{actorName(i18n, m.actor, people)} · <When iso={m.mentioned_at} /></span>
-          <span className="truncate">{m.project_name}</span>
-        </Row>
-      )}
-    </Panel>
+  const mentionRow = (m: Mention) => (
+    <Row key={m.ticket_id} href={`/tickets/${m.ticket_id}`} ticketKey={m.key} title={m.title} done={m.done} action={<WatchToggle mention={m} token={token} hover />}>
+      <span className="truncate">{actorName(i18n, m.actor, people)} · <When iso={m.mentioned_at} /></span>
+      <span className="truncate">{m.project_name}</span>
+    </Row>
+  );
+  const showMentions = pending(mentioned) || has(mentioned);
+  const mentionsPanel = !showMentions ? null : (
+    <Panel title={t`Mentions`} more={{ href: '/mentions', label: t`All mentions` }} items={mentioned} empty={t`Nobody has mentioned you yet.`}>{mentionRow}</Panel>
   );
 
   if (!myWork && !mentionsPanel) return null;
-  return <div className="mb-10 grid gap-4 md:grid-cols-2">{myWork}{mentionsPanel}</div>;
+  const tabs = [
+    showMyWork && { value: 'assigned', label: t`Assigned`, more: { href: '/my-work', label: t`All my work` },
+      body: <><Items items={assigned} empty={t`Nothing assigned to you right now.`}>{ticketRow}</Items><More items={assigned} total={totals.assigned} href="/my-work" /></> },
+    showCreated && { value: 'created', label: t`Created`, more: { href: '/my-work?tab=created', label: t`All my work` },
+      body: <><Items items={created} empty={t`You haven’t created any tickets.`}>{ticketRow}</Items><More items={created} total={totals.created} href="/my-work?tab=created" /></> },
+    showMentions && { value: 'mentions', label: t`Mentions`, more: { href: '/mentions', label: t`All mentions` },
+      body: <Items items={mentioned} empty={t`Nobody has mentioned you yet.`}>{mentionRow}</Items> },
+  ].filter((x) => !!x);
+  return (
+    <>
+      {/* phones (TL-694): one tabbed panel instead of two cards stacked above the projects */}
+      <div className="mb-8 md:hidden" data-mobile-work>
+        <MobileWork tabs={tabs} />
+      </div>
+      <div className="mb-10 hidden gap-4 md:grid md:grid-cols-2">{myWork}{mentionsPanel}</div>
+    </>
+  );
+}
+
+type WorkTab = { value: string; label: string; more: { href: string; label: string }; body: ReactNode };
+
+// MobileWork: My work and Mentions as tabs of one card; the link at the top follows the tab.
+function MobileWork({ tabs }: { tabs: WorkTab[] }) {
+  const [tab, setTab] = useState(tabs[0]?.value ?? 'assigned');
+  const current = tabs.find((x) => x.value === tab) ?? tabs[0];
+  if (!current) return null;
+  return (
+    <Card className="gap-0 py-0">
+      <Tabs value={current.value} onValueChange={(v) => setTab(String(v))} className="gap-0">
+        <div className="flex items-center justify-between gap-2 border-b px-3 py-3">
+          <TabsList>
+            {tabs.map((x) => <TabsTrigger key={x.value} value={x.value}>{x.label}</TabsTrigger>)}
+          </TabsList>
+          <Link href={current.more.href} className="shrink-0 text-sm text-muted-foreground hover:text-foreground hover:underline">{current.more.label}</Link>
+        </div>
+        {tabs.map((x) => <TabsContent key={x.value} value={x.value}>{x.body}</TabsContent>)}
+      </Tabs>
+    </Card>
+  );
 }
 
 // Items: the body of a list — its loading, failed, empty and populated states.

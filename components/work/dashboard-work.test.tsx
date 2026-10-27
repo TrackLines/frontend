@@ -67,3 +67,24 @@ test('mentions in the panel have the watch toggle', () => {
   expect(html).toContain('aria-label="Watch again"');
   expect(html).toContain('group-hover:opacity-100'); // only on hover in the panel, so it doesn't look busy
 });
+
+// TL-694: on a phone, My work and Mentions are one tabbed panel; the two cards are for wider screens
+const mobile = (html: string) => html.slice(html.indexOf('data-mobile-work'), html.indexOf('hidden gap-4 md:grid'));
+test('phones get one panel with a tab each for assigned, created and mentions', () => {
+  const html = renderToStaticMarkup(<DashboardWorkView assigned={[mine]} created={[raised]} mentioned={[mention]} people={[]} />);
+  expect(html).toContain('class="mb-8 md:hidden"'); // the panel is phones only…
+  expect(html).toContain('mb-10 hidden gap-4 md:grid md:grid-cols-2'); // …and the cards wider screens only
+  const panel = mobile(html);
+  for (const tab of ['>Assigned<', '>Created<', '>Mentions<']) expect(panel).toContain(tab);
+  expect(panel).toContain('Fix login'); // the first tab's tickets
+  expect(panel).toContain('href="/my-work"'); // its "All my work"
+  expect(panel.match(/role="tab"/g)).toHaveLength(3);
+});
+
+test('the phone panel leaves out tabs with nothing in them', () => {
+  const panel = mobile(renderToStaticMarkup(<DashboardWorkView assigned={[]} created={[]} mentioned={[mention]} people={[]} />));
+  expect(panel.match(/role="tab"/g)).toHaveLength(1); // mentions only
+  expect(panel).toContain('Old bug');
+  expect(panel).toContain('href="/mentions"');
+  expect(panel).not.toContain('>Assigned<');
+});
