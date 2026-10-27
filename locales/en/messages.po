@@ -1666,6 +1666,10 @@ msgstr "Burn-down"
 msgid "Burn-up"
 msgstr "Burn-up"
 
+#: components/staff/mcp-prompt.tsx
+msgid "By"
+msgstr "By"
+
 #. placeholder {0}: personLabel(i18n, ticket.created_by, people)
 #: components/board/ticket-card.tsx
 msgid "by {0}"
@@ -2622,6 +2626,10 @@ msgstr "Couldn’t load the next sprints. Please try again."
 msgid "Couldn’t load the outages."
 msgstr "Couldn’t load the outages."
 
+#: components/staff/mcp-prompt.tsx
+msgid "Couldn’t load the pre-prompt. Please refresh to try again."
+msgstr "Couldn’t load the pre-prompt. Please refresh to try again."
+
 #: components/roadmap/item-tickets.tsx
 #: components/ticket/dependencies.tsx
 #: components/ticket/sub-tickets.tsx
@@ -2752,6 +2760,10 @@ msgstr "Couldn’t plan a sprint. Please try again."
 #: components/roadmap/updates.tsx
 msgid "Couldn’t post the update. Please try again."
 msgstr "Couldn’t post the update. Please try again."
+
+#: components/staff/mcp-prompt.tsx
+msgid "Couldn’t publish it. Please try again."
+msgstr "Couldn’t publish it. Please try again."
 
 #: components/billing/plan-card.tsx
 msgid "Couldn’t reach billing. Please try again."
@@ -3518,6 +3530,10 @@ msgstr "e.g. add a board"
 #: components/settings/api-keys.tsx
 msgid "e.g. Aider (optional)"
 msgstr "e.g. Aider (optional)"
+
+#: components/staff/mcp-prompt.tsx
+msgid "e.g. Ask agents to run the whole test suite"
+msgstr "e.g. Ask agents to run the whole test suite"
 
 #: components/project/new-board.tsx
 msgid "e.g. Backend"
@@ -4996,6 +5012,7 @@ msgstr "Loading your work…"
 #: components/sprint/next-sprints.tsx
 #: components/staff/downtime.tsx
 #: components/staff/help-editor.tsx
+#: components/staff/mcp-prompt.tsx
 #: components/staff/staff-shell.tsx
 #: components/staff/stats.tsx
 #: components/ticket/quick-add-ticket.tsx
@@ -5133,6 +5150,11 @@ msgstr "Marking…"
 #: components/settings/jira-import.tsx
 msgid "Matched to members by email:"
 msgstr "Matched to members by email:"
+
+#: components/staff/mcp-prompt.tsx
+#: components/staff/staff-shell.tsx
+msgid "MCP pre-prompt"
+msgstr "MCP pre-prompt"
 
 #: components/sprint/flow-report.tsx
 msgid "Median cycle time"
@@ -5927,6 +5949,10 @@ msgstr "Nothing of yours matches these filters."
 #: components/roadmap/timeline.tsx
 msgid "Nothing on this roadmap yet."
 msgstr "Nothing on this roadmap yet."
+
+#: components/staff/mcp-prompt.tsx
+msgid "Nothing published yet: agents get the built-in text."
+msgstr "Nothing published yet: agents get the built-in text."
 
 #: components/ticket/history-panel.tsx
 msgid "Nothing recorded yet. History is kept from October 2026."
@@ -6781,9 +6807,25 @@ msgstr "Public"
 msgid "Public roadmaps are readable by anyone you send the link to."
 msgstr "Public roadmaps are readable by anyone you send the link to."
 
+#: components/staff/mcp-prompt.tsx
+msgid "Publish new version"
+msgstr "Publish new version"
+
+#: components/staff/mcp-prompt.tsx
+msgid "Published"
+msgstr "Published"
+
 #: components/staff/help-editor.tsx
 msgid "Published: shown in the help panel"
 msgstr "Published: shown in the help panel"
+
+#: components/staff/mcp-prompt.tsx
+msgid "Publishing makes a new version: agents get it from their next session, and earlier versions stay in the docs as they were."
+msgstr "Publishing makes a new version: agents get it from their next session, and earlier versions stay in the docs as they were."
+
+#: components/staff/mcp-prompt.tsx
+msgid "Publishing…"
+msgstr "Publishing…"
 
 #: components/ticket/pull-requests-panel.tsx
 msgid "Pull requests"
@@ -9111,6 +9153,22 @@ msgstr "Velocity (3-sprint average)"
 msgid "Velocity shows up after {MIN_SPRINTS_FOR_VELOCITY} closed sprints, so there's enough to compare."
 msgstr "Velocity shows up after {MIN_SPRINTS_FOR_VELOCITY} closed sprints, so there's enough to compare."
 
+#: components/staff/mcp-prompt.tsx
+msgid "Version"
+msgstr "Version"
+
+#: components/staff/mcp-prompt.tsx
+msgid "Version {currentVersion}, published <0/>."
+msgstr "Version {currentVersion}, published <0/>."
+
+#: components/staff/mcp-prompt.tsx
+msgid "Version {done} published."
+msgstr "Version {done} published."
+
+#: components/staff/mcp-prompt.tsx
+msgid "Versions"
+msgstr "Versions"
+
 #: app/roadmaps/[id]/edit/page.tsx
 #: app/roadmaps/page.tsx
 #: components/project/roadmap-row.tsx
@@ -9203,6 +9261,14 @@ msgstr "weeks must be between 1 and 52"
 #: components/settings/audit-log.tsx
 msgid "What"
 msgstr "What"
+
+#: components/staff/mcp-prompt.tsx
+msgid "What agents are told when they connect"
+msgstr "What agents are told when they connect"
+
+#: components/staff/mcp-prompt.tsx
+msgid "What changed"
+msgstr "What changed"
 
 #: components/reports/report-view.tsx
 msgid "What each sprint planned at its start, and what it finished, in points."

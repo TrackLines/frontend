@@ -1666,6 +1666,10 @@ msgstr "meQ-bIng"
 msgid "Burn-up"
 msgstr "meQ-Dung"
 
+#: components/staff/mcp-prompt.tsx
+msgid "By"
+msgstr "ta'wI'"
+
 #. placeholder {0}: personLabel(i18n, ticket.created_by, people)
 #: components/board/ticket-card.tsx
 msgid "by {0}"
@@ -2622,6 +2626,10 @@ msgstr "sprintmey veb Hevlu'laHbe'. yInIDqa'."
 msgid "Couldn’t load the outages."
 msgstr "Qagh poHmey laHbe'."
 
+#: components/staff/mcp-prompt.tsx
+msgid "Couldn’t load the pre-prompt. Please refresh to try again."
+msgstr "pre-prompt laDlaHbe'. QIn yIchu'qa'."
+
 #: components/roadmap/item-tickets.tsx
 #: components/ticket/dependencies.tsx
 #: components/ticket/sub-tickets.tsx
@@ -2752,6 +2760,10 @@ msgstr "sprint nablu'laHbe'. yInIDqa'."
 #: components/roadmap/updates.tsx
 msgid "Couldn’t post the update. Please try again."
 msgstr "chu'ghach ngeHlu'laHbe'. yInIDqa'."
+
+#: components/staff/mcp-prompt.tsx
+msgid "Couldn’t publish it. Please try again."
+msgstr "ngeHlaHbe'. yInIDqa'."
 
 #: components/billing/plan-card.tsx
 msgid "Couldn’t reach billing. Please try again."
@@ -3518,6 +3530,10 @@ msgstr "rur: 'echlet yIchel"
 #: components/settings/api-keys.tsx
 msgid "e.g. Aider (optional)"
 msgstr "rur: Aider (DaneHchugh)"
+
+#: components/staff/mcp-prompt.tsx
+msgid "e.g. Ask agents to run the whole test suite"
+msgstr "Qu'mey Hoch tIqeqmeH jopwI' yItlhob"
 
 #: components/project/new-board.tsx
 msgid "e.g. Backend"
@@ -4996,6 +5012,7 @@ msgstr "Qu'meylIj Hevlu'lI'…"
 #: components/sprint/next-sprints.tsx
 #: components/staff/downtime.tsx
 #: components/staff/help-editor.tsx
+#: components/staff/mcp-prompt.tsx
 #: components/staff/staff-shell.tsx
 #: components/staff/stats.tsx
 #: components/ticket/quick-add-ticket.tsx
@@ -5133,6 +5150,11 @@ msgstr "perlI'…"
 #: components/settings/jira-import.tsx
 msgid "Matched to members by email:"
 msgstr "QIn rur ghommeyDaq rarlu'pu':"
+
+#: components/staff/mcp-prompt.tsx
+#: components/staff/staff-shell.tsx
+msgid "MCP pre-prompt"
+msgstr "MCP pre-prompt"
 
 #: components/sprint/flow-report.tsx
 msgid "Median cycle time"
@@ -5927,6 +5949,10 @@ msgstr "nUQHa'moHwI'meyvam rapbogh Dochmey Daghajbogh tu'lu'be'."
 #: components/roadmap/timeline.tsx
 msgid "Nothing on this roadmap yet."
 msgstr "He navvamDaq pagh tu'lu' DaH."
+
+#: components/staff/mcp-prompt.tsx
+msgid "Nothing published yet: agents get the built-in text."
+msgstr "pagh ngeHlu'pu': ghItlh Dub chenlu'pu'bogh Hev jopwI'pu'."
 
 #: components/ticket/history-panel.tsx
 msgid "Nothing recorded yet. History is kept from October 2026."
@@ -6781,9 +6807,25 @@ msgstr "Hoch ghotvaD poS"
 msgid "Public roadmaps are readable by anyone you send the link to."
 msgstr "rarwI' DangeHbogh Hoch ghot He navmey poSbogh laDlaH."
 
+#: components/staff/mcp-prompt.tsx
+msgid "Publish new version"
+msgstr "Segh chu' yIngeH"
+
+#: components/staff/mcp-prompt.tsx
+msgid "Published"
+msgstr "ngeHlu'pu'"
+
 #: components/staff/help-editor.tsx
 msgid "Published: shown in the help panel"
 msgstr "maq: QaH Daq cha'"
+
+#: components/staff/mcp-prompt.tsx
+msgid "Publishing makes a new version: agents get it from their next session, and earlier versions stay in the docs as they were."
+msgstr "ngeHDI' Segh chu' chenmoH: veb ghomDaq Hev jopwI'pu', 'ej qaSpu'bogh Segh pol De'Daq."
+
+#: components/staff/mcp-prompt.tsx
+msgid "Publishing…"
+msgstr "ngeHlI'…"
 
 #: components/ticket/pull-requests-panel.tsx
 msgid "Pull requests"
@@ -9111,6 +9153,22 @@ msgstr "Do (wej sprint motlh)"
 msgid "Velocity shows up after {MIN_SPRINTS_FOR_VELOCITY} closed sprints, so there's enough to compare."
 msgstr "{MIN_SPRINTS_FOR_VELOCITY} sprintmey SoQmoHlu'DI' Do 'oS, vaj yap DapuSmeH."
 
+#: components/staff/mcp-prompt.tsx
+msgid "Version"
+msgstr "Segh"
+
+#: components/staff/mcp-prompt.tsx
+msgid "Version {currentVersion}, published <0/>."
+msgstr "Segh {currentVersion}, ngeHlu'pu' <0/>."
+
+#: components/staff/mcp-prompt.tsx
+msgid "Version {done} published."
+msgstr "Segh {done} ngeHlu'pu'."
+
+#: components/staff/mcp-prompt.tsx
+msgid "Versions"
+msgstr "Seghmey"
+
 #: app/roadmaps/[id]/edit/page.tsx
 #: app/roadmaps/page.tsx
 #: components/project/roadmap-row.tsx
@@ -9203,6 +9261,14 @@ msgstr "weeks'e' 1 vo' 52 ghoS 'oHnIS"
 #: components/settings/audit-log.tsx
 msgid "What"
 msgstr "nuq"
+
+#: components/staff/mcp-prompt.tsx
+msgid "What agents are told when they connect"
+msgstr "rarDI' jopwI'pu'vaD nuq jatlhlu'"
+
+#: components/staff/mcp-prompt.tsx
+msgid "What changed"
+msgstr "nuq choHlu'"
 
 #: components/reports/report-view.tsx
 msgid "What each sprint planned at its start, and what it finished, in points."
