@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { forgetPeople } from '../hooks/use-people';
+import { forgetWorkingWeeks } from '../hooks/use-working-week';
 
 // Last-seen data per page (in memory, this tab only), so going back to a board/ticket/project
 // shows it instantly while the page refreshes it in the background.
@@ -32,6 +33,7 @@ export function prefetch<T>(key: string, load: () => Promise<T>) {
 export function forgetAllCached() {
   cache.clear();
   forgetPeople(); // another person or org: another people list
+  forgetWorkingWeeks(); // and another working week
 }
 
 // switched: the signed-in person or active org changed from one we'd seen (not the first load), so

@@ -4,13 +4,14 @@ import Link from 'next/link';
 import { Plural, Trans, useLingui } from '@lingui/react/macro';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { DownloadIcon, GlobeIcon, HashIcon, KanbanIcon, PlugIcon, TypeIcon } from 'lucide-react';
+import { DownloadIcon, GlobeIcon, HashIcon, KanbanIcon, PlugIcon, TypeIcon, CalendarClockIcon } from 'lucide-react';
 import { useFlags } from '@flags-gg/react-library';
 import { GoogleChatSettings } from '@/components/settings/google-chat';
 import { EmbeddingSettings } from '@/components/settings/embedding';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { EditableTitle } from '@/components/common/editable-title';
 import { SettingsCard } from '@/components/settings/settings-card';
+import { ProjectWorkingWeek } from '@/components/settings/working-week';
 import { ListPageSkeleton } from '@/components/layout/page-skeletons';
 import { ProjectKeyPrefix } from '@/components/project/key-prefix';
 import { NewBoardButton } from '@/components/project/new-board';
@@ -93,6 +94,9 @@ export default function EditProjectPage() {
               </TabsContent>
             )}
           </Tabs>
+        </SettingsCard>
+        <SettingsCard wide icon={CalendarClockIcon} title={t`Working week`} description={t`The organization’s, or this project’s own: for a team that works other days or hours.`}>
+          <ProjectWorkingWeek token={token} projectId={project.id} canManage={admin} />
         </SettingsCard>
         <SettingsCard wide icon={PlugIcon} title={t`Integrations`} description={t`Other tools this project works with: its team’s Google Chat space, and the repositories whose pull requests link to its tickets.`}>
           <Tabs defaultValue="repos">

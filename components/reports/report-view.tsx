@@ -182,7 +182,7 @@ export function SpikeLine({ spikes }: { spikes: ReportSpikes }) {
           ? <Trans><Plural value={spikes.done} one="# timeboxed spike" other="# timeboxed spikes" /> finished: <span className="font-medium">{within} within</span> their timebox, <span className="font-medium text-destructive">{over} over</span> by <Plural value={spikes.over_hours} one={`${hours} working hour`} other={`${hours} working hours`} /> in all.</Trans>
           : <Trans><Plural value={spikes.done} one="# timeboxed spike" other="# timeboxed spikes" /> finished: <span className="font-medium">{within} within</span> their timebox.</Trans>}
       </p>
-      <p className="text-xs text-muted-foreground"><Trans>Timeboxes count working hours, Monday to Friday, 9:00 to 17:00.</Trans></p>
+      <p className="text-xs text-muted-foreground"><Trans>Timeboxes count working hours of each project’s working week (Settings → Working week).</Trans></p>
     </section>
   );
 }

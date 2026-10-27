@@ -7,7 +7,7 @@ import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
 import { PlanCard } from '@/components/billing/plan-card';
 import { useFlags } from '@flags-gg/react-library';
-import { KeyRoundIcon, PlugIcon, UploadIcon, WebhookIcon } from 'lucide-react';
+import { CalendarClockIcon, KeyRoundIcon, PlugIcon, UploadIcon, WebhookIcon } from 'lucide-react';
 import { McpConnect } from '@/components/settings/mcp-connect';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { SettingsCard } from '@/components/settings/settings-card';
@@ -43,6 +43,7 @@ export default function SettingsPage() {
         <Plan />
         <OrganizationCard admin={admin} />
         {admin && <OrgReportCard />}
+        <SettingsCard icon={CalendarClockIcon} title={t`Working week`} href="/settings/working-week" description={t`Which days and hours your organization works: spike timeboxes, sprint planning and sprint ends follow it.`} />
         {admin && <SettingsCard icon={PlugIcon} title={t`Integrations`} href="/settings/integrations" description={t`Connect GitHub, Bitbucket, Google Chat and Bugfixes.`} />}
         {admin && is('imports').enabled() && <SettingsCard icon={UploadIcon} title={t`Import`} href="/settings/import" description={t`Bring work in from Jira, or from a CSV (Trello, Asana, Linear, spreadsheets), as new projects.`} />}
         {admin && is('webhooks').enabled() && <SettingsCard icon={WebhookIcon} title={t`Webhooks`} href="/settings/webhooks" description={t`Send ticket, sprint and roadmap events to your own tools as they happen.`} />}

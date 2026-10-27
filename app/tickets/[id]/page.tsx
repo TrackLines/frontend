@@ -116,7 +116,7 @@ export default function TicketPage() {
       <header className="grid gap-3">
         <div className="flex flex-wrap items-center gap-2">
           <TypeBadge type={tk.type} />
-          {tk.type === 'spike' && <TimeboxCountdown startedAt={tk.started_at} doneAt={tk.done_at} days={tk.timebox_days} hours={tk.timebox_hours} />}
+          {tk.type === 'spike' && <TimeboxCountdown startedAt={tk.started_at} doneAt={tk.done_at} days={tk.timebox_days} hours={tk.timebox_hours} projectId={tk.project_id} />}
           <PriorityBadge priority={tk.priority} />
           <EstimateBadge estimate={tk.estimate} />
           {tk.sprint_number != null && <Badge variant="secondary"><Trans>Sprint {tk.sprint_number}</Trans></Badge>}

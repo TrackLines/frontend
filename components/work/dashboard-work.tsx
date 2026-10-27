@@ -60,7 +60,7 @@ export function DashboardWorkView({ assigned, created, mentioned, people, totals
       <PriorityBadge priority={tk.priority} hideDefault />
       {tk.blocked && <BlockedBadge />}
       <DueBadge due={tk.due_date} done={tk.done} />
-      {tk.type === 'spike' && <TimeboxCountdown startedAt={tk.started_at} doneAt={tk.done_at} days={tk.timebox_days} hours={tk.timebox_hours} />}
+      {tk.type === 'spike' && <TimeboxCountdown startedAt={tk.started_at} doneAt={tk.done_at} days={tk.timebox_days} hours={tk.timebox_hours} projectId={tk.project_id} />}
       <Badge variant="secondary">{tk.column_name ?? t`Backlog`}</Badge>
       <PlannedBadge ticket={tk} />
       <span className="truncate">{tk.project_name}</span>

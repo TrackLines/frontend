@@ -362,6 +362,16 @@ export async function streamLive(
 type T = string | null | undefined;
 
 // One line per backend route (see backend/internal/service.go).
+// WorkWeek (TL-510): working days 0 (Sunday)–6 (Saturday), the first day of the week, hours as minutes from midnight
+export type WorkWeek = { days: number[]; week_start: number; start_minute: number; end_minute: number };
+export type WorkWeeks = { org: WorkWeek; projects: Record<string, WorkWeek> };
+export const workingWeek = {
+  get: (token: T) => api<WorkWeeks>('/working-week', { token }),
+  setOrg: (w: WorkWeek, token: T) => api<void>('/working-week', { method: 'PUT', body: w, token }),
+  setProject: (project: string, w: WorkWeek, token: T) => api<void>(`/projects/${encodeURIComponent(project)}/working-week`, { method: 'PUT', body: w, token }),
+  resetProject: (project: string, token: T) => api<void>(`/projects/${encodeURIComponent(project)}/working-week`, { method: 'DELETE', token }),
+};
+
 export const projects = {
   list: (token: T) => api<Project[]>('/projects', { token }),
   get: (id: string, token: T) => api<Project>(`/projects/${id}`, { token }),
