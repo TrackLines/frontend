@@ -40,11 +40,6 @@ msgstr "(DaneHchugh)"
 msgid "(private)"
 msgstr "(peghbogh)"
 
-#. placeholder {0}: s.skipped.join(', ')
-#: components/ticket/history-panel.tsx
-msgid "(skipped {0})"
-msgstr "({0} lu'IHbe'lu')"
-
 #: components/live/hosted-bar.tsx
 msgid "(you)"
 msgstr "(SoH)"
@@ -8002,6 +7997,10 @@ msgstr "nap"
 #: components/settings/embedding.tsx
 msgid "Site origin"
 msgstr "Daq origin"
+
+#: components/ticket/history-panel.tsx
+msgid "Skipped {skipped}"
+msgstr "{skipped} Dalwov"
 
 #: components/staff/help-editor.tsx
 msgid "Slug"

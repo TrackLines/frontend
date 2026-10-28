@@ -4,12 +4,16 @@ import type { I18n, MessageDescriptor } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { Trans } from '@lingui/react/macro';
-import { HistoryIcon } from 'lucide-react';
+import {
+  ArrowRightIcon, CalendarIcon, CheckCircle2Icon, CircleDotIcon, EyeIcon, GitPullRequestIcon, HistoryIcon, InboxIcon, LinkIcon,
+  MessageSquareIcon, PaperclipIcon, PencilIcon, PlusIcon, RotateCcwIcon, TagIcon, Trash2Icon, UserIcon, type LucideIcon,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { PRIORITY } from '@/components/board/priority-badge';
 import { TICKET_TYPES } from '@/components/ticket/ticket-type';
 import { When } from '@/components/common/when';
 import { Button } from '@/components/ui/button';
+import { Trace, TraceCollapsible, TraceCollapsibleContent, TraceCollapsibleTrigger, TraceDescription, TraceIcon, TraceLine, TraceTitle } from '@/components/ui/trace';
 import { ApiError, tickets, type ActivityEntry, type Assignee, type HistoryEntry, type TicketDetail } from '@/lib/api';
 import { dates } from '@/lib/i18n';
 import { personLabel } from '@/lib/work/people';
@@ -32,7 +36,21 @@ export function HistoryPanel({ ticketId, token, people, ticket }: { ticketId: st
   return entries && <HistoryPanelView entries={entries} people={people} names={ticket ? namesOf(ticket) : {}} />;
 }
 
-export type HistoryStep = { at: string; who: string; text: string; skipped: string[] };
+// kind is the action, or for a stage what it did (created, moved, backlog, resolved): it picks the icon.
+export type HistoryStep = { at: string; who: string; text: string; skipped: string[]; kind: string };
+
+// ICONS: a step's icon by kind (TL-711); anything else is a plain dot.
+export const ICONS: Record<string, LucideIcon> = {
+  created: PlusIcon, moved: ArrowRightIcon, backlog: InboxIcon, resolved: CheckCircle2Icon,
+  'ticket.assigned': UserIcon, 'ticket.updated': PencilIcon, 'ticket.labels_changed': TagIcon,
+  'ticket.blocked_by_changed': LinkIcon, 'ticket.parent_changed': LinkIcon, 'ticket.duplicate_of': LinkIcon,
+  'ticket.sprint_changed': CalendarIcon, 'ticket.planned_changed': CalendarIcon,
+  'ticket.reopened': RotateCcwIcon, 'ticket.restored': RotateCcwIcon, 'ticket.deleted': Trash2Icon,
+  'ticket.review_requested': EyeIcon, 'ticket.review_ended': EyeIcon,
+  'comment.added': MessageSquareIcon, 'comment.edited': MessageSquareIcon, 'comment.deleted': MessageSquareIcon,
+  'attachment.added': PaperclipIcon, 'attachment.removed': PaperclipIcon, 'attachment.kept': PaperclipIcon,
+  'pr.linked': GitPullRequestIcon, 'pr.state_changed': GitPullRequestIcon, 'pr.unlinked': GitPullRequestIcon,
+};
 
 // namesOf: the titles of the tickets a ticket links to, by id, for history lines that name them.
 export function namesOf(t: Pick<TicketDetail, 'parent' | 'children' | 'blocked_by' | 'blocks'>): Record<string, string> {
@@ -91,7 +109,7 @@ export function activitySteps(i18n: I18n, entries: ActivityEntry[], people: Assi
   for (const e of entries) {
     const d = (e.data ?? {}) as Data;
     const who = e.actor ? personLabel(i18n, e.actor, people) : 'TrackLin.es';
-    const add = (text: string, skip: string[] = []) => steps.push({ at: e.at, who, text, skipped: skip });
+    const add = (text: string, skip: string[] = [], kind: string = e.action) => steps.push({ at: e.at, who, text, skipped: skip, kind });
     switch (e.action) {
       case 'ticket.stage': {
         if (d.outcome === 'skipped') {
@@ -105,7 +123,8 @@ export function activitySteps(i18n: I18n, entries: ActivityEntry[], people: Assi
           ? i18n._(RESOLVED[(str(d.resolution) || 'done') as keyof typeof RESOLVED] ?? RESOLVED.done)
           : first ? i18n._(msg`created it in ${where}`) : d.stage === 'backlog' ? i18n._(msg`sent it to the backlog`) : i18n._(msg`moved it to ${where}`);
         // made straight on a board: skipping the backlog is how every board ticket starts, not news
-        add(text, first ? skipped.filter((s) => s !== backlog) : skipped);
+        const kind = d.stage === 'resolved' ? 'resolved' : first ? 'created' : d.stage === 'backlog' ? 'backlog' : 'moved';
+        add(text, first ? skipped.filter((s) => s !== backlog) : skipped, kind);
         skipped = [];
         first = false;
         continue;
@@ -193,20 +212,33 @@ export function HistoryPanelView({ entries, people, names = {} }: { entries: Act
       ) : steps.length === 0 ? (
         <p className="text-muted-foreground"><Trans>Nothing recorded yet. History is kept from October 2026.</Trans></p>
       ) : (
-        <ol className="grid gap-1.5">
-          {shown.map((s, i) => (
-            <li key={i} className="flex flex-wrap items-baseline gap-x-1.5">
-              <span className="font-medium">{s.who}</span>
-              <span>{s.text}</span>
-              {s.skipped.length > 0 && <span className="text-muted-foreground"><Trans>(skipped {s.skipped.join(', ')})</Trans></span>}
-              <When iso={s.at} className="text-xs text-muted-foreground" />
-            </li>
-          ))}
-        </ol>
+        <Trace role="list">
+          {shown.map((s, i) => <HistoryLine key={i} step={s} />)}
+        </Trace>
       )}
       {!all && steps.length > SHOWN && (
         <Button type="button" variant="ghost" size="sm" className="justify-self-start" onClick={() => setAll(true)}><Trans>Show older</Trans></Button>
       )}
     </section>
+  );
+}
+
+// HistoryLine: one step as a trace line (TL-711); the stages a move skipped open under it.
+function HistoryLine({ step }: { step: HistoryStep }) {
+  const Icon = ICONS[step.kind] ?? CircleDotIcon;
+  const line = (
+    <TraceLine className="text-foreground">
+      <TraceIcon><Icon /></TraceIcon>
+      <TraceTitle className="whitespace-normal"><span className="font-medium">{step.who}</span> {step.text}</TraceTitle>
+      <TraceDescription><When iso={step.at} className="text-xs" /></TraceDescription>
+    </TraceLine>
+  );
+  if (step.skipped.length === 0) return <div role="listitem">{line}</div>;
+  const skipped = step.skipped.join(', ');
+  return (
+    <TraceCollapsible role="listitem">
+      <TraceCollapsibleTrigger>{line}</TraceCollapsibleTrigger>
+      <TraceCollapsibleContent><Trans>Skipped {skipped}</Trans></TraceCollapsibleContent>
+    </TraceCollapsible>
   );
 }

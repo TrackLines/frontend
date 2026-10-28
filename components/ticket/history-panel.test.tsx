@@ -2,7 +2,7 @@ import { expect, test } from 'bun:test';
 import { render as renderToStaticMarkup } from '@/test/i18n';
 import { i18nFor } from '@/lib/i18n';
 import type { HistoryEntry } from '@/lib/api';
-import { ACTIONS, activitySteps, HistoryPanelView, historySteps, namesOf, SHOWN } from './history-panel';
+import { ACTIONS, activitySteps, HistoryPanelView, historySteps, ICONS, namesOf, SHOWN } from './history-panel';
 import type { ActivityEntry, TicketDetail } from '@/lib/api';
 
 const at = (m: number) => `2026-10-17T10:${String(m).padStart(2, '0')}:00Z`;
@@ -142,4 +142,22 @@ test('the panel reads the activity, and the page gives it the ticket for names (
   expect(panel).toContain('tickets.activity(ticketId, token)');
   const page = await Bun.file(new URL('../../app/tickets/[id]/page.tsx', import.meta.url)).text();
   expect(page).toContain('<HistoryPanel ticketId={tk.id} token={token} people={people} ticket={tk} />');
+});
+
+// TL-711: each step is a trace line with an icon for what happened; skipped stages open under the move
+test('history lines have an icon, and a move that skipped stages opens to show them', () => {
+  for (const a of ACTIONS) if (a !== 'ticket.stage') expect(ICONS[a]).toBeDefined();
+  const entries: ActivityEntry[] = [
+    { id: '1', at: at(0), actor: 'user_ava', actor_kind: 'person', action: 'ticket.stage', data: { stage: 'column', outcome: 'entered', column_name: 'To do', board_name: 'Backend' } },
+    { id: '2', at: at(1), actor: 'claude', actor_kind: 'agent', action: 'ticket.stage', data: { stage: 'column', outcome: 'skipped', column_name: 'In progress' } },
+    { id: '3', at: at(2), actor: 'claude', actor_kind: 'agent', action: 'ticket.stage', data: { stage: 'column', outcome: 'entered', column_name: 'Review', board_name: 'Backend' } },
+    { id: '4', at: at(3), actor: 'user_ava', actor_kind: 'person', action: 'comment.added', data: {} },
+  ];
+  expect(activitySteps(i18nFor('en'), entries, people).map((s) => s.kind)).toEqual(['comment.added', 'moved', 'created']);
+  const html = renderToStaticMarkup(<HistoryPanelView people={people} entries={entries} />);
+  expect(html).toContain('data-slot="trace"');
+  expect(html).toContain('lucide-message-square');
+  expect(html).toContain('lucide-plus');
+  expect(html.match(/data-slot="trace-collapsible-trigger"/g)).toHaveLength(1); // only the move that skipped
+  expect(html).toContain('aria-expanded="false"');
 });

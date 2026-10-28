@@ -40,11 +40,6 @@ msgstr "(optioneel)"
 msgid "(private)"
 msgstr "(privé)"
 
-#. placeholder {0}: s.skipped.join(', ')
-#: components/ticket/history-panel.tsx
-msgid "(skipped {0})"
-msgstr "({0} overgeslagen)"
-
 #: components/live/hosted-bar.tsx
 msgid "(you)"
 msgstr "(jij)"
@@ -8002,6 +7997,10 @@ msgstr "Eenvoudig"
 #: components/settings/embedding.tsx
 msgid "Site origin"
 msgstr "Site-origin"
+
+#: components/ticket/history-panel.tsx
+msgid "Skipped {skipped}"
+msgstr "{skipped} overgeslagen"
 
 #: components/staff/help-editor.tsx
 msgid "Slug"
