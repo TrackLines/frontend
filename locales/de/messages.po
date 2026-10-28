@@ -6440,6 +6440,10 @@ msgstr "Nur Organisations-Admins können den Tarif verwalten."
 msgid "Only organization admins can manage webhooks."
 msgstr "Nur Admins der Organisation können Webhooks verwalten."
 
+#: app/projects/[id]/edit/page.tsx
+msgid "Only organization admins can rename it."
+msgstr "Nur Organisationsadmins können ihn umbenennen."
+
 #: app/boards/[id]/edit/page.tsx
 msgid "Only organization admins can save templates."
 msgstr "Nur Organisations-Admins können Vorlagen speichern."

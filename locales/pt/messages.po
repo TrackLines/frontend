@@ -6440,6 +6440,10 @@ msgstr "só admins da organização podem gerenciar o plano"
 msgid "Only organization admins can manage webhooks."
 msgstr "Somente administradores da organização podem gerenciar webhooks."
 
+#: app/projects/[id]/edit/page.tsx
+msgid "Only organization admins can rename it."
+msgstr "Só os administradores da organização o podem mudar de nome."
+
 #: app/boards/[id]/edit/page.tsx
 msgid "Only organization admins can save templates."
 msgstr "Só admins da organização podem salvar modelos."

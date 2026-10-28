@@ -6440,6 +6440,10 @@ msgstr "ghom'a' loHwI'pu' neH nab loHlaH"
 msgid "Only organization admins can manage webhooks."
 msgstr "ghom'a' loHwI'pu' neH webhookmey SeH."
 
+#: app/projects/[id]/edit/page.tsx
+msgid "Only organization admins can rename it."
+msgstr "pong choHlaH DevwI'pu' neH."
+
 #: app/boards/[id]/edit/page.tsx
 msgid "Only organization admins can save templates."
 msgstr "ghom'a' loHwI'pu' neH mIlloghmey pollaH."

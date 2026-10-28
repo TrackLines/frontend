@@ -55,7 +55,7 @@ export default function EditProjectPage() {
           <EditableTitle
             value={project.name}
             label="project"
-            editable
+            editable={admin}
             as="p"
             className="text-lg font-medium"
             onSave={async (name) => {
@@ -64,6 +64,7 @@ export default function EditProjectPage() {
               setProjects((current) => current?.map((item) => item.id === project.id ? { ...item, name } : item) ?? current);
             }}
           />
+          {!admin && <p className="text-sm text-muted-foreground"><Trans>Only organization admins can rename it.</Trans></p>}
         </SettingsCard>
         <SettingsCard icon={HashIcon} title={t`Ticket keys`} description={t`Every ticket’s key starts with this, like TL-123.`}>
           <ProjectKeyPrefix project={project} token={token} editable={admin} onChanged={(key_prefix) => setProject((current) => current && { ...current, key_prefix })} />
