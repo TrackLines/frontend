@@ -6445,6 +6445,10 @@ msgstr "Alleen beheerders van de organisatie kunnen het abonnement beheren."
 msgid "Only organization admins can manage webhooks."
 msgstr "Alleen organisatiebeheerders kunnen webhooks beheren."
 
+#: app/projects/[id]/edit/page.tsx
+msgid "Only organization admins can rename it."
+msgstr "Alleen organisatiebeheerders kunnen de naam wijzigen."
+
 #: app/boards/[id]/edit/page.tsx
 msgid "Only organization admins can save templates."
 msgstr "Alleen beheerders van de organisatie kunnen sjablonen opslaan."
