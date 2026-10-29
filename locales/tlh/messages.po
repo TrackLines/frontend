@@ -7022,6 +7022,10 @@ msgstr "jInmol pong"
 msgid "Project not found"
 msgstr "jInmol tu'lu'be'"
 
+#: components/ticket/dependencies.tsx
+msgid "Project the blocker is in"
+msgstr "bot DIvI' ngoQ"
+
 #: app/account/page.tsx
 #: app/dashboard/page.tsx
 #: app/error.tsx

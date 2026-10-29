@@ -466,7 +466,8 @@ export const columns = {
 };
 
 // A linked ticket under "blocked by" / "blocks".
-export type Dep = { id: string; title: string; done: boolean };
+// project_*: blockers can be in another project of the org (TL-714), shown as "Project - Title"
+export type Dep = { id: string; title: string; done: boolean; project_id?: string; project_name?: string };
 // Child: a sub-ticket, with where it lives (board_id null: the backlog) so an epic can group them by board
 export type Child = Dep & { key?: string | null; type?: TicketType; assigned_to?: string | null; estimate?: string | null; board_id?: string | null; board_name?: string | null };
 // EpicProgress: an epic's direct sub-tickets, done of total, and their size in points (TL-213)

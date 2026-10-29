@@ -86,7 +86,7 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
           <dt className="text-muted-foreground"><Trans>Assigned to</Trans></dt>
           <dd>{ticket.assigned_to ? <Assignee id={ticket.assigned_to} people={people} /> : <span className="text-muted-foreground italic"><Trans>Unassigned</Trans></span>}</dd>
         </dl>
-        {detail && <TicketRelations parent={detail.parent} blockedBy={detail.blocked_by} blocks={detail.blocks} />}
+        {detail && <TicketRelations parent={detail.parent} blockedBy={detail.blocked_by} blocks={detail.blocks} here={ticket.project_id} />}
         {token && onReviewed && <ReviewActions ticket={ticket} token={token} onReviewed={onReviewed} />}
         <TicketLabels labels={ticket.labels} />
         <section aria-label={t`Ticket details`} className="min-h-20 rounded-md bg-muted/50 p-3 text-sm">
