@@ -31,7 +31,14 @@ test('the board\'s ticket view loads the parent and blockers, and the page links
   const read = (p: string) => Bun.file(new URL(p, import.meta.url)).text();
   const view = await read('../board/ticket-view.tsx');
   expect(view).toContain('tickets.get(ticket.id, token)');
-  expect(view).toContain('<TicketRelations parent={detail.parent} blockedBy={detail.blocked_by} blocks={detail.blocks} />');
+  expect(view).toContain('<TicketRelations parent={detail.parent} blockedBy={detail.blocked_by} blocks={detail.blocks} here={ticket.project_id} />');
   expect(await read('../../app/tickets/[id]/page.tsx')).toContain('<BlockedBadge href="#blocked-by" />');
   expect(await read('./ticket-links.tsx')).toContain('id="blocked-by"'); // the Ticket links panel, opening its Blocked by tab (TL-686)
+});
+
+test('a blocker in another project reads "Project - Title"; one in this project just its title (TL-715)', () => {
+  const html = render(<TicketRelations here="p" blockedBy={[{ id: 'b1', title: 'Bob', done: false, project_id: 'q', project_name: 'Bill' }]}
+    blocks={[{ id: 'x1', title: 'Release', done: false, project_id: 'p', project_name: 'TrackLines' }]} />);
+  expect(html).toContain('Bill - </span>Bob');
+  expect(html).not.toContain('TrackLines');
 });

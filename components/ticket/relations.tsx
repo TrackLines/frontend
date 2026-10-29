@@ -7,7 +7,8 @@ import { DepRow } from './dependencies';
 
 // TicketRelations: what a ticket belongs to and what it waits on (TL-639), read-only, for places that
 // show a ticket without the full page's editors (the board's ticket view). Nothing when it has none.
-export function TicketRelations({ parent, blockedBy, blocks }: { parent?: Dep | null; blockedBy: Dep[]; blocks: Dep[] }) {
+// here: the ticket's project, so tickets in other projects read "Project - Title" (TL-715).
+export function TicketRelations({ parent, blockedBy, blocks, here }: { parent?: Dep | null; blockedBy: Dep[]; blocks: Dep[]; here?: string }) {
   if (!parent && blockedBy.length === 0 && blocks.length === 0) return null;
   const waiting = blockedBy.filter((d) => !d.done).length;
   return (
@@ -22,13 +23,13 @@ export function TicketRelations({ parent, blockedBy, blocks }: { parent?: Dep | 
           <p className={`text-xs font-medium uppercase ${waiting > 0 ? 'text-destructive' : 'text-muted-foreground'}`}>
             {waiting > 0 ? <Trans>Blocked by</Trans> : <Trans>Was waiting on (all done)</Trans>}
           </p>
-          <ul className="grid gap-1">{blockedBy.map((d) => <DepRow key={d.id} d={d} />)}</ul>
+          <ul className="grid gap-1">{blockedBy.map((d) => <DepRow key={d.id} d={d} here={here} />)}</ul>
         </div>
       )}
       {blocks.length > 0 && (
         <div className="grid gap-1">
           <p className="text-xs font-medium uppercase text-muted-foreground"><Trans>Blocks</Trans></p>
-          <ul className="grid gap-1">{blocks.map((d) => <DepRow key={d.id} d={d} />)}</ul>
+          <ul className="grid gap-1">{blocks.map((d) => <DepRow key={d.id} d={d} here={here} />)}</ul>
         </div>
       )}
     </section>

@@ -6,7 +6,7 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ApiError, backlog, boards, projects, tickets, type Dep, type TicketDetail } from '@/lib/api';
+import { ApiError, backlog, boards, projects, tickets, type Dep, type Project, type TicketDetail } from '@/lib/api';
 
 export type TicketOption = { id: string; title: string; done: boolean };
 type Option = TicketOption;
@@ -21,13 +21,17 @@ export async function projectTickets(projectId: string, token: string): Promise<
   return [...onBoards, ...bl.map((t) => ({ id: t.id, title: t.title, done: false }))];
 }
 
-export function DepRow({ d, onRemove, removeLabel }: { d: Dep; onRemove?: () => void; removeLabel?: string }) {
+// DepRow: one linked ticket. here: the project it's seen from; a ticket in another project reads "Project - Title" (TL-715).
+export function DepRow({ d, here, onRemove, removeLabel }: { d: Dep; here?: string; onRemove?: () => void; removeLabel?: string }) {
   const { t } = useLingui();
   const title = d.title;
+  const elsewhere = d.project_name && d.project_id !== here ? d.project_name : '';
   return (
     <li className="flex items-center gap-2 text-sm">
       {d.done ? <CheckIcon className="size-4 text-emerald-600" aria-label={t`done`} /> : <span className="size-4 rounded-full border" aria-label={t`not done`} />}
-      <Link href={`/tickets/${d.id}`} className={`min-w-0 flex-1 truncate hover:underline ${d.done ? 'text-muted-foreground line-through' : ''}`}>{d.title}</Link>
+      <Link href={`/tickets/${d.id}`} className={`min-w-0 flex-1 truncate hover:underline ${d.done ? 'text-muted-foreground line-through' : ''}`}>
+        {elsewhere && <span className="text-muted-foreground">{elsewhere} - </span>}{d.title}
+      </Link>
       {onRemove && (
         <Button type="button" variant="ghost" size="icon-xs" onClick={onRemove} className="text-muted-foreground hover:text-destructive" aria-label={removeLabel ?? t`Stop waiting on ${title}`}>
           <XIcon />
@@ -41,6 +45,8 @@ export function DepRow({ d, onRemove, removeLabel }: { d: Dep; onRemove?: () => 
 export function BlockedBy({ ticket, token, onChanged }: { ticket: TicketDetail; token: string; onChanged: () => void }) {
   const { t } = useLingui();
   const [options, setOptions] = useState<Option[] | null>(null);
+  const [orgProjects, setOrgProjects] = useState<Project[]>([]);
+  const [from, setFrom] = useState(ticket.project_id); // blockers can be in any of the org's projects (TL-715)
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const current = ticket.blocked_by.map((d) => d.id);
@@ -59,21 +65,36 @@ export function BlockedBy({ ticket, token, onChanged }: { ticket: TicketDetail; 
   }
 
   const choices = (options ?? []).filter((o) => o.id !== ticket.id && !current.includes(o.id));
+  const load = (project: string) => {
+    setFrom(project);
+    setOptions(null);
+    projectTickets(project, token).then(setOptions, () => setError(t`Couldn’t load the project’s tickets.`));
+  };
+  const start = () => {
+    projects.list(token).then(setOrgProjects, () => {}); // ponytail: just this project if the list can't load
+    load(ticket.project_id);
+  };
 
   return (
     <div className="grid gap-1.5">
       {ticket.blocked_by.length === 0 ? (
         <p className="text-sm text-muted-foreground">{ticket.done ? <Trans>Nothing.</Trans> : <Trans>Nothing — it can be picked up.</Trans>}</p>
       ) : (
-        <ul className="grid gap-1">{ticket.blocked_by.map((d) => <DepRow key={d.id} d={d} onRemove={saving ? undefined : () => save(current.filter((x) => x !== d.id))} />)}</ul>
+        <ul className="grid gap-1">{ticket.blocked_by.map((d) => <DepRow key={d.id} d={d} here={ticket.project_id} onRemove={saving ? undefined : () => save(current.filter((x) => x !== d.id))} />)}</ul>
       )}
       {/* a done ticket can drop blockers but not gain them (TL-528) */}
-      {!ticket.done && <div className="flex items-center gap-2">
-        {options === null ? (
-          <Button size="sm" variant="outline" disabled={saving} onClick={() => projectTickets(ticket.project_id, token).then(setOptions, () => setError(t`Couldn’t load the project’s tickets.`))}>
+      {!ticket.done && <div className="flex flex-wrap items-center gap-2">
+        {orgProjects.length > 1 && (
+          <Select items={Object.fromEntries(orgProjects.map((p) => [p.id, p.name]))} value={from} onValueChange={(v) => v && load(String(v))} disabled={saving}>
+            <SelectTrigger size="sm" className="w-48" aria-label={t`Project the blocker is in`}><SelectValue /></SelectTrigger>
+            <SelectContent>{orgProjects.map((p) => <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>)}</SelectContent>
+          </Select>
+        )}
+        {options === null && orgProjects.length === 0 ? (
+          <Button size="sm" variant="outline" disabled={saving} onClick={start}>
             <Trans>Add a blocker…</Trans>
           </Button>
-        ) : (
+        ) : options === null ? null : (
           <Select items={Object.fromEntries(choices.map((o) => [o.id, o.title]))} value={null} onValueChange={(v) => v && save([...current, String(v)])} disabled={saving}>
             <SelectTrigger size="sm" className="w-full max-w-md" aria-label={t`Choose a ticket this one waits on`}>
               <SelectValue placeholder={choices.length ? t`Choose a ticket it waits on…` : t`No other tickets in this project`} />
@@ -90,5 +111,5 @@ export function BlockedBy({ ticket, token, onChanged }: { ticket: TicketDetail; 
 // Blocks: what waits on this ticket (set from those tickets' own Blocked by).
 export function Blocks({ ticket }: { ticket: TicketDetail }) {
   if (ticket.blocks.length === 0) return <p className="text-sm text-muted-foreground"><Trans>Nothing waits on it.</Trans></p>;
-  return <ul className="grid gap-1">{ticket.blocks.map((d) => <DepRow key={d.id} d={d} />)}</ul>;
+  return <ul className="grid gap-1">{ticket.blocks.map((d) => <DepRow key={d.id} d={d} here={ticket.project_id} />)}</ul>;
 }

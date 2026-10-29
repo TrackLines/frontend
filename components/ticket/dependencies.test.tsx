@@ -38,3 +38,12 @@ test('a done ticket can drop blockers but not add them (TL-528)', () => {
   expect(html).not.toContain('Add a blocker');
   expect(html).toContain('Stop waiting on API first');
 });
+
+test('the blocker picker offers the org’s other projects and loads the chosen one’s tickets (TL-715)', async () => {
+  const src = await Bun.file(new URL('./dependencies.tsx', import.meta.url)).text();
+  expect(src).toContain('projects.list(token)');
+  expect(src).toContain('onValueChange={(v) => v && load(String(v))}');
+  const html = renderToStaticMarkup(<BlockedBy ticket={{ ...base, blocked_by: [{ id: 'a', title: 'Mobile key', done: false, project_id: 'bf', project_name: 'Bugfixes' }] }} token="tok" onChanged={() => {}} />);
+  expect(html).toContain('Bugfixes - </span>Mobile key');
+  expect(renderToStaticMarkup(<Blocks ticket={{ ...base, blocks: [{ id: 'c', title: 'Release', done: false, project_id: 'p', project_name: 'Here' }] }} />)).not.toContain('Here');
+});

@@ -7022,6 +7022,10 @@ msgstr "Project name"
 msgid "Project not found"
 msgstr "Project not found"
 
+#: components/ticket/dependencies.tsx
+msgid "Project the blocker is in"
+msgstr "Project the blocker is in"
+
 #: app/account/page.tsx
 #: app/dashboard/page.tsx
 #: app/error.tsx
