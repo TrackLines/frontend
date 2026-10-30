@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
   // app/global-not-found.tsx: unmatched URLs skip the root layout (and its Clerk calls) (TL-298);
   // Lingui's macros (t`…`, <Trans>) compile to message lookups at build time (TL-550)
   experimental: { globalNotFound: true, swcPlugins: [['@lingui/swc-plugin', {}]] },
-  headers: async () => [{ source: '/:path*', headers: SECURITY_HEADERS }],
+  headers: async () => [
+    { source: '/:path*', headers: SECURITY_HEADERS },
+    // the Google Chat avatar: public/ files default to max-age=0, so Google's image proxy fetches it for every view
+    { source: '/tracklines-github.png', headers: [{ key: 'Cache-Control', value: 'public, max-age=604800' }] },
+  ],
 };
 export default nextConfig;

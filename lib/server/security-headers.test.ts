@@ -10,7 +10,7 @@ test('static security headers lock down framing, sniffing, referrer and permissi
   expect(header('Referrer-Policy')).toBe('strict-origin-when-cross-origin');
   expect(header('Permissions-Policy')).toContain('camera=()');
   const rules = await nextConfig.headers!();
-  expect(rules).toEqual([{ source: '/:path*', headers: SECURITY_HEADERS }]);
+  expect(rules).toContainEqual({ source: '/:path*', headers: SECURITY_HEADERS });
 });
 
 test('strict CSP directives allow the app integrations and deny framing and plugins', () => {
@@ -29,4 +29,10 @@ test('strict CSP directives allow the app integrations and deny framing and plug
   expect(CSP_DIRECTIVES['frame-ancestors']).toEqual(['none']);
   expect(CSP_DIRECTIVES['object-src']).toEqual(['none']);
   expect(SECURITY_HEADERS.some(({ key }) => key.startsWith('Content-Security-Policy'))).toBe(false);
+});
+
+test('the Google Chat avatar can be cached: every view of a message fetches it otherwise', async () => {
+  const rules = await nextConfig.headers!();
+  const avatar = rules.find((r) => r.source === '/tracklines-github.png');
+  expect(avatar?.headers).toEqual([{ key: 'Cache-Control', value: 'public, max-age=604800' }]);
 });

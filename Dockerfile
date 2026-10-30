@@ -24,5 +24,7 @@ COPY --from=build /app/public ./public
 COPY --from=build /app/.next/standalone ./
 COPY --from=build /app/.next/static ./.next/static
 EXPOSE 3000
+# Next writes optimised images and prerenders here, and the copies above are root's
+RUN mkdir -p .next/cache && chown -R bun:bun .next/cache
 USER bun
 CMD ["bun", "server.js"]

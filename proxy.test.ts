@@ -3,7 +3,7 @@ import { probe } from './proxy';
 
 const none = new Headers();
 
-test('pages are only read: other methods, and server action calls, are scanners (the app has no actions)', () => {
+test('pages are only read: other methods, and anything else claiming to be a server action, are scanners', () => {
   for (const path of ['/api', '/app', '/RSC/abc.txt', '/dashboard', '/']) expect(probe('POST', path, none)).toBe(true);
   expect(probe('PUT', '/projects/p1', none)).toBe(true);
   expect(probe('GET', '/api/tickets', new Headers({ 'Next-Action': 'x' }))).toBe(true);
@@ -16,4 +16,11 @@ test('pages are only read: other methods, and server action calls, are scanners 
     expect(probe('POST', path, none)).toBe(false);
   }
   expect(probe('DELETE', '/api/tickets/TL-1', none)).toBe(false);
+});
+
+test("Clerk's server action gets through, or choosing an org never finishes", () => {
+  const action = new Headers({ 'Next-Action': 'x', Accept: 'text/x-component' });
+  for (const path of ['/sign-in/tasks/choose-organization', '/dashboard']) expect(probe('POST', path, action)).toBe(false);
+  expect(probe('POST', '/dashboard', new Headers({ 'Next-Action': 'x' }))).toBe(true); // no RSC accept: not the browser's call
+  expect(probe('GET', '/dashboard', action)).toBe(true);
 });
