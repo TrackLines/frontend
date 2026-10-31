@@ -1,7 +1,7 @@
 import { expect, test } from 'bun:test';
 import { render as renderToStaticMarkup } from '@/test/i18n';
 import type { Capacity, PlannedSprint, Ticket } from '@/lib/api';
-import { PlannedSprintCard, RefinementMode } from './refinement';
+import { PlannedSprintCard, RefinementMode, RefinementTicketCard } from './refinement';
 
 const capacity = (c: Partial<Capacity>): Capacity => ({
   unit: 'points', velocity: 8, cap: 8.8, used: 0, unestimated: 0, over: false,
@@ -82,4 +82,24 @@ test('the sort is shared by the backlog and refinement: newest and oldest first 
   expect(renderToStaticMarkup(<BacklogSortSelect sort="manual" onSortChange={() => {}} closed />)).toContain('Recently closed');
   const src = await Bun.file(new URL('./refinement.tsx', import.meta.url)).text();
   expect(src).toContain('priorities, sort, planned: '); // the to-plan list is loaded in that order
+});
+
+
+test('refinement keeps long titles separate from metadata and planning controls', () => {
+  const title = 'Mobile: report app crashes and errors to Bugfixes (automatic bug tickets)';
+  const html = renderToStaticMarkup(
+    <RefinementTicketCard ticket={{ id: 'mobile', key: 'TL-716', title, type: 'feature' }} onOpen={() => {}}>
+      <button>Move to board</button><button>Delete</button>
+    </RefinementTicketCard>,
+  );
+  // The complete title has its own control between metadata and the actions.
+  expect(html).toContain(title);
+  expect(html).toContain('Copy ticket key TL-716');
+  expect(html).toMatch(/<\/div><button[^>]*>Mobile:.*<\/button><div[^>]*><button>Move to board<\/button><button>Delete<\/button>/);
+  expect(html).not.toContain('href="/tickets/mobile"');
+  const linked = renderToStaticMarkup(
+    <RefinementTicketCard ticket={{ id: 'mobile', title }}><button>Plan sprint</button></RefinementTicketCard>,
+  );
+  expect(linked).toContain('href="/tickets/mobile"');
+  expect(linked).toContain('Plan sprint');
 });
