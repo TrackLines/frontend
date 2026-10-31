@@ -7,12 +7,14 @@ import { useEffect, useState } from 'react';
 import { DashboardWork } from '@/components/work/dashboard-work';
 import { NameDialog } from '@/components/common/name-dialog';
 import { atProjectLimit, UpgradeDialog } from '@/components/billing/upgrade-dialog';
+import { NoProjects } from '@/components/project/no-projects';
 import { ProjectCard } from '@/components/project/project-card';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Loading } from '@/components/layout/page-skeletons';
-import { FolderKanbanIcon, PlusIcon } from 'lucide-react';
+import { PlusIcon } from 'lucide-react';
 import { projects, type Project } from '@/lib/api';
+import { useIsAdmin } from '@/lib/hooks/use-is-admin';
 import { useToken } from '@/lib/hooks/use-token';
 import { useCachedState } from '@/lib/api/page-cache';
 import { emitGuideAction } from '@/lib/org/guide-tour';
@@ -22,6 +24,7 @@ export default function Dashboard() {
   const { t } = useLingui();
   const router = useRouter();
   const token = useToken();
+  const canCreate = useIsAdmin(token) === true; // only org admins create projects; the server checks too (TL-735)
   const [list, setList] = useCachedState<Project[]>('projects'); // last-seen list shows instantly, then refreshes
   const [failed, setFailed] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -57,7 +60,7 @@ export default function Dashboard() {
         <div className="flex items-center gap-2">
           <Link href="/roadmaps" className={buttonVariants({ variant: 'ghost' })}><Trans>Roadmaps</Trans></Link>
           <Link href="/settings" className={buttonVariants({ variant: 'ghost' })}><Trans>Settings</Trans></Link>
-          <Button data-guide="new-project" onClick={() => setCreating(true)} disabled={!token}><PlusIcon /><Trans>New project</Trans></Button>
+          {canCreate && <Button data-guide="new-project" onClick={() => setCreating(true)}><PlusIcon /><Trans>New project</Trans></Button>}
         </div>
       </header>
       {token && <DashboardWork token={token} />}
@@ -66,12 +69,7 @@ export default function Dashboard() {
           {[0, 1, 2].map((i) => <Skeleton key={i} className="h-44 rounded-xl" />)}
         </Loading>
       ) : list.length === 0 ? (
-        <div className="rounded-xl border border-dashed p-10 text-center">
-          <FolderKanbanIcon className="mx-auto size-10 text-muted-foreground" aria-hidden />
-          <h2 className="mt-4 text-lg font-semibold"><Trans>Start your first project</Trans></h2>
-          <p className="mx-auto mt-1 mb-6 max-w-md text-sm text-muted-foreground"><Trans>A project holds a board for each team, a shared backlog, and the roadmaps you send to customers.</Trans></p>
-          <Button onClick={() => setCreating(true)} disabled={!token}><Trans>Create a project</Trans></Button>
-        </div>
+        <NoProjects onCreate={canCreate ? () => setCreating(true) : null} />
       ) : (
         <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {list.map((p) => <ProjectCard key={p.id} project={p} />)}
