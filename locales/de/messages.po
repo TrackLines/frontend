@@ -767,7 +767,7 @@ msgstr "Ein verknüpftes Epic zählt seine Untertickets mit, auch später hinzug
 msgid "A page in the app, starting with /. [project] and [board] are the reader’s current one."
 msgstr "Eine Seite in der App, beginnend mit /. [project] und [board] sind die aktuellen der Lesenden."
 
-#: app/dashboard/page.tsx
+#: components/project/no-projects.tsx
 msgid "A project holds a board for each team, a shared backlog, and the roadmaps you send to customers."
 msgstr "Ein Projekt enthält ein Board pro Team, ein gemeinsames Backlog und die Roadmaps, die du an Kunden schickst."
 
@@ -3043,8 +3043,8 @@ msgstr "Gezählt in Schätzpunkten."
 msgid "Counted in tickets. Pick an estimate scale in Edit board to count points."
 msgstr "Gezählt in Tickets. Wähle unter „Board bearbeiten“ eine Schätzskala, um Punkte zu zählen."
 
-#: app/dashboard/page.tsx
 #: components/onboarding/guide.tsx
+#: components/project/no-projects.tsx
 msgid "Create a project"
 msgstr "Ein Projekt erstellen"
 
@@ -5845,6 +5845,10 @@ msgstr "Keine zahlenden Organisationen für eine Gutschrift."
 msgid "No personal keys yet."
 msgstr "Noch keine persönlichen Schlüssel."
 
+#: components/project/no-projects.tsx
+msgid "No projects yet"
+msgstr "Noch keine Projekte"
+
 #: components/project/repositories.tsx
 msgid "No repositories linked yet."
 msgstr "Noch keine Repositories verknüpft."
@@ -8273,7 +8277,7 @@ msgstr "Den nächsten starten"
 msgid "Start with"
 msgstr "Beginne mit"
 
-#: app/dashboard/page.tsx
+#: components/project/no-projects.tsx
 msgid "Start your first project"
 msgstr "Starte dein erstes Projekt"
 
@@ -9984,6 +9988,10 @@ msgstr "Deine Organisation hat bereits ein Abo — nutze „Abrechnung verwalten
 #: components/billing/upgrade-dialog.tsx
 msgid "Your organization’s {name} plan includes {projects}"
 msgstr "Der {name}-Tarif deiner Organisation enthält {projects}"
+
+#: components/project/no-projects.tsx
+msgid "Your organization’s admins can create projects. They’ll appear here."
+msgstr "Die Admins deiner Organisation können Projekte erstellen. Sie erscheinen dann hier."
 
 #: app/settings/page.tsx
 msgid "Your organization’s plan, people and connections."

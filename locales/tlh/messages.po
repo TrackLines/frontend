@@ -767,7 +767,7 @@ msgstr "lut'a' rarbogh ticket puqmey toghlu', ret chellu'bogh je."
 msgid "A page in the app, starting with /. [project] and [board] are the reader’s current one."
 msgstr "app ruch, / wa'DIch. [project] [board] je: laDwI' Daq DaH."
 
-#: app/dashboard/page.tsx
+#: components/project/no-projects.tsx
 msgid "A project holds a board for each team, a shared backlog, and the roadmaps you send to customers."
 msgstr "jInmol ngaS: wa' 'echlet Hoch beqvaD, backlog ghom, He navmey DevaDvaD DangeHbogh je."
 
@@ -3043,8 +3043,8 @@ msgstr "pIHghach pointmey toghlu'."
 msgid "Counted in tickets. Pick an estimate scale in Edit board to count points."
 msgstr "ticketmey toghlu'. pointmey DatoghmeH 'echlet yIchoHDaq pIHmeH juvwI' yIwIv."
 
-#: app/dashboard/page.tsx
 #: components/onboarding/guide.tsx
+#: components/project/no-projects.tsx
 msgid "Create a project"
 msgstr "jInmol yIchenmoH"
 
@@ -5845,6 +5845,10 @@ msgstr "DIchmeH ghom'a'mey DIlwI' tu'lu'be'."
 msgid "No personal keys yet."
 msgstr "ngaQHa'moHwI'mey nIteb tu'lu'be' DaH."
 
+#: components/project/no-projects.tsx
+msgid "No projects yet"
+msgstr "pagh jInmol"
+
 #: components/project/repositories.tsx
 msgid "No repositories linked yet."
 msgstr "repositorymey rarlu'pu'bogh tu'lu'be' DaH."
@@ -8273,7 +8277,7 @@ msgstr "veb yItagh"
 msgid "Start with"
 msgstr "taghmeH yIwIv"
 
-#: app/dashboard/page.tsx
+#: components/project/no-projects.tsx
 msgid "Start your first project"
 msgstr "jInmol wa'DIchlIj yItagh"
 
@@ -9984,6 +9988,10 @@ msgstr "ghom'a'lIj nab ghaj — nab DachoHmeH Huch yIloH yIlo'."
 #: components/billing/upgrade-dialog.tsx
 msgid "Your organization’s {name} plan includes {projects}"
 msgstr "ghom'a'lIj {name} nab ngaS {projects}"
+
+#: components/project/no-projects.tsx
+msgid "Your organization’s admins can create projects. They’ll appear here."
+msgstr "jInmolmey chenmoH DevwI'pu'. naDev Dalegh."
 
 #: app/settings/page.tsx
 msgid "Your organization’s plan, people and connections."
