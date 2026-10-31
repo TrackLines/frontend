@@ -130,10 +130,7 @@ export function RefinementMode({ projectId, boards, token, onClose, version = 0,
             {tickets.length > 0 && targets.length === 0 && <p className="text-sm text-muted-foreground"><Trans>Plan a sprint on a board to start adding tickets.</Trans></p>}
             <ul className="grid gap-2">
               {tickets.map((tk) => (
-                <li key={tk.id} className="flex flex-wrap items-center gap-2 rounded-lg border p-3 text-sm">
-                  <TypeBadge type={tk.type} />
-                  <TicketKey value={tk.key} copy />
-                  <TicketTitle ticket={tk} onOpen={onOpen && (() => onOpen(tk as unknown as Ticket, 'none'))} className="font-medium" />
+                <RefinementTicketCard key={tk.id} ticket={tk} onOpen={onOpen && (() => onOpen(tk as unknown as Ticket, 'none'))}>
                   {targets.map(({ board, plan }) => (
                     <Button key={plan.id} size="sm" variant="outline" disabled={busy}
                       onClick={() => act(() => plannedSprints.planTicket(tk.id, plan.id, token), t`Couldn’t plan “${tk.title}”. Please try again.`)}>
@@ -141,7 +138,7 @@ export function RefinementMode({ projectId, boards, token, onClose, version = 0,
                     </Button>
                   ))}
                   {ticketActions?.(tk)}
-                </li>
+                </RefinementTicketCard>
               ))}
             </ul>
           </div>
@@ -225,9 +222,7 @@ export function PlannedSprintCard({ plan, scale, canManage, busy, token, act, on
         : (
           <ul className="grid gap-2">
             {plan.tickets.map((tk) => (
-              <li key={tk.id} className="flex flex-wrap items-center gap-2">
-                <TicketKey value={tk.key} copy />
-                <TicketTitle ticket={tk} onOpen={onOpen && (() => onOpen(tk))} />
+              <RefinementTicketCard key={tk.id} ticket={tk} onOpen={onOpen && (() => onOpen(tk))}>
                 {scale !== 'none' && (
                   <div className="w-36">
                     <EstimateSelect scale={scale} value={tk.estimate ?? ''}
@@ -238,7 +233,7 @@ export function PlannedSprintCard({ plan, scale, canManage, busy, token, act, on
                   onClick={() => act(() => plannedSprints.planTicket(tk.id, null, token), t`Couldn’t move “${tk.title}” out. Please try again.`)}>
                   <Trans>Move out</Trans>
                 </Button>
-              </li>
+              </RefinementTicketCard>
             ))}
           </ul>
         )}
@@ -246,11 +241,29 @@ export function PlannedSprintCard({ plan, scale, canManage, busy, token, act, on
   );
 }
 
+// Keep metadata and actions off the title's line, including on narrow refinement panes.
+export function RefinementTicketCard({ ticket, onOpen, children }: {
+  ticket: { id: string; key?: string; title: string; type?: Ticket['type'] };
+  onOpen?: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <li className="grid min-w-0 gap-3 rounded-lg border p-3 text-sm">
+      <div className="flex flex-wrap items-center gap-2">
+        {ticket.type && <TypeBadge type={ticket.type} />}
+        <TicketKey value={ticket.key} copy />
+      </div>
+      <TicketTitle ticket={ticket} onOpen={onOpen} className="font-medium" />
+      <div className="flex flex-wrap items-center gap-2">{children}</div>
+    </li>
+  );
+}
+
 // TicketTitle opens the ticket's editor in place when it can (so refine mode stays open), else links to it.
 function TicketTitle({ ticket, onOpen, className = '' }: { ticket: { id: string; key?: string; title: string }; onOpen?: () => void; className?: string }) {
   return onOpen
-    ? <Button type="button" variant="link" onClick={onOpen} className={`h-auto min-w-0 flex-1 basis-48 justify-start p-0 text-left whitespace-normal wrap-anywhere text-foreground ${className}`}>{ticket.title}</Button>
-    : <Link href={ticketPath(ticket)} className={`min-w-0 flex-1 basis-48 wrap-anywhere hover:underline ${className}`}>{ticket.title}</Link>;
+    ? <Button type="button" variant="link" onClick={onOpen} className={`h-auto min-w-0 w-full justify-start p-0 text-left whitespace-normal wrap-anywhere text-foreground ${className}`}>{ticket.title}</Button>
+    : <Link href={ticketPath(ticket)} className={`min-w-0 w-full wrap-anywhere hover:underline ${className}`}>{ticket.title}</Link>;
 }
 
 // PlannedGoal edits a planned sprint's goal in place: saved when the field loses focus or on Enter.
