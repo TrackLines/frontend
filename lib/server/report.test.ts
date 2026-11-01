@@ -102,3 +102,8 @@ test('missing files get the global 404, which skips the root layout and its Cler
     expect(await Bun.file(new URL(`../../public/${icon}`, import.meta.url)).exists()).toBe(true);
   }
 });
+
+test('the Bugfixes SDK is one shared copy, so routes get the credentials instrumentation sets', async () => {
+  const { default: config } = await import('../../next.config');
+  expect(config.serverExternalPackages).toContain('bugfixes');
+});
