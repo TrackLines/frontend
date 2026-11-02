@@ -86,3 +86,10 @@ test('removing someone else’s file says who can, as keeping does (TL-659, sour
   const src = await Bun.file(new URL('./attachments.tsx', import.meta.url)).text();
   expect(src).toContain('err.status === 403 ? t`Only an organization admin or whoever uploaded it can remove this file.`');
 });
+
+test('a follower can look at a file but not remove or keep it', () => {
+  const html = renderToStaticMarkup(<AttachmentRow a={{ ...a, delete_on: '2026-11-14' }} locked={false} following={{ shown: false }} onRemove={() => {}} onKeep={() => {}} />);
+  expect(html).toContain('spec.pdf');
+  expect(html).toContain('Preview');
+  for (const never of ['>Remove<', '>Keep<']) expect(html).not.toContain(never);
+});

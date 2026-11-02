@@ -51,10 +51,11 @@ test('followers can stop following and come back, and leave', () => {
   expect(bar('follower')).toContain('>Leave refinement<');
 });
 
-test('the host’s ticket opens read-only for followers: no edit, comments or attachments', () => {
+test('the host’s ticket opens read-only for followers: nothing to edit or post', () => {
   const known = { id: 't1', key: 'TL-1', column_id: 'c', position: 0, title: 'Fix login', description: 'details', created_by: 'x', column_name: 'In progress' };
   const html = renderToStaticMarkup(<FollowedTicket ticketId="t1" token="tok" known={known} onDismiss={() => {}} />);
   for (const s of ['Fix login', 'In progress', 'details']) expect(html).toContain(s);
-  for (const never of ['>Edit<', 'Conversation', 'Attachments', 'Add a comment']) expect(html).not.toContain(never);
+  for (const s of ['Conversation', 'Attachments']) expect(html).toContain(s); // they see what the host sees
+  for (const never of ['>Edit<', 'Add a comment', 'Post comment', 'Attach files']) expect(html).not.toContain(never);
   expect(renderToStaticMarkup(<FollowedTicket ticketId={null} token="tok" known={known} onDismiss={() => {}} />)).toBe('');
 });

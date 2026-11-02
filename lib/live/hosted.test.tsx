@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 import type { HostedSession } from '../api';
-import { applyHosted, followedFilters, followedTicket, refineLabel, roleIn } from './hosted';
+import { applyHosted, followedAttachment, followedFilters, followedTicket, refineLabel, roleIn } from './hosted';
 
 const session: HostedSession = { host: 'ava', startedAt: 1, focus: { ticketId: 't1', filters: { labels: ['ui'] } }, people: ['ava', 'bo'] };
 
@@ -34,4 +34,12 @@ test('followers who are following see the host’s ticket and filters; nobody el
 test('the Refine button: start one, or join the one running', () => {
   expect(refineLabel(null)).toBe('Refine');
   expect(refineLabel(session)).toBe('Join refinement');
+});
+
+test('a follower who is following gets the file the host is previewing', () => {
+  const open = { ...session, focus: { ticketId: 't1', attachmentId: 'a1' } };
+  expect(followedAttachment(open, 'follower', true)).toBe('a1');
+  expect(followedAttachment(open, 'follower', false)).toBeNull();
+  expect(followedAttachment(open, 'host', true)).toBeNull();
+  expect(followedAttachment(session, 'follower', true)).toBeNull();
 });

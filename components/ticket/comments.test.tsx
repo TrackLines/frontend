@@ -27,3 +27,9 @@ test('comment authors are named from the people list, not all "You"', () => {
   expect(html).toContain('>You<');
   expect(html).toContain('>Bo Jones<');
 });
+
+test('a follower reads the conversation with nothing to post', () => {
+  const html = renderToStaticMarkup(<TicketComments ticketId="t" token="tok" readOnly />);
+  expect(html).toContain('Conversation');
+  for (const never of ['Add a comment', 'Post comment']) expect(html).not.toContain(never);
+});

@@ -1,3 +1,4 @@
+import { createContext } from 'react';
 import type { BoardLiveEvent, HostedSession } from '../api';
 
 // Hosted sessions (TL-221): the rules, kept pure for tests. The hook (use-hosted) and the bar
@@ -24,6 +25,19 @@ export function applyHosted(session: HostedSession | null, event: BoardLiveEvent
 export function followedTicket(session: HostedSession | null, role: HostedRole, following: boolean): string | null {
   return role === 'follower' && following ? session?.focus.ticketId ?? null : null;
 }
+
+// followedAttachment: the file the host is previewing, for a follower who's following.
+export function followedAttachment(session: HostedSession | null, role: HostedRole, following: boolean): string | null {
+  return role === 'follower' && following ? session?.focus.attachmentId ?? null : null;
+}
+
+// HostPreview: while hosting, tells the session which file the host is previewing, however deep the
+// list of files is. Null for everyone else.
+export const HostPreview = createContext<((attachmentId: string | null) => void) | null>(null);
+
+// FOLLOW_REFRESH_MS: how often a follower re-reads the ticket, its comments and files. Nothing announces
+// a new comment, and anyone can write one. ponytail: polling, publish comment events if 10s feels slow.
+export const FOLLOW_REFRESH_MS = 10_000;
 
 // followedFilters: the host's board filters, for a follower who's following; null means use your own.
 export function followedFilters(session: HostedSession | null, role: HostedRole, following: boolean): Record<string, string[]> | null {

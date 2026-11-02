@@ -414,7 +414,7 @@ export const boards = {
 
 // Hosted sessions (TL-221): someone hosts a refinement (per project) or standup (per board); others
 // join and follow what the host has open.
-export type HostedFocus = { ticketId: string | null; filters?: Record<string, string[]> };
+export type HostedFocus = { ticketId: string | null; attachmentId?: string | null; filters?: Record<string, string[]> };
 export type HostedSession = { host: string; startedAt: number; focus: HostedFocus; people: string[] };
 export type HostedPaths = { kind: 'refinement' | 'standup'; stream: string; session: string; start?: string; end?: string; base: string };
 export const hostedPaths = {
