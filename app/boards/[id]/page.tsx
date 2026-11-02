@@ -21,7 +21,7 @@ import { EllipsisIcon } from 'lucide-react';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { ApiError, boards, hostedPaths, organization, projects, teams, tickets, type Board, type EpicSummary, type Ticket } from '@/lib/api';
 import { FollowedTicket, HostedBar } from '@/components/live/hosted-bar';
-import { followedFilters, followedTicket } from '@/lib/live/hosted';
+import { followedAttachment, followedFilters, followedTicket, HostPreview } from '@/lib/live/hosted';
 import { useHosted } from '@/lib/hooks/use-hosted';
 import { usePeople } from '@/lib/hooks/use-people';
 import { unchanged } from '@/lib/api/unchanged';
@@ -77,14 +77,16 @@ export default function BoardPage() {
   const standupPaths = useMemo(() => hostedPaths.standup(id), [id]);
   const hostedStandup = useHosted(standupPaths, token);
   const [hostTicket, setHostTicket] = useState<string | null>(null); // the ticket the host has open
+  const [hostFile, setHostFile] = useState<string | null>(null); // and the file they're previewing
+  useEffect(() => setHostFile(null), [hostTicket]);
   useEffect(() => { if (joinedStandup) hostedStandup.joinStarted(); else hostedStandup.leave(); }, [joinedStandup]);
   const people = usePeople(token);
   // the host shares what they have open and how the board is filtered
   useEffect(() => {
     if (joinedStandup && hostedStandup.role === 'host') {
-      hostedStandup.focus({ ticketId: hostTicket, filters: { labels: labelFilter, priorities: priorityFilter, assignee: [assigneeFilter] } });
+      hostedStandup.focus({ ticketId: hostTicket, attachmentId: hostTicket ? hostFile : null, filters: { labels: labelFilter, priorities: priorityFilter, assignee: [assigneeFilter] } });
     }
-  }, [joinedStandup, hostedStandup.role, hostTicket, labelFilter.join(','), priorityFilter.join(','), assigneeFilter]);
+  }, [joinedStandup, hostedStandup.role, hostTicket, hostFile, labelFilter.join(','), priorityFilter.join(','), assigneeFilter]);
   const [startingStandup, setStartingStandup] = useState(false);
   const [standupError, setStandupError] = useState('');
 
@@ -245,7 +247,7 @@ export default function BoardPage() {
         </p>
       )}
       {joinedStandup && (
-        <FollowedTicket ticketId={followedTicket(hostedStandup.session, hostedStandup.role, hostedStandup.following)} token={token}
+        <FollowedTicket ticketId={followedTicket(hostedStandup.session, hostedStandup.role, hostedStandup.following)} attachmentId={followedAttachment(hostedStandup.session, hostedStandup.role, hostedStandup.following)} token={token}
           known={followedOnBoard} onDismiss={() => hostedStandup.setFollowing(false)} />
       )}
       {/* sprint start/close changes which tickets the board shows, so reload */}
@@ -302,6 +304,7 @@ export default function BoardPage() {
                 <DroppableColumn id={col.id} ticketIds={shown.map((tk) => tk.id)}>
                   {shown.map((tk) => (
                     <SortableTicket key={tk.id} id={tk.id} disabled={archived}>
+                      <HostPreview.Provider value={joinedStandup && hostedStandup.role === 'host' ? setHostFile : null}>
                       <TicketCard
                         ticket={tk}
                         openOnLoad={tk.id === focus ? { columnName: col.name } : undefined}
@@ -315,6 +318,7 @@ export default function BoardPage() {
                         onDeleted={(tid) => updateTickets(col.id, (ts) => ts.filter((x) => x.id !== tid))}
                         onViewChange={(open) => setHostTicket((current) => (open ? tk.id : current === tk.id ? null : current))}
                       />
+                      </HostPreview.Provider>
                     </SortableTicket>
                   ))}
                 </DroppableColumn>

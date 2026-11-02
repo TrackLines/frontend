@@ -7,14 +7,17 @@ import { Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import type { Assignee, TicketComment } from '@/lib/api';
+import { useAutoRefresh } from '@/lib/hooks/use-auto-refresh';
 import { usePeople } from '@/lib/hooks/use-people';
+import { FOLLOW_REFRESH_MS } from '@/lib/live/hosted';
 import { ticketComments } from '@/lib/api';
 import { personLabel } from '@/lib/work/people';
 import { commentThread, type CommentNode } from './comment-thread';
 
 const maxLength = 10000;
 
-export function TicketComments({ ticketId, token }: { ticketId: string; token: string }) {
+// readOnly: a live session's follower: the conversation, kept current, with no way to add to it.
+export function TicketComments({ ticketId, token, readOnly = false }: { ticketId: string; token: string; readOnly?: boolean }) {
   const { t, i18n } = useLingui();
   const [comments, setComments] = useState<TicketComment[] | null>(null);
   const [loadFailed, setLoadFailed] = useState(false);
@@ -35,6 +38,7 @@ export function TicketComments({ ticketId, token }: { ticketId: string; token: s
     );
     return () => { current = false; };
   }, [ticketId, token, retry]);
+  useAutoRefresh(() => ticketComments.list(ticketId, token).then(setComments, () => {}), readOnly, FOLLOW_REFRESH_MS);
 
   async function post(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -70,9 +74,9 @@ export function TicketComments({ ticketId, token }: { ticketId: string; token: s
           </div>
         ) : <ListSkeleton rows={2} />
       ) : comments.length === 0 ? (
-        <p className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground"><Trans>No comments yet. Add the first update.</Trans></p>
+        <p className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">{readOnly ? <Trans>No comments yet.</Trans> : <Trans>No comments yet. Add the first update.</Trans>}</p>
       ) : (
-        <CommentList comments={comments} onReply={setReplyTo} people={people} />
+        <CommentList comments={comments} onReply={readOnly ? undefined : setReplyTo} people={people} />
       )}
 
       {replyTo && (
@@ -81,7 +85,7 @@ export function TicketComments({ ticketId, token }: { ticketId: string; token: s
           <Button type="button" variant="ghost" size="sm" onClick={() => setReplyTo(null)}><Trans>Cancel reply</Trans></Button>
         </div>
       )}
-      <form onSubmit={post} className="grid min-w-0 gap-2">
+      {!readOnly && <form onSubmit={post} className="grid min-w-0 gap-2">
         <label htmlFor={`comment-${ticketId}`} className="text-sm font-medium">{replyTo ? <Trans>Your reply</Trans> : <Trans>Add a comment</Trans>}</label>
         <MarkdownTextarea
           id={`comment-${ticketId}`}
@@ -97,7 +101,7 @@ export function TicketComments({ ticketId, token }: { ticketId: string; token: s
           <span className="text-xs text-muted-foreground">{body.length}/{maxLength}</span>
           <Button type="submit" size="sm" disabled={posting || comments === null || !body.trim()}>{posting ? <Trans>Posting…</Trans> : replyTo ? <Trans>Post reply</Trans> : <Trans>Post comment</Trans>}</Button>
         </div>
-      </form>
+      </form>}
     </section>
   );
 }

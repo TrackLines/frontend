@@ -8,8 +8,9 @@ import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, Dr
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useAutoRefresh } from '@/lib/hooks/use-auto-refresh';
 import { tickets, type Assignee, type HostedSession, type Ticket, type TicketDetail } from '@/lib/api';
-import type { HostedRole } from '@/lib/live/hosted';
+import { FOLLOW_REFRESH_MS, type HostedRole } from '@/lib/live/hosted';
 import { personLabel } from '@/lib/work/people';
 
 type BarProps = {
@@ -123,8 +124,9 @@ export function HostedActions({ role, following, onFollow, onLeave, onEnd, noun 
 }
 
 // FollowedTicket: the ticket the host has open, read-only on a follower's screen; it closes when the
-// host closes theirs. known: the ticket if the page already has it (a board), else it's fetched.
-export function FollowedTicket({ ticketId, token, known, onDismiss }: { ticketId: string | null; token: string; known?: Ticket & { column_name?: string | null }; onDismiss: () => void }) {
+// host closes theirs, with its comments and files, and the file the host is previewing (attachmentId)
+// opens too. known: the ticket if the page already has it (a board), else it's fetched and kept current.
+export function FollowedTicket({ ticketId, attachmentId = null, token, known, onDismiss }: { ticketId: string | null; attachmentId?: string | null; token: string; known?: Ticket & { column_name?: string | null }; onDismiss: () => void }) {
   const { t } = useLingui();
   const [ticket, setTicket] = useState<(Ticket & { column_name?: string | null }) | null>(known ?? null);
   useEffect(() => {
@@ -134,6 +136,9 @@ export function FollowedTicket({ ticketId, token, known, onDismiss }: { ticketId
     tickets.get(ticketId, token).then((tk: TicketDetail) => { if (live) setTicket(tk as unknown as Ticket & { column_name?: string | null }); }, () => {});
     return () => { live = false; };
   }, [ticketId, known?.id]);
+  useAutoRefresh(() => {
+    if (ticketId) void tickets.get(ticketId, token).then((tk: TicketDetail) => setTicket((current) => current?.id === tk.id ? tk as unknown as Ticket & { column_name?: string | null } : current), () => {});
+  }, !!ticketId && !known, FOLLOW_REFRESH_MS);
   if (!ticketId || !ticket || ticket.id !== ticketId) return null;
-  return <TicketView open onOpenChange={(o) => { if (!o) onDismiss(); }} ticket={ticket} columnName={ticket.column_name ?? t`Backlog`} />;
+  return <TicketView key={ticket.id} open onOpenChange={(o) => { if (!o) onDismiss(); }} ticket={ticket} columnName={ticket.column_name ?? t`Backlog`} token={token} following={{ shown: attachmentId }} />;
 }

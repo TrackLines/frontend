@@ -38,9 +38,10 @@ type Props = {
   onReviewed?: () => void; // enables Approve / Send back on a ticket waiting for review
   sample?: ReactNode; // landing page: static stand-ins for the live sections; no copy link
   onDescription?: (next: string) => void; // checklist ticks save the details; absent: read-only
+  following?: { shown: string | null }; // a live session's follower: everything to see, nothing to change; shown is the host's open file
 };
 
-export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, token, done, onReviewed, sample, onDescription }: Props) {
+export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, token, done, onReviewed, sample, onDescription, following }: Props) {
   const { t, i18n } = useLingui();
   const people = usePeople(token);
   // the board only knows "blocked": the parent and what blocks it come with the ticket itself (TL-639)
@@ -98,9 +99,9 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
           )}
         </section>
         {open && token && <BugfixesPanel ticket={ticket} token={token} />}
-        {open && token && <Attachments ticketId={ticket.id} token={token} locked={done} />}
+        {open && token && <Attachments ticketId={ticket.id} token={token} locked={done} following={following} />}
         {open && token && <PullRequestsPanel ticketId={ticket.id} token={token} />}
-        {open && token && <TicketComments ticketId={ticket.id} token={token} />}
+        {open && token && <TicketComments ticketId={ticket.id} token={token} readOnly={!!following} />}
         {sample}
         <DialogFooter>
           {!sample && (

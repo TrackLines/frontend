@@ -5724,6 +5724,10 @@ msgid "No closed tickets in the backlog."
 msgstr "Aucun ticket fermé dans le backlog."
 
 #: components/ticket/comments.tsx
+msgid "No comments yet."
+msgstr "Aucun commentaire pour le moment."
+
+#: components/ticket/comments.tsx
 msgid "No comments yet. Add the first update."
 msgstr "Aucun commentaire pour le moment. Ajoutez la première mise à jour."
 

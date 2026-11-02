@@ -21,7 +21,7 @@ import { TICKET_DIALOG_WIDTH, TicketDialog } from '@/components/board/ticket-dia
 import { EstimateSelect } from '@/components/board/estimate';
 import { RefinementMode } from '@/components/project/refinement';
 import { FollowedTicket, HostedBar } from '@/components/live/hosted-bar';
-import { followedTicket, refineLabel } from '@/lib/live/hosted';
+import { followedAttachment, followedTicket, HostPreview, refineLabel } from '@/lib/live/hosted';
 import { useHosted } from '@/lib/hooks/use-hosted';
 import { usePeople } from '@/lib/hooks/use-people';
 import type { EstimateScale } from '@/lib/board/estimates';
@@ -84,7 +84,9 @@ export function Backlog({ projectId, boards, token }: Props) {
   // planning is for org admins and the sprint boards' team leaders (TL-241); anyone can join to watch
   const [role, setRole] = useState<OrganizationRole | null>(null);
   useEffect(() => { organization.me(token).then(setRole, () => setRole(null)); }, [projectId]); // token refreshes must not refetch
-  useEffect(() => { if (refining && hosting) session.focus({ ticketId: editing?.id ?? null }); }, [editing?.id, refining, hosting]);
+  const [hostFile, setHostFile] = useState<string | null>(null); // the file the host is previewing
+  useEffect(() => setHostFile(null), [editing?.id]);
+  useEffect(() => { if (refining && hosting) session.focus({ ticketId: editing?.id ?? null, attachmentId: editing ? hostFile : null }); }, [editing?.id, hostFile, refining, hosting]);
   async function refine() {
     setError('');
     try {
@@ -223,7 +225,7 @@ export function Backlog({ projectId, boards, token }: Props) {
           </div>
         )}
       </div>
-      {refining && <FollowedTicket ticketId={followedTicket(session.session, session.role, session.following)} token={token} onDismiss={() => session.setFollowing(false)} />}
+      {refining && <FollowedTicket ticketId={followedTicket(session.session, session.role, session.following)} attachmentId={followedAttachment(session.session, session.role, session.following)} token={token} onDismiss={() => session.setFollowing(false)} />}
       {refining ? (
         <RefinementMode
           projectId={projectId} boards={boards} token={token} version={changes}
@@ -310,6 +312,7 @@ export function Backlog({ projectId, boards, token }: Props) {
       )}
       {editing && (
         // same dialog as on boards; backlog tickets have no column, which only matters when creating
+        <HostPreview.Provider value={refining && hosting ? setHostFile : null}>
         <TicketDialog
           open
           onOpenChange={(o) => !o && setEditing(null)}
@@ -324,6 +327,7 @@ export function Backlog({ projectId, boards, token }: Props) {
           // Move to board without a refinement session (TL-464), for the people who can refine
           move={canMoveToBoard(role, boards) ? { boards, onMoved: (id, planned) => { if (!planned) drop(id); void load(); } } : undefined}
         />
+        </HostPreview.Provider>
       )}
       <AddDialog
         open={adding}

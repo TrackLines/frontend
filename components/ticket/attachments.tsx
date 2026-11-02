@@ -4,12 +4,14 @@ import { ListSkeleton } from '@/components/layout/page-skeletons';
 import { Dialog as DialogPrimitive } from '@base-ui/react/dialog';
 import { DownloadIcon, EyeIcon, PaperclipIcon, XIcon } from 'lucide-react';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogOverlay, DialogPortal, DialogTitle } from '@/components/ui/dialog';
 import { ApiError, attachments, type Assignee, type Attachment } from '@/lib/api';
 import { personLabel } from '@/lib/work/people';
+import { useAutoRefresh } from '@/lib/hooks/use-auto-refresh';
 import { usePeople } from '@/lib/hooks/use-people';
+import { FOLLOW_REFRESH_MS, HostPreview } from '@/lib/live/hosted';
 import { dates } from '@/lib/i18n';
 import { AttachFilesButton } from './attach-files-button';
 
@@ -21,7 +23,8 @@ export function formatSize(bytes: number): string {
 
 // Attachments: list a ticket's files, upload more (browser → UploadThing), remove them.
 // locked: the ticket is done — files can be viewed but not added/removed until it leaves Done.
-export function Attachments({ ticketId, token, locked = false }: { ticketId: string; token: string; locked?: boolean }) {
+// following: a live session's follower: files only to look at, kept current, and the host's preview (shown) opens by itself.
+export function Attachments({ ticketId, token, locked = false, following }: { ticketId: string; token: string; locked?: boolean; following?: { shown: string | null } }) {
   const { t } = useLingui();
   const [list, setList] = useState<Attachment[] | null>(null);
   const [error, setError] = useState('');
@@ -29,7 +32,8 @@ export function Attachments({ ticketId, token, locked = false }: { ticketId: str
 
   useEffect(() => {
     attachments.list(ticketId, token).then(setList, () => setError(t`Couldn’t load attachments.`));
-  }, [ticketId]); // token refreshes must not refetch
+  }, [ticketId, following?.shown]); // token refreshes must not refetch; a file the host just added may be what they opened
+  useAutoRefresh(() => attachments.list(ticketId, token).then(setList, () => {}), !!following, FOLLOW_REFRESH_MS);
 
   async function keep(a: Attachment) {
     setError('');
@@ -59,7 +63,7 @@ export function Attachments({ ticketId, token, locked = false }: { ticketId: str
         <h2 id={`attachments-${ticketId}`} className="flex items-center gap-1.5 text-sm font-semibold">
           <PaperclipIcon className="size-4" aria-hidden /> {list ? <Trans>Attachments ({list.length})</Trans> : <Trans>Attachments</Trans>}
         </h2>
-        {!locked && (
+        {!locked && !following && (
           <AttachFilesButton
             target={{ ticketId }}
             existing={list?.length ?? 0}
@@ -79,7 +83,7 @@ export function Attachments({ ticketId, token, locked = false }: { ticketId: str
           />
         )}
       </div>
-      {locked && <p className="text-sm text-muted-foreground"><Trans>This ticket is done — move it out of Done to add or remove files.</Trans></p>}
+      {locked && !following && <p className="text-sm text-muted-foreground"><Trans>This ticket is done — move it out of Done to add or remove files.</Trans></p>}
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       {list === null ? (
         !error && <ListSkeleton rows={1} />
@@ -87,7 +91,7 @@ export function Attachments({ ticketId, token, locked = false }: { ticketId: str
         <p className="text-sm text-muted-foreground"><Trans>No files attached.</Trans></p>
       ) : (
         <ul className="divide-y rounded-lg border">
-          {list.map((a) => <AttachmentRow key={a.id} a={a} people={people} locked={locked} onRemove={() => remove(a)} onKeep={() => keep(a)} />)}
+          {list.map((a) => <AttachmentRow key={a.id} a={a} people={people} locked={locked} following={following && { shown: following.shown === a.id }} onRemove={() => remove(a)} onKeep={() => keep(a)} />)}
         </ul>
       )}
     </section>
@@ -169,10 +173,14 @@ function PreviewDialog({ a, kind, open, onOpenChange }: { a: Attachment; kind: N
 // AttachmentRow: one file; a year-old one says when it goes and can be kept another year (TL-259).
 // Keep shows even when the ticket is done: keeping changes nothing on the ticket (pure, for tests).
 // Images, PDFs and media open in a preview modal (TL-516); everything else gets a download button.
-export function AttachmentRow({ a, people = null, locked, onRemove, onKeep }: { a: Attachment; people?: Assignee[] | null; locked: boolean; onRemove: () => void; onKeep: () => void }) {
+export function AttachmentRow({ a, people = null, locked, following, onRemove, onKeep }: { a: Attachment; people?: Assignee[] | null; locked: boolean; following?: { shown: boolean }; onRemove: () => void; onKeep: () => void }) {
   const { t, i18n } = useLingui();
   const kind = previewKind(a.content_type);
-  const [previewing, setPreviewing] = useState(false);
+  const [previewing, setPreviewing] = useState(following?.shown ?? false);
+  const hostPreview = useContext(HostPreview);
+  // a follower's follows the host, and they can still close their own
+  useEffect(() => { if (following) setPreviewing(following.shown); }, [following?.shown]);
+  const preview = (open: boolean) => { setPreviewing(open); hostPreview?.(open ? a.id : null); };
   const name = a.name;
   const due = a.delete_on && dates(i18n, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${a.delete_on}T00:00:00Z`));
   return (
@@ -183,17 +191,17 @@ export function AttachmentRow({ a, people = null, locked, onRemove, onKeep }: { 
         {a.delete_on && (
           <span className="flex items-center gap-2 text-amber-700 dark:text-amber-400">
             <Trans>Deleted on {due} unless kept</Trans>
-            <Button size="sm" variant="outline" onClick={onKeep} title={t`Keep it for another year`}><Trans>Keep</Trans></Button>
+            {!following && <Button size="sm" variant="outline" onClick={onKeep} title={t`Keep it for another year`}><Trans>Keep</Trans></Button>}
           </span>
         )}
         {kind ? (
-          <Button size="icon-sm" variant="ghost" aria-label={t`Preview ${name}`} title={t`Preview`} onClick={() => setPreviewing(true)}><EyeIcon aria-hidden /></Button>
+          <Button size="icon-sm" variant="ghost" aria-label={t`Preview ${name}`} title={t`Preview`} onClick={() => preview(true)}><EyeIcon aria-hidden /></Button>
         ) : (
           <Button size="icon-sm" variant="ghost" aria-label={t`Download ${name}`} title={t`Download`} onClick={() => void downloadAttachment(a)}><DownloadIcon aria-hidden /></Button>
         )}
-        {!locked && <Button size="sm" variant="ghost" className="text-destructive" onClick={onRemove}><Trans>Remove</Trans></Button>}
+        {!locked && !following && <Button size="sm" variant="ghost" className="text-destructive" onClick={onRemove}><Trans>Remove</Trans></Button>}
       </div>
-      {kind && <PreviewDialog a={a} kind={kind} open={previewing} onOpenChange={setPreviewing} />}
+      {kind && <PreviewDialog a={a} kind={kind} open={previewing} onOpenChange={preview} />}
     </li>
   );
 }
