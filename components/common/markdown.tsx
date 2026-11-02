@@ -85,7 +85,7 @@ export function MarkdownPreview({ text }: { text: string }) {
   const { t } = useLingui();
   if (!looksLikeMarkdown(text)) return null;
   return (
-    <div aria-label={t`Preview`} className="grid gap-1 rounded-lg border border-dashed p-3 text-sm font-normal">
+    <div aria-label={t`Preview`} className="grid min-w-0 grid-cols-1 gap-1 rounded-lg border border-dashed p-3 text-sm font-normal">
       <span className="text-xs text-muted-foreground"><Trans>Preview</Trans></span>
       <Markdown>{text}</Markdown>
     </div>

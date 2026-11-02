@@ -216,8 +216,8 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       {/* default shadcn width (sm:max-w-sm) is too narrow for this form + 4 footer actions */}
-      <DialogContent className={`max-h-[90vh] overflow-y-auto ${TICKET_DIALOG_WIDTH}`}>
-        <DialogHeader>
+      <DialogContent className={`max-h-[90vh] overflow-y-auto p-6 sm:p-8 ${TICKET_DIALOG_WIDTH}`}>
+        <DialogHeader className="pr-8">
           <DialogTitle>{editing ? t`Edit ticket` : t`Add a ticket`}</DialogTitle>
           <DialogDescription className="flex flex-wrap items-center gap-2"><TicketKey value={ticket?.key} copy /><Trans>Give the work a clear title. Details are optional.</Trans></DialogDescription>
           {parent && (
@@ -226,14 +226,14 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
             </p>
           )}
         </DialogHeader>
-        <form onSubmit={save} className="grid gap-4">
+        <form onSubmit={save} className="grid min-w-0 grid-cols-1 gap-6">
           <label className="grid gap-1.5 text-sm font-medium">
             <Trans>Title</Trans>
             <Input ref={titleInput} autoFocus value={title} maxLength={200} aria-required="true" aria-invalid={missing.title || undefined} aria-describedby={missing.title ? 'ticket-title-error' : undefined} placeholder={t`What needs to be done?`} onChange={(event) => { setTitle(event.target.value); if (event.target.value.trim()) setMissing((current) => ({ ...current, title: false })); }} />
             {missing.title && <span id="ticket-title-error" className="text-xs font-normal text-destructive"><Trans>Enter a title.</Trans></span>}
           </label>
           <SimilarTickets suggestions={duplicateSuggestions} description={description} />
-          <label className="grid gap-1.5 text-sm font-medium">
+          <label className="grid min-w-0 grid-cols-1 gap-1.5 text-sm font-medium">
             <span><Trans>Details <span className="font-normal text-muted-foreground">(optional, Markdown supported)</span></Trans></span>
             <MarkdownTextarea
               value={description}
@@ -335,7 +335,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
           {editing && onSentToBacklog && subs.length > 0 && !confirmDelete && wontDo === null && (
             <p role="note" className="text-xs text-muted-foreground">{alsoMovesNote(subs, i18n)}</p>
           )}
-          <DialogFooter className="sm:flex-wrap">
+          <DialogFooter className="-mx-6 -mb-6 p-6 sm:-mx-8 sm:-mb-8 sm:flex-wrap sm:p-8">
             {editing && !confirmDelete && wontDo === null && !moving && (
               <div className="flex gap-2 sm:mr-auto">
                 {onDeleted && <Button type="button" variant="destructive" disabled={saving} onClick={() => setConfirmDelete(true)}><Trans>Delete</Trans></Button>}
