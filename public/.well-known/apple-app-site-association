@@ -1,0 +1,13 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["RM96X7JX9K.es.tracklin.ios"],
+        "components": [
+          { "/": "/tickets/*" },
+          { "/": "/boards/*" }
+        ]
+      }
+    ]
+  }
+}
