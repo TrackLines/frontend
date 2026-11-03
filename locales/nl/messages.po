@@ -751,6 +751,10 @@ msgstr "Een afgerond ticket kan geen nieuwe subtickets krijgen; haal het eerst u
 msgid "a duplicate ticket is already closed"
 msgstr "Een duplicaatticket is al gesloten."
 
+#: components/billing/launch-offer.tsx
+msgid "A free year of Pro"
+msgstr "Een gratis jaar Pro"
+
 #: components/settings/embedding.tsx
 msgid "A key labels an embed so you can see how often it’s used and on which sites. Add it to the snippet as<0>data-key</0>. It isn’t a secret and doesn’t grant access — a site still has to be in the allowed list above."
 msgstr "Een key labelt een embed, zodat je ziet hoe vaak hij wordt gebruikt en op welke sites. Voeg hem toe aan het snippet als<0>data-key</0>. Hij is niet geheim en geeft geen toegang — een site moet nog steeds in de lijst met toegestane sites hierboven staan."
@@ -880,6 +884,10 @@ msgstr "“{title}” als niet-toegewezen feature aan de backlog toevoegen?"
 #: components/ticket/dependencies.tsx
 msgid "Add a blocker…"
 msgstr "Blokkade toevoegen…"
+
+#: components/billing/launch-offer.tsx
+msgid "Add a card to keep Pro"
+msgstr "Voeg een kaart toe om Pro te houden"
 
 #: components/ticket/comments.tsx
 msgid "Add a comment"
@@ -1350,6 +1358,10 @@ msgstr "Gearchiveerde borden →"
 #: lib/org/audit.ts
 msgid "Archived the board {name}"
 msgstr "Bord {name} gearchiveerd"
+
+#: components/billing/launch-offer.tsx
+msgid "Ask an organization admin to claim it."
+msgstr "Vraag een organisatiebeheerder om het te claimen."
 
 #: components/billing/plan-card.tsx
 #: components/billing/upgrade-dialog.tsx
@@ -1907,6 +1919,10 @@ msgstr "Kies een organisatie om de leden en teams te beheren."
 msgid "Choose appearance"
 msgstr "Weergave kiezen"
 
+#: lib/api/error-codes.ts
+msgid "choose between 1 and 500 organizations"
+msgstr "kies tussen 1 en 500 organisaties"
+
 #: app/settings/organization/page.tsx
 msgid "Choose project"
 msgstr "Project kiezen"
@@ -1922,6 +1938,14 @@ msgstr "Kies het oorspronkelijke ticket in dit project. Dit ticket wordt geslote
 #: components/board/epic-filter.tsx
 msgid "chosen"
 msgstr "gekozen"
+
+#: components/billing/launch-offer.tsx
+msgid "Claim a free year of Pro"
+msgstr "Claim een gratis jaar Pro"
+
+#: components/billing/launch-offer.tsx
+msgid "Claiming…"
+msgstr "Bezig met claimen…"
 
 #: components/work/notifications-bell.tsx
 msgid "Clear"
@@ -2507,6 +2531,10 @@ msgstr "Kon je Jira-koppeling niet controleren. Probeer het opnieuw."
 msgid "Couldn’t check your Linear connection. Please try again."
 msgstr "Kon je Linear-koppeling niet controleren. Probeer het opnieuw."
 
+#: components/billing/launch-offer.tsx
+msgid "Couldn’t claim the free year. Please try again."
+msgstr "Het gratis jaar kon niet worden geclaimd. Probeer het opnieuw."
+
 #: components/sprint/sprint-bar.tsx
 msgid "Couldn’t close the sprint. Please try again."
 msgstr "Kan de sprint niet afsluiten. Probeer het opnieuw."
@@ -2856,6 +2884,7 @@ msgstr "Kan de update niet plaatsen. Probeer het opnieuw."
 msgid "Couldn’t publish it. Please try again."
 msgstr "Kon hem niet publiceren. Probeer het opnieuw."
 
+#: components/billing/launch-offer.tsx
 #: components/billing/plan-card.tsx
 msgid "Couldn’t reach billing. Please try again."
 msgstr "Kan facturering niet bereiken. Probeer het opnieuw."
@@ -6408,6 +6437,10 @@ msgstr "Alleen beheerders van de organisatie kunnen het abonnement wijzigen."
 msgid "Only organization admins can change this."
 msgstr "Alleen beheerders van de organisatie kunnen dit wijzigen."
 
+#: components/billing/launch-offer.tsx
+msgid "Only organization admins can claim the free year."
+msgstr "Alleen organisatiebeheerders kunnen het gratis jaar claimen."
+
 #: components/intake/intake-settings.tsx
 msgid "Only organization admins can close the form or make a new link."
 msgstr "Alleen beheerders van de organisatie kunnen het formulier sluiten of een nieuwe link maken."
@@ -6994,6 +7027,10 @@ msgstr "Priority moet low, medium, high of urgent zijn."
 #: components/layout/site-footer.tsx
 msgid "Privacy"
 msgstr "Privacy"
+
+#: components/billing/launch-offer.tsx
+msgid "Pro is free until {until}. To keep Pro after that, add a card before then; otherwise your organization moves to Free. We’ll remind you 30 days and 7 days before."
+msgstr "Pro is gratis tot {until}. Voeg daarvoor een kaart toe om Pro daarna te houden; anders gaat je organisatie naar Free. We herinneren je 30 en 7 dagen van tevoren."
 
 #: components/roadmap/report.tsx
 msgid "Progress by item"
@@ -8691,6 +8728,14 @@ msgstr "Het formulier is gesloten."
 msgid "The form is closed. An organization admin can open it."
 msgstr "Het formulier is gesloten. Een organisatiebeheerder kan het openen."
 
+#: components/billing/launch-offer.tsx
+msgid "The free year isn’t available any more."
+msgstr "Het gratis jaar is niet meer beschikbaar."
+
+#: lib/api/error-codes.ts
+msgid "the free year isn't available to this organization"
+msgstr "het gratis jaar is niet beschikbaar voor deze organisatie"
+
 #: lib/api/error-codes.ts
 msgid "the Google Chat app isn't set up on this server"
 msgstr "De Google Chat-app is niet ingesteld op deze server."
@@ -8922,6 +8967,10 @@ msgstr "Dit maakt {0} projecten, {1} borden en {2} tickets, met {3} reacties."
 #: components/settings/csv-import.tsx
 msgid "This makes the project <0>{0}</0> ({1}) with {2} tickets, {3} boards and {4} columns."
 msgstr "Dit maakt het project <0>{0}</0> ({1}) met {2} tickets, {3} borden en {4} kolommen."
+
+#: lib/api/error-codes.ts
+msgid "this organization has already claimed its free year"
+msgstr "deze organisatie heeft haar gratis jaar al geclaimd"
 
 #: lib/api/error-codes.ts
 msgid "this outage has credits, so it stays on record"
@@ -9295,6 +9344,10 @@ msgstr "Uitschakelen"
 #: components/work/notifications-bell.tsx
 msgid "Turn on"
 msgstr "Inschakelen"
+
+#: lib/api/error-codes.ts
+msgid "turn on the launch-offer flag before sending the offer"
+msgstr "zet de launch-offer-flag aan voordat je het aanbod verstuurt"
 
 #: components/settings/webhooks.tsx
 msgid "Turned off after repeated failed deliveries. Fix the endpoint, then turn it back on."
@@ -9976,6 +10029,10 @@ msgstr "Je hebt het maximale aantal projecten van je abonnement bereikt"
 msgid "You’ve sent a few requests already. Please try again in an hour."
 msgstr "Je hebt al een paar aanvragen verstuurd. Probeer het over een uur opnieuw."
 
+#: components/billing/launch-offer.tsx
+msgid "Your free year of Pro"
+msgstr "Je gratis jaar Pro"
+
 #: components/settings/api-keys.tsx
 msgid "Your new key is already in these steps. Copy it now: it won't be shown again."
 msgstr "Je nieuwe sleutel staat al in deze stappen. Kopieer hem nu: hij wordt niet meer getoond."
@@ -9984,6 +10041,14 @@ msgstr "Je nieuwe sleutel staat al in deze stappen. Kopieer hem nu: hij wordt ni
 #: components/roadmap/visibility.tsx
 msgid "Your organization"
 msgstr "Je organisatie"
+
+#: components/billing/launch-offer.tsx
+msgid "Your organization has already claimed its free year, or it’s already on a paid plan."
+msgstr "Je organisatie heeft haar gratis jaar al geclaimd, of heeft al een betaald abonnement."
+
+#: components/billing/launch-offer.tsx
+msgid "Your organization has been offered Pro free for a year, with no card needed. Claim it and you’re on Pro straight away."
+msgstr "Je organisatie krijgt een jaar Pro gratis aangeboden, zonder kaart. Claim het en je hebt meteen Pro."
 
 #: components/billing/plan-card.tsx
 msgid "Your organization is already subscribed — use Manage billing to change the plan."

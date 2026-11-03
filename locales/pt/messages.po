@@ -751,6 +751,10 @@ msgstr "um ticket concluído não pode receber novos sub-tickets; tire-o de Conc
 msgid "a duplicate ticket is already closed"
 msgstr "um ticket duplicado já está fechado"
 
+#: components/billing/launch-offer.tsx
+msgid "A free year of Pro"
+msgstr "Um ano grátis de Pro"
+
 #: components/settings/embedding.tsx
 msgid "A key labels an embed so you can see how often it’s used and on which sites. Add it to the snippet as<0>data-key</0>. It isn’t a secret and doesn’t grant access — a site still has to be in the allowed list above."
 msgstr "Uma chave identifica um embed para você ver com que frequência ele é usado e em quais sites. Adicione-a ao snippet como<0>data-key</0>. Ela não é secreta e não dá acesso — o site ainda precisa estar na lista de permitidos acima."
@@ -880,6 +884,10 @@ msgstr "Adicionar “{title}” ao backlog como funcionalidade sem responsável?
 #: components/ticket/dependencies.tsx
 msgid "Add a blocker…"
 msgstr "Adicionar um bloqueador…"
+
+#: components/billing/launch-offer.tsx
+msgid "Add a card to keep Pro"
+msgstr "Adicione um cartão para manter o Pro"
 
 #: components/ticket/comments.tsx
 msgid "Add a comment"
@@ -1350,6 +1358,10 @@ msgstr "Quadros arquivados →"
 #: lib/org/audit.ts
 msgid "Archived the board {name}"
 msgstr "Arquivou o quadro {name}"
+
+#: components/billing/launch-offer.tsx
+msgid "Ask an organization admin to claim it."
+msgstr "Peça a um administrador da organização para resgatá-lo."
 
 #: components/billing/plan-card.tsx
 #: components/billing/upgrade-dialog.tsx
@@ -1907,6 +1919,10 @@ msgstr "Escolha uma organização para gerenciar os membros e as equipes dela."
 msgid "Choose appearance"
 msgstr "Escolher aparência"
 
+#: lib/api/error-codes.ts
+msgid "choose between 1 and 500 organizations"
+msgstr "escolha entre 1 e 500 organizações"
+
 #: app/settings/organization/page.tsx
 msgid "Choose project"
 msgstr "Escolher projeto"
@@ -1922,6 +1938,14 @@ msgstr "Escolha o ticket original neste projeto. Este ticket será fechado."
 #: components/board/epic-filter.tsx
 msgid "chosen"
 msgstr "escolhido"
+
+#: components/billing/launch-offer.tsx
+msgid "Claim a free year of Pro"
+msgstr "Resgatar um ano grátis de Pro"
+
+#: components/billing/launch-offer.tsx
+msgid "Claiming…"
+msgstr "Resgatando…"
 
 #: components/work/notifications-bell.tsx
 msgid "Clear"
@@ -2507,6 +2531,10 @@ msgstr "Não foi possível verificar a sua ligação ao Jira. Tente de novo."
 msgid "Couldn’t check your Linear connection. Please try again."
 msgstr "Não foi possível verificar a sua ligação ao Linear. Tente de novo."
 
+#: components/billing/launch-offer.tsx
+msgid "Couldn’t claim the free year. Please try again."
+msgstr "Não foi possível resgatar o ano grátis. Tente novamente."
+
 #: components/sprint/sprint-bar.tsx
 msgid "Couldn’t close the sprint. Please try again."
 msgstr "Não foi possível fechar a sprint. Tente novamente."
@@ -2856,6 +2884,7 @@ msgstr "Não foi possível publicar a atualização. Tente novamente."
 msgid "Couldn’t publish it. Please try again."
 msgstr "Não foi possível publicar. Tente novamente."
 
+#: components/billing/launch-offer.tsx
 #: components/billing/plan-card.tsx
 msgid "Couldn’t reach billing. Please try again."
 msgstr "Não foi possível acessar a cobrança. Tente novamente."
@@ -6408,6 +6437,10 @@ msgstr "Só admins da organização podem alterar o plano."
 msgid "Only organization admins can change this."
 msgstr "Só admins da organização podem alterar isto."
 
+#: components/billing/launch-offer.tsx
+msgid "Only organization admins can claim the free year."
+msgstr "Somente administradores da organização podem resgatar o ano grátis."
+
 #: components/intake/intake-settings.tsx
 msgid "Only organization admins can close the form or make a new link."
 msgstr "Só admins da organização podem fechar o formulário ou gerar um novo link."
@@ -6994,6 +7027,10 @@ msgstr "priority deve ser low, medium, high ou urgent"
 #: components/layout/site-footer.tsx
 msgid "Privacy"
 msgstr "Privacidade"
+
+#: components/billing/launch-offer.tsx
+msgid "Pro is free until {until}. To keep Pro after that, add a card before then; otherwise your organization moves to Free. We’ll remind you 30 days and 7 days before."
+msgstr "O Pro é grátis até {until}. Para manter o Pro depois disso, adicione um cartão antes; caso contrário, sua organização passa para o Free. Vamos lembrar você 30 e 7 dias antes."
 
 #: components/roadmap/report.tsx
 msgid "Progress by item"
@@ -8691,6 +8728,14 @@ msgstr "O formulário está fechado."
 msgid "The form is closed. An organization admin can open it."
 msgstr "O formulário está fechado. Um admin da organização pode abri-lo."
 
+#: components/billing/launch-offer.tsx
+msgid "The free year isn’t available any more."
+msgstr "O ano grátis não está mais disponível."
+
+#: lib/api/error-codes.ts
+msgid "the free year isn't available to this organization"
+msgstr "o ano grátis não está disponível para esta organização"
+
 #: lib/api/error-codes.ts
 msgid "the Google Chat app isn't set up on this server"
 msgstr "o app do Google Chat não está configurado neste servidor"
@@ -8922,6 +8967,10 @@ msgstr "Isto cria {0} projetos, {1} quadros e {2} tickets, com {3} comentários.
 #: components/settings/csv-import.tsx
 msgid "This makes the project <0>{0}</0> ({1}) with {2} tickets, {3} boards and {4} columns."
 msgstr "Isso cria o projeto <0>{0}</0> ({1}) com {2} tickets, {3} quadros e {4} colunas."
+
+#: lib/api/error-codes.ts
+msgid "this organization has already claimed its free year"
+msgstr "esta organização já resgatou seu ano grátis"
 
 #: lib/api/error-codes.ts
 msgid "this outage has credits, so it stays on record"
@@ -9295,6 +9344,10 @@ msgstr "Desativar"
 #: components/work/notifications-bell.tsx
 msgid "Turn on"
 msgstr "Ativar"
+
+#: lib/api/error-codes.ts
+msgid "turn on the launch-offer flag before sending the offer"
+msgstr "ative a flag launch-offer antes de enviar a oferta"
 
 #: components/settings/webhooks.tsx
 msgid "Turned off after repeated failed deliveries. Fix the endpoint, then turn it back on."
@@ -9976,6 +10029,10 @@ msgstr "Você atingiu o limite de projetos do seu plano"
 msgid "You’ve sent a few requests already. Please try again in an hour."
 msgstr "Você já enviou algumas solicitações. Tente novamente em uma hora."
 
+#: components/billing/launch-offer.tsx
+msgid "Your free year of Pro"
+msgstr "Seu ano grátis de Pro"
+
 #: components/settings/api-keys.tsx
 msgid "Your new key is already in these steps. Copy it now: it won't be shown again."
 msgstr "Sua nova chave já está nestes passos. Copie agora: ela não será exibida novamente."
@@ -9984,6 +10041,14 @@ msgstr "Sua nova chave já está nestes passos. Copie agora: ela não será exib
 #: components/roadmap/visibility.tsx
 msgid "Your organization"
 msgstr "Sua organização"
+
+#: components/billing/launch-offer.tsx
+msgid "Your organization has already claimed its free year, or it’s already on a paid plan."
+msgstr "Sua organização já resgatou seu ano grátis ou já tem um plano pago."
+
+#: components/billing/launch-offer.tsx
+msgid "Your organization has been offered Pro free for a year, with no card needed. Claim it and you’re on Pro straight away."
+msgstr "Sua organização recebeu a oferta de Pro grátis por um ano, sem precisar de cartão. Resgate e você passa para o Pro na hora."
 
 #: components/billing/plan-card.tsx
 msgid "Your organization is already subscribed — use Manage billing to change the plan."

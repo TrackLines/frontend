@@ -751,6 +751,10 @@ msgstr "rInpu'bogh ticketvaD ticket puq chu' chellu'laHbe'; rIn vo' yIvIHmoH wa'
 msgid "a duplicate ticket is already closed"
 msgstr "velqa' ticket SoQmoHlu'pu'"
 
+#: components/billing/launch-offer.tsx
+msgid "A free year of Pro"
+msgstr "Pro DIS wa' Huch Hutlh"
+
 #: components/settings/embedding.tsx
 msgid "A key labels an embed so you can see how often it’s used and on which sites. Add it to the snippet as<0>data-key</0>. It isn’t a secret and doesn’t grant access — a site still has to be in the allowed list above."
 msgstr "embed per ngaQHa'moHwI'; 'ar lo'lu' 'ej nuq Daqmey Daq lo'lu' 'e' Daleghlaw. snippetDaq<0>data-key</0> yIchel. peghbe' 'ej 'elmeH chaw' nobbe' — Daq chaw'lu'bogh tetlhDaq Daq tu'lu'nIS."
@@ -880,6 +884,10 @@ msgstr "“{title}” backlogDaq yIchel, laH ta'wI' Hutlhbogh?"
 #: components/ticket/dependencies.tsx
 msgid "Add a blocker…"
 msgstr "botwI' yIchel…"
+
+#: components/billing/launch-offer.tsx
+msgid "Add a card to keep Pro"
+msgstr "Pro yIpol: Huch chaw' yIchel"
 
 #: components/ticket/comments.tsx
 msgid "Add a comment"
@@ -1350,6 +1358,10 @@ msgstr "'echletmey ngaSlu'pu'bogh →"
 #: lib/org/audit.ts
 msgid "Archived the board {name}"
 msgstr "{name} 'echlet pol"
+
+#: components/billing/launch-offer.tsx
+msgid "Ask an organization admin to claim it."
+msgstr "ghom'a' loHwI' yItlhob: Daj'eghmoH."
 
 #: components/billing/plan-card.tsx
 #: components/billing/upgrade-dialog.tsx
@@ -1907,6 +1919,10 @@ msgstr "beqpu' beqmey je DaloHmeH ghom'a' yIwIv."
 msgid "Choose appearance"
 msgstr "narghghach yIwIv"
 
+#: lib/api/error-codes.ts
+msgid "choose between 1 and 500 organizations"
+msgstr "ghom'a'mey wa' vagh vatlh je yIwIv"
+
 #: app/settings/organization/page.tsx
 msgid "Choose project"
 msgstr "jInmol yIwIv"
@@ -1922,6 +1938,14 @@ msgstr "jInmolvamDaq ticket wa'DIch yIwIv. ticketvam SoQmoHlu'."
 #: components/board/epic-filter.tsx
 msgid "chosen"
 msgstr "wIvlu'pu'"
+
+#: components/billing/launch-offer.tsx
+msgid "Claim a free year of Pro"
+msgstr "Pro DIS wa' Huch Hutlh yIlaj"
+
+#: components/billing/launch-offer.tsx
+msgid "Claiming…"
+msgstr "lajlI'…"
 
 #: components/work/notifications-bell.tsx
 msgid "Clear"
@@ -2507,6 +2531,10 @@ msgstr "Jira rarmeH ngaQHa'moHwI' nuDlu'laHbe'. yInIDqa'."
 msgid "Couldn’t check your Linear connection. Please try again."
 msgstr "Linear rarmeH ngaQHa'moHwI' nuDlu'laHbe'. yInIDqa'."
 
+#: components/billing/launch-offer.tsx
+msgid "Couldn’t claim the free year. Please try again."
+msgstr "DIS Huch Hutlh lajlaHbe'. yInIDqa'."
+
 #: components/sprint/sprint-bar.tsx
 msgid "Couldn’t close the sprint. Please try again."
 msgstr "sprint SoQmoHlu'laHbe'. yInIDqa'."
@@ -2856,6 +2884,7 @@ msgstr "chu'ghach ngeHlu'laHbe'. yInIDqa'."
 msgid "Couldn’t publish it. Please try again."
 msgstr "ngeHlaHbe'. yInIDqa'."
 
+#: components/billing/launch-offer.tsx
 #: components/billing/plan-card.tsx
 msgid "Couldn’t reach billing. Please try again."
 msgstr "Huch mIw Suchlu'laHbe'. yInIDqa'."
@@ -6408,6 +6437,10 @@ msgstr "ghom'a' loHwI'pu' neH nab choHlaH."
 msgid "Only organization admins can change this."
 msgstr "ghom'a' loHwI'pu' neH Dochvam choHlaH."
 
+#: components/billing/launch-offer.tsx
+msgid "Only organization admins can claim the free year."
+msgstr "ghom'a' loHwI'pu' neH DIS Huch Hutlh lajlaH."
+
 #: components/intake/intake-settings.tsx
 msgid "Only organization admins can close the form or make a new link."
 msgstr "ghom'a' loHwI'pu' neH nav SoQmoHlaH pagh rarwI' chu' chenmoHlaH."
@@ -6994,6 +7027,10 @@ msgstr "priority'e' low, medium, high pagh urgent 'oHnIS"
 #: components/layout/site-footer.tsx
 msgid "Privacy"
 msgstr "pegh"
+
+#: components/billing/launch-offer.tsx
+msgid "Pro is free until {until}. To keep Pro after that, add a card before then; otherwise your organization moves to Free. We’ll remind you 30 days and 7 days before."
+msgstr "{until} pa' Pro Huch Hutlh. Pro DapolmeH, Huch chaw' yIchel; pagh ghom'a'lIj Free Daq ghoS. jaj wejmaH jaj Soch je qaSpa' DaqawmoHjaj."
 
 #: components/roadmap/report.tsx
 msgid "Progress by item"
@@ -8691,6 +8728,14 @@ msgstr "SoQ nav."
 msgid "The form is closed. An organization admin can open it."
 msgstr "SoQ nav. poSmoHlaH ghom'a' loHwI'."
 
+#: components/billing/launch-offer.tsx
+msgid "The free year isn’t available any more."
+msgstr "DIS Huch Hutlh tu'lu'be' DaH."
+
+#: lib/api/error-codes.ts
+msgid "the free year isn't available to this organization"
+msgstr "ghom'a'vamvaD DIS Huch Hutlh tu'lu'be'"
+
 #: lib/api/error-codes.ts
 msgid "the Google Chat app isn't set up on this server"
 msgstr "naDev Google Chat app cherlu'be'"
@@ -8922,6 +8967,10 @@ msgstr "{0} jInmolmey, {1} Sommey, {2} ticketmey, {3} ja'chuqmey je chenmoH."
 #: components/settings/csv-import.tsx
 msgid "This makes the project <0>{0}</0> ({1}) with {2} tickets, {3} boards and {4} columns."
 msgstr "jInmol <0>{0}</0> ({1}) chenmoH: {2} ticketmey, {3} 'echletmey, {4} tutmey."
+
+#: lib/api/error-codes.ts
+msgid "this organization has already claimed its free year"
+msgstr "DIS Huch Hutlh lajta' ghom'a'vam"
 
 #: lib/api/error-codes.ts
 msgid "this outage has credits, so it stays on record"
@@ -9295,6 +9344,10 @@ msgstr "yIchu'Ha'"
 #: components/work/notifications-bell.tsx
 msgid "Turn on"
 msgstr "yIchu'"
+
+#: lib/api/error-codes.ts
+msgid "turn on the launch-offer flag before sending the offer"
+msgstr "nob DangeHpa' launch-offer joqwI' yIchu'"
 
 #: components/settings/webhooks.tsx
 msgid "Turned off after repeated failed deliveries. Fix the endpoint, then turn it back on."
@@ -9976,6 +10029,10 @@ msgstr "nablIj jInmolmey veH DaSuchpu'"
 msgid "You’ve sent a few requests already. Please try again in an hour."
 msgstr "tlhobmey 'op DangeHpu'. wa' rep pIq yInIDqa'."
 
+#: components/billing/launch-offer.tsx
+msgid "Your free year of Pro"
+msgstr "Pro DIS Huch Hutlh DIlbe'lIj"
+
 #: components/settings/api-keys.tsx
 msgid "Your new key is already in these steps. Copy it now: it won't be shown again."
 msgstr "mIwmeyvamDaq ngaQHa'moHwI' chu'lIj tu'lu'. DaH yIvelqa'moH: not latlh 'anglu'."
@@ -9984,6 +10041,14 @@ msgstr "mIwmeyvamDaq ngaQHa'moHwI' chu'lIj tu'lu'. DaH yIvelqa'moH: not latlh 'a
 #: components/roadmap/visibility.tsx
 msgid "Your organization"
 msgstr "ghom'a'lIj"
+
+#: components/billing/launch-offer.tsx
+msgid "Your organization has already claimed its free year, or it’s already on a paid plan."
+msgstr "DIS Huch Hutlh lajta' ghom'a'lIj, pagh nab DIlta'."
+
+#: components/billing/launch-offer.tsx
+msgid "Your organization has been offered Pro free for a year, with no card needed. Claim it and you’re on Pro straight away."
+msgstr "ghom'a'lIjvaD Pro DIS wa' Huch Hutlh nob, Huch chaw' poQbe'. yIlaj 'ej DaH Pro Daghaj."
 
 #: components/billing/plan-card.tsx
 msgid "Your organization is already subscribed — use Manage billing to change the plan."
