@@ -1116,6 +1116,7 @@ msgid "AI keys can be assigned tickets."
 msgstr "AI keys can be assigned tickets."
 
 #: components/project/backlog.tsx
+#: components/staff/launch-offers.tsx
 #: components/work/mentions.tsx
 msgid "All"
 msgstr "All"
@@ -1164,6 +1165,18 @@ msgstr "Allowed sites"
 #: components/onboarding/setup.tsx
 msgid "Already have work elsewhere? Import it first, then return here to choose its board."
 msgstr "Already have work elsewhere? Import it first, then return here to choose its board."
+
+#: components/staff/launch-offers.tsx
+msgid "already paying"
+msgstr "already paying"
+
+#: components/staff/launch-offers.tsx
+msgid "Already paying"
+msgstr "Already paying"
+
+#: components/staff/launch-offers.tsx
+msgid "already sent"
+msgstr "already sent"
 
 #: lib/api/error-codes.ts
 msgid "already subscribed — manage it from the billing portal"
@@ -1721,6 +1734,7 @@ msgstr "Calendars"
 #: components/sprint/sprint-bar.tsx
 #: components/staff/downtime.tsx
 #: components/staff/help-editor.tsx
+#: components/staff/launch-offers.tsx
 #: components/ticket/duplicates.tsx
 msgid "Cancel"
 msgstr "Cancel"
@@ -1935,6 +1949,10 @@ msgstr "Choose team"
 msgid "Choose the original ticket in this project. This ticket will be closed."
 msgstr "Choose the original ticket in this project. This ticket will be closed."
 
+#: components/staff/launch-offers.tsx
+msgid "Choose who gets the offer. Each organization is sent it once: its admins can claim it from Settings, and its members are told an admin can. Organizations that are already paying can’t be sent it."
+msgstr "Choose who gets the offer. Each organization is sent it once: its admins can claim it from Settings, and its members are told an admin can. Organizations that are already paying can’t be sent it."
+
 #: components/board/epic-filter.tsx
 msgid "chosen"
 msgstr "chosen"
@@ -1942,6 +1960,14 @@ msgstr "chosen"
 #: components/billing/launch-offer.tsx
 msgid "Claim a free year of Pro"
 msgstr "Claim a free year of Pro"
+
+#: components/staff/launch-offers.tsx
+msgid "Claimed"
+msgstr "Claimed"
+
+#: components/staff/launch-offers.tsx
+msgid "claimed on {claimed}"
+msgstr "claimed on {claimed}"
 
 #: components/billing/launch-offer.tsx
 msgid "Claiming…"
@@ -2737,6 +2763,10 @@ msgstr "Couldn’t load the linked repositories."
 msgid "Couldn’t load the next sprints. Please try again."
 msgstr "Couldn’t load the next sprints. Please try again."
 
+#: components/staff/launch-offers.tsx
+msgid "Couldn’t load the organizations."
+msgstr "Couldn’t load the organizations."
+
 #: components/staff/downtime.tsx
 msgid "Couldn’t load the outages."
 msgstr "Couldn’t load the outages."
@@ -3119,6 +3149,7 @@ msgid "Create your first ticket"
 msgstr "Create your first ticket"
 
 #: components/settings/csv-import.tsx
+#: components/staff/launch-offers.tsx
 #: components/work/dashboard-work.tsx
 msgid "Created"
 msgstr "Created"
@@ -3854,6 +3885,10 @@ msgstr "End refinement"
 msgid "End standup"
 msgstr "End standup"
 
+#: components/staff/launch-offers.tsx
+msgid "Ended"
+msgstr "Ended"
+
 #: components/staff/downtime.tsx
 msgid "Ended (UTC)"
 msgstr "Ended (UTC)"
@@ -4117,6 +4152,10 @@ msgstr "Extra search words"
 #: components/settings/webhooks.tsx
 msgid "Failed"
 msgstr "Failed"
+
+#: components/staff/launch-offers.tsx
+msgid "failed, try again"
+msgstr "failed, try again"
 
 #: components/staff/help-editor.tsx
 msgid "Fallback link"
@@ -4938,6 +4977,14 @@ msgstr "Late: past the target date and not done."
 msgid "Later"
 msgstr "Later"
 
+#: components/staff/staff-shell.tsx
+msgid "Launch offer"
+msgstr "Launch offer"
+
+#: components/staff/launch-offers.tsx
+msgid "Launch offer: a free year of Pro"
+msgstr "Launch offer: a free year of Pro"
+
 #: components/settings/organization.tsx
 msgid "Leader"
 msgstr "Leader"
@@ -5244,6 +5291,7 @@ msgstr "Loading your work…"
 #: components/sprint/next-sprints.tsx
 #: components/staff/downtime.tsx
 #: components/staff/help-editor.tsx
+#: components/staff/launch-offers.tsx
 #: components/staff/mcp-prompt.tsx
 #: components/staff/staff-shell.tsx
 #: components/staff/stats.tsx
@@ -5421,6 +5469,7 @@ msgstr "Member removed from team."
 
 #: app/settings/organization/page.tsx
 #: components/settings/organization.tsx
+#: components/staff/launch-offers.tsx
 #: components/staff/stats.tsx
 msgid "Members"
 msgstr "Members"
@@ -5853,6 +5902,10 @@ msgstr "No open tickets in the backlog."
 msgid "No open tickets mention you."
 msgstr "No open tickets mention you."
 
+#: components/staff/launch-offers.tsx
+msgid "No organizations here."
+msgstr "No organizations here."
+
 #: components/project/repositories.tsx
 msgid "No other repositories to link."
 msgstr "No other repositories to link."
@@ -6118,6 +6171,10 @@ msgstr "Not now"
 msgid "Not on any project yet."
 msgstr "Not on any project yet."
 
+#: components/staff/launch-offers.tsx
+msgid "Not sent"
+msgstr "Not sent"
+
 #: components/settings/google-chat.tsx
 msgid "Not set up"
 msgstr "Not set up"
@@ -6262,6 +6319,10 @@ msgstr "Notify me on this device"
 msgid "Now link repositories to a project from the project's page."
 msgstr "Now link repositories to a project from the project's page."
 
+#: components/staff/launch-offers.tsx
+msgid "Now paying"
+msgstr "Now paying"
+
 #: components/settings/google-calendar.tsx
 msgid "OAuth scopes"
 msgstr "OAuth scopes"
@@ -6302,6 +6363,10 @@ msgstr "Off from {when}"
 msgid "Off track"
 msgstr "Off track"
 
+#: components/staff/launch-offers.tsx
+msgid "Offer"
+msgstr "Offer"
+
 #: lib/api/error-codes.ts
 msgid "offset must be a non-negative integer"
 msgstr "offset must be a non-negative integer"
@@ -6319,6 +6384,16 @@ msgstr "Oldest first"
 #: components/settings/webhooks.tsx
 msgid "On"
 msgstr "On"
+
+#. placeholder {0}: day(i18n, o.offered_at)
+#: components/staff/launch-offers.tsx
+msgid "on {0}"
+msgstr "on {0}"
+
+#. placeholder {0}: day(i18n, o.trial_ends_at)
+#: components/staff/launch-offers.tsx
+msgid "on {claimed}, free until {0}"
+msgstr "on {claimed}, free until {0}"
 
 #: components/live/standup.tsx
 msgid "On holiday"
@@ -6618,6 +6693,7 @@ msgstr "organization"
 
 #: app/settings/organization/page.tsx
 #: components/staff/downtime.tsx
+#: components/staff/launch-offers.tsx
 msgid "Organization"
 msgstr "Organization"
 
@@ -6808,6 +6884,7 @@ msgstr "Pick at least one working day, and hours of at least one hour."
 
 #: components/billing/plan-card.tsx
 #: components/staff/downtime.tsx
+#: components/staff/launch-offers.tsx
 msgid "Plan"
 msgstr "Plan"
 
@@ -7764,6 +7841,15 @@ msgstr "See who’s in your organization, its teams and who leads them."
 msgid "Seen again after this ticket was done"
 msgstr "Seen again after this ticket was done"
 
+#. placeholder {0}: o.name
+#: components/staff/launch-offers.tsx
+msgid "Select {0}"
+msgstr "Select {0}"
+
+#: components/staff/launch-offers.tsx
+msgid "Select all that can be sent"
+msgstr "Select all that can be sent"
+
 #: components/intake/request-form.tsx
 msgid "Send a request"
 msgstr "Send a request"
@@ -7796,9 +7882,21 @@ msgstr "Send invitation"
 msgid "Send invite"
 msgstr "Send invite"
 
+#: components/staff/launch-offers.tsx
+msgid "Send it"
+msgstr "Send it"
+
 #: lib/api/error-codes.ts
 msgid "send length_days and/or goal"
 msgstr "send length_days and/or goal"
+
+#: components/staff/launch-offers.tsx
+msgid "Send offer to {count} organizations"
+msgstr "Send offer to {count} organizations"
+
+#: components/staff/launch-offers.tsx
+msgid "Send offer to 1 organization"
+msgstr "Send offer to 1 organization"
 
 #: components/intake/request-form.tsx
 msgid "Send request"
@@ -7807,6 +7905,14 @@ msgstr "Send request"
 #: components/settings/google-chat.tsx
 msgid "Send test message"
 msgstr "Send test message"
+
+#: components/staff/launch-offers.tsx
+msgid "Send the offer to {count} organizations?"
+msgstr "Send the offer to {count} organizations?"
+
+#: components/staff/launch-offers.tsx
+msgid "Send the offer to 1 organization?"
+msgstr "Send the offer to 1 organization?"
 
 #: components/settings/webhooks.tsx
 msgid "Send these events"
@@ -7833,6 +7939,7 @@ msgid "Sending…"
 msgstr "Sending…"
 
 #: components/settings/webhooks.tsx
+#: components/staff/launch-offers.tsx
 msgid "Sent"
 msgstr "Sent"
 
@@ -7847,6 +7954,11 @@ msgstr "Sent back from review"
 #: components/ticket/history-panel.tsx
 msgid "sent it to the backlog"
 msgstr "sent it to the backlog"
+
+#. placeholder {0}: result.sent.length
+#: components/staff/launch-offers.tsx
+msgid "Sent to {0} organizations."
+msgstr "Sent to {0} organizations."
 
 #: components/settings/api-keys.tsx
 msgid "Server / API"
@@ -7952,6 +8064,7 @@ msgid "Short, dated notes on how the roadmap is going, shown on the roadmap with
 msgstr "Short, dated notes on how the roadmap is going, shown on the roadmap with the newest first."
 
 #: components/project/backlog.tsx
+#: components/staff/launch-offers.tsx
 #: components/work/mentions.tsx
 msgid "Show"
 msgstr "Show"
@@ -8765,6 +8878,10 @@ msgstr "the last column (Done) stays last"
 msgid "the last column is Done and stays last: move the other columns around it"
 msgstr "the last column is Done and stays last: move the other columns around it"
 
+#: components/staff/launch-offers.tsx
+msgid "The launch-offer flag is off, so nothing can be sent yet. Turn it on in flags.gg first."
+msgstr "The launch-offer flag is off, so nothing can be sent yet. Turn it on in flags.gg first."
+
 #: app/global-not-found.tsx
 msgid "The link may be old, or the address mistyped."
 msgstr "The link may be old, or the address mistyped."
@@ -8846,6 +8963,10 @@ msgstr "the URL must be https and not a private address"
 #: components/settings/linear-import.tsx
 msgid "The whole {workspace} workspace becomes one project: each team a board, each Linear project an epic. The team with the most issues keeps its key and numbers; the others are numbered after it."
 msgstr "The whole {workspace} workspace becomes one project: each team a board, each Linear project an epic. The team with the most issues keeps its key and numbers; the others are numbered after it."
+
+#: components/staff/launch-offers.tsx
+msgid "Their admins and members are told now, in the app and on their devices. Each organization can only be sent it once, and this can’t be undone."
+msgstr "Their admins and members are told now, in the app and on their devices. Each organization can only be sent it once, and this can’t be undone."
 
 #: components/settings/mcp-connect.tsx
 msgid "Then enable it under Settings → MCP."
