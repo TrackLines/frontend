@@ -765,7 +765,7 @@ export const projectRepos = {
 };
 
 // Notifications: the signed-in user's inbox (internal; external channels later).
-export type NotificationKind = 'assigned' | 'mention' | 'finished' | 'wont_do' | 'review' | 'sent_back' | 'approval' | 'retention' | 'over_capacity' | 'legal' | 'downtime_credit' | 'sprint_waiting'; // retention: TL-259; over_capacity: a sprint started over capacity (TL-149)
+export type NotificationKind = 'assigned' | 'mention' | 'finished' | 'wont_do' | 'review' | 'sent_back' | 'approval' | 'retention' | 'over_capacity' | 'legal' | 'downtime_credit' | 'sprint_waiting' | 'billing'; // retention: TL-259; billing: the launch offer and its reminders (TL-774); over_capacity: a sprint started over capacity (TL-149)
 export type AppNotification = {
   id: string; kind: NotificationKind; text: string; actor: string;
   ticket_id: string | null; ticket_key: string | null; board_id: string | null; link?: string | null; // link: a page, e.g. a new Terms version (TL-424)

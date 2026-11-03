@@ -10191,6 +10191,10 @@ msgstr "Het abonnement, de mensen en de koppelingen van je organisatie."
 msgid "Your own keys and AI agents are in <0>Your settings</0>."
 msgstr "Je eigen sleutels en AI-agents staan in <0>Jouw instellingen</0>."
 
+#: components/work/notification-icon.tsx
+msgid "Your plan"
+msgstr "Je abonnement"
+
 #: lib/org/organization-settings.ts
 msgid "Your plan includes up to 20 members, counting invitations not yet accepted. Upgrade to Enterprise in Settings for unlimited members."
 msgstr "Je abonnement bevat maximaal 20 leden, inclusief uitnodigingen die nog niet zijn geaccepteerd. Upgrade naar Enterprise in Instellingen voor een onbeperkt aantal leden."
