@@ -125,6 +125,8 @@ export type NewApiKey = ({ kind: 'ai'; client: ApiKeyClient; label?: string } | 
 // plan (TL-290): free 1 project, pro 5, enterprise unlimited; project_limit -1 is unlimited
 export type PlanId = 'free' | 'pro' | 'enterprise';
 export type Subscription = { plan?: PlanId; paid: boolean; project_limit: number; member_limit?: number; billed?: boolean; can_manage?: boolean }; // member_limit: -1 unlimited (TL-418)
+// the launch offer (TL-773): a free year of Pro, for orgs staff sent it to; claimed once, by an admin
+export type LaunchOffer = { eligible: boolean; claimed: boolean; admin: boolean; trial_ends_at: string | null };
 export type PlanInfo = { id: PlanId; projects: number | null; members?: number | null; price: { amount: number; currency: string; interval: string } | null };
 
 export type OrganizationMember = { user_id: string; first_name?: string; last_name?: string; image_url?: string; identifier: string };
@@ -590,6 +592,9 @@ export const billing = {
   changePlan: (plan: 'pro' | 'enterprise', token: T) => api<void>('/subscription/plan', { method: 'POST', body: { plan }, token }),
   plans: () => api<PlanInfo[]>('/plans'), // public: limits and Stripe prices
   portal: (token: T) => api<{ url: string }>('/subscription/portal', { method: 'POST', token }),
+  // behind the launch-offer flag: 404 while it's off (TL-774)
+  launchOffer: (token: T) => api<LaunchOffer>('/subscription/launch-offer', { token }),
+  claimLaunchOffer: (token: T) => api<LaunchOffer>('/subscription/launch-offer', { method: 'POST', token }),
 };
 
 // API keys act as you; AI keys can be assigned tickets. Managing keys needs a signed-in session.

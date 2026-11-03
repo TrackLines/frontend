@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useSearchParams } from 'next/navigation';
 import { Suspense, useEffect, useState } from 'react';
+import { LaunchOfferCard } from '@/components/billing/launch-offer';
 import { PlanCard } from '@/components/billing/plan-card';
 import { useFlags } from '@flags-gg/react-library';
 import { CalendarClockIcon, KeyRoundIcon, PlugIcon, UploadIcon, WebhookIcon } from 'lucide-react';
@@ -68,7 +69,9 @@ export default function SettingsPage() {
 function Plan() {
   const token = useToken();
   const { t } = useLingui();
-  return token ? <PlanCard token={token} /> : <li><Skeleton role="status" aria-label={t`Loading plan…`} className="h-44 rounded-xl" /></li>;
+  const [claimed, setClaimed] = useState(0); // a claimed free year (TL-775) reloads the plan card, now on Pro
+  if (!token) return <li><Skeleton role="status" aria-label={t`Loading plan…`} className="h-44 rounded-xl" /></li>;
+  return <><PlanCard key={claimed} token={token} /><Suspense><LaunchOfferCard token={token} onClaimed={() => setClaimed((n) => n + 1)} /></Suspense></>;
 }
 
 // Stripe sends people back here with ?billing=success|cancelled (backend PORTAL_URL).
