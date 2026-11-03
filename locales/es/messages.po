@@ -10191,6 +10191,10 @@ msgstr "El plan, las personas y las conexiones de tu organización."
 msgid "Your own keys and AI agents are in <0>Your settings</0>."
 msgstr "Tus claves propias y de agentes de IA están en <0>Tus ajustes</0>."
 
+#: components/work/notification-icon.tsx
+msgid "Your plan"
+msgstr "Tu plan"
+
 #: lib/org/organization-settings.ts
 msgid "Your plan includes up to 20 members, counting invitations not yet accepted. Upgrade to Enterprise in Settings for unlimited members."
 msgstr "Tu plan incluye hasta 20 miembros, contando las invitaciones aún no aceptadas. Mejora a Enterprise en Ajustes para tener miembros ilimitados."

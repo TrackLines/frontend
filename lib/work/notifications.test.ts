@@ -37,3 +37,9 @@ test('a sprint that started over capacity reads as from Tracklines and opens its
   expect(notificationLine(en, over, people)).toBe('Tracklines started sprint 2 on Backend over capacity: 8 points against a limit of 5.5 (velocity + 10%), from unfinished work carried over');
   expect(notificationHref(over)).toBe('/boards/b1');
 });
+
+test('notices from TrackLin.es itself read as written, with no "Someone" in front (TL-424, TL-774)', () => {
+  const offer = n({ kind: 'billing', actor: '', ticket_id: null, ticket_key: null, text: 'Your organization has been offered a free year of Pro. Claim it from the plan card in Settings.' });
+  expect(notificationLine(en, offer, people)).toBe('Your organization has been offered a free year of Pro. Claim it from the plan card in Settings.');
+  expect(notificationLine(en, n({ kind: 'legal', actor: '', text: "We've updated our Terms of service" }), people)).toBe("We've updated our Terms of service");
+});

@@ -3,7 +3,6 @@
 import type { I18n } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react/macro';
-import { useFlags } from '@flags-gg/react-library';
 import { GiftIcon } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -15,7 +14,9 @@ import { stripeRedirect } from '@/lib/server/stripe-redirect';
 
 // The launch offer (TL-775): an org staff sent it to can have Pro free for a year. Admins claim it
 // here; members are told to ask one. Once claimed, it says when the free year ends and how to keep
-// Pro (a card, through the billing portal). Behind the launch-offer flag; nothing shows otherwise.
+// Pro (a card, through the billing portal). Behind the launch-offer flag, which the backend checks: it
+// answers 404 while it's off, so nothing shows. Not checked here as well: the browser's flags.gg
+// environment isn't the backend's, and two switches for one feature disagree.
 
 // offerShown: whether the card has anything to say: an offer to claim, or a free year still running.
 export function offerShown(o: LaunchOffer | null, now = new Date()): boolean {
@@ -61,16 +62,14 @@ export function LaunchOfferView({ offer, busy = false, error = '', onClaim, onCa
 // LaunchOfferCard loads the offer while the flag is on; onClaimed lets the plan card show Pro.
 export function LaunchOfferCard({ token, onClaimed }: { token: string; onClaimed: () => void }) {
   const { i18n } = useLingui();
-  const { is } = useFlags();
-  const on = is('launch-offer').enabled();
   const linked = useSearchParams().get('offer') === '1'; // from the offer's notice
   const [offer, setOffer] = useState<LaunchOffer | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (on) billing.launchOffer(token).then(setOffer, () => setOffer(null));
-  }, [on]); // load once the flag is known; token refreshes must not refetch
+    billing.launchOffer(token).then(setOffer, () => setOffer(null)); // 404: the flag is off
+  }, []); // load once; token refreshes must not refetch
 
   useEffect(() => {
     if (linked && offerShown(offer)) document.getElementById('launch-offer')?.scrollIntoView({ block: 'center' });
@@ -100,6 +99,6 @@ export function LaunchOfferCard({ token, onClaimed }: { token: string; onClaimed
     }
   }
 
-  if (!on || !offer || !offerShown(offer)) return null;
+  if (!offer || !offerShown(offer)) return null;
   return <LaunchOfferView offer={offer} busy={busy} error={error} onClaim={() => void claim()} onCard={() => void card()} />;
 }
