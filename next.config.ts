@@ -15,6 +15,8 @@ const nextConfig: NextConfig = {
     { source: '/:path*', headers: SECURITY_HEADERS },
     // the Google Chat avatar: public/ files default to max-age=0, so Google's image proxy fetches it for every view
     { source: '/tracklines-github.png', headers: [{ key: 'Cache-Control', value: 'public, max-age=604800' }] },
+    // app links (TL-364): Apple's file has no extension, so say it's JSON; Android's is .json already
+    { source: '/.well-known/apple-app-site-association', headers: [{ key: 'Content-Type', value: 'application/json' }] },
   ],
 };
 export default nextConfig;

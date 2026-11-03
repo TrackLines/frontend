@@ -1,0 +1,14 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "es.tracklin.android",
+      "sha256_cert_fingerprints": [
+        "EA:AF:68:84:FB:77:6B:76:AF:81:2E:8D:C9:3F:5E:1E:0F:F9:78:54:61:A1:29:9B:8E:05:11:7F:DA:72:05:09",
+        "FD:28:8E:3D:00:A4:F0:B3:04:25:6B:F6:59:02:B0:65:3E:92:E6:B1:66:DC:58:0A:A4:4A:2F:F8:E2:BC:BF:AA",
+        "E4:16:39:D6:7E:5A:A1:5B:8B:B1:06:E7:DE:20:98:F2:E2:94:8B:37:F1:B9:42:87:50:03:34:BF:5E:A7:53:77"
+      ]
+    }
+  }
+]
