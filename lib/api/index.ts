@@ -948,7 +948,17 @@ export const staff = {
   previewCredits: (id: string, t: T) => api<CreditPreview>(`/staff/outages/${encodeURIComponent(id)}/preview`, { token: t }),
   applyCredits: (id: string, includeShort: boolean, t: T) =>
     api<CreditResult>(`/staff/outages/${encodeURIComponent(id)}/apply`, { method: 'POST', body: { include_short: includeShort }, token: t }),
+  // the launch offer (TL-778/779): every org and where it is with the offer, and sending it to chosen ones
+  launchOffers: (t: T) => api<{ organizations: OfferOrg[]; flag_on: boolean }>('/staff/launch-offers', { token: t }),
+  sendLaunchOffers: (orgIds: string[], t: T) => api<OfferSendResult>('/staff/launch-offers', { method: 'POST', body: { org_ids: orgIds }, token: t }),
 };
+
+export type OfferStatus = 'not_sent' | 'sent' | 'claimed' | 'converted' | 'ended' | 'paid';
+export type OfferOrg = {
+  org_id: string; name: string; created_at: string; members: number; plan: PlanId; status: OfferStatus;
+  offered_at: string | null; claimed_at: string | null; claimed_by: string | null; trial_ends_at: string | null;
+};
+export type OfferSendResult = { sent: string[]; skipped: { org_id: string; reason: 'already_sent' | 'paid' | 'failed' }[] };
 
 // The downtime resolver, phase 1 (TL-576/580): outages and the Terms' credits for them.
 export type Outage = { id: string; starts_at: string; ends_at: string; note: string; minutes: number; qualifies: boolean; days: string[]; clusters: string[]; credited: number };

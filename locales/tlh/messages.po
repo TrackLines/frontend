@@ -1116,6 +1116,7 @@ msgid "AI keys can be assigned tickets."
 msgstr "AI ngaQHa'moHwI'pu'vaD ticketmey nobla'lu'."
 
 #: components/project/backlog.tsx
+#: components/staff/launch-offers.tsx
 #: components/work/mentions.tsx
 msgid "All"
 msgstr "Hoch"
@@ -1164,6 +1165,18 @@ msgstr "Daqmey chaw'lu'bogh"
 #: components/onboarding/setup.tsx
 msgid "Already have work elsewhere? Import it first, then return here to choose its board."
 msgstr "latlh DaqDaq Qu' Daghaj'a'? yIImport, ghIq naDev 'echlet yIwIv."
+
+#: components/staff/launch-offers.tsx
+msgid "already paying"
+msgstr "DIlta'"
+
+#: components/staff/launch-offers.tsx
+msgid "Already paying"
+msgstr "DIlta'"
+
+#: components/staff/launch-offers.tsx
+msgid "already sent"
+msgstr "ngeHta'"
 
 #: lib/api/error-codes.ts
 msgid "already subscribed — manage it from the billing portal"
@@ -1721,6 +1734,7 @@ msgstr "poH navmey"
 #: components/sprint/sprint-bar.tsx
 #: components/staff/downtime.tsx
 #: components/staff/help-editor.tsx
+#: components/staff/launch-offers.tsx
 #: components/ticket/duplicates.tsx
 msgid "Cancel"
 msgstr "yIqIl"
@@ -1935,6 +1949,10 @@ msgstr "beq yIwIv"
 msgid "Choose the original ticket in this project. This ticket will be closed."
 msgstr "jInmolvamDaq ticket wa'DIch yIwIv. ticketvam SoQmoHlu'."
 
+#: components/staff/launch-offers.tsx
+msgid "Choose who gets the offer. Each organization is sent it once: its admins can claim it from Settings, and its members are told an admin can. Organizations that are already paying can’t be sent it."
+msgstr "nob Suqbogh ghom'a'mey yIwIv. wa'logh ghom'a' nob ngeHlu': Hutlhmey Daq lajlaH loHwI'pu', 'ej lajlaH loHwI' Sovbej ghom'a' DaHjaj. DIlta'bogh ghom'a'mey vaD nob ngeHlaHbe'lu'."
+
 #: components/board/epic-filter.tsx
 msgid "chosen"
 msgstr "wIvlu'pu'"
@@ -1942,6 +1960,14 @@ msgstr "wIvlu'pu'"
 #: components/billing/launch-offer.tsx
 msgid "Claim a free year of Pro"
 msgstr "Pro DIS wa' Huch Hutlh yIlaj"
+
+#: components/staff/launch-offers.tsx
+msgid "Claimed"
+msgstr "lajta'"
+
+#: components/staff/launch-offers.tsx
+msgid "claimed on {claimed}"
+msgstr "{claimed} lajta'"
 
 #: components/billing/launch-offer.tsx
 msgid "Claiming…"
@@ -2737,6 +2763,10 @@ msgstr "repositorymey rarlu'pu'bogh Hevlu'laHbe'."
 msgid "Couldn’t load the next sprints. Please try again."
 msgstr "sprintmey veb Hevlu'laHbe'. yInIDqa'."
 
+#: components/staff/launch-offers.tsx
+msgid "Couldn’t load the organizations."
+msgstr "ghom'a'mey lI'laHbe'."
+
 #: components/staff/downtime.tsx
 msgid "Couldn’t load the outages."
 msgstr "Qagh poHmey laHbe'."
@@ -3119,6 +3149,7 @@ msgid "Create your first ticket"
 msgstr "Qu'HomlIj wa'DIch yIchenmoH"
 
 #: components/settings/csv-import.tsx
+#: components/staff/launch-offers.tsx
 #: components/work/dashboard-work.tsx
 msgid "Created"
 msgstr "chenmoHlu'pu'"
@@ -3854,6 +3885,10 @@ msgstr "Dubghach yIrInmoH"
 msgid "End standup"
 msgstr "Qam ghom yIrInmoH"
 
+#: components/staff/launch-offers.tsx
+msgid "Ended"
+msgstr "rInta'"
+
 #: components/staff/downtime.tsx
 msgid "Ended (UTC)"
 msgstr "rIn (UTC)"
@@ -4117,6 +4152,10 @@ msgstr "latlh nejmeH mu'mey"
 #: components/settings/webhooks.tsx
 msgid "Failed"
 msgstr "luj"
+
+#: components/staff/launch-offers.tsx
+msgid "failed, try again"
+msgstr "Qapbe', yInIDqa'"
 
 #: components/staff/help-editor.tsx
 msgid "Fallback link"
@@ -4938,6 +4977,14 @@ msgstr "QIt: DaH jaj ngoQ veb Dalpu' 'ej rInbe'."
 msgid "Later"
 msgstr "ghIq"
 
+#: components/staff/staff-shell.tsx
+msgid "Launch offer"
+msgstr "tagh nob"
+
+#: components/staff/launch-offers.tsx
+msgid "Launch offer: a free year of Pro"
+msgstr "tagh nob: Pro DIS wa' Huch Hutlh"
+
 #: components/settings/organization.tsx
 msgid "Leader"
 msgstr "DevwI'"
@@ -5244,6 +5291,7 @@ msgstr "Qu'meylIj Hevlu'lI'…"
 #: components/sprint/next-sprints.tsx
 #: components/staff/downtime.tsx
 #: components/staff/help-editor.tsx
+#: components/staff/launch-offers.tsx
 #: components/staff/mcp-prompt.tsx
 #: components/staff/staff-shell.tsx
 #: components/staff/stats.tsx
@@ -5421,6 +5469,7 @@ msgstr "beq vo' beqpu' teqlu'pu'."
 
 #: app/settings/organization/page.tsx
 #: components/settings/organization.tsx
+#: components/staff/launch-offers.tsx
 #: components/staff/stats.tsx
 msgid "Members"
 msgstr "beqpu'"
@@ -5853,6 +5902,10 @@ msgstr "backlogDaq ticketmey poSbogh tu'lu'be'."
 msgid "No open tickets mention you."
 msgstr "SoH pongbogh ticketmey poSbogh tu'lu'be'."
 
+#: components/staff/launch-offers.tsx
+msgid "No organizations here."
+msgstr "naDev ghom'a'mey tu'lu'be'."
+
 #: components/project/repositories.tsx
 msgid "No other repositories to link."
 msgstr "rarmeH latlh repositorymey tu'lu'be'."
@@ -6118,6 +6171,10 @@ msgstr "DaHbe'"
 msgid "Not on any project yet."
 msgstr "jInmolDaq SoH tu'lu'be' DaH."
 
+#: components/staff/launch-offers.tsx
+msgid "Not sent"
+msgstr "ngeHbe'lu'"
+
 #: components/settings/google-chat.tsx
 msgid "Not set up"
 msgstr "cherlu'be'"
@@ -6262,6 +6319,10 @@ msgstr "De'wI'vamDaq HIghuH"
 msgid "Now link repositories to a project from the project's page."
 msgstr "DaH jInmol nach vo' jInmolvaD repositorymey tIrar."
 
+#: components/staff/launch-offers.tsx
+msgid "Now paying"
+msgstr "DaH DIl"
+
 #: components/settings/google-calendar.tsx
 msgid "OAuth scopes"
 msgstr "OAuth scopes"
@@ -6302,6 +6363,10 @@ msgstr "{when} vo' leSpoH"
 msgid "Off track"
 msgstr "He Dop"
 
+#: components/staff/launch-offers.tsx
+msgid "Offer"
+msgstr "nob"
+
 #: lib/api/error-codes.ts
 msgid "offset must be a non-negative integer"
 msgstr "offset'e' mI' naQ pagh 'oHbe'bogh 'oHnIS"
@@ -6319,6 +6384,16 @@ msgstr "ngo'qu' wa'DIch"
 #: components/settings/webhooks.tsx
 msgid "On"
 msgstr "chu'"
+
+#. placeholder {0}: day(i18n, o.offered_at)
+#: components/staff/launch-offers.tsx
+msgid "on {0}"
+msgstr "{0}"
+
+#. placeholder {0}: day(i18n, o.trial_ends_at)
+#: components/staff/launch-offers.tsx
+msgid "on {claimed}, free until {0}"
+msgstr "{claimed}, {0} pa' Huch Hutlh"
 
 #: components/live/standup.tsx
 msgid "On holiday"
@@ -6618,6 +6693,7 @@ msgstr "ghom'a'"
 
 #: app/settings/organization/page.tsx
 #: components/staff/downtime.tsx
+#: components/staff/launch-offers.tsx
 msgid "Organization"
 msgstr "ghom'a'"
 
@@ -6808,6 +6884,7 @@ msgstr "Qu' jaj wa' yIwIv, Qu' rep wa' je."
 
 #: components/billing/plan-card.tsx
 #: components/staff/downtime.tsx
+#: components/staff/launch-offers.tsx
 msgid "Plan"
 msgstr "nab"
 
@@ -7764,6 +7841,15 @@ msgstr "ghom'a'lIjDaq 'Iv tu'lu', beqmeyDaj, 'ej chaH Dev 'Iv 'e' yIlegh."
 msgid "Seen again after this ticket was done"
 msgstr "ticketvam rInpu'DI' leghqa'lu'"
 
+#. placeholder {0}: o.name
+#: components/staff/launch-offers.tsx
+msgid "Select {0}"
+msgstr "{0} yIwIv"
+
+#: components/staff/launch-offers.tsx
+msgid "Select all that can be sent"
+msgstr "ngeHlaHbogh Hoch yIwIv"
+
 #: components/intake/request-form.tsx
 msgid "Send a request"
 msgstr "tlhob yIngeH"
@@ -7796,9 +7882,21 @@ msgstr "tlhobmeH QIn yIngeH"
 msgid "Send invite"
 msgstr "rI'ghach yIngeH"
 
+#: components/staff/launch-offers.tsx
+msgid "Send it"
+msgstr "yIngeH"
+
 #: lib/api/error-codes.ts
 msgid "send length_days and/or goal"
 msgstr "length_days pagh goal ghap yIngeH"
+
+#: components/staff/launch-offers.tsx
+msgid "Send offer to {count} organizations"
+msgstr "ghom'a'mey {count} vaD nob yIngeH"
+
+#: components/staff/launch-offers.tsx
+msgid "Send offer to 1 organization"
+msgstr "ghom'a' wa' vaD nob yIngeH"
 
 #: components/intake/request-form.tsx
 msgid "Send request"
@@ -7807,6 +7905,14 @@ msgstr "tlhob yIngeH"
 #: components/settings/google-chat.tsx
 msgid "Send test message"
 msgstr "waH QIn yIngeH"
+
+#: components/staff/launch-offers.tsx
+msgid "Send the offer to {count} organizations?"
+msgstr "ghom'a'mey {count} vaD nob DangeH'a'?"
+
+#: components/staff/launch-offers.tsx
+msgid "Send the offer to 1 organization?"
+msgstr "ghom'a' wa' vaD nob DangeH'a'?"
 
 #: components/settings/webhooks.tsx
 msgid "Send these events"
@@ -7833,6 +7939,7 @@ msgid "Sending…"
 msgstr "ngeHlI'…"
 
 #: components/settings/webhooks.tsx
+#: components/staff/launch-offers.tsx
 msgid "Sent"
 msgstr "ngeHpu'"
 
@@ -7847,6 +7954,11 @@ msgstr "nuDghach vo' chegh ngeHlu'pu'"
 #: components/ticket/history-panel.tsx
 msgid "sent it to the backlog"
 msgstr "backlogDaq ngeHpu'"
+
+#. placeholder {0}: result.sent.length
+#: components/staff/launch-offers.tsx
+msgid "Sent to {0} organizations."
+msgstr "ghom'a'mey {0} vaD ngeHta'."
 
 #: components/settings/api-keys.tsx
 msgid "Server / API"
@@ -7952,6 +8064,7 @@ msgid "Short, dated notes on how the roadmap is going, shown on the roadmap with
 msgstr "He nav Ho'DoS QInHommey jaj ghajbogh, He navDaq 'anglu', chu'qu' wa'DIch."
 
 #: components/project/backlog.tsx
+#: components/staff/launch-offers.tsx
 #: components/work/mentions.tsx
 msgid "Show"
 msgstr "yI'ang"
@@ -8765,6 +8878,10 @@ msgstr "tut Qav (rIn) Qav ratlh"
 msgid "the last column is Done and stays last: move the other columns around it"
 msgstr "tut Qav rIn 'oH 'ej Qav ratlh: retlhDaq latlh tutmey tIvIHmoH"
 
+#: components/staff/launch-offers.tsx
+msgid "The launch-offer flag is off, so nothing can be sent yet. Turn it on in flags.gg first."
+msgstr "launch-offer joqwI' chu'be'lu', vaj pagh ngeHlaHlu'. flags.gg Daq wa'DIch yIchu'."
+
 #: app/global-not-found.tsx
 msgid "The link may be old, or the address mistyped."
 msgstr "ngo' rarwI' net Sov, pagh Daq ghItlhlu'pu'bogh lughbe'."
@@ -8846,6 +8963,10 @@ msgstr "URL https 'oHnIS, pagh pegh Daq"
 #: components/settings/linear-import.tsx
 msgid "The whole {workspace} workspace becomes one project: each team a board, each Linear project an epic. The team with the most issues keeps its key and numbers; the others are numbered after it."
 msgstr "{workspace} vummeH Daq Hoch wa' jInmol moj: ghom Hoch Som moj, Linear jInmol Hoch epic moj. law'qu' Seghmey ghajbogh ghom ngaQHa'moHwI' mI'mey je pol; latlhpu' ghIq mI'mey Hevlu'."
+
+#: components/staff/launch-offers.tsx
+msgid "Their admins and members are told now, in the app and on their devices. Each organization can only be sent it once, and this can’t be undone."
+msgstr "DaH ja'lu' loHwI'pu' ghom'a' DaHjaj je, ghunmeH Daq jan Daq je. wa'logh neH ghom'a' vaD ngeHlaHlu', 'ej chegh choHlaHbe'lu'."
 
 #: components/settings/mcp-connect.tsx
 msgid "Then enable it under Settings → MCP."
