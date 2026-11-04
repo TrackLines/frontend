@@ -1,6 +1,6 @@
 import type { I18n } from '@lingui/core';
 import { msg } from '@lingui/core/macro';
-import type { Board, BoardStyle, WhenSprintEnds } from '../api';
+import type { Board, BoardStyle, FlagAction, WhenSprintEnds } from '../api';
 import type { EstimateScale } from './estimates';
 
 // The edit board page (TL-470) works on a draft: nothing reaches the backend until Save, which sends
@@ -14,6 +14,8 @@ export type DraftColumn = {
   name: string;
   wip: number | null;
   tickets: number; // in the current sprint: a column with any can't be removed
+  flag: FlagAction | ''; // what arriving does to a ticket's flags.gg flag (TL-790); '' = automatic
+  autoFlag?: FlagAction; // what automatic means for it, as saved (unknown for new columns)
 };
 // devComplete (TL-532): the column merged PRs move tickets to, until a release ships them; '' = merging finishes them
 // reviewColumn (TL-593): where agents' finished work waits for review; '' = the column before Done
@@ -26,7 +28,8 @@ export function draftOf(b: Board): Draft {
   return {
     name: b.name, style: b.style ?? 'sprints', scale: b.estimate_scale ?? 'none', agentReview: !!b.agent_review, devComplete: b.dev_complete_column_id ?? '', reviewColumn: b.review_column_id ?? '',
     whenSprintEnds: b.when_sprint_ends ?? 'start_next',
-    columns: (b.columns ?? []).map((c) => ({ key: c.id, id: c.id, name: c.name, wip: c.wip_limit ?? null, tickets: c.tickets.length })),
+    columns: (b.columns ?? []).map((c) => ({ key: c.id, id: c.id, name: c.name, wip: c.wip_limit ?? null, tickets: c.tickets.length,
+      flag: c.flag_action ?? '', autoFlag: c.flag_action ? undefined : c.flag_action_effective })),
   };
 }
 
@@ -61,7 +64,7 @@ export function pickReview(d: Draft, key: string): Draft {
 
 export function addColumn(d: Draft, name: string, key: string): Draft {
   const at = Math.max(d.columns.length - 1, 0); // before Done
-  const col: DraftColumn = { key, name: name.trim(), wip: null, tickets: 0 };
+  const col: DraftColumn = { key, name: name.trim(), wip: null, tickets: 0, flag: '' };
   return { ...d, columns: [...d.columns.slice(0, at), col, ...d.columns.slice(at)] };
 }
 
@@ -83,7 +86,7 @@ export function moveColumn(d: Draft, key: string, to: number): Draft {
   return { ...d, columns: cols };
 }
 
-export function changeColumn(d: Draft, key: string, change: Partial<Pick<DraftColumn, 'name' | 'wip'>>): Draft {
+export function changeColumn(d: Draft, key: string, change: Partial<Pick<DraftColumn, 'name' | 'wip' | 'flag'>>): Draft {
   return { ...d, columns: d.columns.map((c) => (c.key === key ? { ...c, ...change } : c)) };
 }
 
@@ -114,8 +117,8 @@ export function settingsPatch(d: Draft, was: Draft): { name?: string; style?: Bo
 }
 
 // layout is what PUT /boards/{id}/columns gets: every column in order (new ones without an id).
-export function layout(d: Draft): { id?: string; name: string; wip_limit: number | null }[] {
-  return d.columns.map((c, i) => ({ ...(c.id && { id: c.id }), name: c.name.trim(), wip_limit: movable(d, i) ? c.wip : null }));
+export function layout(d: Draft): { id?: string; name: string; wip_limit: number | null; flag_action: FlagAction | '' }[] {
+  return d.columns.map((c, i) => ({ ...(c.id && { id: c.id }), name: c.name.trim(), wip_limit: movable(d, i) ? c.wip : null, flag_action: c.flag }));
 }
 
 export const layoutChanged = (d: Draft, was: Draft) => JSON.stringify(layout(d)) !== JSON.stringify(layout(was));

@@ -8,7 +8,7 @@ import { When } from '@/components/common/when';
 import { Badge } from '@/components/ui/badge';
 import { useState, type MouseEvent } from 'react';
 import { Button } from '@/components/ui/button';
-import { PencilIcon } from 'lucide-react';
+import { FlagIcon, PencilIcon } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { personLabel } from '@/lib/work/people';
 import { usePeople } from '@/lib/hooks/use-people';
@@ -64,6 +64,8 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
           <PriorityBadge priority={ticket.priority} hideDefault />
           {ticket.blocked && <BlockedBadge />}
           <DueBadge due={ticket.due_date} done={!!ticket.done_at} />
+          {ticket.needs_flag && <FlagIcon className={`size-3.5 ${ticket.flag_error ? 'text-destructive' : 'text-muted-foreground'}`} role="img"
+            aria-label={ticket.flag_error ? t`Feature flag: ${ticket.flag_error}` : t`Feature flag ${ticket.flag_name ?? ''}`} />}
           <NeedsReviewBadge ticket={ticket} />
           {ticket.external_source === 'bugfixes' && <Badge variant="outline" title={t`Reported by Bugfixes`}>Bugfixes</Badge>}
           <span className="ml-auto flex shrink-0 items-center gap-1">

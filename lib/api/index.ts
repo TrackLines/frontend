@@ -31,6 +31,9 @@ export type Ticket = {
   duplicate_of_id?: string | null; duplicate_of_key?: string | null; duplicate_of_title?: string | null;
   review_requested_at?: string | null; // an agent finished it on a review board: waiting for a person
   timebox_days?: number | null; timebox_hours?: number | null; // a spike's timebox (TL-502); null = not a spike or not yet timed
+  // a flags.gg feature flag that follows it across the board (TL-791): name (the key lower-cased unless
+  // set; null while not needed), the last thing flags.gg refused, and when the flag was made (name locked)
+  needs_flag?: boolean; flag_name?: string | null; flag_agent_id?: string | null; flag_error?: string | null; flag_created_at?: string | null;
 };
 // A project ticket not on any board or sprint yet.
 export type BacklogTicket = Omit<Ticket, 'column_id'> & { column_id: null; project_id: string; type: TicketType };
@@ -45,7 +48,12 @@ export type Sprint = {
   starts_at: string; ends_at: string; closed_at: string | null;
   goal?: string; // one line the sprint is for; "" = none
 };
-export type Column = { id: string; name: string; position: number; tickets: Ticket[]; wip_limit?: number | null };
+export type Column = {
+  id: string; name: string; position: number; tickets: Ticket[]; wip_limit?: number | null;
+  flag_action?: FlagAction | null; flag_action_effective?: FlagAction; // TL-790: null = automatic
+};
+// What a column does to an arriving ticket's flags.gg flag (TL-790).
+export type FlagAction = 'none' | 'promote' | 'promote_to_production' | 'archive';
 export type BoardStyle = 'sprints' | 'kanban';
 export type WhenSprintEnds = 'start_next' | 'wait';
 export type Board = {
@@ -463,7 +471,7 @@ export const columns = {
   remove: (id: string, token: T) => api<void>(`/columns/${id}`, { method: 'DELETE', token }),
   reorder: (boardId: string, ids: string[], token: T) => api<void>(`/boards/${boardId}/columns/order`, { method: 'PUT', body: { column_ids: ids }, token }),
   // the edit board page's save: every column in order, new ones without an id (TL-470)
-  layout: (boardId: string, cols: { id?: string; name: string; wip_limit: number | null }[], token: T) =>
+  layout: (boardId: string, cols: { id?: string; name: string; wip_limit: number | null; flag_action?: FlagAction | '' }[], token: T) =>
     api<void>(`/boards/${boardId}/columns`, { method: 'PUT', body: { columns: cols }, token }),
 };
 
@@ -540,9 +548,9 @@ export const tickets = {
   assign: (id: string, assignee: string | null, token: T) => api<Ticket>(`/tickets/${id}/assignee`, { method: 'PUT', body: { assignee }, token }),
   assignees: (token: T) => api<Assignee[]>('/assignees', { token }),
   // on the sprint's last day the ticket goes to the backlog instead: column_id null, redirected_to_backlog
-  create: (columnId: string, t: { title: string; description?: string; type?: TicketType; priority?: string; labels?: string[]; estimate?: string; timebox_days?: number; timebox_hours?: number; due_date?: string }, token: T) =>
+  create: (columnId: string, t: { title: string; description?: string; type?: TicketType; priority?: string; labels?: string[]; estimate?: string; timebox_days?: number; timebox_hours?: number; due_date?: string; needs_flag?: boolean; flag_name?: string }, token: T) =>
     api<Ticket & { redirected_to_backlog?: boolean }>(`/columns/${columnId}/tickets`, { method: 'POST', body: t, token }),
-  update: (id: string, t: { title: string; description: string; type?: TicketType; priority?: string; estimate?: string; timebox_days?: number; timebox_hours?: number; due_date?: string }, token: T) => api<void>(`/tickets/${id}`, { method: 'PATCH', body: t, token }),
+  update: (id: string, t: { title: string; description: string; type?: TicketType; priority?: string; estimate?: string; timebox_days?: number; timebox_hours?: number; due_date?: string; needs_flag?: boolean; flag_name?: string }, token: T) => api<void>(`/tickets/${id}`, { method: 'PATCH', body: t, token }),
   setLabels: (id: string, labels: string[], token: T) => api<{ labels: string[] }>(`/tickets/${id}/labels`, { method: 'PUT', body: { labels }, token }),
   remove: (id: string, token: T) => api<void>(`/tickets/${id}`, { method: 'DELETE', token }),
   // dependencies: replace what ticket {id} waits on (same project, no loops); claim is refused while blocked
@@ -689,7 +697,7 @@ export const backlog = {
     if (q.epic) params.set('epic', q.epic); // an epic's sub-tickets only (TL-215)
     return api<BacklogPage>(`/projects/${projectId}/backlog/page?${params}`, { token });
   },
-  create: (projectId: string, t: { title: string; description?: string; type: TicketType; priority?: string; labels?: string[]; timebox_days?: number; timebox_hours?: number; due_date?: string }, token: T) =>
+  create: (projectId: string, t: { title: string; description?: string; type: TicketType; priority?: string; labels?: string[]; timebox_days?: number; timebox_hours?: number; due_date?: string; needs_flag?: boolean; flag_name?: string }, token: T) =>
     api<BacklogTicket>(`/projects/${projectId}/backlog`, { method: 'POST', body: t, token }),
   // its open sub-tickets on the board go too (TL-218): also_moved lists them
   send: (ticketId: string, token: T) => api<{ also_moved?: MovedTicket[] } | undefined>(`/tickets/${ticketId}/backlog`, { method: 'POST', token }),
@@ -754,6 +762,32 @@ export const integrations = {
   complete: (provider: 'github' | 'bitbucket', input: { state: string; installation_id?: string; code?: string }, token: T) =>
     api<void>(`/integrations/${provider}/complete`, { method: 'POST', body: input, token }),
   repos: (provider: 'github' | 'bitbucket', token: T) => api<GitRepo[]>(`/integrations/${provider}/repos`, { token }),
+};
+
+// flags.gg (TL-790, TL-791): the org connects with an integration token; each project picks the agent its
+// tickets' flags go in; a ticket's flag is read and toggled through us (the token stays on the server).
+export type FlagAgent = {
+  project_id: string; project_name: string; agent_id: string; agent_name: string;
+  environments: { environment_id: string; name: string; level: number; production?: boolean }[];
+};
+export type FlagsStatus = { provider: 'flags'; connected: boolean; base_url?: string; updated_by?: string; updated_at?: string; agents?: FlagAgent[]; agents_error?: string };
+export type ProjectFlags = { agent_id: string | null; cleanup_days: number };
+export type TicketFlag = {
+  ticket: string; name: string; agent_id: string;
+  environments: { environment_id: string; name: string; level: number; present: boolean; enabled: boolean; production?: boolean }[];
+};
+
+export const flags = {
+  status: (token: T) => api<FlagsStatus>('/integrations/flags', { token }),
+  connect: (input: { token: string; base_url?: string }, token: T) => api<FlagsStatus>('/integrations/flags', { method: 'PUT', body: input, token }),
+  disconnect: (token: T) => api<void>('/integrations/flags', { method: 'DELETE', token }),
+  project: (projectId: string, token: T) => api<ProjectFlags>(`/projects/${projectId}/flags`, { token }),
+  setProject: (projectId: string, input: { agent_id?: string; cleanup_days?: number }, token: T) =>
+    api<ProjectFlags>(`/projects/${projectId}/flags`, { method: 'PUT', body: input, token }),
+  ticket: (id: string, token: T) => api<TicketFlag>(`/tickets/${id}/flag`, { token }),
+  toggle: (id: string, environmentId: string, enabled: boolean, token: T) =>
+    api<TicketFlag>(`/tickets/${id}/flag`, { method: 'PATCH', body: { environment_id: environmentId, enabled }, token }),
+  remove: (id: string, token: T) => api<void>(`/tickets/${id}/flag`, { method: 'DELETE', token }),
 };
 
 export const projectRepos = {

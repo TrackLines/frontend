@@ -15,6 +15,7 @@ import { AssigneeSelect } from '@/components/ticket/assignee-select';
 import { LabelDrawer } from '@/components/ticket/labels';
 import { Attachments } from '@/components/ticket/attachments';
 import { BugfixesPanel } from '@/components/ticket/bugfixes-panel';
+import { NeedsFlagField, TicketFlagPanel, useFlagsConnected } from '@/components/flags/flags';
 import { PullRequestsPanel } from '@/components/ticket/pull-requests-panel';
 import { attachAll, PendingAttachments, type PendingFile } from '@/components/ticket/pending-attachments';
 import { TypePicker } from '@/components/ticket/ticket-type';
@@ -74,6 +75,12 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
   const [timeboxDays, setTimeboxDays] = useState(ticket?.timebox_days ?? 0); // spike timebox (TL-502)
   const [timeboxHours, setTimeboxHours] = useState(ticket?.timebox_hours ?? 0);
   const [dueDate, setDueDate] = useState(ticket?.due_date ?? ''); // TL-632; "" = none
+  // a flags.gg flag that follows the ticket (TL-791); flagName "" = the key lower-cased
+  const flagsOn = useFlagsConnected(token);
+  const customFlagName = (x?: Ticket) => (x?.flag_name && x.flag_name !== x.key?.toLowerCase() ? x.flag_name : '');
+  const [needsFlag, setNeedsFlag] = useState(!!ticket?.needs_flag);
+  const [flagName, setFlagName] = useState(customFlagName(ticket));
+  const flagLocked = !!ticket?.flag_created_at;
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -110,6 +117,8 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
       setTimeboxDays(ticket?.timebox_days ?? 0);
       setTimeboxHours(ticket?.timebox_hours ?? 0);
       setDueDate(ticket?.due_date ?? '');
+      setNeedsFlag(!!ticket?.needs_flag);
+      setFlagName(customFlagName(ticket));
       setConfirmDelete(false);
       setMoving(false);
       setWontDo(null);
@@ -160,12 +169,14 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
       // a spike's timebox (TL-502); other types don't carry one, so clear it (0/0) if the type changed away
       const timebox = type === 'spike' ? { timebox_days: timeboxDays, timebox_hours: timeboxHours } : { timebox_days: 0, timebox_hours: 0 };
       if (ticket) {
-        await tickets.update(ticket.id, { title: cleanTitle, description: description.trim(), type, priority, ...(estimating && { estimate }), ...timebox, due_date: dueDate }, token);
+        const flag = flagsOn ? { needs_flag: needsFlag, ...(needsFlag && !flagLocked && { flag_name: flagName.trim() }) } : {};
+        await tickets.update(ticket.id, { title: cleanTitle, description: description.trim(), type, priority, ...(estimating && { estimate }), ...timebox, due_date: dueDate, ...flag }, token);
         const result = await tickets.setLabels(ticket.id, labels, token);
         if (leavesBoard && onSentToBacklog) onSentToBacklog(ticket.id); // now an epic, in the backlog
-        else onSaved({ ...ticket, title: cleanTitle, description: description.trim(), type, priority, labels: result.labels, ...(estimating && { estimate: estimate || null }), ...(type === 'epic' && { estimate: null }), timebox_days: type === 'spike' ? timeboxDays || null : null, timebox_hours: type === 'spike' ? timeboxHours || null : null, due_date: dueDate || null });
+        else onSaved({ ...ticket, title: cleanTitle, description: description.trim(), type, priority, labels: result.labels, ...(estimating && { estimate: estimate || null }), ...(type === 'epic' && { estimate: null }), timebox_days: type === 'spike' ? timeboxDays || null : null, timebox_hours: type === 'spike' ? timeboxHours || null : null, due_date: dueDate || null,
+          ...(flagsOn && { needs_flag: needsFlag, flag_name: needsFlag ? (flagLocked ? ticket.flag_name : flagName.trim() || ticket.key?.toLowerCase()) ?? null : null }) });
       } else {
-        const input = { title: cleanTitle, description: description.trim(), type, priority, labels, ...(estimating && estimate && columnId && { estimate }), ...(type === 'spike' && { timebox_days: timeboxDays, timebox_hours: timeboxHours }), ...(dueDate && { due_date: dueDate }) };
+        const input = { title: cleanTitle, description: description.trim(), type, priority, labels, ...(estimating && estimate && columnId && { estimate }), ...(type === 'spike' && { timebox_days: timeboxDays, timebox_hours: timeboxHours }), ...(dueDate && { due_date: dueDate }), ...(flagsOn && needsFlag && { needs_flag: true, ...(flagName.trim() && { flag_name: flagName.trim() }) }) };
         const created = columnId ? await tickets.create(columnId, input, token) : (await backlog.create(projectId ?? '', input, token)) as unknown as Ticket;
         await attachAll(created.id, files, token); // failures are visible on the ticket's attachment list
         setFiles([]);
@@ -294,6 +305,10 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
               <Trans>Making it an epic moves it to the backlog and clears its estimate. Its sub-tickets stay where they are.</Trans>
             </p>
           )}
+          {flagsOn && (
+            <NeedsFlagField needs={needsFlag} name={flagLocked ? ticket?.flag_name ?? '' : flagName} locked={flagLocked} onNeeds={setNeedsFlag} onName={setFlagName}
+              placeholder={ticket?.key?.toLowerCase() ?? t`the ticket’s key, lower-cased`} />
+          )}
           <LabelDrawer projectId={projectId ?? ticket?.project_id ?? ''} token={token} labels={labels} onChange={setLabels} disabled={saving || deleting} />
           {ticket && (
             // saves straight away (not with the form) — same as claiming
@@ -303,6 +318,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
             </label>
           )}
           {ticket && <BugfixesPanel ticket={ticket} token={token} />}
+          {ticket && <TicketFlagPanel ticket={ticket} token={token} onRemoved={() => { setNeedsFlag(false); onSaved({ ...ticket, needs_flag: false, flag_name: null }); }} />}
           {ticket ? <Attachments ticketId={ticket.id} token={token} locked={done} /> : <PendingAttachments files={files} onChange={setFiles} projectId={projectId ?? ''} />}
           {ticket && <PullRequestsPanel ticketId={ticket.id} token={token} />}
           {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
