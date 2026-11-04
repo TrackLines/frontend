@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { ApiError, boards, boardTemplates, columns, flags, organization, type Board, type BoardStyle, type WhenSprintEnds } from '@/lib/api';
+import { ApiError, boards, boardTemplates, columns, flags, organization, type Board, type BoardStyle, type FlagAgent, type WhenSprintEnds } from '@/lib/api';
 import { canManageBoard } from '@/lib/board/board-access';
 import { devComplete, devCompleteOptions, dirty, draftOf, layout, layoutChanged, problem, settingsPatch, type Draft } from '@/lib/board/board-edit';
 import { SCALES, type EstimateScale } from '@/lib/board/estimates';
@@ -42,11 +42,12 @@ export default function EditBoardPage() {
   const [error, setError] = useState('');
   const [savingTemplate, setSavingTemplate] = useState(false);
   const [flagsOn, setFlagsOn] = useState(false); // flags.gg connected: columns say what they do to flags (TL-790)
+  const [flagAgents, setFlagAgents] = useState<FlagAgent[]>([]); // what the board's flags can go in (TL-805)
 
   async function load() {
     try {
       const [b, me] = await Promise.all([boards.get(id, token), organization.me(token)]);
-      flags.status(token).then((s) => setFlagsOn(s.connected), () => setFlagsOn(false));
+      flags.status(token).then((s) => { setFlagsOn(s.connected); setFlagAgents(s.agents ?? []); }, () => setFlagsOn(false));
       setBoard(b);
       setRole(me);
       const d = draftOf(b);
@@ -91,6 +92,7 @@ export default function EditBoardPage() {
       const patch = settingsPatch(draft, was);
       if (patch) await boards.update(board.id, patch, token!);
       if (layoutChanged(draft, was)) await columns.layout(board.id, layout(draft), token!);
+      if (draft.flagsAgent !== was.flagsAgent) await flags.setBoard(board.id, draft.flagsAgent, token!);
       router.push(back);
     } catch (err) {
       setError(err instanceof ApiError && err.status < 500 && err.message ? err.message : t`Couldn’t save the board. Please try again.`);
@@ -142,6 +144,21 @@ export default function EditBoardPage() {
       <span className="text-xs text-muted-foreground"><Trans>On merge: a merged pull request moves its tickets to Done. Pick a column and they go there instead, then to Done once a GitHub release ships them.</Trans></span>
     </div>
   );
+  // TL-805: flags.gg agents are per board in practice (frontend agent = Frontend board)
+  const agentItems: Record<string, string> = { project: t`The project’s`, ...Object.fromEntries(flagAgents.map((a) => [a.agent_id, `${a.project_name} · ${a.agent_name}`])) };
+  const flagsField = flagsOn && (
+    <div className="grid gap-1.5 text-sm">
+      <span className="font-medium"><Trans>Feature flags</Trans></span>
+      <Select items={agentItems} value={draft.flagsAgent || 'project'} onValueChange={(v) => setDraft({ ...draft, flagsAgent: !v || v === 'project' ? '' : v })}>
+        <SelectTrigger aria-label={t`flags.gg application`} className="w-full max-w-md"><SelectValue /></SelectTrigger>
+        <SelectContent>
+          <SelectItem value="project"><Trans>The project’s</Trans></SelectItem>
+          {flagAgents.map((a) => <SelectItem key={a.agent_id} value={a.agent_id}>{agentItems[a.agent_id]}</SelectItem>)}
+        </SelectContent>
+      </Select>
+      <span className="text-xs text-muted-foreground"><Trans>The flags.gg application this board’s tickets get their flags in, usually one per board. The project’s is set on Edit project.</Trans></span>
+    </div>
+  );
   const columnsHelp = (
     <>
       <p className="text-sm text-muted-foreground"><Trans>Drag to reorder. WIP limits are for the columns in between: the first is waiting work, and the last is Done.</Trans></p>
@@ -185,6 +202,7 @@ export default function EditBoardPage() {
             { id: 'estimates', label: t`Estimates`, content: estimatesField },
             { id: 'review', label: t`Agent review`, content: reviewField },
             ...(releaseField ? [{ id: 'release', label: t`Finish on release`, content: releaseField }] : []),
+            ...(flagsField ? [{ id: 'flags', label: t`Feature flags`, content: flagsField }] : []),
             ...(sprintRunning ? [{ id: 'sprint', label: t`Current sprint`, hint: sprintHint, content: sprintBar }] : []),
           ]} />
           <SettingsCard wide icon={ColumnsIcon} title={t`Columns`} description={t`The board’s columns, in order, with their WIP limits.`}>
@@ -203,6 +221,7 @@ export default function EditBoardPage() {
             {estimatesField}
             {reviewField}
             {releaseField}
+            {flagsField}
           </section>
 
           <section aria-labelledby="columns" className="grid gap-3">

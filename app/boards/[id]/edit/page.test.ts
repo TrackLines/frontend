@@ -9,3 +9,10 @@ test('grouped Edit board: one Settings panel with the current sprint in it, Colu
   expect(page).toContain('title={t`More`}');
   expect(page).toContain('aria-labelledby="columns"'); // flag off: the old sections stay
 });
+
+test('a board picks its flags.gg agent while flags.gg is connected, saved through its own call (TL-805)', async () => {
+  const page = await Bun.file(new URL('./page.tsx', import.meta.url)).text();
+  expect(page).toContain('const flagsField = flagsOn && (');
+  expect(page).toContain("id: 'flags'");
+  expect(page).toContain('if (draft.flagsAgent !== was.flagsAgent) await flags.setBoard(board.id, draft.flagsAgent, token!);');
+});

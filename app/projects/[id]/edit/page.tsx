@@ -91,7 +91,7 @@ export default function EditProjectPage() {
           <ProjectRepositories projectId={project.id} token={token} admin={admin} />
         </TabsContent>
         <TabsContent value="flags" className="grid gap-3 pt-3">
-          <p className="text-sm text-muted-foreground"><Trans>Tickets that need a feature flag get one in this flags.gg application. Which columns promote it is set on each board’s Edit page.</Trans></p>
+          <p className="text-sm text-muted-foreground"><Trans>Tickets that need a feature flag get one in this flags.gg application, unless their board picks its own. Each board’s Edit page sets its application and which columns promote the flag.</Trans></p>
           <ProjectFlagsSettings token={token} projectId={project.id} canManage={admin} />
         </TabsContent>
       </Tabs>

@@ -4277,6 +4277,7 @@ msgstr "Feature-Flag {0}"
 msgid "Feature flag: {0}"
 msgstr "Feature-Flag: {0}"
 
+#: app/boards/[id]/edit/page.tsx
 #: components/settings/integrations.tsx
 msgid "Feature flags"
 msgstr "Feature-Flags"
@@ -4426,6 +4427,10 @@ msgstr "Flag-Name <0>(was der Code prüft)</0>"
 #: app/boards/[id]/edit/page.tsx
 msgid "Flag: what a ticket that needs a feature flag gets in flags.gg when it arrives. Automatic promotes from Testing or QA columns, and to production from the Dev complete column."
 msgstr "Flag: was ein Ticket mit Feature-Flag in flags.gg bekommt, wenn es hier ankommt. Automatisch befördert aus Testing- oder QA-Spalten und aus der Dev-complete-Spalte in Produktion."
+
+#: app/boards/[id]/edit/page.tsx
+msgid "flags.gg application"
+msgstr "flags.gg-Anwendung"
 
 #: components/flags/flags.tsx
 msgid "flags.gg couldn’t list its applications just now."
@@ -9070,6 +9075,10 @@ msgstr "das Flag gibt es in flags.gg schon: sein Name kann sich nicht ändern"
 msgid "the flag isn't in flags.gg yet: it's made when the ticket goes onto a board"
 msgstr "das Flag ist noch nicht in flags.gg: es wird angelegt, wenn das Ticket auf ein Board kommt"
 
+#: app/boards/[id]/edit/page.tsx
+msgid "The flags.gg application this board’s tickets get their flags in, usually one per board. The project’s is set on Edit project."
+msgstr "Die flags.gg-Anwendung, in der die Tickets dieses Boards ihre Flags bekommen, meist eine pro Board. Die des Projekts wird unter Projekt bearbeiten festgelegt."
+
 #: components/intake/intake-settings.tsx
 msgid "The form is closed."
 msgstr "Das Formular ist geschlossen."
@@ -9146,6 +9155,10 @@ msgstr "Das ursprüngliche Ticket darf selbst kein Duplikat sein."
 #: app/r/[id]/locked.tsx
 msgid "The owner has shared this roadmap with signed-in users only."
 msgstr "Die Inhaberin oder der Inhaber hat diese Roadmap nur mit angemeldeten Nutzern geteilt."
+
+#: app/boards/[id]/edit/page.tsx
+msgid "The project’s"
+msgstr "Die des Projekts"
 
 #: app/projects/[id]/edit/page.tsx
 msgid "The project’s boards, and what reaches beyond it: the request form, embedding and export."
@@ -9574,8 +9587,8 @@ msgid "tickets planned, across {0, plural, one {# sprint} other {# sprints}}"
 msgstr "Tickets geplant, über {0, plural, one {# Sprint} other {# Sprints}}"
 
 #: app/projects/[id]/edit/page.tsx
-msgid "Tickets that need a feature flag get one in this flags.gg application. Which columns promote it is set on each board’s Edit page."
-msgstr "Tickets, die ein Feature-Flag brauchen, bekommen es in dieser flags.gg-Anwendung. Welche Spalten es befördern, legst du auf der Bearbeiten-Seite jedes Boards fest."
+msgid "Tickets that need a feature flag get one in this flags.gg application, unless their board picks its own. Each board’s Edit page sets its application and which columns promote the flag."
+msgstr "Tickets, die ein Feature-Flag brauchen, bekommen es in dieser flags.gg-Anwendung, außer ihr Board wählt eine eigene. Auf der Bearbeiten-Seite jedes Boards werden seine Anwendung und die Spalten festgelegt, die das Flag weiterschalten."
 
 #: components/reports/report-view.tsx
 msgid "tickets unfinished at the end"

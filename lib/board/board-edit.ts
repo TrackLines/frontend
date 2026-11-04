@@ -20,14 +20,15 @@ export type DraftColumn = {
 // devComplete (TL-532): the column merged PRs move tickets to, until a release ships them; '' = merging finishes them
 // reviewColumn (TL-593): where agents' finished work waits for review; '' = the column before Done
 // whenSprintEnds (TL-279): start the next sprint as one ends, or end it and wait for a manager
-export type Draft = { name: string; style: BoardStyle; scale: EstimateScale; agentReview: boolean; devComplete: string; reviewColumn: string; whenSprintEnds: WhenSprintEnds; columns: DraftColumn[] };
+// flagsAgent (TL-805): the board's flags.gg agent; '' = the project's
+export type Draft = { name: string; style: BoardStyle; scale: EstimateScale; agentReview: boolean; devComplete: string; reviewColumn: string; whenSprintEnds: WhenSprintEnds; flagsAgent: string; columns: DraftColumn[] };
 
 export const MAX_COLUMN_NAME = 80; // the backend's columns.maxColumnName
 
 export function draftOf(b: Board): Draft {
   return {
     name: b.name, style: b.style ?? 'sprints', scale: b.estimate_scale ?? 'none', agentReview: !!b.agent_review, devComplete: b.dev_complete_column_id ?? '', reviewColumn: b.review_column_id ?? '',
-    whenSprintEnds: b.when_sprint_ends ?? 'start_next',
+    whenSprintEnds: b.when_sprint_ends ?? 'start_next', flagsAgent: b.flags_agent_id ?? '',
     columns: (b.columns ?? []).map((c) => ({ key: c.id, id: c.id, name: c.name, wip: c.wip_limit ?? null, tickets: c.tickets.length,
       flag: c.flag_action ?? '', autoFlag: c.flag_action ? undefined : c.flag_action_effective })),
   };
@@ -122,4 +123,4 @@ export function layout(d: Draft): { id?: string; name: string; wip_limit: number
 }
 
 export const layoutChanged = (d: Draft, was: Draft) => JSON.stringify(layout(d)) !== JSON.stringify(layout(was));
-export const dirty = (d: Draft, was: Draft) => settingsPatch(d, was) !== null || layoutChanged(d, was);
+export const dirty = (d: Draft, was: Draft) => settingsPatch(d, was) !== null || layoutChanged(d, was) || d.flagsAgent !== was.flagsAgent;
