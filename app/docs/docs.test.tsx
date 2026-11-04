@@ -155,3 +155,12 @@ test('the MCP guide: the pre-prompt’s version, earlier versions, and each vers
     globalThis.fetch = realFetch;
   }
 });
+
+test('the feature flags guide: connecting, column actions, and what each move does (TL-796)', async () => {
+  const { default: FlagsDocs, lifecycle } = await import('./flags/page');
+  const html = renderToStaticMarkup(<FlagsDocs />);
+  for (const s of ['Company → Integrations', 'Settings → Integrations → Feature flags', 'Edit project → Integrations → flags.gg', 'Needs a feature flag', 'Remove flag']) expect(html).toContain(s);
+  for (const l of lifecycle) expect(html).toContain(l.when.replace(/’/g, '’'));
+  expect(lifecycle.find((l) => l.when.startsWith('It moves back'))?.does).toContain('Nothing');
+  expect(guides.map((g) => g.slug)).toContain('flags');
+});
