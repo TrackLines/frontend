@@ -6,11 +6,14 @@ import { Plural, Trans, useLingui } from '@lingui/react/macro';
 import { useFlags } from '@flags-gg/react-library';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { ColumnsIcon, EllipsisIcon, SettingsIcon } from 'lucide-react';
 import { BoardLifecycle } from '@/components/board/board-lifecycle';
 import { ColumnList } from '@/components/board/column-list';
 import { SprintBar } from '@/components/sprint/sprint-bar';
 import { NameDialog } from '@/components/common/name-dialog';
 import { BoardSkeleton } from '@/components/layout/page-skeletons';
+import { SettingsCard } from '@/components/settings/settings-card';
+import { TabbedCard } from '@/components/settings/tabbed-card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -98,8 +101,69 @@ export default function EditBoardPage() {
   }
   const leave = () => { if (!changed || confirm(t`Leave without saving your changes?`)) router.push(back); };
 
+  const nameField = (
+    <label className="grid gap-1.5 text-sm font-medium">
+      <Trans>Name</Trans>
+      <Input value={draft.name} maxLength={120} onChange={(e) => setDraft({ ...draft, name: e.target.value })} className="max-w-sm" />
+    </label>
+  );
+  const styleField = <Choice label={t`Style`} hint={t`Sprints: time boxes. Kanban: continuous flow.`} value={draft.style}
+    options={[['sprints', t`Sprints`], ['kanban', t`Kanban`]]} onChange={(v) => setDraft({ ...draft, style: v as BoardStyle })} />;
+  // TL-279: a sprint board's choice, as in Jira; kanban has no sprints to end
+  const endingField = draft.style === 'sprints' && (
+    <Choice label={t`When a sprint ends`} hint={draft.whenSprintEnds === 'wait'
+      ? t`Unfinished tickets wait on the board, and the board's managers are told to start the next sprint.`
+      : t`The next sprint starts straight away, with unfinished tickets carried over.`} value={draft.whenSprintEnds}
+      options={[['start_next', t`Start the next one`], ['wait', t`Wait for a manager`]]} onChange={(v) => setDraft({ ...draft, whenSprintEnds: v as WhenSprintEnds })} />
+  );
+  const estimatesField = (
+    <div className="grid gap-1.5 text-sm">
+      <span className="font-medium"><Trans>Estimates</Trans></span>
+      <Select items={Object.fromEntries(SCALES.map((s) => [s.value, i18n._(s.label)]))} value={draft.scale} onValueChange={(v) => v && setDraft({ ...draft, scale: v as EstimateScale })}>
+        <SelectTrigger aria-label={t`Estimate scale`} className="w-48"><SelectValue /></SelectTrigger>
+        <SelectContent>{SCALES.map((s) => <SelectItem key={s.value} value={s.value}>{i18n._(s.label)}</SelectItem>)}</SelectContent>
+      </Select>
+      {clearsEstimates && <span role="status" className="text-destructive"><Trans>Saving clears <Plural value={estimated} one="# estimate" other="# estimates" /> on open tickets.</Trans></span>}
+    </div>
+  );
+  const reviewField = <Choice label={t`Agent work needs review`} hint={t`An AI agent's ticket moved to Done waits for a person to approve it.`} value={draft.agentReview ? 'on' : 'off'}
+    options={[['off', t`Off`], ['on', t`On`]]} onChange={(v) => setDraft({ ...draft, agentReview: v === 'on' })} />;
+  const releaseField = is('release-done').enabled() && (
+    <div className="grid gap-1.5 text-sm">
+      <span className="font-medium"><Trans>Finish tickets on release</Trans></span>
+      <Select items={{ merge: t`On merge`, ...Object.fromEntries(devCompleteOptions(draft).map((c) => [c.id!, c.name])) }} value={devComplete(draft) || 'merge'}
+        onValueChange={(v) => setDraft({ ...draft, devComplete: !v || v === 'merge' ? '' : v })}>
+        <SelectTrigger aria-label={t`Finish tickets on release`} className="w-48"><SelectValue /></SelectTrigger>
+        <SelectContent>
+          <SelectItem value="merge"><Trans>On merge</Trans></SelectItem>
+          {devCompleteOptions(draft).map((c) => <SelectItem key={c.id} value={c.id!}>{c.name}</SelectItem>)}
+        </SelectContent>
+      </Select>
+      <span className="text-xs text-muted-foreground"><Trans>On merge: a merged pull request moves its tickets to Done. Pick a column and they go there instead, then to Done once a GitHub release ships them.</Trans></span>
+    </div>
+  );
+  const columnsHelp = (
+    <>
+      <p className="text-sm text-muted-foreground"><Trans>Drag to reorder. WIP limits are for the columns in between: the first is waiting work, and the last is Done.</Trans></p>
+      {draft.agentReview && <p className="text-sm text-muted-foreground"><Trans>The robot marks the column where an agent’s finished ticket waits for a person’s review. Pick another column with its crossed-out robot.</Trans></p>}
+      {flagsOn && <p className="text-sm text-muted-foreground"><Trans>Flag: what a ticket that needs a feature flag gets in flags.gg when it arrives. Automatic promotes from Testing or QA columns, and to production from the Dev complete column.</Trans></p>}
+    </>
+  );
+  const columnList = <ColumnList draft={draft} onChange={setDraft} flags={flagsOn} />;
+  const sprintRunning = draft.style === 'sprints' && board.style === 'sprints';
+  const sprintHint = <Trans>Changing the length or goal applies straight away.</Trans>;
+  const sprintBar = <div className="rounded-xl border"><SprintBar board={board} token={token} canManage editMode onChanged={() => void load()} /></div>;
+  const moreHint = <Trans>These act straight away.</Trans>;
+  const moreButtons = (
+    <div className="flex flex-wrap gap-2">
+      {role.admin && <Button type="button" variant="outline" size="sm" onClick={() => setSavingTemplate(true)}><Trans>Save as template</Trans></Button>}
+      <BoardLifecycle board={board} isAdmin={role.admin} canManage token={token} />
+    </div>
+  );
+  const grouped = is('grouped-edit-pages').enabled(); // TL-803: Settings, Columns and More panels
+
   return (
-    <main className="mx-auto grid max-w-3xl gap-8 px-6 py-10">
+    <main className={`mx-auto grid gap-8 px-6 py-10 ${grouped ? 'max-w-6xl' : 'max-w-3xl'}`}>
       <header className="grid gap-2">
         <button type="button" onClick={leave} className="w-fit text-sm text-muted-foreground hover:underline">← <Trans>Back to the board</Trans></button>
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -112,71 +176,56 @@ export default function EditBoardPage() {
         {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       </header>
 
-      <section aria-labelledby="settings" className="grid gap-4">
-        <h2 id="settings" className="text-lg font-semibold"><Trans>Settings</Trans></h2>
-        <label className="grid gap-1.5 text-sm font-medium">
-          <Trans>Name</Trans>
-          <Input value={draft.name} maxLength={120} onChange={(e) => setDraft({ ...draft, name: e.target.value })} className="max-w-sm" />
-        </label>
-        <Choice label={t`Style`} hint={t`Sprints: time boxes. Kanban: continuous flow.`} value={draft.style}
-          options={[['sprints', t`Sprints`], ['kanban', t`Kanban`]]} onChange={(v) => setDraft({ ...draft, style: v as BoardStyle })} />
-        {/* TL-279: a sprint board's choice, as in Jira; kanban has no sprints to end */}
-        {draft.style === 'sprints' && (
-          <Choice label={t`When a sprint ends`} hint={draft.whenSprintEnds === 'wait'
-            ? t`Unfinished tickets wait on the board, and the board's managers are told to start the next sprint.`
-            : t`The next sprint starts straight away, with unfinished tickets carried over.`} value={draft.whenSprintEnds}
-            options={[['start_next', t`Start the next one`], ['wait', t`Wait for a manager`]]} onChange={(v) => setDraft({ ...draft, whenSprintEnds: v as WhenSprintEnds })} />
-        )}
-        <div className="grid gap-1.5 text-sm">
-          <span className="font-medium"><Trans>Estimates</Trans></span>
-          <Select items={Object.fromEntries(SCALES.map((s) => [s.value, i18n._(s.label)]))} value={draft.scale} onValueChange={(v) => v && setDraft({ ...draft, scale: v as EstimateScale })}>
-            <SelectTrigger aria-label={t`Estimate scale`} className="w-48"><SelectValue /></SelectTrigger>
-            <SelectContent>{SCALES.map((s) => <SelectItem key={s.value} value={s.value}>{i18n._(s.label)}</SelectItem>)}</SelectContent>
-          </Select>
-          {clearsEstimates && <span role="status" className="text-destructive"><Trans>Saving clears <Plural value={estimated} one="# estimate" other="# estimates" /> on open tickets.</Trans></span>}
-        </div>
-        <Choice label={t`Agent work needs review`} hint={t`An AI agent's ticket moved to Done waits for a person to approve it.`} value={draft.agentReview ? 'on' : 'off'}
-          options={[['off', t`Off`], ['on', t`On`]]} onChange={(v) => setDraft({ ...draft, agentReview: v === 'on' })} />
-        {is('release-done').enabled() && (
-          <div className="grid gap-1.5 text-sm">
-            <span className="font-medium"><Trans>Finish tickets on release</Trans></span>
-            <Select items={{ merge: t`On merge`, ...Object.fromEntries(devCompleteOptions(draft).map((c) => [c.id!, c.name])) }} value={devComplete(draft) || 'merge'}
-              onValueChange={(v) => setDraft({ ...draft, devComplete: !v || v === 'merge' ? '' : v })}>
-              <SelectTrigger aria-label={t`Finish tickets on release`} className="w-48"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="merge"><Trans>On merge</Trans></SelectItem>
-                {devCompleteOptions(draft).map((c) => <SelectItem key={c.id} value={c.id!}>{c.name}</SelectItem>)}
-              </SelectContent>
-            </Select>
-            <span className="text-xs text-muted-foreground"><Trans>On merge: a merged pull request moves its tickets to Done. Pick a column and they go there instead, then to Done once a GitHub release ships them.</Trans></span>
-          </div>
-        )}
-      </section>
+      {grouped ? (
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <TabbedCard icon={SettingsIcon} title={t`Settings`} description={t`How the board works. Saved with Save, except the current sprint, which changes straight away.`} tabs={[
+            { id: 'name', label: t`Name`, content: nameField },
+            { id: 'style', label: t`Style`, content: styleField },
+            ...(endingField ? [{ id: 'ending', label: t`When a sprint ends`, content: endingField }] : []),
+            { id: 'estimates', label: t`Estimates`, content: estimatesField },
+            { id: 'review', label: t`Agent review`, content: reviewField },
+            ...(releaseField ? [{ id: 'release', label: t`Finish on release`, content: releaseField }] : []),
+            ...(sprintRunning ? [{ id: 'sprint', label: t`Current sprint`, hint: sprintHint, content: sprintBar }] : []),
+          ]} />
+          <SettingsCard wide icon={ColumnsIcon} title={t`Columns`} description={t`The board’s columns, in order, with their WIP limits.`}>
+            {columnsHelp}
+            {columnList}
+          </SettingsCard>
+          <SettingsCard wide icon={EllipsisIcon} title={t`More`} description={moreHint}>{moreButtons}</SettingsCard>
+        </ul>
+      ) : (
+        <>
+          <section aria-labelledby="settings" className="grid gap-4">
+            <h2 id="settings" className="text-lg font-semibold"><Trans>Settings</Trans></h2>
+            {nameField}
+            {styleField}
+            {endingField}
+            {estimatesField}
+            {reviewField}
+            {releaseField}
+          </section>
 
-      <section aria-labelledby="columns" className="grid gap-3">
-        <h2 id="columns" className="text-lg font-semibold"><Trans>Columns</Trans></h2>
-        <p className="text-sm text-muted-foreground"><Trans>Drag to reorder. WIP limits are for the columns in between: the first is waiting work, and the last is Done.</Trans></p>
-        {draft.agentReview && <p className="text-sm text-muted-foreground"><Trans>The robot marks the column where an agent’s finished ticket waits for a person’s review. Pick another column with its crossed-out robot.</Trans></p>}
-        {flagsOn && <p className="text-sm text-muted-foreground"><Trans>Flag: what a ticket that needs a feature flag gets in flags.gg when it arrives. Automatic promotes from Testing or QA columns, and to production from the Dev complete column.</Trans></p>}
-        <ColumnList draft={draft} onChange={setDraft} flags={flagsOn} />
-      </section>
+          <section aria-labelledby="columns" className="grid gap-3">
+            <h2 id="columns" className="text-lg font-semibold"><Trans>Columns</Trans></h2>
+            {columnsHelp}
+            {columnList}
+          </section>
 
-      {(draft.style === 'sprints' && board.style === 'sprints') && (
-        <section aria-labelledby="sprint" className="grid gap-2">
-          <h2 id="sprint" className="text-lg font-semibold"><Trans>Current sprint</Trans></h2>
-          <p className="text-sm text-muted-foreground"><Trans>Changing the length or goal applies straight away.</Trans></p>
-          <div className="rounded-xl border"><SprintBar board={board} token={token} canManage editMode onChanged={() => void load()} /></div>
-        </section>
+          {sprintRunning && (
+            <section aria-labelledby="sprint" className="grid gap-2">
+              <h2 id="sprint" className="text-lg font-semibold"><Trans>Current sprint</Trans></h2>
+              <p className="text-sm text-muted-foreground">{sprintHint}</p>
+              {sprintBar}
+            </section>
+          )}
+
+          <section aria-labelledby="more" className="grid gap-2">
+            <h2 id="more" className="text-lg font-semibold"><Trans>More</Trans></h2>
+            <p className="text-sm text-muted-foreground">{moreHint}</p>
+            {moreButtons}
+          </section>
+        </>
       )}
-
-      <section aria-labelledby="more" className="grid gap-2">
-        <h2 id="more" className="text-lg font-semibold"><Trans>More</Trans></h2>
-        <p className="text-sm text-muted-foreground"><Trans>These act straight away.</Trans></p>
-        <div className="flex flex-wrap gap-2">
-          {role.admin && <Button type="button" variant="outline" size="sm" onClick={() => setSavingTemplate(true)}><Trans>Save as template</Trans></Button>}
-          <BoardLifecycle board={board} isAdmin={role.admin} canManage token={token} />
-        </div>
-      </section>
 
       <NameDialog
         open={savingTemplate}

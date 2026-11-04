@@ -1098,6 +1098,10 @@ msgid "agent review"
 msgstr "jopwI' nuD"
 
 #: app/boards/[id]/edit/page.tsx
+msgid "Agent review"
+msgstr "jabwI' nuD"
+
+#: app/boards/[id]/edit/page.tsx
 msgid "Agent work needs review"
 msgstr "AI Qu' nuDnIS"
 
@@ -1656,6 +1660,10 @@ msgstr "'echlet legh"
 #: lib/org/audit.ts
 msgid "Boards"
 msgstr "'echletmey"
+
+#: app/projects/[id]/edit/page.tsx
+msgid "Boards & sharing"
+msgstr "pe'vIl Daq & mutlhwI'"
 
 #: components/settings/organization.tsx
 msgid "Boards linked to this team are managed by its leaders."
@@ -4366,6 +4374,10 @@ msgstr "DevwI' yIta'"
 msgid "finish on release"
 msgstr "chu'DI' rIn"
 
+#: app/boards/[id]/edit/page.tsx
+msgid "Finish on release"
+msgstr "chenmoHDI' rIn"
+
 #: lib/api/error-codes.ts
 msgid "finish organization setup before completing the guide"
 msgstr "DIvI' yIcher, ghIq DevwI' yIta'"
@@ -4518,6 +4530,10 @@ msgstr "Gantt"
 #: components/roadmap/timeline.tsx
 msgid "Gantt chart"
 msgstr "Gantt chart"
+
+#: app/projects/[id]/edit/page.tsx
+msgid "General"
+msgstr "Hoch"
 
 #: components/reports/export-menu.tsx
 #: components/roadmap/report.tsx
@@ -4706,6 +4722,10 @@ msgstr "chay' SoH wISuchlaH? <0>(DaneHchugh, beq neH legh)</0>"
 #: components/reports/report-links.tsx
 msgid "How every project’s sprints went, to share with leadership."
 msgstr "Hoch jInmol sprintmey chay' qaS, DevwI'pu'vaD DangeHmeH."
+
+#: app/boards/[id]/edit/page.tsx
+msgid "How the board works. Saved with Save, except the current sprint, which changes straight away."
+msgstr "pe'vIl Daq Qap mIw. Pol 'ej Pol, DaH Do' moHlu'chugh yIn."
 
 #: app/settings/webhooks/page.tsx
 msgid "How webhooks work"
@@ -9010,6 +9030,10 @@ msgstr "chIm backlog."
 msgid "The board needs a name."
 msgstr "pong poQ 'echlet."
 
+#: app/boards/[id]/edit/page.tsx
+msgid "The board’s columns, in order, with their WIP limits."
+msgstr "pe'vIl Daq tutDu', mIwvaD, WIP veHmeyDaj."
+
 #: lib/api/error-codes.ts
 msgid "the columns don't match this board: reload and try again"
 msgstr "'echletvam rapbe' tutmey: yIchu'moH 'ej yInIDqa'"
@@ -9122,6 +9146,10 @@ msgstr "ticket wa'DIch'e' velqa' 'oHbe'nIS"
 #: app/r/[id]/locked.tsx
 msgid "The owner has shared this roadmap with signed-in users only."
 msgstr "lo'wI'pu' 'elpu'bogh neHvaD He navvam ngeHpu' ghajwI'."
+
+#: app/projects/[id]/edit/page.tsx
+msgid "The project’s boards, and what reaches beyond it: the request form, embedding and export."
+msgstr "jInmol pe'vIl Daqmey, 'ej Hur ghoS: tlhobmeH ghItlh, rarmeH 'ej ngevmeH."
 
 #: lib/org/integrations.ts
 msgid "The provider refused or couldn’t be reached. Try again."
@@ -10135,6 +10163,10 @@ msgstr "nuq chav sprintvam?"
 #: components/settings/jira-import.tsx
 msgid "What the import makes"
 msgstr "qemmeH chenmoHbogh"
+
+#: app/projects/[id]/edit/page.tsx
+msgid "What the project is called, its ticket keys and the days its team works."
+msgstr "jInmol pong, ngoDmey ngaQHa'moHwI' 'ej ghom vum jajmey."
 
 #: components/roadmap/item-editor.tsx
 msgid "What will be included in this milestone?"

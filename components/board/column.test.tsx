@@ -67,6 +67,6 @@ test('the board header on phones: filters scroll in one row, rarer actions in a 
 // TL-279: Edit board offers "When a sprint ends" on sprint boards only (kanban has no sprints to end)
 test('Edit board: when a sprint ends, for sprint boards (source)', async () => {
   const page = await Bun.file(new URL('../../app/boards/[id]/edit/page.tsx', import.meta.url)).text();
-  expect(page).toContain("{draft.style === 'sprints' && (");
+  expect(page).toContain("const endingField = draft.style === 'sprints' && (");
   expect(page).toContain("options={[['start_next', t`Start the next one`], ['wait', t`Wait for a manager`]]}");
 });

@@ -1098,6 +1098,10 @@ msgid "agent review"
 msgstr "revue des agents"
 
 #: app/boards/[id]/edit/page.tsx
+msgid "Agent review"
+msgstr "Revue des agents"
+
+#: app/boards/[id]/edit/page.tsx
 msgid "Agent work needs review"
 msgstr "Le travail d’agent doit être vérifié"
 
@@ -1656,6 +1660,10 @@ msgstr "Vue tableau"
 #: lib/org/audit.ts
 msgid "Boards"
 msgstr "Tableaux"
+
+#: app/projects/[id]/edit/page.tsx
+msgid "Boards & sharing"
+msgstr "Tableaux et partage"
 
 #: components/settings/organization.tsx
 msgid "Boards linked to this team are managed by its leaders."
@@ -4366,6 +4374,10 @@ msgstr "Terminer la visite"
 msgid "finish on release"
 msgstr "terminer à la release"
 
+#: app/boards/[id]/edit/page.tsx
+msgid "Finish on release"
+msgstr "Terminer à la publication"
+
 #: lib/api/error-codes.ts
 msgid "finish organization setup before completing the guide"
 msgstr "terminez la configuration de l’organisation avant de terminer la visite"
@@ -4518,6 +4530,10 @@ msgstr "Gantt"
 #: components/roadmap/timeline.tsx
 msgid "Gantt chart"
 msgstr "Diagramme de Gantt"
+
+#: app/projects/[id]/edit/page.tsx
+msgid "General"
+msgstr "Général"
 
 #: components/reports/export-menu.tsx
 #: components/roadmap/report.tsx
@@ -4706,6 +4722,10 @@ msgstr "Comment pouvons-nous vous joindre ? <0>(facultatif, visible uniquement p
 #: components/reports/report-links.tsx
 msgid "How every project’s sprints went, to share with leadership."
 msgstr "Le déroulement des sprints de chaque projet, à partager avec la direction."
+
+#: app/boards/[id]/edit/page.tsx
+msgid "How the board works. Saved with Save, except the current sprint, which changes straight away."
+msgstr "Le fonctionnement du tableau. Enregistré avec Enregistrer, sauf le sprint en cours, qui change aussitôt."
 
 #: app/settings/webhooks/page.tsx
 msgid "How webhooks work"
@@ -9010,6 +9030,10 @@ msgstr "Le backlog est vide."
 msgid "The board needs a name."
 msgstr "Le tableau a besoin d’un nom."
 
+#: app/boards/[id]/edit/page.tsx
+msgid "The board’s columns, in order, with their WIP limits."
+msgstr "Les colonnes du tableau, dans l’ordre, avec leurs limites WIP."
+
 #: lib/api/error-codes.ts
 msgid "the columns don't match this board: reload and try again"
 msgstr "les colonnes ne correspondent pas à ce tableau : rechargez et réessayez"
@@ -9122,6 +9146,10 @@ msgstr "le ticket d’origine ne doit pas lui-même être un doublon"
 #: app/r/[id]/locked.tsx
 msgid "The owner has shared this roadmap with signed-in users only."
 msgstr "Le propriétaire a partagé cette feuille de route uniquement avec les utilisateurs connectés."
+
+#: app/projects/[id]/edit/page.tsx
+msgid "The project’s boards, and what reaches beyond it: the request form, embedding and export."
+msgstr "Les tableaux du projet et ce qui va au-delà : le formulaire de demande, l’intégration et l’export."
 
 #: lib/org/integrations.ts
 msgid "The provider refused or couldn’t be reached. Try again."
@@ -10135,6 +10163,10 @@ msgstr "Que doit accomplir ce sprint ?"
 #: components/settings/jira-import.tsx
 msgid "What the import makes"
 msgstr "Ce que l’import crée"
+
+#: app/projects/[id]/edit/page.tsx
+msgid "What the project is called, its ticket keys and the days its team works."
+msgstr "Le nom du projet, ses clés de tickets et les jours où son équipe travaille."
 
 #: components/roadmap/item-editor.tsx
 msgid "What will be included in this milestone?"
