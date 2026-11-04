@@ -92,7 +92,8 @@ test('embedding lives in the project, in the External panel beside the request f
   const read = (p: string) => Bun.file(new URL(p, import.meta.url)).text();
   const edit = await read('../../app/projects/[id]/edit/page.tsx');
   expect(edit).toContain('title={t`External`}');
-  expect(edit).toContain("{is('embedding').enabled() && <TabsTrigger value=\"embedding\"><Trans>Embedding</Trans></TabsTrigger>}");
+  expect(edit).toContain("const embedding = is('embedding').enabled();");
+  expect(edit).toContain('{embedding && <TabsTrigger value="embedding"><Trans>Embedding</Trans></TabsTrigger>}');
   expect(edit).toContain('<EmbeddingSettings projectId={project.id} />');
   expect(edit.indexOf('<IntakeSettingsSection')).toBeLessThan(edit.indexOf('<EmbeddingSettings'));
   // Google Chat and repositories share the Integrations panel
