@@ -66,6 +66,7 @@ export type Board = {
   estimate_scale?: EstimateScale;
   agent_review?: boolean; // agents' moves into Done wait for a person's review
   dev_complete_column_id?: string | null; // merged PRs land here, a release moves them to Done (TL-531)
+  flags_agent_id?: string | null; // flags.gg agent for its tickets' flags; null: the project's (TL-804)
   review_column_id?: string | null; // agents' finished work waits here for review (TL-592); null: the column before Done
   when_sprint_ends?: WhenSprintEnds; // TL-279: start the next sprint straight away, or end and wait for a manager
   last_sprint_number?: number; // the latest closed sprint, so a board between sprints can say which ended
@@ -784,6 +785,7 @@ export const flags = {
   project: (projectId: string, token: T) => api<ProjectFlags>(`/projects/${projectId}/flags`, { token }),
   setProject: (projectId: string, input: { agent_id?: string; cleanup_days?: number }, token: T) =>
     api<ProjectFlags>(`/projects/${projectId}/flags`, { method: 'PUT', body: input, token }),
+  setBoard: (boardId: string, agentId: string, token: T) => api<{ agent_id: string | null }>(`/boards/${boardId}/flags`, { method: 'PUT', body: { agent_id: agentId }, token }),
   ticket: (id: string, token: T) => api<TicketFlag>(`/tickets/${id}/flag`, { token }),
   toggle: (id: string, environmentId: string, enabled: boolean, token: T) =>
     api<TicketFlag>(`/tickets/${id}/flag`, { method: 'PATCH', body: { environment_id: environmentId, enabled }, token }),

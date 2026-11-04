@@ -4277,6 +4277,7 @@ msgstr "ra'wI' {0}"
 msgid "Feature flag: {0}"
 msgstr "ra'wI': {0}"
 
+#: app/boards/[id]/edit/page.tsx
 #: components/settings/integrations.tsx
 msgid "Feature flags"
 msgstr "ra'wI'mey"
@@ -4426,6 +4427,10 @@ msgstr "ra'wI' pong <0>(ngoq nuDbogh)</0>"
 #: app/boards/[id]/edit/page.tsx
 msgid "Flag: what a ticket that needs a feature flag gets in flags.gg when it arrives. Automatic promotes from Testing or QA columns, and to production from the Dev complete column."
 msgstr "ra'wI': ra'wI' poQbogh ticket paqDI' flags.gg Daq nuq Hev. nIteb: Testing pagh QA tuq vo' ghoS, Dev complete tuq vo' production Daq ghoS."
+
+#: app/boards/[id]/edit/page.tsx
+msgid "flags.gg application"
+msgstr "flags.gg ghun"
 
 #: components/flags/flags.tsx
 msgid "flags.gg couldn’t list its applications just now."
@@ -9070,6 +9075,10 @@ msgstr "flags.gg Daq ra'wI' tu'lu': pong choHlaHbe'"
 msgid "the flag isn't in flags.gg yet: it's made when the ticket goes onto a board"
 msgstr "flags.gg Daq ra'wI' tu'lu'be' wa'logh: board Daq ticket ghoSDI' chenmoHlu'"
 
+#: app/boards/[id]/edit/page.tsx
+msgid "The flags.gg application this board’s tickets get their flags in, usually one per board. The project’s is set on Edit project."
+msgstr "flags.gg ghun, pe'vIl Daq ngoDmey joqwI' Suq. wa' pe'vIl Daq wa' ghun. jInmol ghun jInmol choHmeH Daq cherlu'."
+
 #: components/intake/intake-settings.tsx
 msgid "The form is closed."
 msgstr "SoQ nav."
@@ -9146,6 +9155,10 @@ msgstr "ticket wa'DIch'e' velqa' 'oHbe'nIS"
 #: app/r/[id]/locked.tsx
 msgid "The owner has shared this roadmap with signed-in users only."
 msgstr "lo'wI'pu' 'elpu'bogh neHvaD He navvam ngeHpu' ghajwI'."
+
+#: app/boards/[id]/edit/page.tsx
+msgid "The project’s"
+msgstr "jInmol vo'"
 
 #: app/projects/[id]/edit/page.tsx
 msgid "The project’s boards, and what reaches beyond it: the request form, embedding and export."
@@ -9574,8 +9587,8 @@ msgid "tickets planned, across {0, plural, one {# sprint} other {# sprints}}"
 msgstr "ticketmey nablu'pu'bogh, {0, plural, one {# sprint} other {# sprintmey}}"
 
 #: app/projects/[id]/edit/page.tsx
-msgid "Tickets that need a feature flag get one in this flags.gg application. Which columns promote it is set on each board’s Edit page."
-msgstr "ra'wI' poQbogh ticketmey, flags.gg ghun Daq Hev. tuqmey ghoSmoHbogh, Hoch board choHmeH nav Daq SeHlu'."
+msgid "Tickets that need a feature flag get one in this flags.gg application, unless their board picks its own. Each board’s Edit page sets its application and which columns promote the flag."
+msgstr "ngoDmey joqwI' poQbogh ngoDmey Suq flags.gg ghunvam, pe'vIl Daq ghun wIvbe'chugh. pe'vIl Daq choHmeH Daq ghun 'ej tutDu' joqwI' Dun cher."
 
 #: components/reports/report-view.tsx
 msgid "tickets unfinished at the end"

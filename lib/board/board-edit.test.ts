@@ -122,3 +122,12 @@ test('a column says what arriving does to a ticket’s flags.gg flag; automatic 
   expect(layoutChanged(d, was)).toBe(true);
   expect(layout(changeColumn(was, 'doing', { flag: '' })).find((c) => c.id === 'doing')?.flag_action).toBe(''); // back to automatic
 });
+
+test('the board’s flags.gg agent is its own change: dirty, but not in the settings patch (TL-805)', () => {
+  const was = draftOf({ ...board, flags_agent_id: null });
+  expect(was.flagsAgent).toBe('');
+  const d = { ...was, flagsAgent: 'agent-web' };
+  expect(dirty(d, was)).toBe(true);
+  expect(settingsPatch(d, was)).toBeNull(); // saved through PUT /boards/{id}/flags instead
+  expect(draftOf({ ...board, flags_agent_id: 'agent-web' }).flagsAgent).toBe('agent-web');
+});
