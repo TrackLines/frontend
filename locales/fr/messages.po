@@ -20,6 +20,10 @@ msgstr "« {name} » est trop volumineux : les fichiers peuvent faire jusqu’à
 msgid "“{name}”: a WIP limit is a whole number from 1 to 999, or none."
 msgstr "« {name} » : une limite WIP est un nombre entier de 1 à 999, ou aucune."
 
+#: components/flags/flags.tsx
+msgid "“Remove flag” ticket due after (days in production)"
+msgstr "Ticket « Retirer le flag » dû après (jours en production)"
+
 #: components/settings/jira-import.tsx
 msgid "({key} is taken here, so a number was added)"
 msgstr "({key} est déjà utilisé ici, un numéro a donc été ajouté)"
@@ -740,6 +744,10 @@ msgid "a column"
 msgstr "une colonne"
 
 #: lib/api/error-codes.ts
+msgid "a column's flag action is none, promote, promote_to_production or archive"
+msgstr "l’action de flag d’une colonne est none, promote, promote_to_production ou archive"
+
+#: lib/api/error-codes.ts
 msgid "a done ticket can't get new blockers; move it out of Done first"
 msgstr "un ticket terminé ne peut pas recevoir de nouveaux bloqueurs ; sortez-le d’abord de Terminé"
 
@@ -750,6 +758,10 @@ msgstr "un ticket terminé ne peut pas recevoir de nouveaux sous-tickets ; sorte
 #: lib/api/error-codes.ts
 msgid "a duplicate ticket is already closed"
 msgstr "un ticket en double est déjà fermé"
+
+#: lib/api/error-codes.ts
+msgid "a flag name is 1–100 letters, digits, spaces, dots, dashes or underscores"
+msgstr "un nom de flag compte 1 à 100 lettres, chiffres, espaces, points, tirets ou tirets bas"
 
 #: components/billing/launch-offer.tsx
 msgid "A free year of Pro"
@@ -811,6 +823,10 @@ msgstr "un ticket ne peut pas être son propre parent"
 #: lib/api/error-codes.ts
 msgid "a ticket can't block itself"
 msgstr "un ticket ne peut pas se bloquer lui-même"
+
+#: components/flags/flags.tsx
+msgid "A ticket that needs a feature flag gets one in flags.gg when it goes onto a board, off at first. Columns promote it through your environments as the ticket moves, and once it reaches production a “Remove flag” ticket reminds the team to take it out of the code."
+msgstr "Un ticket qui a besoin d’un feature flag en reçoit un dans flags.gg quand il arrive sur un tableau, désactivé au départ. Les colonnes le promeuvent dans vos environnements au fil du ticket et, une fois en production, un ticket « Retirer le flag » rappelle à l’équipe de le sortir du code."
 
 #: lib/api/error-codes.ts
 msgid "a title (up to 200 characters) and a type (bug or feature) are required"
@@ -1322,6 +1338,14 @@ msgstr "URL de l’API <0>(facultatif)</0>"
 msgid "Appearance"
 msgstr "Apparence"
 
+#: components/flags/flags.tsx
+msgid "Application"
+msgstr "Application"
+
+#: components/flags/flags.tsx
+msgid "Applications this token can reach"
+msgstr "Applications accessibles avec ce jeton"
+
 #: components/staff/downtime.tsx
 msgid "Apply credits"
 msgstr "Appliquer les crédits"
@@ -1355,6 +1379,10 @@ msgstr "Archiver « {name} » ? Il quitte la page du projet mais conserve son hi
 #: components/board/board-lifecycle.tsx
 msgid "Archive board"
 msgstr "Archiver le tableau"
+
+#: components/flags/flags.tsx
+msgid "Archive the flag"
+msgstr "Archiver le flag"
 
 #: components/project/archived-boards.tsx
 msgid "Archived <0/>"
@@ -1464,6 +1492,15 @@ msgstr "tentative {0}"
 #: components/settings/audit-log.tsx
 msgid "Audit log"
 msgstr "Journal d’audit"
+
+#: components/board/column-list.tsx
+msgid "Automatic"
+msgstr "Automatique"
+
+#. placeholder {0}: i18n._(FLAG_ACTIONS[column.autoFlag])
+#: components/board/column-list.tsx
+msgid "Automatic: {0}"
+msgstr "Automatique : {0}"
 
 #: components/settings/google-chat.tsx
 msgid "Avatar URL"
@@ -1850,6 +1887,7 @@ msgstr "Vérification du lien…"
 msgid "Checking with Google…"
 msgstr "Vérification auprès de Google…"
 
+#: components/flags/flags.tsx
 #: components/settings/google-calendar.tsx
 #: components/settings/google-chat.tsx
 #: components/settings/integrations.tsx
@@ -1949,6 +1987,10 @@ msgstr "Choisir l’équipe"
 msgid "Choose the original ticket in this project. This ticket will be closed."
 msgstr "Choisissez le ticket d’origine dans ce projet. Ce ticket sera fermé."
 
+#: components/flags/flags.tsx
+msgid "Choose where this project’s flags go"
+msgstr "Choisissez où vont les flags de ce projet"
+
 #: components/staff/launch-offers.tsx
 msgid "Choose who gets the offer. Each organization is sent it once: its admins can claim it from Settings, and its members are told an admin can. Organizations that are already paying can’t be sent it."
 msgstr "Choisissez qui reçoit l’offre. Chaque organisation la reçoit une seule fois : ses administrateurs peuvent l’activer depuis les Paramètres, et ses membres apprennent qu’un administrateur peut le faire. Les organisations qui paient déjà ne peuvent pas la recevoir."
@@ -1972,6 +2014,10 @@ msgstr "activée le {claimed}"
 #: components/billing/launch-offer.tsx
 msgid "Claiming…"
 msgstr "Activation…"
+
+#: lib/api/error-codes.ts
+msgid "cleanup_days must be 1–365"
+msgstr "cleanup_days doit être entre 1 et 365"
 
 #: components/work/notifications-bell.tsx
 msgid "Clear"
@@ -2215,6 +2261,7 @@ msgstr "Remplissez les champs obligatoires en surbrillance avant d’ajouter ce 
 msgid "Completed tickets plotted by completion date and cycle time"
 msgstr "Tickets terminés représentés selon leur date d’achèvement et leur temps de cycle"
 
+#: components/flags/flags.tsx
 #: components/settings/google-calendar.tsx
 #: components/settings/integrations.tsx
 #: components/settings/jira-import.tsx
@@ -2241,6 +2288,14 @@ msgstr "Connecter une IA"
 msgid "Connect an AI agent"
 msgstr "Connecter un agent IA"
 
+#: lib/api/error-codes.ts
+msgid "connect flags.gg first (Settings → Integrations)"
+msgstr "connectez d’abord flags.gg (Paramètres → Intégrations)"
+
+#: components/flags/flags.tsx
+msgid "Connect flags.gg under Settings → Integrations first. Then pick the application this project’s flags go in."
+msgstr "Connectez d’abord flags.gg dans Paramètres → Intégrations. Choisissez ensuite l’application qui reçoit les flags de ce projet."
+
 #: components/onboarding/guide.tsx
 msgid "Connect GitHub"
 msgstr "Connecter GitHub"
@@ -2265,6 +2320,7 @@ msgstr "Connecter Linear"
 msgid "Connect your organization to the tools it uses. Link repositories to a project from the project's page."
 msgstr "Connectez votre organisation aux outils qu’elle utilise. Liez des dépôts à un projet depuis la page du projet."
 
+#: components/flags/flags.tsx
 #: components/settings/google-calendar.tsx
 #: components/settings/integrations.tsx
 msgid "Connected"
@@ -2533,6 +2589,10 @@ msgstr "Impossible de modifier les notifications sur cet appareil. Veuillez rée
 msgid "Couldn’t change the assignee. Please try again."
 msgstr "Impossible de changer l’assigné. Veuillez réessayer."
 
+#: components/flags/flags.tsx
+msgid "Couldn’t change the flag."
+msgstr "Impossible de modifier le flag."
+
 #: components/intake/intake-settings.tsx
 msgid "Couldn’t change the request form. Please try again."
 msgstr "Impossible de modifier le formulaire de demande. Veuillez réessayer."
@@ -2568,6 +2628,10 @@ msgstr "Impossible de clôturer le sprint. Veuillez réessayer."
 #: components/settings/integrations.tsx
 msgid "Couldn’t connect Bugfixes."
 msgstr "Impossible de connecter Bugfixes."
+
+#: components/flags/flags.tsx
+msgid "Couldn’t connect flags.gg."
+msgstr "Impossible de connecter flags.gg."
 
 #: components/settings/google-calendar.tsx
 msgid "Couldn’t connect. Please try again."
@@ -2618,6 +2682,10 @@ msgstr "Impossible de le détacher. Veuillez réessayer."
 #: components/settings/integrations.tsx
 msgid "Couldn’t disconnect {0}."
 msgstr "Impossible de déconnecter {0}."
+
+#: components/flags/flags.tsx
+msgid "Couldn’t disconnect flags.gg."
+msgstr "Impossible de déconnecter flags.gg."
 
 #: components/settings/google-calendar.tsx
 msgid "Couldn’t disconnect."
@@ -2750,6 +2818,10 @@ msgstr "Impossible de charger les epics. Actualisez la page pour réessayer."
 #: app/settings/file-cleanup/page.tsx
 msgid "Couldn’t load the file clean-up. Please refresh to try again."
 msgstr "Impossible de charger le nettoyage des fichiers. Actualisez la page pour réessayer."
+
+#: components/flags/flags.tsx
+msgid "Couldn’t load the flag from flags.gg."
+msgstr "Impossible de charger le flag depuis flags.gg."
 
 #: components/staff/help-editor.tsx
 msgid "Couldn’t load the help answers."
@@ -2939,6 +3011,10 @@ msgstr "Impossible de le retirer."
 msgid "Couldn’t remove that origin. Please try again."
 msgstr "Impossible de retirer cette origine. Veuillez réessayer."
 
+#: components/flags/flags.tsx
+msgid "Couldn’t remove the flag."
+msgstr "Impossible de retirer le flag."
+
 #: components/project/refinement.tsx
 msgid "Couldn’t remove the planned sprint. Please try again."
 msgstr "Impossible de retirer le sprint planifié. Veuillez réessayer."
@@ -3001,6 +3077,7 @@ msgstr "Impossible d’enregistrer la semaine de travail. Veuillez réessayer."
 msgid "Couldn’t save your language. Please try again."
 msgstr "Impossible d’enregistrer votre langue. Veuillez réessayer."
 
+#: components/flags/flags.tsx
 #: components/settings/google-chat.tsx
 msgid "Couldn’t save. Please try again."
 msgstr "Impossible d’enregistrer. Veuillez réessayer."
@@ -3490,6 +3567,7 @@ msgstr "Détails enregistrés."
 msgid "Details, steps to reproduce… (optional)"
 msgstr "Détails, étapes pour reproduire… (facultatif)"
 
+#: components/flags/flags.tsx
 #: components/settings/google-calendar.tsx
 #: components/settings/integrations.tsx
 msgid "Disconnect"
@@ -3498,6 +3576,10 @@ msgstr "Déconnecter"
 #: components/settings/integrations.tsx
 msgid "Disconnect {name}? Its details stop showing until it's connected again."
 msgstr "Déconnecter {name} ? Ses détails ne s’affichent plus jusqu’à ce qu’il soit reconnecté."
+
+#: components/flags/flags.tsx
+msgid "Disconnect flags.gg? Tickets’ flags stop following them until it’s connected again."
+msgstr "Déconnecter flags.gg ? Les flags des tickets cessent de les suivre jusqu’à la reconnexion."
 
 #: components/settings/google-calendar.tsx
 msgid "Disconnect Google Calendar? Everyone’s time away is deleted from TrackLin.es, and nobody shows as on holiday until it’s connected again."
@@ -3950,6 +4032,10 @@ msgstr "Saisissez ici le nom de votre projet, puis cliquez sur Suivant pour voir
 msgid "Enterprise has unlimited projects and members."
 msgstr "Enterprise inclut projets et membres illimités."
 
+#: lib/api/error-codes.ts
+msgid "environment_id and enabled are required"
+msgstr "environment_id et enabled sont obligatoires"
+
 #: components/ticket/ticket-type.tsx
 msgid "epic"
 msgstr "epic"
@@ -4169,6 +4255,24 @@ msgstr "fonctionnalité"
 msgid "Feature"
 msgstr "Fonctionnalité"
 
+#: components/flags/flags.tsx
+msgid "Feature flag"
+msgstr "Feature flag"
+
+#. placeholder {0}: ticket.flag_name ?? ''
+#: components/board/ticket-card.tsx
+msgid "Feature flag {0}"
+msgstr "Feature flag {0}"
+
+#. placeholder {0}: ticket.flag_error
+#: components/board/ticket-card.tsx
+msgid "Feature flag: {0}"
+msgstr "Feature flag : {0}"
+
+#: components/settings/integrations.tsx
+msgid "Feature flags"
+msgstr "Feature flags"
+
 #: components/intake/request-form.tsx
 msgid "Feature request"
 msgstr "Demande de fonctionnalité"
@@ -4298,6 +4402,42 @@ msgstr "première : les nouveaux tickets commencent ici"
 #: components/settings/csv-import.tsx
 msgid "Fix these first:"
 msgstr "Corrigez d’abord ceci :"
+
+#: components/board/column-list.tsx
+msgid "Flag"
+msgstr "Flag"
+
+#: components/flags/flags.tsx
+msgid "Flag name <0>(what the code checks)</0>"
+msgstr "Nom du flag <0>(ce que le code vérifie)</0>"
+
+#: app/boards/[id]/edit/page.tsx
+msgid "Flag: what a ticket that needs a feature flag gets in flags.gg when it arrives. Automatic promotes from Testing or QA columns, and to production from the Dev complete column."
+msgstr "Flag : ce qu’un ticket ayant besoin d’un feature flag reçoit dans flags.gg à son arrivée. Automatique promeut depuis les colonnes Testing ou QA, et en production depuis la colonne Dev complete."
+
+#: components/flags/flags.tsx
+msgid "flags.gg couldn’t list its applications just now."
+msgstr "flags.gg n’a pas pu lister ses applications pour l’instant."
+
+#: lib/api/error-codes.ts
+msgid "flags.gg didn't accept that token: make one in flags.gg under Company → Integrations"
+msgstr "flags.gg n’a pas accepté ce jeton : créez-en un dans flags.gg sous Company → Integrations"
+
+#: lib/api/error-codes.ts
+msgid "flags.gg didn't answer: try again in a moment"
+msgstr "flags.gg n’a pas répondu : réessayez dans un instant"
+
+#: components/flags/flags.tsx
+msgid "flags.gg has this flag, so its name can’t change."
+msgstr "flags.gg a déjà ce flag : son nom ne peut plus changer."
+
+#: components/flags/flags.tsx
+msgid "flags.gg makes the flag, off, when this ticket goes onto a board."
+msgstr "flags.gg crée le flag, désactivé, quand ce ticket arrive sur un tableau."
+
+#: components/flags/flags.tsx
+msgid "flg_… from flags.gg → Company → Integrations"
+msgstr "flg_… depuis flags.gg → Company → Integrations"
 
 #: components/sprint/flow-report.tsx
 msgid "Flow report"
@@ -4639,6 +4779,10 @@ msgstr "administrateur initial : {who}"
 msgid "Install the terminal app using this command, then follow this page’s API key and configuration instructions."
 msgstr "Installez l’application terminal avec cette commande, puis suivez les instructions de cette page pour la clé API et la configuration."
 
+#: components/flags/flags.tsx
+msgid "Integration token"
+msgstr "Jeton d’intégration"
+
 #: app/projects/[id]/edit/page.tsx
 #: app/settings/integrations/page.tsx
 #: app/settings/page.tsx
@@ -4653,6 +4797,10 @@ msgstr "les intégrations ne sont pas configurées sur ce serveur"
 #: lib/org/integrations.ts
 msgid "Integrations aren’t set up on this server yet (see docs/integrations.md)."
 msgstr "Les intégrations ne sont pas encore configurées sur ce serveur (voir docs/integrations.md)."
+
+#: components/flags/flags.tsx
+msgid "Integrations aren’t set up on this server yet."
+msgstr "Les intégrations ne sont pas encore configurées sur ce serveur."
 
 #: lib/api/error-codes.ts
 msgid "invalid api key"
@@ -4774,6 +4922,10 @@ msgstr "Il a peut-être été supprimé, ou il appartient à une autre organisat
 #: components/project/backlog.tsx
 msgid "It stays here until you move it onto a team board."
 msgstr "Il reste ici jusqu’à ce que vous le déplaciez sur un tableau d’équipe."
+
+#: components/flags/flags.tsx
+msgid "It’s checked with flags.gg, stored encrypted and never shown again. Connect a flags.gg company to one organization only: flags are named after ticket keys."
+msgstr "Il est vérifié auprès de flags.gg, stocké chiffré et plus jamais affiché. Connectez une entreprise flags.gg à une seule organisation : les flags portent le nom des clés de tickets."
 
 #. placeholder {0}: agentName(client, label)
 #. placeholder {1}: agentName(client, label)
@@ -5241,6 +5393,10 @@ msgstr "Chargement des sprints…"
 msgid "Loading the Bugfixes report…"
 msgstr "Chargement du rapport Bugfixes…"
 
+#: components/flags/flags.tsx
+msgid "Loading the flag…"
+msgstr "Chargement du flag…"
+
 #: app/reports/page.tsx
 msgid "Loading the report…"
 msgstr "Chargement du rapport…"
@@ -5273,6 +5429,7 @@ msgstr "Chargement de votre travail…"
 
 #: app/account/page.tsx
 #: components/board/import-review.tsx
+#: components/flags/flags.tsx
 #: components/intake/intake-settings.tsx
 #: components/intake/request-form.tsx
 #: components/layout/help-bot.tsx
@@ -5657,6 +5814,10 @@ msgstr "Nommez cette intégration, ex. Site marketing"
 #: lib/api/error-codes.ts
 msgid "name, estimate_scale, style, agent_review, dev_complete_column_id or review_column_id is required"
 msgstr "name, estimate_scale, style, agent_review, dev_complete_column_id ou review_column_id est requis"
+
+#: components/flags/flags.tsx
+msgid "Needs a feature flag"
+msgstr "A besoin d’un feature flag"
 
 #: components/project/refinement.tsx
 msgid "Needs approval"
@@ -6125,6 +6286,7 @@ msgstr "pas un abonnement push de navigateur"
 msgid "not connected"
 msgstr "non connecté"
 
+#: components/flags/flags.tsx
 #: components/settings/google-calendar.tsx
 #: components/settings/integrations.tsx
 msgid "Not connected"
@@ -6203,10 +6365,18 @@ msgstr "Non utilisée"
 msgid "not yet"
 msgstr "pas encore"
 
+#: components/flags/flags.tsx
+msgid "Not yet"
+msgstr "Pas encore"
+
 #: components/roadmap/updates.tsx
 #: components/staff/downtime.tsx
 msgid "Note"
 msgstr "Note"
+
+#: components/flags/flags.tsx
+msgid "Nothing"
+msgstr "Rien"
 
 #: components/ticket/dependencies.tsx
 msgid "Nothing — it can be picked up."
@@ -6350,6 +6520,7 @@ msgid "of planned work done, across {sprints, plural, one {# sprint} other {# sp
 msgstr "du travail planifié terminé, sur {sprints, plural, one {# sprint} other {# sprints}}"
 
 #: app/boards/[id]/edit/page.tsx
+#: components/flags/flags.tsx
 #: components/settings/device-push.tsx
 #: components/settings/webhooks.tsx
 msgid "Off"
@@ -6380,6 +6551,7 @@ msgid "Oldest first"
 msgstr "Plus anciens d’abord"
 
 #: app/boards/[id]/edit/page.tsx
+#: components/flags/flags.tsx
 #: components/settings/device-push.tsx
 #: components/settings/webhooks.tsx
 msgid "On"
@@ -6402,6 +6574,11 @@ msgstr "En congé"
 #: lib/work/away.ts
 msgid "On holiday {until}"
 msgstr "En congé {until}"
+
+#. placeholder {0}: e.name
+#: components/flags/flags.tsx
+msgid "On in {0}"
+msgstr "Activé dans {0}"
 
 #: app/boards/[id]/edit/page.tsx
 msgid "On merge"
@@ -6507,6 +6684,7 @@ msgstr "Seuls les admins de l’organisation peuvent la modifier."
 msgid "Only organization admins can change the plan."
 msgstr "Seuls les administrateurs de l’organisation peuvent changer d’offre."
 
+#: components/flags/flags.tsx
 #: components/settings/google-calendar.tsx
 #: components/settings/google-chat.tsx
 msgid "Only organization admins can change this."
@@ -7162,6 +7340,14 @@ msgstr "Projets"
 msgid "Projects side by side"
 msgstr "Projets côte à côte"
 
+#: components/flags/flags.tsx
+msgid "Promote to production"
+msgstr "Promouvoir en production"
+
+#: components/flags/flags.tsx
+msgid "Promote to the next environment"
+msgstr "Promouvoir vers l’environnement suivant"
+
 #: lib/api/error-codes.ts
 msgid "provider call failed"
 msgstr "l’appel au fournisseur a échoué"
@@ -7339,6 +7525,10 @@ msgstr "Retirer {0}"
 msgid "Remove admin"
 msgstr "Retirer les droits d’administrateur"
 
+#: components/flags/flags.tsx
+msgid "Remove flag"
+msgstr "Retirer le flag"
+
 #: components/ticket/labels.tsx
 msgid "Remove label {label}"
 msgstr "Retirer l’étiquette {label}"
@@ -7351,6 +7541,10 @@ msgstr "Retirer le rôle de responsable"
 #: components/project/refinement.tsx
 msgid "Remove planned sprint {0}? Its tickets go back to the backlog, unestimated."
 msgstr "Retirer le sprint planifié {0} ? Ses tickets retournent dans le backlog, sans estimation."
+
+#: components/flags/flags.tsx
+msgid "Remove this flag? Code must no longer check it: it’s archived in flags.gg in every environment."
+msgstr "Retirer ce flag ? Le code ne doit plus le vérifier : il est archivé dans flags.gg dans tous les environnements."
 
 #: components/reports/report-view.tsx
 msgid "Removed"
@@ -7423,6 +7617,10 @@ msgstr "a rouvert la pull request {pr}"
 #: components/settings/integrations.tsx
 msgid "Replace access token"
 msgstr "Remplacer le jeton d’accès"
+
+#: components/flags/flags.tsx
+msgid "Replace integration token"
+msgstr "Remplacer le jeton d’intégration"
 
 #: components/settings/google-chat.tsx
 msgid "Replace webhook URL"
@@ -7650,6 +7848,7 @@ msgid "Running the standup"
 msgstr "Animation du standup"
 
 #: app/boards/[id]/edit/page.tsx
+#: components/flags/flags.tsx
 #: components/settings/google-chat.tsx
 #: components/settings/organization.tsx
 #: components/settings/working-week.tsx
@@ -7710,6 +7909,7 @@ msgstr "Enregistrer le modèle"
 msgid "Save the board first to pick a new column"
 msgstr "Enregistrez d’abord le tableau pour choisir une nouvelle colonne"
 
+#: components/flags/flags.tsx
 #: components/settings/google-chat.tsx
 #: components/settings/working-week.tsx
 msgid "Saved."
@@ -7728,6 +7928,7 @@ msgstr "Enregistrement des étiquettes…"
 #: components/board/review.tsx
 #: components/board/ticket-dialog.tsx
 #: components/common/name-dialog.tsx
+#: components/flags/flags.tsx
 #: components/intake/triage.tsx
 #: components/onboarding/guide.tsx
 #: components/onboarding/setup.tsx
@@ -8702,6 +8903,10 @@ msgstr "Merci, nous l’avons bien reçu"
 msgid "That account isn’t in any Bitbucket workspaces."
 msgstr "Ce compte ne fait partie d’aucun espace de travail Bitbucket."
 
+#: lib/api/error-codes.ts
+msgid "that agent isn't one this flags.gg token can see"
+msgstr "cet agent n’est pas visible avec ce jeton flags.gg"
+
 #: components/board/import-review.tsx
 #: components/settings/csv-import.tsx
 #: components/settings/jira-import.tsx
@@ -8833,6 +9038,14 @@ msgstr "la question et la réponse en anglais sont obligatoires"
 msgid "the first column (To do) stays first"
 msgstr "la première colonne (À faire) reste en premier"
 
+#: lib/api/error-codes.ts
+msgid "the flag already exists in flags.gg: its name can't change"
+msgstr "le flag existe déjà dans flags.gg : son nom ne peut pas changer"
+
+#: lib/api/error-codes.ts
+msgid "the flag isn't in flags.gg yet: it's made when the ticket goes onto a board"
+msgstr "le flag n’est pas encore dans flags.gg : il est créé quand le ticket arrive sur un tableau"
+
 #: components/intake/intake-settings.tsx
 msgid "The form is closed."
 msgstr "Le formulaire est fermé."
@@ -8951,6 +9164,10 @@ msgstr "L’équipe examinera votre demande."
 #: components/intake/request-form.tsx
 msgid "The team will look at your request. If they need more, they can reach you on the contact you gave."
 msgstr "L’équipe examinera votre demande. Si elle a besoin de plus d’informations, elle pourra vous joindre via le contact que vous avez indiqué."
+
+#: components/board/ticket-dialog.tsx
+msgid "the ticket’s key, lower-cased"
+msgstr "la clé du ticket, en minuscules"
 
 #: components/settings/chat-dm.tsx
 msgid "The TrackLin.es app messages you in Google Chat when you’re assigned a ticket, mentioned, or something needs your review."
@@ -9328,6 +9545,10 @@ msgstr "Tickets planifiés pour les prochains sprints de ce tableau. Ils rejoign
 msgid "tickets planned, across {0, plural, one {# sprint} other {# sprints}}"
 msgstr "tickets planifiés, sur {0, plural, one {# sprint} other {# sprints}}"
 
+#: app/projects/[id]/edit/page.tsx
+msgid "Tickets that need a feature flag get one in this flags.gg application. Which columns promote it is set on each board’s Edit page."
+msgstr "Les tickets qui ont besoin d’un feature flag le reçoivent dans cette application flags.gg. Les colonnes qui le promeuvent se règlent sur la page Modifier de chaque tableau."
+
 #: components/reports/report-view.tsx
 msgid "tickets unfinished at the end"
 msgstr "tickets non terminés à la fin"
@@ -9608,6 +9829,7 @@ msgstr "en hausse par rapport à la période précédente"
 msgid "up to {limit} members"
 msgstr "jusqu’à {limit} membres"
 
+#: components/flags/flags.tsx
 #: components/settings/integrations.tsx
 msgid "Update"
 msgstr "Mettre à jour"
@@ -9848,6 +10070,11 @@ msgstr "Quoi"
 #: components/staff/mcp-prompt.tsx
 msgid "What agents are told when they connect"
 msgstr "Ce qu’on dit aux agents quand ils se connectent"
+
+#. placeholder {0}: column.name
+#: components/board/column-list.tsx
+msgid "What arriving in {0} does to a ticket’s flag"
+msgstr "Ce que l’arrivée dans {0} fait au flag d’un ticket"
 
 #: components/staff/mcp-prompt.tsx
 msgid "What changed"

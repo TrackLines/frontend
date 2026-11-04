@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { ApiError, boards, boardTemplates, columns, organization, type Board, type BoardStyle, type WhenSprintEnds } from '@/lib/api';
+import { ApiError, boards, boardTemplates, columns, flags, organization, type Board, type BoardStyle, type WhenSprintEnds } from '@/lib/api';
 import { canManageBoard } from '@/lib/board/board-access';
 import { devComplete, devCompleteOptions, dirty, draftOf, layout, layoutChanged, problem, settingsPatch, type Draft } from '@/lib/board/board-edit';
 import { SCALES, type EstimateScale } from '@/lib/board/estimates';
@@ -38,10 +38,12 @@ export default function EditBoardPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [savingTemplate, setSavingTemplate] = useState(false);
+  const [flagsOn, setFlagsOn] = useState(false); // flags.gg connected: columns say what they do to flags (TL-790)
 
   async function load() {
     try {
       const [b, me] = await Promise.all([boards.get(id, token), organization.me(token)]);
+      flags.status(token).then((s) => setFlagsOn(s.connected), () => setFlagsOn(false));
       setBoard(b);
       setRole(me);
       const d = draftOf(b);
@@ -155,7 +157,8 @@ export default function EditBoardPage() {
         <h2 id="columns" className="text-lg font-semibold"><Trans>Columns</Trans></h2>
         <p className="text-sm text-muted-foreground"><Trans>Drag to reorder. WIP limits are for the columns in between: the first is waiting work, and the last is Done.</Trans></p>
         {draft.agentReview && <p className="text-sm text-muted-foreground"><Trans>The robot marks the column where an agent’s finished ticket waits for a person’s review. Pick another column with its crossed-out robot.</Trans></p>}
-        <ColumnList draft={draft} onChange={setDraft} />
+        {flagsOn && <p className="text-sm text-muted-foreground"><Trans>Flag: what a ticket that needs a feature flag gets in flags.gg when it arrives. Automatic promotes from Testing or QA columns, and to production from the Dev complete column.</Trans></p>}
+        <ColumnList draft={draft} onChange={setDraft} flags={flagsOn} />
       </section>
 
       {(draft.style === 'sprints' && board.style === 'sprints') && (

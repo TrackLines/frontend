@@ -20,6 +20,10 @@ msgstr "“{name}” tIn law'qu': {mb} MB tIn law' ghItlhmey 'e' chaw'lu'be'."
 msgid "“{name}”: a WIP limit is a whole number from 1 to 999, or none."
 msgstr "“{name}”: WIP veH'e' mI' naQ 'oH, 1 vo' 999 ghoS, pagh pagh."
 
+#: components/flags/flags.tsx
+msgid "“Remove flag” ticket due after (days in production)"
+msgstr "“ra'wI' yIteq” ticket DaH ruch (jaj production Daq)"
+
 #: components/settings/jira-import.tsx
 msgid "({key} is taken here, so a number was added)"
 msgstr "({key} lo'lu'taH naDev, mI' chel'lu')"
@@ -740,6 +744,10 @@ msgid "a column"
 msgstr "tut"
 
 #: lib/api/error-codes.ts
+msgid "a column's flag action is none, promote, promote_to_production or archive"
+msgstr "tuq ra'wI' Qu' none, promote, promote_to_production pagh archive ghaH"
+
+#: lib/api/error-codes.ts
 msgid "a done ticket can't get new blockers; move it out of Done first"
 msgstr "rInpu'bogh ticketvaD botwI' chu' chellu'laHbe'; rIn vo' yIvIHmoH wa'DIch"
 
@@ -750,6 +758,10 @@ msgstr "rInpu'bogh ticketvaD ticket puq chu' chellu'laHbe'; rIn vo' yIvIHmoH wa'
 #: lib/api/error-codes.ts
 msgid "a duplicate ticket is already closed"
 msgstr "velqa' ticket SoQmoHlu'pu'"
+
+#: lib/api/error-codes.ts
+msgid "a flag name is 1–100 letters, digits, spaces, dots, dashes or underscores"
+msgstr "ra'wI' pong: 1–100 ngutlh, mI', chIm, Dop, tlhegh pagh tlhegh bIng"
 
 #: components/billing/launch-offer.tsx
 msgid "A free year of Pro"
@@ -811,6 +823,10 @@ msgstr "ticket vav 'oHlaHbe' ticket'e'"
 #: lib/api/error-codes.ts
 msgid "a ticket can't block itself"
 msgstr "ticket'e' botlaHbe' ticket"
+
+#: components/flags/flags.tsx
+msgid "A ticket that needs a feature flag gets one in flags.gg when it goes onto a board, off at first. Columns promote it through your environments as the ticket moves, and once it reaches production a “Remove flag” ticket reminds the team to take it out of the code."
+msgstr "ra'wI' poQbogh ticket, flags.gg Daq ra'wI' Hev board Daq ghoSDI', wa'DIch chu'Ha'lu'. tuqmey Dujmey Daq Hoch ra'wI' ghoS, production Daq paqDI' “ra'wI' yIteq” ticket ghom qaw: ngoq vo' yIteq."
 
 #: lib/api/error-codes.ts
 msgid "a title (up to 200 characters) and a type (bug or feature) are required"
@@ -1322,6 +1338,14 @@ msgstr "API URL <0>(DaneHchugh)</0>"
 msgid "Appearance"
 msgstr "narghghach"
 
+#: components/flags/flags.tsx
+msgid "Application"
+msgstr "ghun"
+
+#: components/flags/flags.tsx
+msgid "Applications this token can reach"
+msgstr "ghunmey token Hev"
+
 #: components/staff/downtime.tsx
 msgid "Apply credits"
 msgstr "DIch lo'"
@@ -1355,6 +1379,10 @@ msgstr "“{name}” DangaS'a'? jInmol nach mej 'ach qun pol, 'ej jInmol yIchoH 
 #: components/board/board-lifecycle.tsx
 msgid "Archive board"
 msgstr "'echlet yIngaS"
+
+#: components/flags/flags.tsx
+msgid "Archive the flag"
+msgstr "ra'wI' yIpol"
 
 #: components/project/archived-boards.tsx
 msgid "Archived <0/>"
@@ -1464,6 +1492,15 @@ msgstr "nID {0}"
 #: components/settings/audit-log.tsx
 msgid "Audit log"
 msgstr "nuD ghItlh"
+
+#: components/board/column-list.tsx
+msgid "Automatic"
+msgstr "nIteb"
+
+#. placeholder {0}: i18n._(FLAG_ACTIONS[column.autoFlag])
+#: components/board/column-list.tsx
+msgid "Automatic: {0}"
+msgstr "nIteb: {0}"
 
 #: components/settings/google-chat.tsx
 msgid "Avatar URL"
@@ -1850,6 +1887,7 @@ msgstr "rarwI' nuDlI'…"
 msgid "Checking with Google…"
 msgstr "Google ghel…"
 
+#: components/flags/flags.tsx
 #: components/settings/google-calendar.tsx
 #: components/settings/google-chat.tsx
 #: components/settings/integrations.tsx
@@ -1949,6 +1987,10 @@ msgstr "beq yIwIv"
 msgid "Choose the original ticket in this project. This ticket will be closed."
 msgstr "jInmolvamDaq ticket wa'DIch yIwIv. ticketvam SoQmoHlu'."
 
+#: components/flags/flags.tsx
+msgid "Choose where this project’s flags go"
+msgstr "jInmol ra'wI'mey ghoSmeH Daq yIwIv"
+
 #: components/staff/launch-offers.tsx
 msgid "Choose who gets the offer. Each organization is sent it once: its admins can claim it from Settings, and its members are told an admin can. Organizations that are already paying can’t be sent it."
 msgstr "nob Suqbogh ghom'a'mey yIwIv. wa'logh ghom'a' nob ngeHlu': Hutlhmey Daq lajlaH loHwI'pu', 'ej lajlaH loHwI' Sovbej ghom'a' DaHjaj. DIlta'bogh ghom'a'mey vaD nob ngeHlaHbe'lu'."
@@ -1972,6 +2014,10 @@ msgstr "{claimed} lajta'"
 #: components/billing/launch-offer.tsx
 msgid "Claiming…"
 msgstr "lajlI'…"
+
+#: lib/api/error-codes.ts
+msgid "cleanup_days must be 1–365"
+msgstr "cleanup_days 1–365 net poQ"
 
 #: components/work/notifications-bell.tsx
 msgid "Clear"
@@ -2215,6 +2261,7 @@ msgstr "ticketvam DachelDI' Daqmey poQlu'bogh wovmoHlu'bogh tIteb."
 msgid "Completed tickets plotted by completion date and cycle time"
 msgstr "ticketmey rInpu'bogh, rIn jaj tlhoy poH je ghItlhlu'"
 
+#: components/flags/flags.tsx
 #: components/settings/google-calendar.tsx
 #: components/settings/integrations.tsx
 #: components/settings/jira-import.tsx
@@ -2241,6 +2288,14 @@ msgstr "AI yIrar"
 msgid "Connect an AI agent"
 msgstr "AI vumwI' yIrar"
 
+#: lib/api/error-codes.ts
+msgid "connect flags.gg first (Settings → Integrations)"
+msgstr "wa'DIch flags.gg yIrar (SeHlaw → rarghachmey)"
+
+#: components/flags/flags.tsx
+msgid "Connect flags.gg under Settings → Integrations first. Then pick the application this project’s flags go in."
+msgstr "wa'DIch SeHlaw → rarghachmey Daq flags.gg yIrar. ghIq jInmol ra'wI'mey ghunvaD yIwIv."
+
 #: components/onboarding/guide.tsx
 msgid "Connect GitHub"
 msgstr "GitHub yIrI'"
@@ -2265,6 +2320,7 @@ msgstr "Linear yIrar"
 msgid "Connect your organization to the tools it uses. Link repositories to a project from the project's page."
 msgstr "ghom'a'lIj lo'bogh jan tIrar. jInmol nach vo' jInmolvaD repositorymey tIrar."
 
+#: components/flags/flags.tsx
 #: components/settings/google-calendar.tsx
 #: components/settings/integrations.tsx
 msgid "Connected"
@@ -2533,6 +2589,10 @@ msgstr "De'wI'vamDaq ghuHmey choHlu'laHbe'. yInIDqa'."
 msgid "Couldn’t change the assignee. Please try again."
 msgstr "ta'wI' choHlu'laHbe'. yInIDqa'."
 
+#: components/flags/flags.tsx
+msgid "Couldn’t change the flag."
+msgstr "ra'wI' choHlaHbe'."
+
 #: components/intake/intake-settings.tsx
 msgid "Couldn’t change the request form. Please try again."
 msgstr "tlhobmeH nav choHlu'laHbe'. yInIDqa'."
@@ -2568,6 +2628,10 @@ msgstr "sprint SoQmoHlu'laHbe'. yInIDqa'."
 #: components/settings/integrations.tsx
 msgid "Couldn’t connect Bugfixes."
 msgstr "Bugfixes rarlu'laHbe'."
+
+#: components/flags/flags.tsx
+msgid "Couldn’t connect flags.gg."
+msgstr "flags.gg rarlu'laHbe'."
 
 #: components/settings/google-calendar.tsx
 msgid "Couldn’t connect. Please try again."
@@ -2618,6 +2682,10 @@ msgstr "teqlaHbe'. yInIDqa'."
 #: components/settings/integrations.tsx
 msgid "Couldn’t disconnect {0}."
 msgstr "{0} rarHa'lu'laHbe'."
+
+#: components/flags/flags.tsx
+msgid "Couldn’t disconnect flags.gg."
+msgstr "flags.gg rarHa'lu'laHbe'."
 
 #: components/settings/google-calendar.tsx
 msgid "Couldn’t disconnect."
@@ -2750,6 +2818,10 @@ msgstr "lut'a'mey Hevlu'laHbe'. yInIDqa'meH nav yIchu'moH."
 #: app/settings/file-cleanup/page.tsx
 msgid "Couldn’t load the file clean-up. Please refresh to try again."
 msgstr "ghItlh Say'moHghach Hevlu'laHbe'. yInIDqa'meH nav yIchu'moH."
+
+#: components/flags/flags.tsx
+msgid "Couldn’t load the flag from flags.gg."
+msgstr "flags.gg vo' ra'wI' laDlaHbe'."
 
 #: components/staff/help-editor.tsx
 msgid "Couldn’t load the help answers."
@@ -2939,6 +3011,10 @@ msgstr "teqlu'laHbe'."
 msgid "Couldn’t remove that origin. Please try again."
 msgstr "originvetlh teqlu'laHbe'. yInIDqa'."
 
+#: components/flags/flags.tsx
+msgid "Couldn’t remove the flag."
+msgstr "ra'wI' teqlaHbe'."
+
 #: components/project/refinement.tsx
 msgid "Couldn’t remove the planned sprint. Please try again."
 msgstr "sprint nablu'pu'bogh teqlu'laHbe'. yInIDqa'."
@@ -3001,6 +3077,7 @@ msgstr "Qu' poH pollaHbe'. yInIDqa'."
 msgid "Couldn’t save your language. Please try again."
 msgstr "HollIj pollu'laHbe'. yInIDqa'."
 
+#: components/flags/flags.tsx
 #: components/settings/google-chat.tsx
 msgid "Couldn’t save. Please try again."
 msgstr "pollu'laHbe'. yInIDqa'."
@@ -3490,6 +3567,7 @@ msgstr "De'mey pollu'pu'."
 msgid "Details, steps to reproduce… (optional)"
 msgstr "De'mey, qaSmoHqa'meH mIw… (DaneHchugh)"
 
+#: components/flags/flags.tsx
 #: components/settings/google-calendar.tsx
 #: components/settings/integrations.tsx
 msgid "Disconnect"
@@ -3498,6 +3576,10 @@ msgstr "yIrarHa'"
 #: components/settings/integrations.tsx
 msgid "Disconnect {name}? Its details stop showing until it's connected again."
 msgstr "{name} DararHa''a'? rarqa'lu'pa' De'mey 'anglu'be'."
+
+#: components/flags/flags.tsx
+msgid "Disconnect flags.gg? Tickets’ flags stop following them until it’s connected again."
+msgstr "flags.gg DararHa'? ticket ra'wI'mey tlha'be'chu' nargh rarlu'pa'."
 
 #: components/settings/google-calendar.tsx
 msgid "Disconnect Google Calendar? Everyone’s time away is deleted from TrackLin.es, and nobody shows as on holiday until it’s connected again."
@@ -3950,6 +4032,10 @@ msgstr "naDev jInmollIj pong yIghItlh; polmeH Daq DaleghmeH veb yI'uy."
 msgid "Enterprise has unlimited projects and members."
 msgstr "jInmolmey beqpu' je veH Hutlh ghaj Enterprise."
 
+#: lib/api/error-codes.ts
+msgid "environment_id and enabled are required"
+msgstr "environment_id enabled je poQlu'"
+
 #: components/ticket/ticket-type.tsx
 msgid "epic"
 msgstr "lut'a'"
@@ -4169,6 +4255,24 @@ msgstr "laH"
 msgid "Feature"
 msgstr "laH"
 
+#: components/flags/flags.tsx
+msgid "Feature flag"
+msgstr "ra'wI'"
+
+#. placeholder {0}: ticket.flag_name ?? ''
+#: components/board/ticket-card.tsx
+msgid "Feature flag {0}"
+msgstr "ra'wI' {0}"
+
+#. placeholder {0}: ticket.flag_error
+#: components/board/ticket-card.tsx
+msgid "Feature flag: {0}"
+msgstr "ra'wI': {0}"
+
+#: components/settings/integrations.tsx
+msgid "Feature flags"
+msgstr "ra'wI'mey"
+
 #: components/intake/request-form.tsx
 msgid "Feature request"
 msgstr "laH tlhob"
@@ -4298,6 +4402,42 @@ msgstr "wa'DIch: naDev tagh ticketmey chu'"
 #: components/settings/csv-import.tsx
 msgid "Fix these first:"
 msgstr "wa'DIch yItI':"
+
+#: components/board/column-list.tsx
+msgid "Flag"
+msgstr "ra'wI'"
+
+#: components/flags/flags.tsx
+msgid "Flag name <0>(what the code checks)</0>"
+msgstr "ra'wI' pong <0>(ngoq nuDbogh)</0>"
+
+#: app/boards/[id]/edit/page.tsx
+msgid "Flag: what a ticket that needs a feature flag gets in flags.gg when it arrives. Automatic promotes from Testing or QA columns, and to production from the Dev complete column."
+msgstr "ra'wI': ra'wI' poQbogh ticket paqDI' flags.gg Daq nuq Hev. nIteb: Testing pagh QA tuq vo' ghoS, Dev complete tuq vo' production Daq ghoS."
+
+#: components/flags/flags.tsx
+msgid "flags.gg couldn’t list its applications just now."
+msgstr "DaH flags.gg ghunmey tetlh cha'laHbe'."
+
+#: lib/api/error-codes.ts
+msgid "flags.gg didn't accept that token: make one in flags.gg under Company → Integrations"
+msgstr "flags.gg token laj'be': flags.gg Company → Integrations Daq wa' yIchenmoH"
+
+#: lib/api/error-codes.ts
+msgid "flags.gg didn't answer: try again in a moment"
+msgstr "flags.gg jangbe': tugh yInIDqa'"
+
+#: components/flags/flags.tsx
+msgid "flags.gg has this flag, so its name can’t change."
+msgstr "flags.gg ra'wI' ghaj, pong choHlaHbe'."
+
+#: components/flags/flags.tsx
+msgid "flags.gg makes the flag, off, when this ticket goes onto a board."
+msgstr "board Daq ticket ghoSDI', flags.gg ra'wI' chenmoH, chu'Ha'lu'."
+
+#: components/flags/flags.tsx
+msgid "flg_… from flags.gg → Company → Integrations"
+msgstr "flg_… flags.gg → Company → Integrations vo'"
 
 #: components/sprint/flow-report.tsx
 msgid "Flow report"
@@ -4639,6 +4779,10 @@ msgstr "loHwI' wa'DIch: {who}"
 msgid "Install the terminal app using this command, then follow this page’s API key and configuration instructions."
 msgstr "TUI DajommeH ra'vam yIlo'. ghIq API ngaQHa'moHwI' DuHmey je ghItlhvam tIlaD."
 
+#: components/flags/flags.tsx
+msgid "Integration token"
+msgstr "rarghach token"
+
 #: app/projects/[id]/edit/page.tsx
 #: app/settings/integrations/page.tsx
 #: app/settings/page.tsx
@@ -4653,6 +4797,10 @@ msgstr "naDev rarghachmey cherlu'be'"
 #: lib/org/integrations.ts
 msgid "Integrations aren’t set up on this server yet (see docs/integrations.md)."
 msgstr "naDev rarghachmey cherlu'be' DaH (docs/integrations.md yIlaD)."
+
+#: components/flags/flags.tsx
+msgid "Integrations aren’t set up on this server yet."
+msgstr "naDev rarghachmey wa'logh lI'be'."
 
 #: lib/api/error-codes.ts
 msgid "invalid api key"
@@ -4774,6 +4922,10 @@ msgstr "Qaw'lu'pu' net Sov, pagh latlh ghom'a' ghaj."
 #: components/project/backlog.tsx
 msgid "It stays here until you move it onto a team board."
 msgstr "beq 'echletDaq DavIHmoHpa' naDev ratlh."
+
+#: components/flags/flags.tsx
+msgid "It’s checked with flags.gg, stored encrypted and never shown again. Connect a flags.gg company to one organization only: flags are named after ticket keys."
+msgstr "flags.gg nuD, So'lu'taHvIS polta' 'ej not cha'qa'. wa' flags.gg Company wa' ghom neH rar: ticket ngaQHa'moHwI' pong ra'wI'mey ghaj."
 
 #. placeholder {0}: agentName(client, label)
 #. placeholder {1}: agentName(client, label)
@@ -5241,6 +5393,10 @@ msgstr "sprintmey Hevlu'lI'…"
 msgid "Loading the Bugfixes report…"
 msgstr "Bugfixes ja'ghach Hevlu'lI'…"
 
+#: components/flags/flags.tsx
+msgid "Loading the flag…"
+msgstr "ra'wI' loS…"
+
 #: app/reports/page.tsx
 msgid "Loading the report…"
 msgstr "ja'ghach Hevlu'lI'…"
@@ -5273,6 +5429,7 @@ msgstr "Qu'meylIj Hevlu'lI'…"
 
 #: app/account/page.tsx
 #: components/board/import-review.tsx
+#: components/flags/flags.tsx
 #: components/intake/intake-settings.tsx
 #: components/intake/request-form.tsx
 #: components/layout/help-bot.tsx
@@ -5657,6 +5814,10 @@ msgstr "embedvam yIpong, rur: Marketing Daq"
 #: lib/api/error-codes.ts
 msgid "name, estimate_scale, style, agent_review, dev_complete_column_id or review_column_id is required"
 msgstr "name, estimate_scale, style, agent_review, dev_complete_column_id pagh review_column_id poQlu'"
+
+#: components/flags/flags.tsx
+msgid "Needs a feature flag"
+msgstr "ra'wI' poQ"
 
 #: components/project/refinement.tsx
 msgid "Needs approval"
@@ -6125,6 +6286,7 @@ msgstr "De'wI' HablI' push nab 'oHbe'"
 msgid "not connected"
 msgstr "rarlu'be'"
 
+#: components/flags/flags.tsx
 #: components/settings/google-calendar.tsx
 #: components/settings/integrations.tsx
 msgid "Not connected"
@@ -6203,10 +6365,18 @@ msgstr "lo'lu'be'"
 msgid "not yet"
 msgstr "DaHbe'"
 
+#: components/flags/flags.tsx
+msgid "Not yet"
+msgstr "wa'logh ghobe'"
+
 #: components/roadmap/updates.tsx
 #: components/staff/downtime.tsx
 msgid "Note"
 msgstr "QIn"
+
+#: components/flags/flags.tsx
+msgid "Nothing"
+msgstr "pagh"
 
 #: components/ticket/dependencies.tsx
 msgid "Nothing — it can be picked up."
@@ -6350,6 +6520,7 @@ msgid "of planned work done, across {sprints, plural, one {# sprint} other {# sp
 msgstr "Qu' nablu'pu'bogh rIn, {sprints, plural, one {# sprint} other {# sprintmey}}"
 
 #: app/boards/[id]/edit/page.tsx
+#: components/flags/flags.tsx
 #: components/settings/device-push.tsx
 #: components/settings/webhooks.tsx
 msgid "Off"
@@ -6380,6 +6551,7 @@ msgid "Oldest first"
 msgstr "ngo'qu' wa'DIch"
 
 #: app/boards/[id]/edit/page.tsx
+#: components/flags/flags.tsx
 #: components/settings/device-push.tsx
 #: components/settings/webhooks.tsx
 msgid "On"
@@ -6402,6 +6574,11 @@ msgstr "leSpoH"
 #: lib/work/away.ts
 msgid "On holiday {until}"
 msgstr "leSpoH {until}"
+
+#. placeholder {0}: e.name
+#: components/flags/flags.tsx
+msgid "On in {0}"
+msgstr "{0} Daq chu'lu'"
 
 #: app/boards/[id]/edit/page.tsx
 msgid "On merge"
@@ -6507,6 +6684,7 @@ msgstr "DIvI' loHwI'pu' neH choHlaH."
 msgid "Only organization admins can change the plan."
 msgstr "ghom'a' loHwI'pu' neH nab choHlaH."
 
+#: components/flags/flags.tsx
 #: components/settings/google-calendar.tsx
 #: components/settings/google-chat.tsx
 msgid "Only organization admins can change this."
@@ -7162,6 +7340,14 @@ msgstr "jInmolmey"
 msgid "Projects side by side"
 msgstr "jInmolmey tlhoy' rap"
 
+#: components/flags/flags.tsx
+msgid "Promote to production"
+msgstr "production Daq yIghoS"
+
+#: components/flags/flags.tsx
+msgid "Promote to the next environment"
+msgstr "veb Dujvo' yIghoS"
+
 #: lib/api/error-codes.ts
 msgid "provider call failed"
 msgstr "jan rI'ghach luj"
@@ -7339,6 +7525,10 @@ msgstr "{0} yIteq"
 msgid "Remove admin"
 msgstr "loHwI' yIteq"
 
+#: components/flags/flags.tsx
+msgid "Remove flag"
+msgstr "ra'wI' yIteq"
+
 #: components/ticket/labels.tsx
 msgid "Remove label {label}"
 msgstr "per {label} yIteq"
@@ -7351,6 +7541,10 @@ msgstr "DevwI' yIteq"
 #: components/project/refinement.tsx
 msgid "Remove planned sprint {0}? Its tickets go back to the backlog, unestimated."
 msgstr "sprint nablu'pu'bogh {0} Dateq'a'? backlogDaq chegh ticketmeyDaj, pIHlu'be'."
+
+#: components/flags/flags.tsx
+msgid "Remove this flag? Code must no longer check it: it’s archived in flags.gg in every environment."
+msgstr "ra'wI' DateqDI'? ngoq nuDQo'nIS: Hoch Duj flags.gg Daq pollu'."
 
 #: components/reports/report-view.tsx
 msgid "Removed"
@@ -7423,6 +7617,10 @@ msgstr "pull request {pr} poSmoHqa'pu'"
 #: components/settings/integrations.tsx
 msgid "Replace access token"
 msgstr "'elmeH token yIlIS"
+
+#: components/flags/flags.tsx
+msgid "Replace integration token"
+msgstr "rarghach token yIchoH"
 
 #: components/settings/google-chat.tsx
 msgid "Replace webhook URL"
@@ -7650,6 +7848,7 @@ msgid "Running the standup"
 msgstr "Qam ghom Dev"
 
 #: app/boards/[id]/edit/page.tsx
+#: components/flags/flags.tsx
 #: components/settings/google-chat.tsx
 #: components/settings/organization.tsx
 #: components/settings/working-week.tsx
@@ -7710,6 +7909,7 @@ msgstr "mIllogh yIpol"
 msgid "Save the board first to pick a new column"
 msgstr "tut chu' DawIvmeH Hoch yIpol wa'DIch"
 
+#: components/flags/flags.tsx
 #: components/settings/google-chat.tsx
 #: components/settings/working-week.tsx
 msgid "Saved."
@@ -7728,6 +7928,7 @@ msgstr "permey pollI'…"
 #: components/board/review.tsx
 #: components/board/ticket-dialog.tsx
 #: components/common/name-dialog.tsx
+#: components/flags/flags.tsx
 #: components/intake/triage.tsx
 #: components/onboarding/guide.tsx
 #: components/onboarding/setup.tsx
@@ -8702,6 +8903,10 @@ msgstr "qatlho', wIHevpu'"
 msgid "That account isn’t in any Bitbucket workspaces."
 msgstr "Bitbucket workspaceDaq mabvetlh tu'lu'be'."
 
+#: lib/api/error-codes.ts
+msgid "that agent isn't one this flags.gg token can see"
+msgstr "flags.gg token agent leghlaHbe'"
+
 #: components/board/import-review.tsx
 #: components/settings/csv-import.tsx
 #: components/settings/jira-import.tsx
@@ -8833,6 +9038,14 @@ msgstr "DIvI' Hol yu' jang je poQlu'"
 msgid "the first column (To do) stays first"
 msgstr "tut wa'DIch (ta'nIS) wa'DIch ratlh"
 
+#: lib/api/error-codes.ts
+msgid "the flag already exists in flags.gg: its name can't change"
+msgstr "flags.gg Daq ra'wI' tu'lu': pong choHlaHbe'"
+
+#: lib/api/error-codes.ts
+msgid "the flag isn't in flags.gg yet: it's made when the ticket goes onto a board"
+msgstr "flags.gg Daq ra'wI' tu'lu'be' wa'logh: board Daq ticket ghoSDI' chenmoHlu'"
+
 #: components/intake/intake-settings.tsx
 msgid "The form is closed."
 msgstr "SoQ nav."
@@ -8951,6 +9164,10 @@ msgstr "tlhoblIj bej beq."
 #: components/intake/request-form.tsx
 msgid "The team will look at your request. If they need more, they can reach you on the contact you gave."
 msgstr "tlhoblIj bej beq. latlh poQchugh, ghelmeH Daq DanobDaq SoH SuchlaH."
+
+#: components/board/ticket-dialog.tsx
+msgid "the ticket’s key, lower-cased"
+msgstr "ticket ngaQHa'moHwI', mach ngutlhmey"
 
 #: components/settings/chat-dm.tsx
 msgid "The TrackLin.es app messages you in Google Chat when you’re assigned a ticket, mentioned, or something needs your review."
@@ -9328,6 +9545,10 @@ msgstr "'echletvam sprintmey vebvaD ticketmey nablu'pu'bogh. sprintchaj taghDI' 
 msgid "tickets planned, across {0, plural, one {# sprint} other {# sprints}}"
 msgstr "ticketmey nablu'pu'bogh, {0, plural, one {# sprint} other {# sprintmey}}"
 
+#: app/projects/[id]/edit/page.tsx
+msgid "Tickets that need a feature flag get one in this flags.gg application. Which columns promote it is set on each board’s Edit page."
+msgstr "ra'wI' poQbogh ticketmey, flags.gg ghun Daq Hev. tuqmey ghoSmoHbogh, Hoch board choHmeH nav Daq SeHlu'."
+
 #: components/reports/report-view.tsx
 msgid "tickets unfinished at the end"
 msgstr "Qav ticketmey rInbe'bogh"
@@ -9608,6 +9829,7 @@ msgstr "poH ret Dung"
 msgid "up to {limit} members"
 msgstr "{limit} beqpu' veH"
 
+#: components/flags/flags.tsx
 #: components/settings/integrations.tsx
 msgid "Update"
 msgstr "yIchu'moH"
@@ -9848,6 +10070,11 @@ msgstr "nuq"
 #: components/staff/mcp-prompt.tsx
 msgid "What agents are told when they connect"
 msgstr "rarDI' jopwI'pu'vaD nuq jatlhlu'"
+
+#. placeholder {0}: column.name
+#: components/board/column-list.tsx
+msgid "What arriving in {0} does to a ticket’s flag"
+msgstr "{0} Daq paqDI' ticket ra'wI' nuq qaS"
 
 #: components/staff/mcp-prompt.tsx
 msgid "What changed"

@@ -16,6 +16,7 @@ import { ListPageSkeleton } from '@/components/layout/page-skeletons';
 import { ProjectKeyPrefix } from '@/components/project/key-prefix';
 import { NewBoardButton } from '@/components/project/new-board';
 import { ProjectRepositories } from '@/components/project/repositories';
+import { ProjectFlagsSettings } from '@/components/flags/flags';
 import { IntakeSettingsSection } from '@/components/intake/intake-settings';
 import { ExportCSVButton } from '@/components/project/export-csv';
 import { organization, projects, type Project } from '@/lib/api';
@@ -104,6 +105,7 @@ export default function EditProjectPage() {
             <TabsList>
               <TabsTrigger value="chat">Google Chat</TabsTrigger>
               <TabsTrigger value="repos"><Trans>Repositories</Trans></TabsTrigger>
+              <TabsTrigger value="flags">flags.gg</TabsTrigger>
             </TabsList>
             <TabsContent value="chat" className="grid gap-3 pt-3">
               <p className="text-sm text-muted-foreground"><Trans>Post this project’s notifications into its team’s Google Chat space: new tickets, reviews, sprints over capacity and more.</Trans></p>
@@ -112,6 +114,10 @@ export default function EditProjectPage() {
             <TabsContent value="repos" className="grid gap-3 pt-3">
               <p className="text-sm text-muted-foreground"><Trans>Pull requests in these repositories link to the tickets they mention, and merging one closes it.</Trans></p>
               <ProjectRepositories projectId={project.id} token={token} admin={admin} />
+            </TabsContent>
+            <TabsContent value="flags" className="grid gap-3 pt-3">
+              <p className="text-sm text-muted-foreground"><Trans>Tickets that need a feature flag get one in this flags.gg application. Which columns promote it is set on each board’s Edit page.</Trans></p>
+              <ProjectFlagsSettings token={token} projectId={project.id} canManage={admin} />
             </TabsContent>
           </Tabs>
         </SettingsCard>

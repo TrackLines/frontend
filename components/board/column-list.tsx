@@ -5,6 +5,9 @@ import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalList
 import { CSS } from '@dnd-kit/utilities';
 import { ArrowDownIcon, ArrowUpIcon, BotIcon, BotOffIcon, GripVerticalIcon, LockIcon, Trash2Icon } from 'lucide-react';
 import { Trans, useLingui } from '@lingui/react/macro';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { FLAG_ACTIONS } from '@/components/flags/flags';
+import type { FlagAction } from '@/lib/api';
 import { useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,7 +18,7 @@ import { addColumn, changeColumn, MAX_COLUMN_NAME, movable, moveColumn, pickRevi
 // one. To do stays first and Done last. With agent review on, a robot marks the column agents' finished
 // work waits in, and the others' crossed-out robot picks them instead (TL-673). Every change is to the
 // draft: the page saves it.
-export function ColumnList({ draft, onChange }: { draft: Draft; onChange: (d: Draft) => void }) {
+export function ColumnList({ draft, onChange, flags = false }: { draft: Draft; onChange: (d: Draft) => void; flags?: boolean }) {
   const { t } = useLingui();
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
   const middle = draft.columns.filter((_, i) => movable(draft, i));
@@ -44,14 +47,15 @@ export function ColumnList({ draft, onChange }: { draft: Draft; onChange: (d: Dr
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={dropped}>
           <SortableContext items={middle.map((c) => c.key)} strategy={verticalListSortingStrategy}>
             {middle.map((c, i) => (
-              <SortableRow key={c.key} column={c} review={review ? review === c.key : undefined} onReview={() => onChange(pickReview(draft, c.key))} upFirst={i === 0} downLast={i === middle.length - 1}
+              <SortableRow key={c.key} column={c} flags={flags} review={review ? review === c.key : undefined} onReview={() => onChange(pickReview(draft, c.key))} upFirst={i === 0} downLast={i === middle.length - 1}
                 onChange={(change) => onChange(changeColumn(draft, c.key, change))}
                 onMove={(d) => onChange(moveColumn(draft, c.key, draft.columns.findIndex((x) => x.key === c.key) + d))}
                 onRemove={() => onChange(removeColumn(draft, c.key))} />
             ))}
           </SortableContext>
         </DndContext>
-        {last && <PinnedRow column={last} note={t`last: a ticket here is done`} onRename={(name) => onChange(changeColumn(draft, last.key, { name }))} />}
+        {last && <PinnedRow column={last} note={t`last: a ticket here is done`} onRename={(name) => onChange(changeColumn(draft, last.key, { name }))}
+          flag={flags ? (flag) => onChange(changeColumn(draft, last.key, { flag })) : undefined} />}
       </ol>
       <form onSubmit={add} className="flex gap-2">
         <Input aria-label={t`New column name`} placeholder={t`New column, e.g. Review`} value={adding} maxLength={MAX_COLUMN_NAME} onChange={(e) => setAdding(e.target.value)} className="max-w-xs" />
@@ -62,20 +66,38 @@ export function ColumnList({ draft, onChange }: { draft: Draft; onChange: (d: Dr
   );
 }
 
-function PinnedRow({ column, note, onRename }: { column: DraftColumn; note: string; onRename: (name: string) => void }) {
+function PinnedRow({ column, note, onRename, flag }: { column: DraftColumn; note: string; onRename: (name: string) => void; flag?: (f: FlagAction | '') => void }) {
   const { t } = useLingui();
   return (
     <li className="flex flex-wrap items-center gap-2 rounded-lg border bg-muted/40 p-2">
       <LockIcon className="size-4 text-muted-foreground" aria-label={t`Stays in place`} />
       <Input aria-label={t`Column name: ${column.name}`} value={column.name} maxLength={MAX_COLUMN_NAME} onChange={(e) => onRename(e.target.value)} className="h-8 max-w-xs" />
       <span className="text-xs text-muted-foreground">{note}</span>
+      {flag && <FlagActionSelect column={column} onChange={flag} />}
     </li>
   );
 }
 
-function SortableRow({ column, review, onReview, upFirst, downLast, onChange, onMove, onRemove }: {
-  column: DraftColumn; review?: boolean; onReview: () => void; upFirst: boolean; downLast: boolean;
-  onChange: (c: Partial<Pick<DraftColumn, 'name' | 'wip'>>) => void; onMove: (d: number) => void; onRemove: () => void;
+// FlagActionSelect: what a ticket arriving in the column does to its flags.gg flag (TL-790). Automatic
+// says what that is for a saved column: Testing/QA promote, the dev complete column goes to production.
+export function FlagActionSelect({ column, onChange }: { column: DraftColumn; onChange: (f: FlagAction | '') => void }) {
+  const { t, i18n } = useLingui();
+  const auto = column.autoFlag ? t`Automatic: ${i18n._(FLAG_ACTIONS[column.autoFlag])}` : t`Automatic`;
+  const items: Record<string, string> = { auto, ...Object.fromEntries(Object.entries(FLAG_ACTIONS).map(([k, m]) => [k, i18n._(m)])) };
+  return (
+    <label className="flex items-center gap-1.5 text-xs text-muted-foreground">
+      <Trans>Flag</Trans>
+      <Select items={items} value={column.flag || 'auto'} onValueChange={(v) => onChange(!v || v === 'auto' ? '' : v as FlagAction)}>
+        <SelectTrigger aria-label={t`What arriving in ${column.name} does to a ticket’s flag`} className="h-8 w-56"><SelectValue /></SelectTrigger>
+        <SelectContent>{Object.entries(items).map(([k, label]) => <SelectItem key={k} value={k}>{label}</SelectItem>)}</SelectContent>
+      </Select>
+    </label>
+  );
+}
+
+function SortableRow({ column, flags, review, onReview, upFirst, downLast, onChange, onMove, onRemove }: {
+  column: DraftColumn; flags: boolean; review?: boolean; onReview: () => void; upFirst: boolean; downLast: boolean;
+  onChange: (c: Partial<Pick<DraftColumn, 'name' | 'wip' | 'flag'>>) => void; onMove: (d: number) => void; onRemove: () => void;
 }) {
   const { t } = useLingui();
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({ id: column.key });
@@ -92,6 +114,7 @@ function SortableRow({ column, review, onReview, upFirst, downLast, onChange, on
         <Input type="number" min={1} max={999} placeholder={t`None`} className="h-8 w-20" value={column.wip ?? ''}
           onChange={(e) => onChange({ wip: e.target.value === '' ? null : Number(e.target.value) })} />
       </label>
+      {flags && <FlagActionSelect column={column} onChange={(flag) => onChange({ flag })} />}
       <span className="ml-auto flex gap-1">
         {review === true && (
           <Button type="button" size="icon-sm" variant="ghost" aria-pressed aria-label={t`Agents’ finished work waits in ${column.name}`}

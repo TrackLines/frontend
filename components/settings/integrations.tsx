@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { GoogleCalendarSettings } from '@/components/settings/google-calendar';
 import { GoogleChatSettings } from '@/components/settings/google-chat';
+import { FlagsSettings } from '@/components/flags/flags';
 import { integrations, organization, type IntegrationProvider, type IntegrationStatus } from '@/lib/api';
 import { integrationError, PROVIDER_NAMES } from '@/lib/org/integrations';
 
@@ -21,11 +22,12 @@ const ABOUT: Record<IntegrationProvider, MessageDescriptor> = {
 
 // INTEGRATION_TABS: the integrations, grouped by what they do (TL-389). A new one goes in its group,
 // or a new group, so the page stays tidy as more are added.
-export const INTEGRATION_TABS: { id: string; name: MessageDescriptor; items: (IntegrationProvider | 'google-chat' | 'google-calendar')[] }[] = [
+export const INTEGRATION_TABS: { id: string; name: MessageDescriptor; items: (IntegrationProvider | 'google-chat' | 'google-calendar' | 'flags')[] }[] = [
   { id: 'repositories', name: msg`Repositories`, items: ['github', 'bitbucket'] },
   { id: 'communication', name: msg`Communication`, items: ['google-chat'] },
   { id: 'reporting', name: msg`Reporting`, items: ['bugfixes'] },
   { id: 'calendars', name: msg`Calendars`, items: ['google-calendar'] }, // who's on holiday (TL-409)
+  { id: 'flags', name: msg`Feature flags`, items: ['flags'] }, // flags.gg: a ticket's flag follows it (TL-790)
 ];
 
 // IntegrationsSettings: the org's connections to other tools, in tabs (Repositories first). Org admins connect and disconnect;
@@ -45,7 +47,8 @@ export function IntegrationsSettings({ token }: { token: string }) {
         </TabsList>
         {INTEGRATION_TABS.map((tab) => (
           <TabsContent key={tab.id} value={tab.id} className="grid gap-6">
-            {tab.items.map((item) => item === 'google-calendar' ? <GoogleCalendarSettings key={item} token={token} canManage={admin === true} />
+            {tab.items.map((item) => item === 'flags' ? <FlagsSettings key={item} token={token} canManage={admin === true} />
+              : item === 'google-calendar' ? <GoogleCalendarSettings key={item} token={token} canManage={admin === true} />
               : item === 'google-chat' ? (
               <section key={item} aria-label="Google Chat" className="grid gap-3 rounded-xl border p-5">
                 <h2 className="text-lg font-semibold">Google Chat</h2>

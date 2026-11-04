@@ -7,6 +7,16 @@ import { msg } from '@lingui/core/macro';
 // names) aren't here: those show the backend's English until it sends the values separately.
 // ponytail: copied by hand from openapi.yaml; generate it if the codes start changing often.
 export const ERROR_MESSAGES: Record<string, MessageDescriptor> = {
+  bad_flag_name: msg`a flag name is 1–100 letters, digits, spaces, dots, dashes or underscores`,
+  flag_name_locked: msg`the flag already exists in flags.gg: its name can't change`,
+  flags_not_connected: msg`connect flags.gg first (Settings → Integrations)`,
+  flags_unavailable: msg`flags.gg didn't answer: try again in a moment`,
+  bad_flags_token: msg`flags.gg didn't accept that token: make one in flags.gg under Company → Integrations`,
+  bad_flags_agent: msg`that agent isn't one this flags.gg token can see`,
+  bad_flag_cleanup_days: msg`cleanup_days must be 1–365`,
+  flag_not_created: msg`the flag isn't in flags.gg yet: it's made when the ticket goes onto a board`,
+  bad_flag_toggle: msg`environment_id and enabled are required`,
+  layout_bad_flag_action: msg`a column's flag action is none, promote, promote_to_production or archive`,
   bad_org_ids: msg`choose between 1 and 500 organizations`,
   guide_organization: msg`refresh after switching organizations`,
   launch_offer_claimed: msg`this organization has already claimed its free year`,

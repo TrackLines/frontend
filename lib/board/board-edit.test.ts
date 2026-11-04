@@ -41,11 +41,11 @@ test('save sends only what changed: settings, and the layout with WIP limits onl
   expect(layoutChanged(d, was)).toBe(false);
   d = addColumn(changeColumn(d, 'todo', { wip: 5 }), 'QA', 'new1');
   expect(layout(d)).toEqual([
-    { id: 'todo', name: 'To do', wip_limit: null }, // ends take no limit
-    { id: 'doing', name: 'Doing', wip_limit: 3 },
-    { id: 'review', name: 'Review', wip_limit: null },
-    { name: 'QA', wip_limit: null }, // new: no id
-    { id: 'done', name: 'Done', wip_limit: null },
+    { id: 'todo', name: 'To do', wip_limit: null, flag_action: '' }, // ends take no limit
+    { id: 'doing', name: 'Doing', wip_limit: 3, flag_action: '' },
+    { id: 'review', name: 'Review', wip_limit: null, flag_action: '' },
+    { name: 'QA', wip_limit: null, flag_action: '' }, // new: no id
+    { id: 'done', name: 'Done', wip_limit: null, flag_action: '' },
   ]);
   expect(layoutChanged(d, was)).toBe(true);
   expect(dirty(d, was)).toBe(true);
@@ -110,4 +110,15 @@ test('when a sprint ends: start_next unless set, and saved only when it changes'
   const d = { ...was, whenSprintEnds: 'start_next' as const };
   expect(settingsPatch(d, was)).toEqual({ when_sprint_ends: 'start_next' });
   expect(dirty(d, was)).toBe(true);
+});
+
+test('a column says what arriving does to a ticket’s flags.gg flag; automatic until set (TL-790)', () => {
+  const flagged = { ...board, columns: board.columns!.map((c) => c.id === 'review' ? { ...c, flag_action: null, flag_action_effective: 'promote' } : c.id === 'doing' ? { ...c, flag_action: 'none', flag_action_effective: 'none' } : c) } as Board;
+  const was = draftOf(flagged);
+  expect(was.columns.find((c) => c.id === 'review')).toMatchObject({ flag: '', autoFlag: 'promote' });
+  expect(was.columns.find((c) => c.id === 'doing')).toMatchObject({ flag: 'none', autoFlag: undefined });
+  const d = changeColumn(was, 'review', { flag: 'promote_to_production' });
+  expect(layout(d).find((c) => c.id === 'review')?.flag_action).toBe('promote_to_production');
+  expect(layoutChanged(d, was)).toBe(true);
+  expect(layout(changeColumn(was, 'doing', { flag: '' })).find((c) => c.id === 'doing')?.flag_action).toBe(''); // back to automatic
 });
