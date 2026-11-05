@@ -15,7 +15,7 @@ export const ERROR_MESSAGES: Record<string, MessageDescriptor> = {
   bad_flags_agent: msg`that agent isn't one this flags.gg token can see`,
   bad_flag_cleanup_days: msg`cleanup_days must be 1–365`,
   flag_not_created: msg`the flag isn't in flags.gg yet: it's made when the ticket goes onto a board`,
-  bad_flag_toggle: msg`environment_id and enabled are required`,
+  bad_flag_toggle: msg`environment_id and one of enabled, rollout (0–100) or rules are required; a rule needs an attribute, an operator (in, not_in, contains, starts_with, ends_with) and 1–1000 values (at most 50 rules)`,
   layout_bad_flag_action: msg`a column's flag action is none, promote, promote_to_production or archive`,
   bad_org_ids: msg`choose between 1 and 500 organizations`,
   guide_organization: msg`refresh after switching organizations`,

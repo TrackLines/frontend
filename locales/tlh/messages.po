@@ -488,6 +488,10 @@ msgstr "{mm}m"
 msgid "{n, plural, one {# imported ticket to review before the first sprint} other {# imported tickets to review before the first sprint}}"
 msgstr "{n, plural, one {wa'DIch sprint pa' # qemlu'pu'bogh ticket yInuD} other {wa'DIch sprint pa' # qemlu'pu'bogh ticketmey yInuD}}"
 
+#: components/flags/flags.tsx
+msgid "{n, plural, one {# rule} other {# rules}}"
+msgstr "{n, plural, one {# chut} other {# chut}}"
+
 #: components/reports/rollup-view.tsx
 msgid "{n} of {total}"
 msgstr "{total} vo' {n}"
@@ -623,6 +627,10 @@ msgstr "{value}d"
 msgid "* From before reports were recorded: planned is what the sprint held when it closed, and what was added or removed isn’t known."
 msgstr "* ja'ghachmey qonlu'pa' ta': sprint SoQmoHlu'DI' ngaSbogh Hoch 'oH nablu'pu'bogh, 'ej chellu'pu'bogh teqlu'pu'bogh je Sovlu'be'."
 
+#: components/flags/flags.tsx
+msgid "% of users"
+msgstr "% lo'wI'pu'"
+
 #. placeholder {0}: project.name
 #: app/projects/[id]/archived/page.tsx
 msgid "← Edit {0}"
@@ -664,6 +672,10 @@ msgstr "qemmeH <0>Dochvetlh yIchoH</0>."
 #: components/settings/jira-import.tsx
 msgid "<0>Change your plan</0>, or untick some projects and preview again."
 msgstr "<0>Dochvetlh yIchoH</0>, pagh jInmolmey yIteq 'ej yIleghqa'."
+
+#: components/flags/flags.tsx
+msgid "<0>key</0> is the user your app identifies to flags.gg; other attributes are whatever context it sends, such as <1>plan</1>."
+msgstr "<0>key</0> 'oH lo'wI' ngu'bogh ghun; latlh Dotlh 'oH <1>plan</1> rur."
 
 #: components/board/review.tsx
 msgid "<0>Needs review.</0> An agent finished this. Approve it to move it to Done, or send it back with what's missing."
@@ -965,6 +977,10 @@ msgstr "Hut'Inmey tIchel 'ej ghotpu' laDmeH mIw DaneHbogh tIlan."
 #: components/settings/organization.tsx
 msgid "Add organization member…"
 msgstr "ghom'a' beqpu' yIchel…"
+
+#: components/flags/flags.tsx
+msgid "Add rule"
+msgstr "chut yIchel"
 
 #: components/settings/embedding.tsx
 msgid "Add site"
@@ -1772,6 +1788,7 @@ msgstr "poH navmey"
 #: app/boards/[id]/edit/page.tsx
 #: components/board/review.tsx
 #: components/board/ticket-dialog.tsx
+#: components/flags/flags.tsx
 #: components/project/backlog.tsx
 #: components/project/key-prefix.tsx
 #: components/project/move-to-board.tsx
@@ -2385,6 +2402,10 @@ msgstr "ghel"
 #: components/intake/triage.tsx
 msgid "Contact: <0>{0}</0>"
 msgstr "ghel: <0>{0}</0>"
+
+#: components/flags/flags.tsx
+msgid "contains"
+msgstr "ngaS"
 
 #: components/onboarding/guide.tsx
 msgid "Continue setup"
@@ -4007,6 +4028,10 @@ msgstr "DaHjaj rIn"
 msgid "ends tomorrow"
 msgstr "wa'leS rIn"
 
+#: components/flags/flags.tsx
+msgid "ends with"
+msgstr "Dor"
+
 #: lib/api/error-codes.ts
 msgid "enquiries aren't available right now"
 msgstr "DaH tlhobmey chaw'lu'be'"
@@ -4041,8 +4066,8 @@ msgid "Enterprise has unlimited projects and members."
 msgstr "jInmolmey beqpu' je veH Hutlh ghaj Enterprise."
 
 #: lib/api/error-codes.ts
-msgid "environment_id and enabled are required"
-msgstr "environment_id enabled je poQlu'"
+msgid "environment_id and one of enabled, rollout (0–100) or rules are required; a rule needs an attribute, an operator (in, not_in, contains, starts_with, ends_with) and 1–1000 values (at most 50 rules)"
+msgstr "environment_id je enabled, rollout (0–100) pagh rules poQ; chut poQ Dotlh, mI' (in, not_in, contains, starts_with, ends_with), 1–1000 lo'laHghach je (50 chut law')"
 
 #: components/ticket/ticket-type.tsx
 msgid "epic"
@@ -4932,6 +4957,14 @@ msgstr "DIvI'Daq vay' rI'"
 msgid "Inviting teammates is optional. Continue to your board whenever you’re ready."
 msgstr "ghom DItlhobnISbe'. bISuDrupDI' 'echletlIjDaq yIghoS."
 
+#: components/flags/flags.tsx
+msgid "is not one of"
+msgstr "ghobe'"
+
+#: components/flags/flags.tsx
+msgid "is one of"
+msgstr "'oH"
+
 #: components/settings/csv-import.tsx
 msgid "It can’t be scrapped any more: someone has worked on what it made (moved, edited, commented on or reviewed a ticket, or added one)."
 msgstr "DaH Qaw'lu'laHbe': chenmoHbogh Dochmey vum vay' (ticket vIHmoH, choH, ja', nuD, pagh chel)."
@@ -5548,6 +5581,10 @@ msgstr "rarwI' chu' DachenmoH'a'? Qapbe'choH DaH rarwI', vaj lo'bogh Hoch ghot r
 msgid "Make admin"
 msgstr "loHwI' yIchenmoH"
 
+#: components/flags/flags.tsx
+msgid "Make generic"
+msgstr "Hoch yIchu'"
+
 #: components/live/hosted-bar.tsx
 msgid "Make host"
 msgstr "pa' DevwI' yIchenmoH"
@@ -6140,6 +6177,10 @@ msgstr "He navmey tu'lu'be' DaH."
 #: app/roadmaps/page.tsx
 msgid "No roadmaps yet. Create one from a project."
 msgstr "He navmey tu'lu'be' DaH. jInmol vo' wa' yIchenmoH."
+
+#: components/flags/flags.tsx
+msgid "No rules: the rollout decides for everyone."
+msgstr "chut tu'lu'be': Hoch wuq rollout."
 
 #: components/settings/api-keys.tsx
 msgid "No service keys yet."
@@ -7567,6 +7608,11 @@ msgstr "DevwI' yIteq"
 msgid "Remove planned sprint {0}? Its tickets go back to the backlog, unestimated."
 msgstr "sprint nablu'pu'bogh {0} Dateq'a'? backlogDaq chegh ticketmeyDaj, pIHlu'be'."
 
+#. placeholder {0}: i + 1
+#: components/flags/flags.tsx
+msgid "Remove rule {0}"
+msgstr "chut {0} yIteq"
+
 #: components/flags/flags.tsx
 msgid "Remove this flag? Code must no longer check it: it’s archived in flags.gg in every environment."
 msgstr "ra'wI' DateqDI'? ngoq nuDQo'nIS: Hoch Duj flags.gg Daq pollu'."
@@ -7855,6 +7901,34 @@ msgstr "He nav legh"
 #: lib/org/audit.ts
 msgid "Roadmaps"
 msgstr "He navmey"
+
+#: components/flags/flags.tsx
+msgid "Rollout"
+msgstr "rollout"
+
+#. placeholder {0}: i + 1
+#: components/flags/flags.tsx
+msgid "Rule {0} attribute"
+msgstr "chut {0} Dotlh"
+
+#. placeholder {0}: i + 1
+#: components/flags/flags.tsx
+msgid "Rule {0} operator"
+msgstr "chut {0} mI'"
+
+#. placeholder {0}: i + 1
+#: components/flags/flags.tsx
+msgid "Rule {0} serves"
+msgstr "chut {0} jang"
+
+#. placeholder {0}: i + 1
+#: components/flags/flags.tsx
+msgid "Rule {0} values"
+msgstr "chut {0} lo'laHghach"
+
+#: components/flags/flags.tsx
+msgid "Rules"
+msgstr "chut"
 
 #: components/settings/mcp-connect.tsx
 msgid "Run this once in a terminal. -s user makes it available in every project."
@@ -8433,6 +8507,16 @@ msgstr "jaj lo'taH backlog yImIw"
 msgid "sort must be manual, newest or oldest"
 msgstr "sort'e' manual, newest pagh oldest 'oHnIS"
 
+#: components/flags/flags.tsx
+msgid "Specialise"
+msgstr "yIDub"
+
+#. placeholder {0}: e.name
+#. placeholder {0}: env.name
+#: components/flags/flags.tsx
+msgid "Specialise in {0}"
+msgstr "{0} Daq yIDub"
+
 #: components/ticket/ticket-type.tsx
 msgid "spike"
 msgstr "spike"
@@ -8686,6 +8770,10 @@ msgstr "motlh Hoch ghotvaD poS — rarwI' ghajbogh Hoch laDlaH."
 #: components/roadmap/roadmap-editor-form.tsx
 msgid "Starts visible to your organization; an organization admin can make it public."
 msgstr "ghom'a'lIjvaD neH 'anglu' wa'DIch; Hoch ghotvaD poSmoHlaH ghom'a' loHwI'."
+
+#: components/flags/flags.tsx
+msgid "starts with"
+msgstr "tagh"
 
 #: components/staff/staff-shell.tsx
 msgid "Stats"
@@ -9962,6 +10050,10 @@ msgstr "Jira QInlIj, API ngaQHa'moHwI' je yIlo'. <0>Atlassian Daq ngaQHa'moHwI' 
 msgid "Used when they aren’t on a project or board."
 msgstr "project board ghap Daq ghobe'chugh lo'lu'."
 
+#: components/flags/flags.tsx
+msgid "user ids, plans…, comma-separated"
+msgstr "lo'wI' ngu'meH mI', nab…"
+
 #: lib/api/error-codes.ts
 msgid "user is already an organization member; add them to the team directly"
 msgstr "ghom'a' beqpu' ghaH lo'wI'; SIbI' beqDaq yIchel"
@@ -10241,6 +10333,10 @@ msgstr "nuq tut nuq"
 #: app/settings/page.tsx
 msgid "Which days and hours your organization works: spike timeboxes, sprint planning and sprint ends follow it."
 msgstr "DIvI'lIj Qu' jajmey repmey je: spike poHmey, sprint nab, sprint rIn je tlha'."
+
+#: components/flags/flags.tsx
+msgid "While the flag is on, rules are checked in order and the first match decides. Anyone no rule matches gets it if they fall in the rollout."
+msgstr "ra'wI' chu'DI', chut tu'lu'; wa'DIch chut wuq. chut ghajbe'bogh nuv rollout Daq ghaHtaH'a'?"
 
 #: components/settings/audit-log.tsx
 msgid "Who"

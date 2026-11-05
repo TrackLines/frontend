@@ -488,6 +488,10 @@ msgstr "{mm}m"
 msgid "{n, plural, one {# imported ticket to review before the first sprint} other {# imported tickets to review before the first sprint}}"
 msgstr "{n, plural, one {# ticket importado a rever antes do primeiro sprint} other {# tickets importados a rever antes do primeiro sprint}}"
 
+#: components/flags/flags.tsx
+msgid "{n, plural, one {# rule} other {# rules}}"
+msgstr "{n, plural, one {# regra} other {# regras}}"
+
 #: components/reports/rollup-view.tsx
 msgid "{n} of {total}"
 msgstr "{n} de {total}"
@@ -623,6 +627,10 @@ msgstr "{value}d"
 msgid "* From before reports were recorded: planned is what the sprint held when it closed, and what was added or removed isn’t known."
 msgstr "* De antes de os relatórios serem registrados: o planejado é o que a sprint continha ao ser fechada, e o que foi adicionado ou removido não é conhecido."
 
+#: components/flags/flags.tsx
+msgid "% of users"
+msgstr "% dos utilizadores"
+
 #. placeholder {0}: project.name
 #: app/projects/[id]/archived/page.tsx
 msgid "← Edit {0}"
@@ -664,6 +672,10 @@ msgstr "<0>Mude o seu plano</0> para o importar."
 #: components/settings/jira-import.tsx
 msgid "<0>Change your plan</0>, or untick some projects and preview again."
 msgstr "<0>Mude o seu plano</0>, ou desmarque alguns projetos e veja a pré-visualização de novo."
+
+#: components/flags/flags.tsx
+msgid "<0>key</0> is the user your app identifies to flags.gg; other attributes are whatever context it sends, such as <1>plan</1>."
+msgstr "<0>key</0> é o utilizador que a sua app identifica ao flags.gg; os outros atributos são o contexto que ela envia, como <1>plan</1>."
 
 #: components/board/review.tsx
 msgid "<0>Needs review.</0> An agent finished this. Approve it to move it to Done, or send it back with what's missing."
@@ -965,6 +977,10 @@ msgstr "Adicione marcos e organize-os na ordem em que você quer que as pessoas 
 #: components/settings/organization.tsx
 msgid "Add organization member…"
 msgstr "Adicionar membro da organização…"
+
+#: components/flags/flags.tsx
+msgid "Add rule"
+msgstr "Adicionar regra"
 
 #: components/settings/embedding.tsx
 msgid "Add site"
@@ -1772,6 +1788,7 @@ msgstr "Calendários"
 #: app/boards/[id]/edit/page.tsx
 #: components/board/review.tsx
 #: components/board/ticket-dialog.tsx
+#: components/flags/flags.tsx
 #: components/project/backlog.tsx
 #: components/project/key-prefix.tsx
 #: components/project/move-to-board.tsx
@@ -2385,6 +2402,10 @@ msgstr "Contato"
 #: components/intake/triage.tsx
 msgid "Contact: <0>{0}</0>"
 msgstr "Contato: <0>{0}</0>"
+
+#: components/flags/flags.tsx
+msgid "contains"
+msgstr "contém"
 
 #: components/onboarding/guide.tsx
 msgid "Continue setup"
@@ -4007,6 +4028,10 @@ msgstr "termina hoje"
 msgid "ends tomorrow"
 msgstr "termina amanhã"
 
+#: components/flags/flags.tsx
+msgid "ends with"
+msgstr "termina em"
+
 #: lib/api/error-codes.ts
 msgid "enquiries aren't available right now"
 msgstr "consultas não estão disponíveis no momento"
@@ -4041,8 +4066,8 @@ msgid "Enterprise has unlimited projects and members."
 msgstr "O Enterprise tem projetos e membros ilimitados."
 
 #: lib/api/error-codes.ts
-msgid "environment_id and enabled are required"
-msgstr "environment_id e enabled são obrigatórios"
+msgid "environment_id and one of enabled, rollout (0–100) or rules are required; a rule needs an attribute, an operator (in, not_in, contains, starts_with, ends_with) and 1–1000 values (at most 50 rules)"
+msgstr "são necessários environment_id e um de enabled, rollout (0–100) ou rules; uma regra precisa de um atributo, um operador (in, not_in, contains, starts_with, ends_with) e 1–1000 valores (no máximo 50 regras)"
 
 #: components/ticket/ticket-type.tsx
 msgid "epic"
@@ -4932,6 +4957,14 @@ msgstr "Convidou alguém para a organização"
 msgid "Inviting teammates is optional. Continue to your board whenever you’re ready."
 msgstr "Convidar colegas é opcional. Continue para seu quadro quando quiser."
 
+#: components/flags/flags.tsx
+msgid "is not one of"
+msgstr "não é um de"
+
+#: components/flags/flags.tsx
+msgid "is one of"
+msgstr "é um de"
+
 #: components/settings/csv-import.tsx
 msgid "It can’t be scrapped any more: someone has worked on what it made (moved, edited, commented on or reviewed a ticket, or added one)."
 msgstr "Já não pode ser descartada: alguém trabalhou no que ela criou (moveu, editou, comentou ou reviu um ticket, ou adicionou um)."
@@ -5548,6 +5581,10 @@ msgstr "Gerar um novo link? O atual deixa de funcionar, então quem o usa vai pr
 msgid "Make admin"
 msgstr "Tornar admin"
 
+#: components/flags/flags.tsx
+msgid "Make generic"
+msgstr "Tornar genérico"
+
 #: components/live/hosted-bar.tsx
 msgid "Make host"
 msgstr "Tornar condutor"
@@ -6140,6 +6177,10 @@ msgstr "Nenhum roadmap ainda."
 #: app/roadmaps/page.tsx
 msgid "No roadmaps yet. Create one from a project."
 msgstr "Nenhum roadmap ainda. Crie um a partir de um projeto."
+
+#: components/flags/flags.tsx
+msgid "No rules: the rollout decides for everyone."
+msgstr "Sem regras: a implementação decide para todos."
 
 #: components/settings/api-keys.tsx
 msgid "No service keys yet."
@@ -7567,6 +7608,11 @@ msgstr "Remover líder"
 msgid "Remove planned sprint {0}? Its tickets go back to the backlog, unestimated."
 msgstr "Remover a sprint planejada {0}? Os tickets dela voltam para o backlog, sem estimativa."
 
+#. placeholder {0}: i + 1
+#: components/flags/flags.tsx
+msgid "Remove rule {0}"
+msgstr "Remover a regra {0}"
+
 #: components/flags/flags.tsx
 msgid "Remove this flag? Code must no longer check it: it’s archived in flags.gg in every environment."
 msgstr "Remover esta flag? O código já não a pode verificar: é arquivada no flags.gg em todos os ambientes."
@@ -7855,6 +7901,34 @@ msgstr "Visualização do roadmap"
 #: lib/org/audit.ts
 msgid "Roadmaps"
 msgstr "Roadmaps"
+
+#: components/flags/flags.tsx
+msgid "Rollout"
+msgstr "Implementação"
+
+#. placeholder {0}: i + 1
+#: components/flags/flags.tsx
+msgid "Rule {0} attribute"
+msgstr "Atributo da regra {0}"
+
+#. placeholder {0}: i + 1
+#: components/flags/flags.tsx
+msgid "Rule {0} operator"
+msgstr "Operador da regra {0}"
+
+#. placeholder {0}: i + 1
+#: components/flags/flags.tsx
+msgid "Rule {0} serves"
+msgstr "Resultado da regra {0}"
+
+#. placeholder {0}: i + 1
+#: components/flags/flags.tsx
+msgid "Rule {0} values"
+msgstr "Valores da regra {0}"
+
+#: components/flags/flags.tsx
+msgid "Rules"
+msgstr "Regras"
 
 #: components/settings/mcp-connect.tsx
 msgid "Run this once in a terminal. -s user makes it available in every project."
@@ -8433,6 +8507,16 @@ msgstr "Ordenar backlog por data"
 msgid "sort must be manual, newest or oldest"
 msgstr "sort deve ser manual, newest ou oldest"
 
+#: components/flags/flags.tsx
+msgid "Specialise"
+msgstr "Especializar"
+
+#. placeholder {0}: e.name
+#. placeholder {0}: env.name
+#: components/flags/flags.tsx
+msgid "Specialise in {0}"
+msgstr "Especializar em {0}"
+
 #: components/ticket/ticket-type.tsx
 msgid "spike"
 msgstr "spike"
@@ -8686,6 +8770,10 @@ msgstr "Começa público por padrão — qualquer pessoa com o link pode lê-lo.
 #: components/roadmap/roadmap-editor-form.tsx
 msgid "Starts visible to your organization; an organization admin can make it public."
 msgstr "Começa visível para sua organização; um admin da organização pode torná-lo público."
+
+#: components/flags/flags.tsx
+msgid "starts with"
+msgstr "começa por"
 
 #: components/staff/staff-shell.tsx
 msgid "Stats"
@@ -9962,6 +10050,10 @@ msgstr "Use o seu email do Jira e um token de API. <0>Crie um token na Atlassian
 msgid "Used when they aren’t on a project or board."
 msgstr "Usado quando não estão em um projeto ou quadro."
 
+#: components/flags/flags.tsx
+msgid "user ids, plans…, comma-separated"
+msgstr "ids de utilizador, planos…, separados por vírgulas"
+
 #: lib/api/error-codes.ts
 msgid "user is already an organization member; add them to the team directly"
 msgstr "o usuário já é membro da organização; adicione-o diretamente à equipe"
@@ -10241,6 +10333,10 @@ msgstr "Qual coluna é qual"
 #: app/settings/page.tsx
 msgid "Which days and hours your organization works: spike timeboxes, sprint planning and sprint ends follow it."
 msgstr "Em que dias e horários sua organização trabalha: timeboxes de spikes, planejamento de sprints e o fim dos sprints seguem isso."
+
+#: components/flags/flags.tsx
+msgid "While the flag is on, rules are checked in order and the first match decides. Anyone no rule matches gets it if they fall in the rollout."
+msgstr "Enquanto a flag está ligada, as regras são verificadas por ordem e a primeira que corresponde decide. Quem não corresponde a nenhuma recebe-a se estiver na implementação."
 
 #: components/settings/audit-log.tsx
 msgid "Who"

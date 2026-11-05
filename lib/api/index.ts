@@ -773,10 +773,14 @@ export type FlagAgent = {
 };
 export type FlagsStatus = { provider: 'flags'; connected: boolean; base_url?: string; updated_by?: string; updated_at?: string; agents?: FlagAgent[]; agents_error?: string };
 export type ProjectFlags = { agent_id: string | null; cleanup_days: number };
-export type TicketFlag = {
-  ticket: string; name: string; agent_id: string;
-  environments: { environment_id: string; name: string; level: number; present: boolean; enabled: boolean; production?: boolean }[];
+// FlagRule targets users by what the flags.gg SDK knows about them ("key" is the targeting key) (TL-822).
+export type FlagRule = { attribute: string; operator: 'in' | 'not_in' | 'contains' | 'starts_with' | 'ends_with'; values: string[]; serve: boolean };
+export type FlagEnvironment = {
+  environment_id: string; name: string; level: number; present: boolean; enabled: boolean; production?: boolean;
+  rollout?: number; rules?: FlagRule[]; // missing before flags.gg sends them: everyone
 };
+export type TicketFlag = { ticket: string; name: string; agent_id: string; environments: FlagEnvironment[] };
+export type FlagChange = { enabled?: boolean; rollout?: number; rules?: FlagRule[] };
 
 export const flags = {
   status: (token: T) => api<FlagsStatus>('/integrations/flags', { token }),
@@ -787,8 +791,8 @@ export const flags = {
     api<ProjectFlags>(`/projects/${projectId}/flags`, { method: 'PUT', body: input, token }),
   setBoard: (boardId: string, agentId: string, token: T) => api<{ agent_id: string | null }>(`/boards/${boardId}/flags`, { method: 'PUT', body: { agent_id: agentId }, token }),
   ticket: (id: string, token: T) => api<TicketFlag>(`/tickets/${id}/flag`, { token }),
-  toggle: (id: string, environmentId: string, enabled: boolean, token: T) =>
-    api<TicketFlag>(`/tickets/${id}/flag`, { method: 'PATCH', body: { environment_id: environmentId, enabled }, token }),
+  change: (id: string, environmentId: string, change: FlagChange, token: T) =>
+    api<TicketFlag>(`/tickets/${id}/flag`, { method: 'PATCH', body: { environment_id: environmentId, ...change }, token }),
   remove: (id: string, token: T) => api<void>(`/tickets/${id}/flag`, { method: 'DELETE', token }),
 };
 
