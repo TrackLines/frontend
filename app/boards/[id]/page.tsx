@@ -59,6 +59,7 @@ export default function BoardPage() {
   const [permissionBoardId, setPermissionBoardId] = useState('');
   const [permissionError, setPermissionError] = useState(false);
   const [moveBoards, setMoveBoards] = useState<Board[]>([]); // where its tickets can be moved to, for those who can (TL-381)
+  const [projectName, setProjectName] = useState(''); // the header names the project the board is in (TL-823)
   const [labelFilter, setLabelFilter] = useState<string[]>(() => parseLabels(searchParams));
   const [epicFilter, setEpicFilter] = useState(() => parseEpic(searchParams)); // ?epic=<id> (TL-215)
   const [epics, setEpics] = useState<EpicSummary[]>([]);
@@ -101,6 +102,7 @@ export default function BoardPage() {
       setCanManage(canManageBoard(role, next.team_id));
       // its own failure only hides Move to board, not the board settings; boards rarely change, so not on auto-refresh
       if (!background) void projects.get(next.project_id, token).then((p) => {
+        setProjectName(p.name);
         const others = (p.boards ?? []).filter((b) => b.id !== next.id && !b.archived_at);
         setMoveBoards(canMoveToBoard(role, others) ? others : []);
       }, () => setMoveBoards([]));
@@ -193,7 +195,7 @@ export default function BoardPage() {
   return (
     <main className={`mx-auto flex min-h-screen w-full flex-col ${BOARD_WIDTH}`}>
       <header className="flex flex-wrap items-center gap-x-4 gap-y-2 border-b px-6 py-4">
-        <Link href={`/projects/${board.project_id}`} className="text-sm text-muted-foreground hover:underline">← <Trans>Project</Trans></Link>
+        <Link href={`/projects/${board.project_id}`} className="text-sm text-muted-foreground hover:underline">← {projectName || <Trans>Project</Trans>}</Link>
         <h1 className="text-2xl font-bold tracking-tight">{board.name}</h1>
         {/* phones (TL-695): the filters are one row that scrolls sideways, not four that wrap */}
         <div className="flex items-center gap-x-4 gap-y-2 max-md:order-last max-md:w-full max-md:overflow-x-auto max-md:pb-1 md:flex-wrap" data-board-filters>
