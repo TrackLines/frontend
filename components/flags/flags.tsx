@@ -1,9 +1,9 @@
 'use client';
 
 import type { I18n, MessageDescriptor } from '@lingui/core';
-import { msg } from '@lingui/core/macro';
+import { msg, plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { FlagIcon } from 'lucide-react';
+import { FlagIcon, PlusIcon, SlidersHorizontalIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useState, type FormEvent } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ApiError, flags, type FlagAction, type FlagsStatus, type ProjectFlags, type Ticket, type TicketFlag } from '@/lib/api';
+import { ApiError, flags, type FlagAction, type FlagChange, type FlagEnvironment, type FlagRule, type FlagsStatus, type ProjectFlags, type Ticket, type TicketFlag } from '@/lib/api';
 
 // flags.gg (TL-790, TL-791): a ticket that needs a feature flag gets one in flags.gg when it reaches a
 // board; columns promote it through the environments; "Remove flag" archives it once the code no longer
@@ -219,17 +219,18 @@ export function TicketFlagPanel({ ticket, token, onRemoved }: { ticket: Pick<Tic
   }
   return (
     <TicketFlagView name={ticket.flag_name ?? ''} flag={flag} problem={ticket.flag_error ?? ''} error={error} busy={busy}
-      onToggle={(env, on) => run(() => flags.toggle(ticket.id, env, on, token), t`Couldn’t change the flag.`)}
+      onChange={(env, change) => run(() => flags.change(ticket.id, env, change, token), t`Couldn’t change the flag.`)}
       onRemove={() => confirm(t`Remove this flag? Code must no longer check it: it’s archived in flags.gg in every environment.`) &&
         run(async () => { await flags.remove(ticket.id, token); onRemoved?.(); }, t`Couldn’t remove the flag.`)} />
   );
 }
 
-export function TicketFlagView({ name, flag, problem, error, busy, onToggle, onRemove }: {
+export function TicketFlagView({ name, flag, problem, error, busy, onChange, onRemove }: {
   name: string; flag: TicketFlag | null | 'none'; problem: string; error: string; busy: boolean;
-  onToggle: (environmentId: string, on: boolean) => void; onRemove: () => void;
+  onChange: (environmentId: string, change: FlagChange) => void; onRemove: () => void;
 }) {
-  const { t } = useLingui();
+  const { t, i18n } = useLingui();
+  const [editing, setEditing] = useState<string | null>(null);
   return (
     <section aria-label={t`Feature flag`} className="grid gap-2 rounded-lg border p-3 text-sm">
       <div className="flex flex-wrap items-center gap-2">
@@ -243,20 +244,128 @@ export function TicketFlagView({ name, flag, problem, error, busy, onToggle, onR
         : (
           <ul className="grid gap-1">
             {flag.environments.map((e) => (
-              <li key={e.environment_id} className="flex items-center gap-2">
-                <span className="w-28 truncate font-medium">{e.name}</span>
-                {e.present ? (
-                  <label className="flex items-center gap-2">
-                    <Checkbox checked={e.enabled} disabled={busy} onCheckedChange={(v) => onToggle(e.environment_id, v === true)} aria-label={t`On in ${e.name}`} />
-                    {e.enabled ? <Trans>On</Trans> : <Trans>Off</Trans>}
-                  </label>
-                ) : <span className="text-muted-foreground"><Trans>Not yet</Trans></span>}
+              <li key={e.environment_id} className="grid gap-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="w-28 truncate font-medium">{e.name}</span>
+                  {e.present ? (
+                    <>
+                      <label className="flex items-center gap-2">
+                        <Checkbox checked={e.enabled} disabled={busy} onCheckedChange={(v) => onChange(e.environment_id, { enabled: v === true })} aria-label={t`On in ${e.name}`} />
+                        {e.enabled ? <Trans>On</Trans> : <Trans>Off</Trans>}
+                      </label>
+                      {!isGeneric(e) && <Badge variant="secondary">{specialSummary(i18n, e)}</Badge>}
+                      {editing !== e.environment_id && (
+                        <Button type="button" size="sm" variant="ghost" className="ml-auto" disabled={busy} onClick={() => setEditing(e.environment_id)} aria-label={t`Specialise in ${e.name}`}>
+                          <SlidersHorizontalIcon aria-hidden /> <Trans>Specialise</Trans>
+                        </Button>
+                      )}
+                    </>
+                  ) : <span className="text-muted-foreground"><Trans>Not yet</Trans></span>}
+                </div>
+                {e.present && editing === e.environment_id && (
+                  <FlagSpecialiseEditor env={e} busy={busy} onCancel={() => setEditing(null)}
+                    onSave={(change) => { onChange(e.environment_id, change); setEditing(null); }} />
+                )}
               </li>
             ))}
           </ul>
         )}
       {error && <p role="alert" className="text-destructive">{error}</p>}
     </section>
+  );
+}
+
+// A flag is generic (plain on/off) while everyone gets it when it's on: 100% and no rules (TL-822).
+export function isGeneric(e: Pick<FlagEnvironment, 'rollout' | 'rules'>): boolean {
+  return (e.rollout ?? 100) >= 100 && !e.rules?.length;
+}
+
+// specialSummary: "25%" or "25% · 2 rules".
+export function specialSummary(i18n: I18n, e: FlagEnvironment): string {
+  const n = e.rules?.length ?? 0;
+  const pct = `${e.rollout ?? 100}%`;
+  return n ? `${pct} · ${i18n._(msg`${plural(n, { one: '# rule', other: '# rules' })}`)}` : pct;
+}
+
+const OPERATORS: Record<FlagRule['operator'], MessageDescriptor> = {
+  in: msg`is one of`,
+  not_in: msg`is not one of`,
+  contains: msg`contains`,
+  starts_with: msg`starts with`,
+  ends_with: msg`ends with`,
+};
+
+// A rule being edited: values as typed, comma-separated.
+type RuleDraft = { attribute: string; operator: FlagRule['operator']; values: string; serve: boolean };
+
+// splitValues reads "a, b,,c" as [a, b, c].
+export function splitValues(s: string): string[] {
+  return s.split(',').map((v) => v.trim()).filter(Boolean);
+}
+
+// toRules turns drafts into rules, or null while one isn't complete (flags.gg's bounds: TL-821).
+export function toRules(drafts: RuleDraft[]): FlagRule[] | null {
+  const rules = drafts.map((d) => ({ attribute: d.attribute.trim(), operator: d.operator, values: splitValues(d.values), serve: d.serve }));
+  const ok = rules.length <= 50 && rules.every((r) => r.attribute && r.attribute.length <= 100 && r.values.length >= 1 && r.values.length <= 1000 && r.values.every((v) => v.length <= 500));
+  return ok ? rules : null;
+}
+
+// FlagSpecialiseEditor: who gets the flag in one environment while it's on: a rollout percentage and targeting
+// rules, checked in order, the first match deciding. "Make generic" goes back to everyone.
+export function FlagSpecialiseEditor({ env, busy, onSave, onCancel }: {
+  env: FlagEnvironment; busy: boolean; onSave: (change: FlagChange) => void; onCancel: () => void;
+}) {
+  const { t, i18n } = useLingui();
+  const [rollout, setRollout] = useState(String(env.rollout ?? 100));
+  const [drafts, setDrafts] = useState<RuleDraft[]>(() => (env.rules ?? []).map((r) => ({ ...r, values: r.values.join(', ') })));
+  const pct = Number(rollout);
+  const pctOk = rollout.trim() !== '' && Number.isInteger(pct) && pct >= 0 && pct <= 100;
+  const rules = toRules(drafts);
+  const set = (i: number, patch: Partial<RuleDraft>) => setDrafts(drafts.map((d, j) => (j === i ? { ...d, ...patch } : d)));
+  const operators = Object.fromEntries(Object.entries(OPERATORS).map(([k, m]) => [k, i18n._(m)]));
+  const serves = { on: t`On`, off: t`Off` };
+  return (
+    <form aria-label={t`Specialise in ${env.name}`} className="grid gap-3 rounded-md border bg-muted/30 p-3"
+      onSubmit={(ev) => { ev.preventDefault(); if (pctOk && rules) onSave({ rollout: pct, rules }); }}>
+      <p className="text-xs text-muted-foreground">
+        <Trans>While the flag is on, rules are checked in order and the first match decides. Anyone no rule matches gets it if they fall in the rollout.</Trans>
+      </p>
+      <label className="flex flex-wrap items-center gap-2 font-medium">
+        <Trans>Rollout</Trans>
+        <Input type="number" min={0} max={100} step={1} value={rollout} onChange={(ev) => setRollout(ev.target.value)} aria-invalid={!pctOk} className="w-20" />
+        <span className="font-normal text-muted-foreground"><Trans>% of users</Trans></span>
+      </label>
+      <fieldset className="grid gap-2">
+        <legend className="mb-1 font-medium"><Trans>Rules</Trans></legend>
+        {drafts.length === 0 && <p className="text-muted-foreground"><Trans>No rules: the rollout decides for everyone.</Trans></p>}
+        {drafts.map((d, i) => (
+          <div key={i} className="grid gap-2 sm:grid-cols-[8rem_9rem_1fr_6rem_auto] sm:items-center">
+            <Input value={d.attribute} placeholder="key" maxLength={100} onChange={(ev) => set(i, { attribute: ev.target.value })} aria-label={t`Rule ${i + 1} attribute`} className="font-mono" />
+            <Select items={operators} value={d.operator} onValueChange={(v) => v && set(i, { operator: v as FlagRule['operator'] })}>
+              <SelectTrigger aria-label={t`Rule ${i + 1} operator`} className="w-full"><SelectValue /></SelectTrigger>
+              <SelectContent>{Object.entries(operators).map(([k, label]) => <SelectItem key={k} value={k}>{label}</SelectItem>)}</SelectContent>
+            </Select>
+            <Input value={d.values} placeholder={t`user ids, plans…, comma-separated`} onChange={(ev) => set(i, { values: ev.target.value })} aria-label={t`Rule ${i + 1} values`} aria-invalid={!splitValues(d.values).length} />
+            <Select items={serves} value={d.serve ? 'on' : 'off'} onValueChange={(v) => set(i, { serve: v === 'on' })}>
+              <SelectTrigger aria-label={t`Rule ${i + 1} serves`} className="w-full"><SelectValue /></SelectTrigger>
+              <SelectContent><SelectItem value="on">{serves.on}</SelectItem><SelectItem value="off">{serves.off}</SelectItem></SelectContent>
+            </Select>
+            <Button type="button" size="icon" variant="ghost" onClick={() => setDrafts(drafts.filter((_, j) => j !== i))} aria-label={t`Remove rule ${i + 1}`}><Trash2Icon aria-hidden /></Button>
+          </div>
+        ))}
+        {drafts.length < 50 && (
+          <Button type="button" size="sm" variant="outline" className="justify-self-start" onClick={() => setDrafts([...drafts, { attribute: 'key', operator: 'in', values: '', serve: true }])}>
+            <PlusIcon aria-hidden /> <Trans>Add rule</Trans>
+          </Button>
+        )}
+        <p className="text-xs text-muted-foreground"><Trans><code>key</code> is the user your app identifies to flags.gg; other attributes are whatever context it sends, such as <code>plan</code>.</Trans></p>
+      </fieldset>
+      <div className="flex flex-wrap gap-2">
+        <Button type="submit" size="sm" disabled={busy || !pctOk || !rules}><Trans>Save</Trans></Button>
+        {!isGeneric(env) && <Button type="button" size="sm" variant="outline" disabled={busy} onClick={() => onSave({ rollout: 100, rules: [] })}><Trans>Make generic</Trans></Button>}
+        <Button type="button" size="sm" variant="ghost" onClick={onCancel}><Trans>Cancel</Trans></Button>
+      </div>
+    </form>
   );
 }
 
