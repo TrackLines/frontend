@@ -70,3 +70,9 @@ test('Edit board: when a sprint ends, for sprint boards (source)', async () => {
   expect(page).toContain("const endingField = draft.style === 'sprints' && (");
   expect(page).toContain("options={[['start_next', t`Start the next one`], ['wait', t`Wait for a manager`]]}");
 });
+
+test('the board header names its project, "Project" until it loads (TL-823, source)', async () => {
+  const page = await Bun.file(new URL('../../app/boards/[id]/page.tsx', import.meta.url)).text();
+  expect(page).toContain('setProjectName(p.name)');
+  expect(page).toContain('← {projectName || <Trans>Project</Trans>}');
+});
