@@ -25,6 +25,7 @@ export default function ApiKeysPage() {
       <Trans>Service keys for servers and integrations: send one as{' '}
       <code className="rounded bg-muted px-1">Authorization: Bearer tl_s_…</code> to <code className="rounded bg-muted px-1">/api</code>.</Trans>{' '}
       {!admin && <><Trans>Only organization admins can make or revoke them.</Trans>{' '}</>}
+      <br />
       <Trans>Your own keys and AI agents are in <Link href="/account/api-keys" className="font-medium text-foreground underline">Your settings</Link>.</Trans>
     </>} />
   );
