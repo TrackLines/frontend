@@ -10,7 +10,7 @@ import { PlanCard } from '@/components/billing/plan-card';
 import { useFlags } from '@flags-gg/react-library';
 import { CalendarClockIcon, KeyRoundIcon, PlugIcon, UploadIcon, WebhookIcon } from 'lucide-react';
 import { McpConnect } from '@/components/settings/mcp-connect';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { SettingsCard } from '@/components/settings/settings-card';
 import { OrgReportCard } from '@/components/reports/report-links';
 import { FileCleanupLink } from '@/components/settings/file-cleanup';
@@ -48,9 +48,8 @@ export default function SettingsPage() {
         {admin && <SettingsCard icon={PlugIcon} title={t`Integrations`} href="/settings/integrations" description={t`Connect GitHub, Bitbucket, Google Chat and Bugfixes.`} />}
         {admin && is('imports').enabled() && <SettingsCard icon={UploadIcon} title={t`Import`} href="/settings/import" description={t`Bring work in from Jira, or from a CSV (Trello, Asana, Linear, spreadsheets), as new projects.`} />}
         {admin && is('webhooks').enabled() && <SettingsCard icon={WebhookIcon} title={t`Webhooks`} href="/settings/webhooks" description={t`Send ticket, sprint and roadmap events to your own tools as they happen.`} />}
-        <SettingsCard icon={KeyRoundIcon} title={t`API keys`}
-          description={<Trans>Service keys for servers and integrations. Your own keys and AI agents (Claude, Codex…) are in <Link href="/account/api-keys" className="underline">Your settings</Link>.</Trans>}>
-          <Link href="/settings/api-keys" className={buttonVariants({ variant: 'outline', size: 'sm' })}><Trans>Manage API keys</Trans></Link>
+        <SettingsCard icon={KeyRoundIcon} title={t`API keys`} href="/settings/api-keys"
+          description={<Trans>Service keys for servers and integrations. Your own keys and AI agents (Claude, Codex…) are in <Link href="/account/api-keys" className="relative z-10 underline">Your settings</Link>.</Trans>}>
           {/* only where AI keys can be made here too: the org-ai-keys flag (TL-451) */}
           {is('org-ai-keys').enabled() && (
             <McpConnect

@@ -5602,7 +5602,6 @@ msgid "Making it an epic moves it to the backlog and clears its estimate. Its su
 msgstr "Convertirlo en épica lo mueve al backlog y borra su estimación. Sus subtickets se quedan donde están."
 
 #: app/account/page.tsx
-#: app/settings/page.tsx
 msgid "Manage API keys"
 msgstr "Gestionar claves de API"
 
