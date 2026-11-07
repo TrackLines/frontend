@@ -6869,6 +6869,10 @@ msgstr "only TrackLin.es links can be shortened"
 msgid "Open"
 msgstr "Open"
 
+#: components/ticket/attachments.tsx
+msgid "Open {name}"
+msgstr "Open {name}"
+
 #: app/reports/page.tsx
 msgid "Open a report from a board’s past sprints, a project, or organization settings."
 msgstr "Open a report from a board’s past sprints, a project, or organization settings."
@@ -7594,6 +7598,10 @@ msgstr "Remove “{name}”? The file is deleted too."
 #: components/board/column-list.tsx
 msgid "Remove {0}"
 msgstr "Remove {0}"
+
+#: components/ticket/attachments.tsx
+msgid "Remove {name}"
+msgstr "Remove {name}"
 
 #: app/settings/organization/page.tsx
 msgid "Remove admin"

@@ -7,6 +7,7 @@ const f = (key: string, name: string): PendingFile => ({ key, url: `https://x.uf
 test('files waiting for the new ticket are listed and can be dropped', () => {
   const html = renderToStaticMarkup(<PendingAttachments files={[f('a', 'shot.png')]} onChange={() => {}} projectId="p" />);
   for (const s of ['shot.png', '3.0 MB', 'Don&#x27;t attach shot.png']) expect(html).toContain(s);
+  expect(html).toContain('data-slot="attachment"'); // shadcn's Attachment (TL-844)
 });
 
 const realFetch = globalThis.fetch;

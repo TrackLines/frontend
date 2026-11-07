@@ -2,10 +2,10 @@
 
 import { Trans, useLingui } from '@lingui/react/macro';
 import { XIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Attachment, AttachmentAction, AttachmentActions, AttachmentContent, AttachmentDescription, AttachmentMedia, AttachmentTitle } from '@/components/ui/attachment';
 import { attachments } from '@/lib/api';
 import { AttachFilesButton } from './attach-files-button';
-import { formatSize } from './attachments';
+import { fileIcon, formatSize } from './attachments';
 
 // A file already uploaded to UploadThing, waiting for its ticket to exist.
 export type PendingFile = { key: string; url: string; name: string; size: number; content_type: string };
@@ -25,14 +25,24 @@ export function PendingAttachments({ files, onChange, projectId }: { files: Pend
         <AttachFilesButton target={projectId ? { projectId } : null} existing={files.length} onUploaded={(up) => onChange([...files, ...up])} />
       </div>
       {files.length > 0 && (
-        <ul className="grid gap-1 text-sm">
-          {files.map((f) => (
-            <li key={f.key} className="flex items-center gap-2">
-              <span className="min-w-0 flex-1 truncate">{f.name}</span>
-              <span className="text-muted-foreground">{formatSize(f.size)}</span>
-              <Button type="button" variant="ghost" size="icon-xs" className="text-muted-foreground hover:text-destructive" aria-label={t`Don't attach ${f.name}`} onClick={() => onChange(files.filter((x) => x.key !== f.key))}><XIcon /></Button>
-            </li>
-          ))}
+        <ul className="grid gap-2">
+          {files.map((f) => {
+            const Icon = fileIcon(f.content_type, f.name);
+            return (
+              <li key={f.key}>
+                <Attachment size="sm" className="w-full">
+                  <AttachmentMedia><Icon aria-hidden /></AttachmentMedia>
+                  <AttachmentContent>
+                    <AttachmentTitle>{f.name}</AttachmentTitle>
+                    <AttachmentDescription>{formatSize(f.size)}</AttachmentDescription>
+                  </AttachmentContent>
+                  <AttachmentActions>
+                    <AttachmentAction type="button" className="text-muted-foreground hover:text-destructive" aria-label={t`Don't attach ${f.name}`} onClick={() => onChange(files.filter((x) => x.key !== f.key))}><XIcon aria-hidden /></AttachmentAction>
+                  </AttachmentActions>
+                </Attachment>
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>
