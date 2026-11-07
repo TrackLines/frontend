@@ -4720,7 +4720,7 @@ msgstr "Gelezen verbergen"
 
 #: components/board/priority-badge.tsx
 #: components/board/priority-filter.tsx
-#: components/board/priority-select.tsx
+#: lib/board/priorities.ts
 msgid "High"
 msgstr "Hoog"
 
@@ -5522,7 +5522,7 @@ msgstr "Zelf rondkijken; de tickets van de host openen niet meer voor je"
 
 #: components/board/priority-badge.tsx
 #: components/board/priority-filter.tsx
-#: components/board/priority-select.tsx
+#: lib/board/priorities.ts
 msgid "Low"
 msgstr "Laag"
 
@@ -5673,7 +5673,7 @@ msgstr "Mediaan: <0>{0}</0> (stippellijn)"
 
 #: components/board/priority-badge.tsx
 #: components/board/priority-filter.tsx
-#: components/board/priority-select.tsx
+#: lib/board/priorities.ts
 msgid "Medium"
 msgstr "Gemiddeld"
 
@@ -7336,6 +7336,11 @@ msgstr "Vorige"
 msgid "Priority"
 msgstr "Prioriteit"
 
+#: components/project/backlog-sort.tsx
+#: components/work/my-work.tsx
+msgid "Priority (urgent first)"
+msgstr "Prioriteit (urgent eerst)"
+
 #: components/board/ticket-dialog.tsx
 msgid "Priority <0>(optional)</0>"
 msgstr "Prioriteit <0>(optioneel)</0>"
@@ -7508,6 +7513,10 @@ msgstr "heeft het opnieuw toegewezen van {from} aan {to}"
 #: components/intake/triage.tsx
 msgid "Received <0/>"
 msgstr "Ontvangen <0/>"
+
+#: components/work/my-work.tsx
+msgid "Recently changed"
+msgstr "Onlangs gewijzigd"
 
 #: components/project/backlog-sort.tsx
 msgid "Recently closed"
@@ -8499,12 +8508,16 @@ msgid "Sort"
 msgstr "Sorteren"
 
 #: components/project/backlog-sort.tsx
-msgid "Sort backlog by date"
-msgstr "Backlog sorteren op datum"
+msgid "Sort backlog"
+msgstr "Backlog sorteren"
 
 #: lib/api/error-codes.ts
 msgid "sort must be manual, newest or oldest"
 msgstr "Sort moet manual, newest of oldest zijn."
+
+#: components/work/my-work.tsx
+msgid "Sort my work"
+msgstr "Mijn werk sorteren"
 
 #: components/flags/flags.tsx
 msgid "Specialise"
@@ -10009,7 +10022,7 @@ msgstr "Uploaden…"
 
 #: components/board/priority-badge.tsx
 #: components/board/priority-filter.tsx
-#: components/board/priority-select.tsx
+#: lib/board/priorities.ts
 msgid "Urgent"
 msgstr "Urgent"
 

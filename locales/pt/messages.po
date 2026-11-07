@@ -4720,7 +4720,7 @@ msgstr "Ocultar lidas"
 
 #: components/board/priority-badge.tsx
 #: components/board/priority-filter.tsx
-#: components/board/priority-select.tsx
+#: lib/board/priorities.ts
 msgid "High"
 msgstr "Alta"
 
@@ -5522,7 +5522,7 @@ msgstr "Explore por conta própria; os tickets do condutor deixam de abrir para 
 
 #: components/board/priority-badge.tsx
 #: components/board/priority-filter.tsx
-#: components/board/priority-select.tsx
+#: lib/board/priorities.ts
 msgid "Low"
 msgstr "Baixa"
 
@@ -5673,7 +5673,7 @@ msgstr "Mediana: <0>{0}</0> (linha tracejada)"
 
 #: components/board/priority-badge.tsx
 #: components/board/priority-filter.tsx
-#: components/board/priority-select.tsx
+#: lib/board/priorities.ts
 msgid "Medium"
 msgstr "Média"
 
@@ -7336,6 +7336,11 @@ msgstr "Anterior"
 msgid "Priority"
 msgstr "Prioridade"
 
+#: components/project/backlog-sort.tsx
+#: components/work/my-work.tsx
+msgid "Priority (urgent first)"
+msgstr "Prioridade (urgente primeiro)"
+
 #: components/board/ticket-dialog.tsx
 msgid "Priority <0>(optional)</0>"
 msgstr "Prioridade <0>(opcional)</0>"
@@ -7508,6 +7513,10 @@ msgstr "reatribuiu de {from} para {to}"
 #: components/intake/triage.tsx
 msgid "Received <0/>"
 msgstr "Recebido <0/>"
+
+#: components/work/my-work.tsx
+msgid "Recently changed"
+msgstr "Alterados recentemente"
 
 #: components/project/backlog-sort.tsx
 msgid "Recently closed"
@@ -8499,12 +8508,16 @@ msgid "Sort"
 msgstr "Ordenar"
 
 #: components/project/backlog-sort.tsx
-msgid "Sort backlog by date"
-msgstr "Ordenar backlog por data"
+msgid "Sort backlog"
+msgstr "Ordenar backlog"
 
 #: lib/api/error-codes.ts
 msgid "sort must be manual, newest or oldest"
 msgstr "sort deve ser manual, newest ou oldest"
+
+#: components/work/my-work.tsx
+msgid "Sort my work"
+msgstr "Ordenar o meu trabalho"
 
 #: components/flags/flags.tsx
 msgid "Specialise"
@@ -10009,7 +10022,7 @@ msgstr "Enviando…"
 
 #: components/board/priority-badge.tsx
 #: components/board/priority-filter.tsx
-#: components/board/priority-select.tsx
+#: lib/board/priorities.ts
 msgid "Urgent"
 msgstr "Urgente"
 

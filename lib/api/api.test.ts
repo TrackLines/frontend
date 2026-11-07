@@ -134,3 +134,15 @@ test('backlog page asks for closed tickets by status, and leaves the default (op
   expect(new URL(requested[0], 'http://localhost').searchParams.get('status')).toBe('wont_do');
   expect(new URL(requested[1], 'http://localhost').searchParams.has('status')).toBe(false);
 });
+
+test('sort by priority goes to the backlog page and search, and the levels come from /priorities (TL-847)', async () => {
+  const requested: string[] = [];
+  g.fetch = (async (url: string) => { requested.push(url); return Response.json(url.includes('/priorities') ? [{ key: 'urgent', name: 'Urgent' }] : {}); }) as unknown as typeof fetch;
+  await backlog.page('project-1', { sort: 'priority', page: 1, perPage: 25 }, 'token');
+  await tickets.searchPage({ assignee: 'me', sort: 'priority' }, 'token');
+  const { priorityLevels } = await import('./.');
+  expect(await priorityLevels.list('token')).toEqual([{ key: 'urgent', name: 'Urgent' }]);
+  expect(new URL(requested[0], 'http://localhost').searchParams.get('sort')).toBe('priority');
+  expect(new URL(requested[1], 'http://localhost').searchParams.get('sort')).toBe('priority');
+  expect(requested[2]).toContain('/priorities');
+});

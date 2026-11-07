@@ -260,7 +260,7 @@ export function TicketDialog({ open, onOpenChange, token, projectId, columnId, t
             <TypePicker value={type} onChange={setType} epic={offerEpic} />
             <label className="grid gap-1.5 text-sm font-medium">
               <span><Trans>Priority <span className="font-normal text-muted-foreground">(optional)</span></Trans></span>
-              <PrioritySelect value={priority} onChange={setPriority} />
+              <PrioritySelect value={priority} onChange={setPriority} token={token} />
             </label>
             {estimating && (
               <label className="grid gap-1.5 text-sm font-medium">

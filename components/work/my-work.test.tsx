@@ -33,3 +33,9 @@ test('the Created by me tab shows its own empty message (TL-500)', () => {
   expect(html).toContain('You haven');
   expect(html).not.toContain('Nothing assigned to you');
 });
+
+test('My work can be sorted by priority, urgent first (TL-847, source)', async () => {
+  const src = await Bun.file(new URL('./my-work.tsx', import.meta.url)).text();
+  expect(src).toContain("...(sort === 'priority' && { sort: 'priority' as const })");
+  expect(src).toContain('Priority (urgent first)');
+});

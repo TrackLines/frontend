@@ -4720,7 +4720,7 @@ msgstr "Hide read"
 
 #: components/board/priority-badge.tsx
 #: components/board/priority-filter.tsx
-#: components/board/priority-select.tsx
+#: lib/board/priorities.ts
 msgid "High"
 msgstr "High"
 
@@ -5522,7 +5522,7 @@ msgstr "Look around on your own; the host's tickets stop opening for you"
 
 #: components/board/priority-badge.tsx
 #: components/board/priority-filter.tsx
-#: components/board/priority-select.tsx
+#: lib/board/priorities.ts
 msgid "Low"
 msgstr "Low"
 
@@ -5673,7 +5673,7 @@ msgstr "Median: <0>{0}</0> (dashed line)"
 
 #: components/board/priority-badge.tsx
 #: components/board/priority-filter.tsx
-#: components/board/priority-select.tsx
+#: lib/board/priorities.ts
 msgid "Medium"
 msgstr "Medium"
 
@@ -7336,6 +7336,11 @@ msgstr "Previous"
 msgid "Priority"
 msgstr "Priority"
 
+#: components/project/backlog-sort.tsx
+#: components/work/my-work.tsx
+msgid "Priority (urgent first)"
+msgstr "Priority (urgent first)"
+
 #: components/board/ticket-dialog.tsx
 msgid "Priority <0>(optional)</0>"
 msgstr "Priority <0>(optional)</0>"
@@ -7508,6 +7513,10 @@ msgstr "reassigned it from {from} to {to}"
 #: components/intake/triage.tsx
 msgid "Received <0/>"
 msgstr "Received <0/>"
+
+#: components/work/my-work.tsx
+msgid "Recently changed"
+msgstr "Recently changed"
 
 #: components/project/backlog-sort.tsx
 msgid "Recently closed"
@@ -8499,12 +8508,16 @@ msgid "Sort"
 msgstr "Sort"
 
 #: components/project/backlog-sort.tsx
-msgid "Sort backlog by date"
-msgstr "Sort backlog by date"
+msgid "Sort backlog"
+msgstr "Sort backlog"
 
 #: lib/api/error-codes.ts
 msgid "sort must be manual, newest or oldest"
 msgstr "sort must be manual, newest or oldest"
+
+#: components/work/my-work.tsx
+msgid "Sort my work"
+msgstr "Sort my work"
 
 #: components/flags/flags.tsx
 msgid "Specialise"
@@ -10009,7 +10022,7 @@ msgstr "Uploading…"
 
 #: components/board/priority-badge.tsx
 #: components/board/priority-filter.tsx
-#: components/board/priority-select.tsx
+#: lib/board/priorities.ts
 msgid "Urgent"
 msgstr "Urgent"
 
