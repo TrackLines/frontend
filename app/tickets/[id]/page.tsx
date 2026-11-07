@@ -117,8 +117,8 @@ export default function TicketPage() {
         <div className="flex flex-wrap items-center gap-2">
           <TypeBadge type={tk.type} />
           {tk.type === 'spike' && <TimeboxCountdown startedAt={tk.started_at} doneAt={tk.done_at} days={tk.timebox_days} hours={tk.timebox_hours} projectId={tk.project_id} />}
-          <PriorityBadge priority={tk.priority} />
-          <EstimateBadge estimate={tk.estimate} />
+          <PriorityBadge priority={tk.priority} explain />
+          <EstimateBadge estimate={tk.estimate} scale={tk.estimate_scale} explain />
           {tk.sprint_number != null && <Badge variant="secondary"><Trans>Sprint {tk.sprint_number}</Trans></Badge>}
           <PlannedBadge ticket={tk} />
           {tk.blocked && <BlockedBadge href="#blocked-by" />}

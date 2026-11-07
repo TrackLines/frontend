@@ -4135,6 +4135,14 @@ msgstr "pIHmeH juvwI'"
 msgid "estimate_scale must be none, fibonacci, tshirt, powers or linear"
 msgstr "estimate_scale'e' none, fibonacci, tshirt, powers pagh linear 'oHnIS"
 
+#: components/board/estimate.tsx
+msgid "Estimate: {estimate} points"
+msgstr "chovnatlh: {estimate} mI'"
+
+#: components/board/estimate.tsx
+msgid "Estimate: size {estimate}"
+msgstr "chovnatlh: {estimate} motlh"
+
 #: components/ticket/history-panel.tsx
 msgid "estimated it at {b}"
 msgstr "{b} ngoQ nobpu'"
@@ -4752,6 +4760,18 @@ msgstr "chay' SoH wISuchlaH? <0>(DaneHchugh, beq neH legh)</0>"
 #: components/reports/report-links.tsx
 msgid "How every project’s sprints went, to share with leadership."
 msgstr "Hoch jInmol sprintmey chay' qaS, DevwI'pu'vaD DangeHmeH."
+
+#: components/board/estimate.tsx
+msgid "How much work the team thinks this is, on this board's {scaleName} scale."
+msgstr "Qu' 'ar 'oH, ghom wuqmeH; DIr {scaleName} Daq."
+
+#: components/board/estimate.tsx
+msgid "How much work the team thinks this is."
+msgstr "Qu' 'ar 'oH, ghom wuqmeH."
+
+#: components/board/priority-badge.tsx
+msgid "How soon this needs doing. From most to least urgent: Urgent, High, Medium, Low."
+msgstr "ghorgh ta'nIS. potlh law' potlh puS: SIbI', jen, motlh, 'eS."
 
 #: app/boards/[id]/edit/page.tsx
 msgid "How the board works. Saved with Save, except the current sprint, which changes straight away."
@@ -7352,6 +7372,10 @@ msgstr "potlh <0>(DaneHchugh)</0>"
 #: lib/api/error-codes.ts
 msgid "priority must be low, medium, high or urgent"
 msgstr "priority'e' low, medium, high pagh urgent 'oHnIS"
+
+#: components/board/priority-badge.tsx
+msgid "Priority: {name}"
+msgstr "potlh: {name}"
 
 #: components/layout/site-footer.tsx
 msgid "Privacy"
