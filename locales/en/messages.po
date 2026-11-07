@@ -4722,6 +4722,10 @@ msgstr "Hidden"
 msgid "Hide deliveries"
 msgstr "Hide deliveries"
 
+#: components/ticket/ticket-search.tsx
+msgid "Hide done"
+msgstr "Hide done"
+
 #: components/work/notifications-bell.tsx
 msgid "Hide read"
 msgstr "Hide read"

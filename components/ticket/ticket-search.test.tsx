@@ -1,6 +1,6 @@
 import { expect, test } from 'bun:test';
 import { render as renderToStaticMarkup } from '@/test/i18n';
-import { assigneeChoices, SearchResults, searchKey } from './ticket-search';
+import { assigneeChoices, hidesDone, SearchResults, searchKey } from './ticket-search';
 import type { TicketSearchResult } from '@/lib/api';
 
 const r = (id: string, extra: Partial<TicketSearchResult> = {}) => ({
@@ -45,4 +45,12 @@ test('arrow keys move through the results and Enter opens the highlighted one', 
   expect(searchKey('Enter', 1, 3)).toBe('open'); // a key such as TL-123 comes first, so Enter opens it
   expect(searchKey('Enter', 0, 0)).toBeNull(); // nothing to open
   expect(searchKey('a', 0, 3)).toBeNull(); // typing is the input's
+});
+
+test('hide done applies to text searches, not to looking up a key or number', () => {
+  expect(hidesDone('roadmap', true)).toBe(true);
+  expect(hidesDone('roadmap', false)).toBe(false);
+  expect(hidesDone('TL-123', true)).toBe(false);
+  expect(hidesDone(' 123 ', true)).toBe(false);
+  expect(hidesDone('', true)).toBe(true);
 });

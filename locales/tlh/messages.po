@@ -4722,6 +4722,10 @@ msgstr "So'"
 msgid "Hide deliveries"
 msgstr "ngeHmey yISo'"
 
+#: components/ticket/ticket-search.tsx
+msgid "Hide done"
+msgstr "rInbogh So'"
+
 #: components/work/notifications-bell.tsx
 msgid "Hide read"
 msgstr "laDlu'pu'bogh tISo'"

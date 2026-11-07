@@ -7,8 +7,11 @@ import { useCallback, useEffect, useRef, useState, type KeyboardEvent } from 're
 import { SearchIcon } from 'lucide-react';
 import { DueBadge } from '@/components/ticket/due-badge';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { PriorityBadge } from '@/components/board/priority-badge';
 import { TypeBadge } from '@/components/ticket/ticket-type';
 import { TicketKey, ticketPath } from '@/components/ticket/ticket-key';
@@ -32,6 +35,7 @@ export function TicketSearch() {
   const [types, setTypes] = useState<TicketType[]>([]);
   const [assignee, setAssignee] = useState('');
   const [due, setDue] = useState<'' | 'overdue' | 'soon' | 'none'>(''); // TL-632
+  const [hideDone, setHideDone] = useState(true);
   const [me, setMe] = useState('');
   const [projectOptions, setProjectOptions] = useState<Project[]>([]);
   const [assigneeOptions, setAssigneeOptions] = useState<Assignee[]>([]);
@@ -42,13 +46,13 @@ export function TicketSearch() {
   const requestId = useRef(0);
   const typeKey = types.join(',');
 
-  const runSearch = useCallback(async (text: string, currentProject: string, currentTypes: TicketType[], currentAssignee: string, currentDue: typeof due = '') => {
+  const runSearch = useCallback(async (text: string, currentProject: string, currentTypes: TicketType[], currentAssignee: string, currentDue: typeof due = '', currentHideDone = true) => {
     if (!token) return;
     const request = ++requestId.current;
     setLoading(true);
     setError('');
     try {
-      const found = await tickets.search({ text, project: currentProject, types: currentTypes, assignee: currentAssignee, limit: 20,
+      const found = await tickets.search({ text, project: currentProject, types: currentTypes, assignee: currentAssignee, limit: 20, ...(hidesDone(text, currentHideDone) && { status: 'open' as const }),
         ...(currentDue && { due: currentDue }), ...((currentDue === 'overdue' || currentDue === 'soon') && { sort: 'due' as const }) }, token);
       if (request === requestId.current) {
         setResults(found);
@@ -75,9 +79,9 @@ export function TicketSearch() {
 
   useEffect(() => {
     if (!open || !token) return;
-    const timeout = setTimeout(() => void runSearch(query, project, types, assignee, due), query.trim() ? 180 : 0);
+    const timeout = setTimeout(() => void runSearch(query, project, types, assignee, due, hideDone), query.trim() ? 180 : 0);
     return () => clearTimeout(timeout);
-  }, [open, token, query, project, typeKey, assignee, due, runSearch]);
+  }, [open, token, query, project, typeKey, assignee, due, hideDone, runSearch]);
 
   useEffect(() => {
     function onShortcut(event: globalThis.KeyboardEvent) {
@@ -116,38 +120,41 @@ export function TicketSearch() {
           </DialogHeader>
           <div className="grid gap-3 px-4">
             <Input autoFocus role="combobox" aria-expanded="true" aria-autocomplete="list" value={query} onChange={(event) => setQuery(event.target.value)} onKeyDown={onInputKeyDown} placeholder={t`Search tickets…`} aria-label={t`Search tickets`} aria-controls="ticket-search-results" aria-activedescendant={results[active] ? `search-result-${results[active].id}` : undefined} />
-            <div className="flex flex-wrap items-center gap-2">
-              <select aria-label={t`Filter by project`} className="h-8 rounded-lg border border-input bg-background px-2 text-sm" value={project} onChange={(event) => setProject(event.target.value)}>
-                <option value="">{t`All projects`}</option>
-                {projectOptions.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
-              </select>
-              <div role="group" aria-label={t`Filter by ticket type`} className="flex gap-1">
-                {TYPES.map(({ value, label }) => (
-                  <Button key={value} type="button" size="sm" variant={types.includes(value) ? 'secondary' : 'ghost'} aria-pressed={types.includes(value)} onClick={() => setTypes((current) => current.includes(value) ? current.filter((item) => item !== value) : [...current, value])}>{i18n._(label)}</Button>
-                ))}
-              </div>
-              <select aria-label={t`Filter by assignee`} className="h-8 rounded-lg border border-input bg-background px-2 text-sm" value={assignee} onChange={(event) => setAssignee(event.target.value)}>
-                <option value="">{t`Any assignee`}</option>
-                <option value="me">{t`Assigned to me`}</option>
-                <option value="unassigned">{t`Unassigned`}</option>
-                {assigneeChoices(assigneeOptions, me).map((person) => <option key={person.id} value={person.id}>{shownLabel(i18n, person)}</option>)}
-              </select>
-              <select aria-label={t`Filter by due date`} className="h-8 rounded-lg border border-input bg-background px-2 text-sm" value={due} onChange={(event) => setDue(event.target.value as typeof due)}>
-                <option value="">{t`Any due date`}</option>
-                <option value="overdue">{t`Overdue`}</option>
-                <option value="soon">{t`Due today or tomorrow`}</option>
-                <option value="none">{t`No due date`}</option>
-              </select>
-              {(project || types.length || assignee || due) ? <Button type="button" size="sm" variant="link" onClick={() => { setProject(''); setTypes([]); setAssignee(''); setDue(''); }}><Trans>Clear filters</Trans></Button> : null}
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+              <ToggleGroup multiple variant="outline" size="sm" aria-label={t`Filter by ticket type`} value={types} onValueChange={(v) => setTypes(v as TicketType[])}>
+                {TYPES.map(({ value, label }) => <ToggleGroupItem key={value} value={value}>{i18n._(label)}</ToggleGroupItem>)}
+              </ToggleGroup>
+              <label className="flex items-center gap-2 text-sm"><Checkbox checked={hideDone} onCheckedChange={(c) => setHideDone(c === true)} /><Trans>Hide done</Trans></label>
+              {(project || types.length || assignee || due || !hideDone) ? <Button type="button" size="sm" variant="link" className="ml-auto" onClick={() => { setProject(''); setTypes([]); setAssignee(''); setDue(''); setHideDone(true); }}><Trans>Clear filters</Trans></Button> : null}
+            </div>
+            <div className="grid gap-2 sm:grid-cols-3">
+              <FilterSelect label={t`Filter by project`} value={project} onChange={setProject} options={[['', t`All projects`], ...projectOptions.map((p): [string, string] => [p.id, p.name])]} />
+              <FilterSelect label={t`Filter by assignee`} value={assignee} onChange={setAssignee} options={[['', t`Any assignee`], ['me', t`Assigned to me`], ['unassigned', t`Unassigned`],
+                ...assigneeChoices(assigneeOptions, me).map((p): [string, string] => [p.id, shownLabel(i18n, p)])]} />
+              <FilterSelect label={t`Filter by due date`} value={due} onChange={(v) => setDue(v as typeof due)} options={[['', t`Any due date`], ['overdue', t`Overdue`], ['soon', t`Due today or tomorrow`], ['none', t`No due date`]]} />
             </div>
           </div>
           <div id="ticket-search-results" role="listbox" aria-label={t`Ticket search results`} className="max-h-[45vh] overflow-y-auto border-t px-2 py-2">
-            <SearchResults results={results} loading={loading} error={error} active={active} onChoose={choose} onActive={setActive} onRetry={() => void runSearch(query, project, types, assignee, due)} />
+            <SearchResults results={results} loading={loading} error={error} active={active} onChoose={choose} onActive={setActive} onRetry={() => void runSearch(query, project, types, assignee, due, hideDone)} />
           </div>
           <p className="border-t px-4 py-2 text-xs text-muted-foreground"><Trans>↑↓ to move · Enter to open · Esc to close</Trans></p>
         </DialogContent>
       </Dialog>
     </>
+  );
+}
+
+// hidesDone: "Hide done" applies unless the search is a ticket key or number: looking one up finds it, done or not.
+export const hidesDone = (text: string, hideDone: boolean) => hideDone && !/^\s*([a-z][a-z0-9]*-)?\d+\s*$/i.test(text);
+
+// FilterSelect: one of the search's dropdowns; '' (the "any" choice) stands in as ANY, as Select wants a value.
+const ANY = '__any';
+function FilterSelect({ label, value, onChange, options }: { label: string; value: string; onChange: (v: string) => void; options: [string, string][] }) {
+  return (
+    <Select items={Object.fromEntries(options.map(([v, l]) => [v || ANY, l]))} value={value || ANY} onValueChange={(v) => onChange(!v || v === ANY ? '' : String(v))}>
+      <SelectTrigger size="sm" className="w-full" aria-label={label}><SelectValue /></SelectTrigger>
+      <SelectContent>{options.map(([v, l]) => <SelectItem key={v || ANY} value={v || ANY}>{l}</SelectItem>)}</SelectContent>
+    </Select>
   );
 }
 
