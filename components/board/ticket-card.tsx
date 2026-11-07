@@ -70,7 +70,7 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
           {ticket.external_source === 'bugfixes' && <Badge variant="outline" title={t`Reported by Bugfixes`}>Bugfixes</Badge>}
           <span className="ml-auto flex shrink-0 items-center gap-1">
             {ticket.estimate && <Badge variant="outline" className="size-6 justify-center rounded-full p-0" title={t`Estimate`} aria-label={t`Estimate ${ticket.estimate}`}>{ticket.estimate}</Badge>}
-            {!readOnly && <Button type="button" variant="ghost" size="icon" className="-mr-1.5 size-7 text-muted-foreground" aria-label={t`Edit ${ticket.title}`} onClick={() => setEditOpen(true)}>
+            {!readOnly && !done && <Button type="button" variant="ghost" size="icon" className="-mr-1.5 size-7 text-muted-foreground" aria-label={t`Edit ${ticket.title}`} onClick={() => setEditOpen(true)}>
               <PencilIcon className="size-3.5" aria-hidden />
             </Button>}
           </span>
@@ -96,7 +96,7 @@ export function TicketCard({ ticket, token, onUpdated, onDeleted, openOnLoad, do
         columnName={columnName}
         token={token}
         done={done}
-        onEdit={readOnly ? undefined : () => { setViewOpen(false); setEditOpen(true); }}
+        onEdit={readOnly || done ? undefined : () => { setViewOpen(false); setEditOpen(true); }}
         onDescription={readOnly ? undefined : (next) => {
           onUpdated({ ...ticket, description: next }); // ticks show at once; put back if saving fails
           void tickets.update(ticket.id, { title: ticket.title, description: next }, token).catch(() => onUpdated(ticket));
