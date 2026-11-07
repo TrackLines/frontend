@@ -6869,6 +6869,10 @@ msgstr "Nur TrackLin.es-Links können gekürzt werden."
 msgid "Open"
 msgstr "Öffnen"
 
+#: components/ticket/attachments.tsx
+msgid "Open {name}"
+msgstr "{name} öffnen"
+
 #: app/reports/page.tsx
 msgid "Open a report from a board’s past sprints, a project, or organization settings."
 msgstr "Öffne einen Bericht über die vergangenen Sprints eines Boards, ein Projekt oder die Organisationseinstellungen."
@@ -7585,6 +7589,10 @@ msgstr "„{name}“ entfernen? Die Datei wird ebenfalls gelöscht."
 #: components/board/column-list.tsx
 msgid "Remove {0}"
 msgstr "{0} entfernen"
+
+#: components/ticket/attachments.tsx
+msgid "Remove {name}"
+msgstr "{name} entfernen"
 
 #: app/settings/organization/page.tsx
 msgid "Remove admin"

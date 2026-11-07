@@ -1,7 +1,7 @@
 import { expect, test } from 'bun:test';
 import { render as renderToStaticMarkup } from '@/test/i18n';
 import type { Attachment } from '@/lib/api';
-import { AttachmentRow, downloadAttachment, PreviewBody, previewKind } from './attachments';
+import { AttachmentRow, downloadAttachment, fileIcon, PreviewBody, previewKind } from './attachments';
 
 const a: Attachment = { id: 'a1', ticket_id: 't', key: 'k', url: 'https://x.ufs.sh/f/k', name: 'spec.pdf', size: 2048, content_type: 'application/pdf', created_by: 'Ava', created_at: '2025-10-01T00:00:00Z' };
 
@@ -47,7 +47,20 @@ test('the list stays a list: previewable files get a Preview button, others Down
   expect(pdf).not.toContain('<iframe');
   const zip = row({ name: 'logs.zip', content_type: 'application/zip' });
   expect(zip).toContain('aria-label="Download logs.zip"');
+  expect(zip).toContain('aria-label="Open logs.zip"'); // the card opens it in a new tab
+  expect(zip).toContain('target="_blank"');
   expect(zip).not.toContain('Preview');
+});
+
+test('each file is a shadcn Attachment card: type icon, name, size and who added it, remove by its name (TL-844)', () => {
+  const html = renderToStaticMarkup(<AttachmentRow a={a} locked={false} onRemove={() => {}} onKeep={() => {}} />);
+  for (const s of ['data-slot="attachment"', 'data-slot="attachment-title"', 'spec.pdf', '2.0 KB', 'aria-label="Remove spec.pdf"']) expect(html).toContain(s);
+  expect(renderToStaticMarkup(<AttachmentRow a={a} locked onRemove={() => {}} onKeep={() => {}} />)).not.toContain('Remove spec.pdf'); // done tickets keep their files
+  expect(renderToStaticMarkup(<AttachmentRow a={a} locked={false} following={{ shown: false }} onRemove={() => {}} onKeep={() => {}} />)).not.toContain('Remove spec.pdf'); // followers only look
+  expect(fileIcon('image/png').displayName).toContain('Image');
+  expect(fileIcon('application/pdf').displayName).toContain('Text');
+  expect(fileIcon('application/octet-stream', 'logs.tar.gz').displayName).toContain('Archive');
+  expect(fileIcon('application/octet-stream', 'thing.bin')).toBe(fileIcon(''));
 });
 
 test('the preview shows each kind as its own element (TL-516)', () => {

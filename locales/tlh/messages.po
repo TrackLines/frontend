@@ -6869,6 +6869,10 @@ msgstr "TrackLin.es rarwI'mey neH tIqHa'moHlu'laH"
 msgid "Open"
 msgstr "yIpoSmoH"
 
+#: components/ticket/attachments.tsx
+msgid "Open {name}"
+msgstr "{name} yIpoSmoH"
+
 #: app/reports/page.tsx
 msgid "Open a report from a board’s past sprints, a project, or organization settings."
 msgstr "'echlet sprintmey ret, jInmol, ghom'a' SeHlaw ghap vo' ja'ghach yIpoSmoH."
@@ -7585,6 +7589,10 @@ msgstr "“{name}” Dateq'a'? ghItlh Qaw'lu' je."
 #: components/board/column-list.tsx
 msgid "Remove {0}"
 msgstr "{0} yIteq"
+
+#: components/ticket/attachments.tsx
+msgid "Remove {name}"
+msgstr "{name} yIteq"
 
 #: app/settings/organization/page.tsx
 msgid "Remove admin"

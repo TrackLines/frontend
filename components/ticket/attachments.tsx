@@ -2,9 +2,10 @@
 
 import { ListSkeleton } from '@/components/layout/page-skeletons';
 import { Dialog as DialogPrimitive } from '@base-ui/react/dialog';
-import { DownloadIcon, EyeIcon, PaperclipIcon, XIcon } from 'lucide-react';
+import { DownloadIcon, FileArchiveIcon, FileAudioIcon, FileIcon, FileImageIcon, FileTextIcon, FileVideoIcon, PaperclipIcon, Trash2Icon, XIcon, type LucideIcon } from 'lucide-react';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { useContext, useEffect, useState } from 'react';
+import { Attachment as AttachmentCard, AttachmentAction, AttachmentActions, AttachmentContent, AttachmentDescription, AttachmentMedia, AttachmentTitle, AttachmentTrigger } from '@/components/ui/attachment';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogOverlay, DialogPortal, DialogTitle } from '@/components/ui/dialog';
 import { ApiError, attachments, type Assignee, type Attachment } from '@/lib/api';
@@ -90,7 +91,7 @@ export function Attachments({ ticketId, token, locked = false, following }: { ti
       ) : list.length === 0 ? (
         <p className="text-sm text-muted-foreground"><Trans>No files attached.</Trans></p>
       ) : (
-        <ul className="divide-y rounded-lg border">
+        <ul className="grid gap-2">
           {list.map((a) => <AttachmentRow key={a.id} a={a} people={people} locked={locked} following={following && { shown: following.shown === a.id }} onRemove={() => remove(a)} onKeep={() => keep(a)} />)}
         </ul>
       )}
@@ -170,9 +171,21 @@ function PreviewDialog({ a, kind, open, onOpenChange }: { a: Attachment; kind: N
   );
 }
 
-// AttachmentRow: one file; a year-old one says when it goes and can be kept another year (TL-259).
-// Keep shows even when the ticket is done: keeping changes nothing on the ticket (pure, for tests).
-// Images, PDFs and media open in a preview modal (TL-516); everything else gets a download button.
+// fileIcon: the file's type at a glance (TL-844); no thumbnails, so the list stays light (TL-516).
+export function fileIcon(contentType: string, name = ''): LucideIcon {
+  const t = contentType.toLowerCase();
+  if (t.startsWith('image/')) return FileImageIcon;
+  if (t.startsWith('video/')) return FileVideoIcon;
+  if (t.startsWith('audio/')) return FileAudioIcon;
+  if (t === 'application/pdf' || t.startsWith('text/')) return FileTextIcon;
+  if (/zip|tar|gzip|compressed|archive/.test(t) || /\.(zip|tar|gz|tgz|7z|rar)$/i.test(name)) return FileArchiveIcon;
+  return FileIcon;
+}
+
+// AttachmentRow: one file, as shadcn's Attachment card (TL-844); a year-old one says when it goes and can
+// be kept another year (TL-259). Keep shows even when the ticket is done: keeping changes nothing on the
+// ticket (pure, for tests). Images, PDFs and media open in a preview modal on a click (TL-516); anything
+// else opens in a new tab, with a download button.
 export function AttachmentRow({ a, people = null, locked, following, onRemove, onKeep }: { a: Attachment; people?: Assignee[] | null; locked: boolean; following?: { shown: boolean }; onRemove: () => void; onKeep: () => void }) {
   const { t, i18n } = useLingui();
   const kind = previewKind(a.content_type);
@@ -183,24 +196,25 @@ export function AttachmentRow({ a, people = null, locked, following, onRemove, o
   const preview = (open: boolean) => { setPreviewing(open); hostPreview?.(open ? a.id : null); };
   const name = a.name;
   const due = a.delete_on && dates(i18n, { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${a.delete_on}T00:00:00Z`));
+  const Icon = fileIcon(a.content_type, a.name);
   return (
-    <li className="px-3 py-2 text-sm">
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-        <a href={a.url} target="_blank" rel="noopener noreferrer" className="min-w-0 flex-1 truncate font-medium hover:underline">{a.name}</a>
-        <span className="text-muted-foreground">{formatSize(a.size)} · {personLabel(i18n, a.created_by, people)}</span>
-        {a.delete_on && (
-          <span className="flex items-center gap-2 text-amber-700 dark:text-amber-400">
-            <Trans>Deleted on {due} unless kept</Trans>
-            {!following && <Button size="sm" variant="outline" onClick={onKeep} title={t`Keep it for another year`}><Trans>Keep</Trans></Button>}
-          </span>
-        )}
-        {kind ? (
-          <Button size="icon-sm" variant="ghost" aria-label={t`Preview ${name}`} title={t`Preview`} onClick={() => preview(true)}><EyeIcon aria-hidden /></Button>
-        ) : (
-          <Button size="icon-sm" variant="ghost" aria-label={t`Download ${name}`} title={t`Download`} onClick={() => void downloadAttachment(a)}><DownloadIcon aria-hidden /></Button>
-        )}
-        {!locked && !following && <Button size="sm" variant="ghost" className="text-destructive" onClick={onRemove}><Trans>Remove</Trans></Button>}
-      </div>
+    <li>
+      <AttachmentCard className="w-full">
+        <AttachmentMedia><Icon aria-hidden /></AttachmentMedia>
+        <AttachmentContent>
+          <AttachmentTitle>{a.name}</AttachmentTitle>
+          <AttachmentDescription>{formatSize(a.size)} · {personLabel(i18n, a.created_by, people)}</AttachmentDescription>
+          {a.delete_on && <span className="mt-1 block text-xs text-amber-700 dark:text-amber-400"><Trans>Deleted on {due} unless kept</Trans></span>}
+        </AttachmentContent>
+        {kind
+          ? <AttachmentTrigger aria-label={t`Preview ${name}`} title={t`Preview`} onClick={() => preview(true)} />
+          : <AttachmentTrigger render={<a href={a.url} target="_blank" rel="noopener noreferrer" />} aria-label={t`Open ${name}`} />}
+        <AttachmentActions className="gap-1">
+          {a.delete_on && !following && <Button size="sm" variant="outline" onClick={onKeep} title={t`Keep it for another year`}><Trans>Keep</Trans></Button>}
+          {!kind && <AttachmentAction aria-label={t`Download ${name}`} title={t`Download`} onClick={() => void downloadAttachment(a)}><DownloadIcon aria-hidden /></AttachmentAction>}
+          {!locked && !following && <AttachmentAction aria-label={t`Remove ${name}`} title={t`Remove`} className="text-muted-foreground hover:text-destructive" onClick={onRemove}><Trash2Icon aria-hidden /></AttachmentAction>}
+        </AttachmentActions>
+      </AttachmentCard>
       {kind && <PreviewDialog a={a} kind={kind} open={previewing} onOpenChange={preview} />}
     </li>
   );
