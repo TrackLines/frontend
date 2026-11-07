@@ -205,7 +205,7 @@ export default function BoardPage() {
           onLabelsChange={changeLabels}
           syncUrl={false}
         />
-        <PriorityFilter priorities={priorityFilter} onPrioritiesChange={changePriorities} />
+        <PriorityFilter priorities={priorityFilter} onPrioritiesChange={changePriorities} token={token} />
         <EpicFilter epics={epics} epic={epicFilter} onEpicChange={changeEpic} />
         <div role="group" aria-label={t`Quick filter by assignee`} className="flex gap-1">
           <Button type="button" size="sm" variant={assigneeFilter === 'mine' ? 'secondary' : 'ghost'} aria-pressed={assigneeFilter === 'mine'} onClick={() => setAssigneeFilter((filter) => filter === 'mine' ? 'all' : 'mine')}><Trans>My tickets</Trans></Button>

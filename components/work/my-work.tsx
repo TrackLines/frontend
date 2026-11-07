@@ -33,6 +33,7 @@ export function MyWork({ token, initialMode = 'assigned' }: { token: string; ini
   const [project, setProject] = useState('');
   const [board, setBoard] = useState('');
   const [priorities, setPriorities] = useState<string[]>([]);
+  const [sort, setSort] = useState<'changed' | 'priority'>('changed'); // TL-847: urgent first
   const [includeDone, setIncludeDone] = useState(false);
   const [projectList, setProjectList] = useState<Project[]>([]);
   const [boards, setBoards] = useState<{ id: string; name: string }[]>([]);
@@ -45,7 +46,8 @@ export function MyWork({ token, initialMode = 'assigned' }: { token: string; ini
     setFailed(false);
     try {
       const { tickets: found, total: all } = await tickets.searchPage({ ...workQuery(mode), status: includeDone ? undefined : 'open',
-        project: project || undefined, board: board || undefined, priorities, limit: PAGE, page: nextPage }, token);
+        project: project || undefined, board: board || undefined, priorities, limit: PAGE, page: nextPage,
+        ...(sort === 'priority' && { sort: 'priority' as const }) }, token);
       if (request !== latest.current) return;
       setItems((cur) => (nextPage === 1 ? found : [...(cur ?? []), ...found]));
       if (nextPage === 1 || all > 0) setTotal(all); // past the last page the count is 0: keep the one we had
@@ -55,7 +57,7 @@ export function MyWork({ token, initialMode = 'assigned' }: { token: string; ini
       if (request === latest.current) setFailed(true);
     }
   }
-  useEffect(() => { setItems(null); void load(1); }, [mode, project, board, priorities.join(','), includeDone]);
+  useEffect(() => { setItems(null); void load(1); }, [mode, project, board, priorities.join(','), includeDone, sort]);
 
   return (
     <div className="grid gap-4">
@@ -82,7 +84,14 @@ export function MyWork({ token, initialMode = 'assigned' }: { token: string; ini
             {boards.map((b) => <SelectItem key={b.id} value={b.id}>{b.name}</SelectItem>)}
           </SelectContent>
         </Select>
-        <PriorityFilter priorities={priorities} onPrioritiesChange={setPriorities} />
+        <PriorityFilter priorities={priorities} onPrioritiesChange={setPriorities} token={token} />
+        <Select items={{ changed: t`Recently changed`, priority: t`Priority (urgent first)` }} value={sort} onValueChange={(v) => v && setSort(v as 'changed' | 'priority')}>
+          <SelectTrigger size="sm" aria-label={t`Sort my work`}><SelectValue /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="changed"><Trans>Recently changed</Trans></SelectItem>
+            <SelectItem value="priority"><Trans>Priority (urgent first)</Trans></SelectItem>
+          </SelectContent>
+        </Select>
         <Button size="sm" variant={includeDone ? 'secondary' : 'ghost'} aria-pressed={includeDone} onClick={() => setIncludeDone((d) => !d)}>
           <Trans>Include done</Trans>
         </Button>

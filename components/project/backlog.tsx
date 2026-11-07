@@ -261,7 +261,7 @@ export function Backlog({ projectId, boards, token }: Props) {
       </div>
       <div className="mb-3 flex flex-wrap items-center gap-2">
         <LabelFilter options={data?.labels ?? null} labels={labelFilter} onLabelsChange={changeLabels} syncUrl={false} />
-        <span className="ml-2 inline-flex"><PriorityFilter priorities={priorityFilter} onPrioritiesChange={changePriorities} /></span>
+        <span className="ml-2 inline-flex"><PriorityFilter priorities={priorityFilter} onPrioritiesChange={changePriorities} token={token} /></span>
         <span className="inline-flex"><EpicFilter epics={epics} epic={epicFilter} onEpicChange={changeEpic} /></span>
         <span className="ml-auto inline-flex items-center gap-2 pl-2 text-sm text-muted-foreground">
           <label htmlFor="backlog-status"><Trans>Show</Trans></label>

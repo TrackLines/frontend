@@ -6,6 +6,7 @@ import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMe
 import { Badge } from '@/components/ui/badge';
 import { LabelFilterClear } from './label-filter-clear';
 import type { Ticket } from '@/lib/api';
+import { priorityName, usePriorities } from '@/lib/board/priorities';
 
 export const PRIORITIES = [
   { value: 'urgent', label: msg`Urgent` },
@@ -46,8 +47,9 @@ export function filterTicketsByPriorities<T extends Pick<Ticket, 'priority'>>(ti
   return tickets.filter((ticket) => ticket.priority && selected.has(ticket.priority));
 }
 
-export function PriorityFilter({ priorities, onPrioritiesChange }: { priorities: string[]; onPrioritiesChange: (priorities: string[]) => void }) {
+export function PriorityFilter({ priorities, onPrioritiesChange, token }: { priorities: string[]; onPrioritiesChange: (priorities: string[]) => void; token?: string | null }) {
   const { i18n } = useLingui();
+  const levels = usePriorities(token);
   const toggle = (priority: string) => onPrioritiesChange(
     priorities.includes(priority) ? priorities.filter((value) => value !== priority) : [...priorities, priority],
   );
@@ -66,9 +68,9 @@ export function PriorityFilter({ priorities, onPrioritiesChange }: { priorities:
       <DropdownMenuContent align="start" className="w-48">
         <DropdownMenuGroup>
           <DropdownMenuLabel><Trans>Filter by priority</Trans></DropdownMenuLabel>
-          {PRIORITIES.map(({ value, label }) => (
-            <DropdownMenuCheckboxItem key={value} checked={priorities.includes(value)} onCheckedChange={() => toggle(value)}>
-              {i18n._(label)}
+          {levels.map((level) => (
+            <DropdownMenuCheckboxItem key={level.key} checked={priorities.includes(level.key)} onCheckedChange={() => toggle(level.key)}>
+              {priorityName(i18n, level)}
             </DropdownMenuCheckboxItem>
           ))}
           {priorities.length > 0 && <><DropdownMenuSeparator /><DropdownMenuItem onClick={clear}><Trans>Clear priority filter</Trans></DropdownMenuItem></>}

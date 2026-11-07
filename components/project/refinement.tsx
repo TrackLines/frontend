@@ -120,7 +120,7 @@ export function RefinementMode({ projectId, boards, token, onClose, version = 0,
             <div className="flex flex-wrap items-center justify-between gap-2">
               <h3 className="font-medium"><Trans>To plan</Trans></h3>
               <span className="flex flex-wrap items-center gap-2">
-                <PriorityFilter priorities={priorities} onPrioritiesChange={onPrioritiesChange} />
+                <PriorityFilter priorities={priorities} onPrioritiesChange={onPrioritiesChange} token={token} />
                 <BacklogSortSelect id="refine-sort" sort={sort} onSortChange={onSortChange} />
               </span>
             </div>

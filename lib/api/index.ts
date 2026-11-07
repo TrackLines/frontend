@@ -38,7 +38,7 @@ export type Ticket = {
 // A project ticket not on any board or sprint yet.
 export type BacklogTicket = Omit<Ticket, 'column_id'> & { column_id: null; project_id: string; type: TicketType };
 export type BacklogPage = { tickets: BacklogTicket[]; counts: Record<TicketType | 'all', number>; labels: ProjectLabel[] };
-export type BacklogSort = 'manual' | 'newest' | 'oldest' | 'due';
+export type BacklogSort = 'manual' | 'newest' | 'oldest' | 'due' | 'priority'; // priority: urgent first (TL-847)
 export type BacklogPlanned = 'exclude' | 'only' | 'all'; // tickets planned into an upcoming sprint (TL-584)
 // BacklogStatus: open tickets (the default), or closed ones: done, won't do, duplicates, or all of them
 export type BacklogStatus = 'open' | 'done' | 'wont_do' | 'duplicate' | 'closed';
@@ -238,7 +238,7 @@ function browserLocale(): Locale {
 
 export type SearchQuery = { text?: string; project?: string; board?: string; types?: TicketType[]; priorities?: string[]; assignee?: string;
   creator?: string; status?: 'open' | 'done'; limit?: number; page?: number; match?: 'any';
-  due?: 'overdue' | 'soon' | 'none'; sort?: 'due' }; // due: by the viewer's day (TL-632)
+  due?: 'overdue' | 'soon' | 'none'; sort?: 'due' | 'priority' }; // due: by the viewer's day (TL-632); priority: urgent first (TL-847)
 
 function searchParams(q: SearchQuery): URLSearchParams {
   const params = new URLSearchParams();
@@ -521,6 +521,10 @@ export type HistoryEntry = {
 // file… action names it and data holds the details (the backend's OpenAPI lists them). Text changes say
 // only that they happened. actor: a user id, or an agent's or service key's name; null for the system.
 export type ActivityEntry = { id: string; at: string; actor: string | null; actor_kind: 'person' | 'agent' | 'service' | 'system'; action: string; data: Record<string, unknown> };
+
+// A priority level, most urgent first (TL-846): GET /api/priorities.
+export type PriorityLevel = { key: string; name: string };
+export const priorityLevels = { list: (token: T) => api<PriorityLevel[]>('/priorities', { token }) };
 
 export const tickets = {
   get: (id: string, token: T) => api<TicketDetail>(`/tickets/${id}`, { token }),
