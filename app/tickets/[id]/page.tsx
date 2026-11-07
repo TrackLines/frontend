@@ -130,7 +130,7 @@ export default function TicketPage() {
         <div className="flex flex-wrap items-center gap-3">
           <span className={tk.duplicate_of_id ? 'line-through' : undefined}><TicketKey value={tk.key} copy /></span><h1 className={`text-3xl font-bold tracking-tight ${tk.duplicate_of_id ? 'line-through text-muted-foreground' : ''}`}>{tk.title}</h1>
           {/* board and backlog tickets alike: edit (and delete, inside the dialog) right here */}
-          {token && <Button type="button" variant="outline" size="sm" className="ml-auto" onClick={() => setEditing(true)}><Trans>Edit</Trans></Button>}
+          {token && !tk.done && <Button type="button" variant="outline" size="sm" className="ml-auto" onClick={() => setEditing(true)}><Trans>Edit</Trans></Button>}
         </div>
       <DuplicateLinks ticket={tk} />
         <p className="text-sm text-muted-foreground">

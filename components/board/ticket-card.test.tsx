@@ -44,6 +44,12 @@ test('while the board is being edited, cards are view only', () => {
   expect(html).not.toContain('aria-label="Edit Integrate uploadthing"');
 });
 
+test('done tickets have no edit button', () => {
+  const html = renderToStaticMarkup(<TicketCard ticket={{ ...base, type: 'task' }} token="x" onUpdated={() => {}} onDeleted={() => {}} done />);
+  expect(html).toContain('Integrate uploadthing');
+  expect(html).not.toContain('aria-label="Edit Integrate uploadthing"');
+});
+
 test('tickets Bugfixes made are marked', () => {
   expect(card({ type: 'bug', external_source: 'bugfixes' })).toContain('>Bugfixes<');
   expect(card({ type: 'bug' })).not.toContain('>Bugfixes<');
