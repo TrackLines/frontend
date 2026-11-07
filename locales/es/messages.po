@@ -4135,6 +4135,14 @@ msgstr "Escala de estimación"
 msgid "estimate_scale must be none, fibonacci, tshirt, powers or linear"
 msgstr "estimate_scale debe ser none, fibonacci, tshirt, powers o linear"
 
+#: components/board/estimate.tsx
+msgid "Estimate: {estimate} points"
+msgstr "Estimación: {estimate} puntos"
+
+#: components/board/estimate.tsx
+msgid "Estimate: size {estimate}"
+msgstr "Estimación: talla {estimate}"
+
 #: components/ticket/history-panel.tsx
 msgid "estimated it at {b}"
 msgstr "lo estimó en {b}"
@@ -4752,6 +4760,18 @@ msgstr "¿Cómo podemos contactarte? <0>(opcional, solo lo ve el equipo)</0>"
 #: components/reports/report-links.tsx
 msgid "How every project’s sprints went, to share with leadership."
 msgstr "Cómo fueron los sprints de cada proyecto, para compartir con la dirección."
+
+#: components/board/estimate.tsx
+msgid "How much work the team thinks this is, on this board's {scaleName} scale."
+msgstr "Cuánto trabajo cree el equipo que es, en la escala {scaleName} de este tablero."
+
+#: components/board/estimate.tsx
+msgid "How much work the team thinks this is."
+msgstr "Cuánto trabajo cree el equipo que es."
+
+#: components/board/priority-badge.tsx
+msgid "How soon this needs doing. From most to least urgent: Urgent, High, Medium, Low."
+msgstr "Lo pronto que hay que hacerlo. De más a menos urgente: Urgente, Alta, Media, Baja."
 
 #: app/boards/[id]/edit/page.tsx
 msgid "How the board works. Saved with Save, except the current sprint, which changes straight away."
@@ -7343,6 +7363,10 @@ msgstr "Prioridad <0>(opcional)</0>"
 #: lib/api/error-codes.ts
 msgid "priority must be low, medium, high or urgent"
 msgstr "la prioridad debe ser low, medium, high o urgent"
+
+#: components/board/priority-badge.tsx
+msgid "Priority: {name}"
+msgstr "Prioridad: {name}"
 
 #: components/layout/site-footer.tsx
 msgid "Privacy"

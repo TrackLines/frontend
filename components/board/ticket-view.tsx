@@ -64,7 +64,7 @@ export function TicketView({ open, onOpenChange, ticket, columnName, onEdit, tok
           <DialogDescription className="flex items-center gap-2">
             <Trans>Status</Trans> <Badge variant="secondary">{columnName}</Badge>
             {ticket.duplicate_of_key && <Badge variant="outline"><Trans>Duplicate of {ticket.duplicate_of_key}</Trans></Badge>}
-            <EstimateBadge estimate={ticket.estimate} />
+            <EstimateBadge estimate={ticket.estimate} explain />
             <DueBadge due={ticket.due_date} done={done || !!ticket.done_at} />
             <NeedsReviewBadge ticket={ticket} />
           </DialogDescription>
