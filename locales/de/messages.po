@@ -4722,6 +4722,10 @@ msgstr "Verborgen"
 msgid "Hide deliveries"
 msgstr "Zustellungen ausblenden"
 
+#: components/ticket/ticket-search.tsx
+msgid "Hide done"
+msgstr "Erledigte ausblenden"
+
 #: components/work/notifications-bell.tsx
 msgid "Hide read"
 msgstr "Gelesene ausblenden"

@@ -4722,6 +4722,10 @@ msgstr "Masquée"
 msgid "Hide deliveries"
 msgstr "Masquer les livraisons"
 
+#: components/ticket/ticket-search.tsx
+msgid "Hide done"
+msgstr "Masquer les terminés"
+
 #: components/work/notifications-bell.tsx
 msgid "Hide read"
 msgstr "Masquer les lues"
