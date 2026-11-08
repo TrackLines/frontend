@@ -53,6 +53,18 @@ export function resetReportLimits() {
 
 const sent = new Set<string>();
 
+// Clerk's codes for a session or organization that's gone (signed out elsewhere, expired, or an org you
+// were removed from). Clerk signs out or moves on by itself; its own request failing isn't ours (TL-799).
+const ENDED_SESSION_CODES = new Set(['authentication_invalid', 'resource_not_found', 'signed_out']);
+
+// endedClerkSession: a Clerk API error with only those codes. Clerk's browser bundle comes from its CDN,
+// a different copy from ours, so its errors are recognised by shape rather than instanceof.
+export function endedClerkSession(err: unknown): boolean {
+  const e = err as { clerkError?: unknown; errors?: { code?: unknown }[] } | null;
+  if (!e || e.clerkError !== true || !Array.isArray(e.errors) || e.errors.length === 0) return false;
+  return e.errors.every((x) => typeof x?.code === 'string' && ENDED_SESSION_CODES.has(x.code));
+}
+
 // reportClient sends a browser error to /api/client-errors, once per message per page load.
 export function reportClient(kind: ClientReport['kind'], err: unknown, fallback = 'Unknown error'): void {
   if (typeof window === 'undefined') return;
@@ -60,6 +72,7 @@ export function reportClient(kind: ClientReport['kind'], err: unknown, fallback 
   const message = (e?.message || (typeof err === 'string' ? err : '') || fallback).slice(0, 1000);
   const stack = e?.stack ?? '';
   if (/(chrome|moz|safari(-web)?)-extension:\/\//.test(stack)) return; // a browser extension's, not ours
+  if (endedClerkSession(err)) return;
   const key = kind + message;
   if (sent.has(key)) return;
   sent.add(key);
