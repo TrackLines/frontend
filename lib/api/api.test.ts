@@ -1,5 +1,5 @@
 import { afterEach, expect, test } from 'bun:test';
-import { api, backlog, projects, sprints, tickets } from './.';
+import { api, backlog, isNetworkFailure, projects, sprints, tickets } from './.';
 
 const g = globalThis as unknown as { window?: unknown; fetch: typeof fetch };
 const realFetch = g.fetch;
@@ -145,4 +145,24 @@ test('sort by priority goes to the backlog page and search, and the levels come 
   expect(new URL(requested[0], 'http://localhost').searchParams.get('sort')).toBe('priority');
   expect(new URL(requested[1], 'http://localhost').searchParams.get('sort')).toBe('priority');
   expect(requested[2]).toContain('/priorities');
+});
+
+// TL-801: a browser that never got an answer (offline, left the page) isn't a TrackLines fault.
+test('network failures are recognised in every browser, other errors are not', () => {
+  for (const m of ['Failed to fetch', 'NetworkError when attempting to fetch resource.', 'Load failed']) {
+    expect(isNetworkFailure(new TypeError(m))).toBe(true);
+  }
+  expect(isNetworkFailure(new DOMException('The user aborted a request.', 'AbortError'))).toBe(true);
+  expect(isNetworkFailure(new TypeError('Converting circular structure to JSON'))).toBe(false);
+  expect(isNetworkFailure(new Error('Failed to fetch'))).toBe(false);
+  expect(isNetworkFailure('Failed to fetch')).toBe(false);
+});
+
+test('a browser request with no answer is thrown but not reported', async () => {
+  g.window = { Clerk: { session: null } };
+  const urls: string[] = [];
+  g.fetch = (async (url: string) => { urls.push(String(url)); throw new TypeError('Failed to fetch'); }) as unknown as typeof fetch;
+  await expect(api('/assignees')).rejects.toThrow('Failed to fetch');
+  expect(urls.some((u) => u.includes('/client-errors'))).toBe(false);
+  expect(urls).toHaveLength(1);
 });

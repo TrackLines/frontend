@@ -272,6 +272,16 @@ async function reportBackendFailure(message: string, detail: string): Promise<vo
   await reportServer(message, detail);
 }
 
+// isNetworkFailure: what fetch throws when no answer came back at all (offline, a dropped connection, the
+// page left or the tab closed mid-request), in Chrome, Firefox and Safari, or an abort. In the browser
+// that's the visitor's network, not ours, so it isn't reported (TL-801); the backend reports its own failures.
+export function isNetworkFailure(cause: unknown): boolean {
+  if (!(cause instanceof Error)) return false;
+  if (cause.name === 'AbortError') return true;
+  return cause instanceof TypeError
+    && /^(failed to fetch|networkerror when attempting to fetch resource\.?|load failed|network error)$/i.test(cause.message);
+}
+
 // In the browser, ask Clerk for the token at request time: the `token` callers hold can be minutes
 // old (a form left open, a background tab), and Clerk tokens only live ~60s. Clerk refreshes as needed.
 type ClerkSession = { getToken(o?: { skipCache?: boolean }): Promise<string | null> };
@@ -313,7 +323,10 @@ export async function api<T>(path: string, { method = 'GET', body, token }: Opti
     // a token that expired in flight (or clock skew): force a fresh one and retry once
     if (res.status === 401 && token && typeof window !== 'undefined') res = await send(true);
   } catch (cause) {
-    await reportBackendFailure('backend request failed', `${method} ${path}: ${cause instanceof Error ? cause.message : String(cause)}`);
+    // from the server, an unreachable backend is worth knowing about; from a browser it's usually its own network
+    if (typeof window === 'undefined' || !isNetworkFailure(cause)) {
+      await reportBackendFailure('backend request failed', `${method} ${path}: ${cause instanceof Error ? cause.message : String(cause)}`);
+    }
     throw cause;
   }
   if (!res.ok) {
