@@ -3,7 +3,7 @@ import { beforeEach, expect, mock, test } from 'bun:test';
 // Bugfixes' SDK, recorded: what the frontend reports (TL-292)
 const reported: unknown[][] = [];
 mock.module('bugfixes', () => ({ error: (...a: unknown[]) => { reported.push(a); return new Error(String(a[0])); }, loadConfigFromEnv: () => ({}), setDefaultConfig: () => {} }));
-const { allowReport, cleanReport, reportClient, resetReportLimits } = await import('./report');
+const { allowReport, cleanReport, endedClerkSession, reportClient, resetReportLimits } = await import('./report');
 const { POST } = await import('@/app/api/client-errors/route');
 const { closedStream, onRequestError } = await import('@/instrumentation');
 const proxy = await import('@/app/api/[...path]/route');
@@ -106,4 +106,29 @@ test('missing files get the global 404, which skips the root layout and its Cler
 test('the Bugfixes SDK is one shared copy, so routes get the credentials instrumentation sets', async () => {
   const { default: config } = await import('../../next.config');
   expect(config.serverExternalPackages).toContain('bugfixes');
+});
+
+// TL-799: Clerk failing to reach an organization or session that's gone is Clerk's to handle, not a bug of ours.
+test('a Clerk error for an ended session or missing organization is not reported', () => {
+  const clerk = (code: string) => Object.assign(new Error('Given organization not found, or you don\'t have permission to access the organization'),
+    { clerkError: true, status: 404, errors: [{ code, message: 'x' }] });
+  for (const code of ['resource_not_found', 'authentication_invalid', 'signed_out']) expect(endedClerkSession(clerk(code))).toBe(true);
+  expect(endedClerkSession(clerk('form_password_incorrect'))).toBe(false);
+  expect(endedClerkSession(Object.assign(new Error('x'), { clerkError: true, errors: [] }))).toBe(false);
+  expect(endedClerkSession(new Error('resource_not_found'))).toBe(false);
+  expect(endedClerkSession(null)).toBe(false);
+
+  const beacons: string[] = [];
+  const g = globalThis as Record<string, unknown>;
+  g.window = { location: { pathname: '/staff/stats' } };
+  g.navigator = { sendBeacon: () => { beacons.push('sent'); return true; } };
+  try {
+    reportClient('rejection', clerk('resource_not_found'));
+    expect(beacons.length).toBe(0);
+    reportClient('rejection', clerk('form_identifier_not_found'));
+    expect(beacons.length).toBe(1);
+  } finally {
+    delete g.window;
+    delete g.navigator;
+  }
 });
