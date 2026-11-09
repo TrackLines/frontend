@@ -2,6 +2,7 @@ import privacy20261017 from './versions/privacy-2026-10-17';
 import privacy20261025 from './versions/privacy-2026-10-25';
 import privacy20261026 from './versions/privacy-2026-10-26';
 import privacy20261027 from './versions/privacy-2026-10-27';
+import privacy20261109 from './versions/privacy-2026-11-09';
 import terms20261017 from './versions/terms-2026-10-17';
 
 // Every published version of the Terms of service and the Privacy policy (TL-424), oldest first.
@@ -20,6 +21,7 @@ export const HISTORY: Record<LegalDoc, LegalVersion[]> = {
     { version: '2026-10-25', summary: 'Lists every cookie and item of device storage, and says what deleting your account erases.', body: privacy20261025 },
     { version: '2026-10-26', summary: 'Adds ticket history and the audit log on Pro and Enterprise: what they record, who can see them and how long they’re kept.', body: privacy20261026 },
     { version: '2026-10-27', summary: 'Ticket history now records every change to a ticket and who made it, never the text of an edit.', body: privacy20261027 },
+    { version: '2026-11-09', summary: 'Adds the iPhone, Apple Watch and Android apps: their notifications go through Firebase and Apple, which can read them. Also adds Sign in with Apple.', body: privacy20261109 },
   ],
 };
 
