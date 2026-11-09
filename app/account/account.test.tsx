@@ -29,3 +29,9 @@ test('this device: on, off, or blocked; hidden when there’s nothing you can do
   expect(view('unavailable')).toBe(''); // the server doesn't send them: not yours to fix
   expect(view('unsupported')).toBe(''); // this browser can't (also the state while it checks)
 });
+
+test('the API keys panel is the link, like the organization’s (no separate Manage button)', async () => {
+  const page = await read('./page.tsx');
+  expect(page).toContain('title={t`API keys`} href="/account/api-keys"');
+  expect(page).not.toContain('Manage API keys');
+});

@@ -5625,10 +5625,6 @@ msgstr "ghov tut DaH yIchenmoH"
 msgid "Making it an epic moves it to the backlog and clears its estimate. Its sub-tickets stay where they are."
 msgstr "lut'a' DachenmoHchugh backlogDaq vIHmoHlu' 'ej pIHghachDaj teqlu'. Daqchaj ratlh ticket puqmeyDaj."
 
-#: app/account/page.tsx
-msgid "Manage API keys"
-msgstr "API ngaQHa'moHwI'mey tIloH"
-
 #: components/billing/plan-card.tsx
 msgid "Manage billing"
 msgstr "Huch yIloH"

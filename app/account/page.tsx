@@ -6,7 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { ChatDmCard } from '@/components/settings/chat-dm';
 import { KeyRoundIcon } from 'lucide-react';
 import { McpConnect } from '@/components/settings/mcp-connect';
-import { Button, buttonVariants } from '@/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { DevicePushCard } from '@/components/settings/device-push';
 import { LanguageCard } from '@/components/settings/language';
 import { SettingsCard } from '@/components/settings/settings-card';
@@ -32,9 +32,8 @@ export default function AccountPage() {
             <GuideSettings token={token} />
             <DevicePushCard token={token} />
             <ChatDmCard token={token} />
-            <SettingsCard icon={KeyRoundIcon} title={t`API keys`}
+            <SettingsCard icon={KeyRoundIcon} title={t`API keys`} href="/account/api-keys"
               description={t`Keys that act as you, for your own scripts and displays. Connect an AI agent (Claude, Codex…) over MCP with its own key.`}>
-              <Link href="/account/api-keys" className={buttonVariants({ variant: 'outline', size: 'sm' })}><Trans>Manage API keys</Trans></Link>
               <McpConnect
                 keyHint={<Trans>Each agent needs its own API key: create one in <Link href="/account/api-keys" className="font-medium text-foreground underline">API keys</Link> and use it in place of <code>tl_ai_your_key</code>.</Trans>}
                 trigger={(open) => <Button variant="ghost" size="sm" onClick={open}><Trans>Connect AI</Trans></Button>}

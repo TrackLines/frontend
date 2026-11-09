@@ -5625,10 +5625,6 @@ msgstr "Zur Review-Spalte machen"
 msgid "Making it an epic moves it to the backlog and clears its estimate. Its sub-tickets stay where they are."
 msgstr "Wenn du es zu einem Epic machst, kommt es ins Backlog und seine Schätzung wird entfernt. Seine Untertickets bleiben, wo sie sind."
 
-#: app/account/page.tsx
-msgid "Manage API keys"
-msgstr "API-Schlüssel verwalten"
-
 #: components/billing/plan-card.tsx
 msgid "Manage billing"
 msgstr "Abrechnung verwalten"
