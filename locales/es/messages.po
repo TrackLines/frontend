@@ -5625,10 +5625,6 @@ msgstr "Hacer de esta la columna de revisión"
 msgid "Making it an epic moves it to the backlog and clears its estimate. Its sub-tickets stay where they are."
 msgstr "Convertirlo en épica lo mueve al backlog y borra su estimación. Sus subtickets se quedan donde están."
 
-#: app/account/page.tsx
-msgid "Manage API keys"
-msgstr "Gestionar claves de API"
-
 #: components/billing/plan-card.tsx
 msgid "Manage billing"
 msgstr "Gestionar facturación"

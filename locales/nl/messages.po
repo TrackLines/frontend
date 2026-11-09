@@ -5625,10 +5625,6 @@ msgstr "Maak dit de reviewkolom"
 msgid "Making it an epic moves it to the backlog and clears its estimate. Its sub-tickets stay where they are."
 msgstr "Als je er een epic van maakt, gaat het naar de backlog en wordt de schatting gewist. De subtickets blijven waar ze zijn."
 
-#: app/account/page.tsx
-msgid "Manage API keys"
-msgstr "API-sleutels beheren"
-
 #: components/billing/plan-card.tsx
 msgid "Manage billing"
 msgstr "Facturering beheren"
