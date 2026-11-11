@@ -5,7 +5,7 @@ import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { Trans } from '@lingui/react/macro';
 import {
-  ArrowRightIcon, CalendarIcon, CheckCircle2Icon, CircleDotIcon, EyeIcon, GitPullRequestIcon, HistoryIcon, InboxIcon, LinkIcon,
+  ArrowRightIcon, CalendarIcon, CheckCircle2Icon, CircleDotIcon, EyeIcon, FlagIcon, GitPullRequestIcon, HistoryIcon, InboxIcon, LinkIcon,
   MessageSquareIcon, PaperclipIcon, PencilIcon, PlusIcon, RotateCcwIcon, TagIcon, Trash2Icon, UserIcon, type LucideIcon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -50,6 +50,7 @@ export const ICONS: Record<string, LucideIcon> = {
   'comment.added': MessageSquareIcon, 'comment.edited': MessageSquareIcon, 'comment.deleted': MessageSquareIcon,
   'attachment.added': PaperclipIcon, 'attachment.removed': PaperclipIcon, 'attachment.kept': PaperclipIcon,
   'pr.linked': GitPullRequestIcon, 'pr.state_changed': GitPullRequestIcon, 'pr.unlinked': GitPullRequestIcon,
+  'flag.created': FlagIcon, 'flag.state_changed': FlagIcon, 'flag.archived': FlagIcon,
 };
 
 // namesOf: the titles of the tickets a ticket links to, by id, for history lines that name them.
@@ -68,6 +69,7 @@ export const ACTIONS = [
   'ticket.sprint_changed', 'ticket.planned_changed', 'ticket.reopened', 'ticket.duplicate_of', 'ticket.deleted', 'ticket.restored',
   'ticket.review_requested', 'ticket.review_ended', 'comment.added', 'comment.edited', 'comment.deleted',
   'attachment.added', 'attachment.removed', 'attachment.kept', 'pr.linked', 'pr.state_changed', 'pr.unlinked',
+  'flag.created', 'flag.state_changed', 'flag.archived',
 ] as const;
 
 type Data = Record<string, unknown>;
@@ -182,6 +184,21 @@ export function activitySteps(i18n: I18n, entries: ActivityEntry[], people: Assi
       case 'pr.state_changed': {
         const pr = `${str(d.repo)}#${str(d.number)}`;
         add(d.to === 'merged' ? i18n._(msg`merged pull request ${pr}`) : d.to === 'closed' ? i18n._(msg`closed pull request ${pr}`) : i18n._(msg`reopened pull request ${pr}`));
+        continue;
+      }
+      case 'flag.created': {
+        const environment = str(d.environment_id);
+        add(i18n._(msg`created the feature flag in ${environment} in flags.gg`));
+        continue;
+      }
+      case 'flag.state_changed': {
+        const environment = str(d.environment_id);
+        add(d.enabled ? i18n._(msg`updated the feature flag to on in ${environment} in flags.gg`) : i18n._(msg`updated the feature flag to off in ${environment} in flags.gg`));
+        continue;
+      }
+      case 'flag.archived': {
+        const environment = str(d.environment_id);
+        add(i18n._(msg`archived the feature flag in ${environment} in flags.gg`));
         continue;
       }
     }

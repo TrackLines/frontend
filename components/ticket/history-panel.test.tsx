@@ -117,9 +117,23 @@ test('links name the tickets the page knows, and the rest read sensibly', () => 
   ]);
 });
 
+test('flags.gg changes name the environment and flag state', () => {
+  expect(lines([
+    ev('flag.created', { environment_id: 'prod' }, null),
+    ev('flag.state_changed', { environment_id: 'prod', enabled: true }, null),
+    ev('flag.state_changed', { environment_id: 'prod', enabled: false }, null),
+    ev('flag.archived', { environment_id: 'prod' }, null),
+  ])).toEqual([
+    'TrackLin.es created the feature flag in prod in flags.gg',
+    'TrackLin.es updated the feature flag to on in prod in flags.gg',
+    'TrackLin.es updated the feature flag to off in prod in flags.gg',
+    'TrackLin.es archived the feature flag in prod in flags.gg',
+  ]);
+});
+
 // the backend's actions (its OpenAPI, GET /tickets/{id}/activity): each has its own sentence
 test('every recorded action has a sentence', () => {
-  expect(ACTIONS).toHaveLength(23);
+  expect(ACTIONS).toHaveLength(26);
   for (const a of ACTIONS) {
     const data = a === 'ticket.stage' ? { stage: 'backlog', outcome: 'entered' } : a === 'ticket.updated' ? { fields: { title: true } } : { from: 'x', to: 'y', added: ['a'], name: 'f', repo: 'r', number: 1, of: 'x' };
     const [line] = lines([ev(a, data)]);

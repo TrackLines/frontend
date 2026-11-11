@@ -1420,6 +1420,10 @@ msgstr "Archived boards →"
 msgid "Archived the board {name}"
 msgstr "Archived the board {name}"
 
+#: components/ticket/history-panel.tsx
+msgid "archived the feature flag in {environment} in flags.gg"
+msgstr "archived the feature flag in {environment} in flags.gg"
+
 #: components/billing/launch-offer.tsx
 msgid "Ask an organization admin to claim it."
 msgstr "Ask an organization admin to claim it."
@@ -3296,6 +3300,10 @@ msgstr "Created the board {name}"
 #: lib/org/audit.ts
 msgid "Created the embed key “{label}”"
 msgstr "Created the embed key “{label}”"
+
+#: components/ticket/history-panel.tsx
+msgid "created the feature flag in {environment} in flags.gg"
+msgstr "created the feature flag in {environment} in flags.gg"
 
 #: lib/org/audit.ts
 msgid "Created the project {name}"
@@ -10014,6 +10022,14 @@ msgstr "Updated"
 #: app/tickets/[id]/page.tsx
 msgid "updated <0/>"
 msgstr "updated <0/>"
+
+#: components/ticket/history-panel.tsx
+msgid "updated the feature flag to off in {environment} in flags.gg"
+msgstr "updated the feature flag to off in {environment} in flags.gg"
+
+#: components/ticket/history-panel.tsx
+msgid "updated the feature flag to on in {environment} in flags.gg"
+msgstr "updated the feature flag to on in {environment} in flags.gg"
 
 #: app/r/[id]/page.tsx
 #: components/roadmap/updates.tsx
