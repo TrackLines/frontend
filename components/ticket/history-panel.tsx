@@ -187,17 +187,17 @@ export function activitySteps(i18n: I18n, entries: ActivityEntry[], people: Assi
         continue;
       }
       case 'flag.created': {
-        const environment = str(d.environment_id);
+        const environment = str(d.environment_name) || str(d.environment_id);
         add(i18n._(msg`created the feature flag in ${environment} in flags.gg`));
         continue;
       }
       case 'flag.state_changed': {
-        const environment = str(d.environment_id);
+        const environment = str(d.environment_name) || str(d.environment_id);
         add(d.enabled ? i18n._(msg`updated the feature flag to on in ${environment} in flags.gg`) : i18n._(msg`updated the feature flag to off in ${environment} in flags.gg`));
         continue;
       }
       case 'flag.archived': {
-        const environment = str(d.environment_id);
+        const environment = str(d.environment_name) || str(d.environment_id);
         add(i18n._(msg`archived the feature flag in ${environment} in flags.gg`));
         continue;
       }
