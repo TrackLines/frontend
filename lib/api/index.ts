@@ -788,7 +788,7 @@ export type FlagAgent = {
   project_id: string; project_name: string; agent_id: string; agent_name: string;
   environments: { environment_id: string; name: string; level: number; production?: boolean }[];
 };
-export type FlagsStatus = { provider: 'flags'; connected: boolean; base_url?: string; updated_by?: string; updated_at?: string; agents?: FlagAgent[]; agents_error?: string };
+export type FlagsStatus = { provider: 'flags'; connected: boolean; webhook_configured?: boolean; webhook_path?: string; base_url?: string; updated_by?: string; updated_at?: string; agents?: FlagAgent[]; agents_error?: string };
 export type ProjectFlags = { agent_id: string | null; cleanup_days: number };
 // FlagRule targets users by what the flags.gg SDK knows about them ("key" is the targeting key) (TL-822).
 export type FlagRule = { attribute: string; operator: 'in' | 'not_in' | 'contains' | 'starts_with' | 'ends_with'; values: string[]; serve: boolean };
@@ -803,6 +803,7 @@ export const flags = {
   status: (token: T) => api<FlagsStatus>('/integrations/flags', { token }),
   connect: (input: { token: string; base_url?: string }, token: T) => api<FlagsStatus>('/integrations/flags', { method: 'PUT', body: input, token }),
   disconnect: (token: T) => api<void>('/integrations/flags', { method: 'DELETE', token }),
+  configureWebhook: (secret: string, token: T) => api<{ webhook_configured: boolean; webhook_path: string }>('/integrations/flags/webhook', { method: 'PUT', body: { secret }, token }),
   project: (projectId: string, token: T) => api<ProjectFlags>(`/projects/${projectId}/flags`, { token }),
   setProject: (projectId: string, input: { agent_id?: string; cleanup_days?: number }, token: T) =>
     api<ProjectFlags>(`/projects/${projectId}/flags`, { method: 'PUT', body: input, token }),

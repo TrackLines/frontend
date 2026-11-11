@@ -5,6 +5,7 @@ import { msg, plural } from '@lingui/core/macro';
 import { Trans, useLingui } from '@lingui/react/macro';
 import { FlagIcon, PlusIcon, SlidersHorizontalIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useState, type FormEvent } from 'react';
+import { CopyButton } from '@/components/common/copy-link';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -54,9 +55,12 @@ export function FlagsSettings({ token, canManage }: { token: string; canManage: 
     }
   }
   return (
-    <FlagsSettingsView status={status} canManage={canManage} busy={busy} error={error}
-      onConnect={(key) => run(() => flags.connect({ token: key }, token), t`Couldn’t connect flags.gg.`)}
-      onDisconnect={() => confirm(t`Disconnect flags.gg? Tickets’ flags stop following them until it’s connected again.`) && run(() => flags.disconnect(token), t`Couldn’t disconnect flags.gg.`)} />
+    <>
+      <FlagsSettingsView status={status} canManage={canManage} busy={busy} error={error}
+        onConnect={(key) => run(() => flags.connect({ token: key }, token), t`Couldn’t connect flags.gg.`)}
+        onDisconnect={() => confirm(t`Disconnect flags.gg? Tickets’ flags stop following them until it’s connected again.`) && run(() => flags.disconnect(token), t`Couldn’t disconnect flags.gg.`)} />
+      {status?.connected && <FlagsWebhookSettings key={status.webhook_path} token={token} status={status} canManage={canManage} onSaved={(next) => setStatus((current) => current ? { ...current, ...next } : current)} />}
+    </>
   );
 }
 
@@ -102,6 +106,66 @@ export function FlagsSettingsView({ status, canManage, busy, error, onConnect, o
         </form>
       )}
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+    </section>
+  );
+}
+
+// Webhooks have their own save state so replacing the integration token cannot submit a secret.
+function FlagsWebhookSettings({ token, status, canManage, onSaved }: {
+  token: string; status: FlagsStatus; canManage: boolean;
+  onSaved: (next: { webhook_configured: boolean; webhook_path: string }) => void;
+}) {
+  const { t, i18n } = useLingui();
+  const [secret, setSecret] = useState('');
+  const [url, setUrl] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [note, setNote] = useState<{ ok: boolean; text: string } | null>(null);
+  useEffect(() => {
+    // Use the public API base, or this site's /api proxy, never the private backend address.
+    const apiBase = new URL(process.env.NEXT_PUBLIC_API_URL ?? '/api', window.location.origin);
+    setUrl(status.webhook_path ? new URL(`${apiBase.pathname.replace(/\/$/, '')}${status.webhook_path.slice(4)}`, apiBase.origin).href : '');
+  }, [status.webhook_path]);
+  async function save(value: string) {
+    if (!canManage || busy) return;
+    setBusy(true);
+    setNote(null);
+    try {
+      const next = await flags.configureWebhook(value, token);
+      setSecret('');
+      onSaved(next);
+      setNote({ ok: true, text: value ? t`Webhook signing secret saved.` : t`Webhook disabled.` });
+    } catch (err) {
+      setNote({ ok: false, text: flagError(i18n, err, t`Couldn’t save the webhook settings.`) });
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <section aria-label={t`Flag updates from flags.gg`} className="grid gap-3 rounded-xl border p-5">
+      <div className="flex flex-wrap items-center gap-2">
+        <h3 className="font-semibold"><Trans>Flag updates from flags.gg</Trans></h3>
+        <Badge variant={status.webhook_configured ? 'default' : 'outline'}>{status.webhook_configured ? <Trans>Configured</Trans> : <Trans>Not configured</Trans>}</Badge>
+      </div>
+      {canManage ? <>
+        <p className="text-sm text-muted-foreground"><Trans>In flags.gg, create a company webhook with this URL and select flag.created, flag.state_changed and flag.archived. Paste its signing secret below to record flag changes in ticket history.</Trans></p>
+        <div className="flex flex-wrap items-end gap-2">
+          <label className="grid min-w-0 flex-1 gap-1.5 text-sm font-medium">
+            <Trans>Webhook URL</Trans>
+            <Input readOnly value={url} className="font-mono text-xs" />
+          </label>
+          {url && <CopyButton value={url} label={t`Copy URL`} size="sm" />}
+        </div>
+        <form className="grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end" onSubmit={(e) => { e.preventDefault(); if (secret.trim()) void save(secret.trim()); }}>
+          <label className="grid gap-1.5 text-sm font-medium">
+            <Trans>Signing secret</Trans>
+            <Input type="password" autoComplete="new-password" maxLength={500} value={secret} disabled={busy} onChange={(e) => setSecret(e.target.value)} />
+          </label>
+          <Button type="submit" disabled={busy || !secret.trim() || !url}>{busy ? <Trans>Saving…</Trans> : <Trans>Save</Trans>}</Button>
+          <p className="text-xs text-muted-foreground sm:col-span-2"><Trans>The secret is stored encrypted and never shown again. Saving a new secret replaces the existing one.</Trans></p>
+        </form>
+        {status.webhook_configured && <Button type="button" variant="outline" className="justify-self-start" disabled={busy} onClick={() => { if (confirm(t`Disable flag updates from flags.gg?`)) void save(''); }}><Trans>Disable webhook</Trans></Button>}
+      </> : <p className="text-sm text-muted-foreground"><Trans>Only organization admins can change this.</Trans></p>}
+      {note && <p role={note.ok ? 'status' : 'alert'} className={`text-sm ${note.ok ? 'text-muted-foreground' : 'text-destructive'}`}>{note.text}</p>}
     </section>
   );
 }
