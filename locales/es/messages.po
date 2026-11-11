@@ -1422,7 +1422,7 @@ msgstr "Archivó el tablero {name}"
 
 #: components/ticket/history-panel.tsx
 msgid "archived the feature flag in {environment} in flags.gg"
-msgstr ""
+msgstr "archivó el feature flag en {environment} en flags.gg"
 
 #: components/billing/launch-offer.tsx
 msgid "Ask an organization admin to claim it."
@@ -3303,7 +3303,7 @@ msgstr "Creó la clave de inserción «{label}»"
 
 #: components/ticket/history-panel.tsx
 msgid "created the feature flag in {environment} in flags.gg"
-msgstr ""
+msgstr "creó el feature flag en {environment} en flags.gg"
 
 #: lib/org/audit.ts
 msgid "Created the project {name}"
@@ -10025,11 +10025,11 @@ msgstr "actualizado <0/>"
 
 #: components/ticket/history-panel.tsx
 msgid "updated the feature flag to off in {environment} in flags.gg"
-msgstr ""
+msgstr "desactivó el feature flag en {environment} en flags.gg"
 
 #: components/ticket/history-panel.tsx
 msgid "updated the feature flag to on in {environment} in flags.gg"
-msgstr ""
+msgstr "activó el feature flag en {environment} en flags.gg"
 
 #: app/r/[id]/page.tsx
 #: components/roadmap/updates.tsx

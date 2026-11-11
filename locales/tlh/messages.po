@@ -1422,7 +1422,7 @@ msgstr "{name} 'echlet pol"
 
 #: components/ticket/history-panel.tsx
 msgid "archived the feature flag in {environment} in flags.gg"
-msgstr ""
+msgstr "flags.gg Daq {environment} Daq ra'wI' pol"
 
 #: components/billing/launch-offer.tsx
 msgid "Ask an organization admin to claim it."
@@ -3303,7 +3303,7 @@ msgstr "rarmeH ngoq “{label}” chenmoH"
 
 #: components/ticket/history-panel.tsx
 msgid "created the feature flag in {environment} in flags.gg"
-msgstr ""
+msgstr "flags.gg Daq {environment} Daq ra'wI' chenmoH"
 
 #: lib/org/audit.ts
 msgid "Created the project {name}"
@@ -10025,11 +10025,11 @@ msgstr "chu'moHlu'pu' <0/>"
 
 #: components/ticket/history-panel.tsx
 msgid "updated the feature flag to off in {environment} in flags.gg"
-msgstr ""
+msgstr "flags.gg Daq {environment} Daq ra'wI' chu'Ha'"
 
 #: components/ticket/history-panel.tsx
 msgid "updated the feature flag to on in {environment} in flags.gg"
-msgstr ""
+msgstr "flags.gg Daq {environment} Daq ra'wI' chu'"
 
 #: app/r/[id]/page.tsx
 #: components/roadmap/updates.tsx
