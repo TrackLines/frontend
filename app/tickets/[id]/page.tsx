@@ -13,6 +13,7 @@ import { useEffect, useState } from 'react';
 import { CopyLink } from '@/components/common/copy-link';
 import { Attachments } from '@/components/ticket/attachments';
 import { BugfixesPanel } from '@/components/ticket/bugfixes-panel';
+import { TicketFlagPanel } from '@/components/flags/flags';
 import { PullRequestsPanel } from '@/components/ticket/pull-requests-panel';
 import { HistoryPanel } from '@/components/ticket/history-panel';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
@@ -167,6 +168,7 @@ export default function TicketPage() {
       {token && <TicketLinks ticket={tk} token={token} onChanged={() => tickets.get(id, token).then(setT)} />}
       {token && <MarkDuplicate ticket={tk} token={token} onChanged={() => { void tickets.get(tk.id, token).then(setT); }} />}
       {token && <BugfixesPanel ticket={tk} token={token} />}
+      {token && <TicketFlagPanel key={tk.id} ticket={tk} token={token} onRemoved={() => setT((current) => current && { ...current, needs_flag: false, flag_name: null, flag_error: null })} />}
       {token && <Attachments ticketId={tk.id} token={token} locked={tk.done} />}
       {token && <PullRequestsPanel ticketId={tk.id} token={token} />}
       {token && <TicketComments ticketId={tk.id} token={token} />}
