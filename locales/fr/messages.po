@@ -2291,6 +2291,10 @@ msgid "Completed tickets plotted by completion date and cycle time"
 msgstr "Tickets terminés représentés selon leur date d’achèvement et leur temps de cycle"
 
 #: components/flags/flags.tsx
+msgid "Configured"
+msgstr "Configuré"
+
+#: components/flags/flags.tsx
 #: components/settings/google-calendar.tsx
 #: components/settings/integrations.tsx
 #: components/settings/jira-import.tsx
@@ -2528,6 +2532,10 @@ msgstr "Copier la clé du ticket {0}"
 #: components/ticket/ticket-key.tsx
 msgid "Copy ticket key {value}"
 msgstr "Copier la clé du ticket {value}"
+
+#: components/flags/flags.tsx
+msgid "Copy URL"
+msgstr "Copier l’URL"
 
 #: lib/api/error-codes.ts
 msgid "could not check organization admins"
@@ -3102,6 +3110,10 @@ msgstr "Impossible d’enregistrer la vérification. Veuillez réessayer."
 msgid "Couldn’t save the template. Please try again."
 msgstr "Impossible d’enregistrer le modèle. Veuillez réessayer."
 
+#: components/flags/flags.tsx
+msgid "Couldn’t save the webhook settings."
+msgstr "Impossible d’enregistrer les paramètres du webhook."
+
 #: components/settings/working-week.tsx
 msgid "Couldn’t save the working week. Please try again."
 msgstr "Impossible d’enregistrer la semaine de travail. Veuillez réessayer."
@@ -3603,6 +3615,14 @@ msgstr "Détails enregistrés."
 #: components/project/backlog.tsx
 msgid "Details, steps to reproduce… (optional)"
 msgstr "Détails, étapes pour reproduire… (facultatif)"
+
+#: components/flags/flags.tsx
+msgid "Disable flag updates from flags.gg?"
+msgstr "Désactiver les mises à jour de flags.gg ?"
+
+#: components/flags/flags.tsx
+msgid "Disable webhook"
+msgstr "Désactiver le webhook"
 
 #: components/flags/flags.tsx
 #: components/settings/google-calendar.tsx
@@ -4465,6 +4485,10 @@ msgstr "Flag"
 msgid "Flag name <0>(what the code checks)</0>"
 msgstr "Nom du flag <0>(ce que le code vérifie)</0>"
 
+#: components/flags/flags.tsx
+msgid "Flag updates from flags.gg"
+msgstr "Mises à jour de flags.gg"
+
 #: app/boards/[id]/edit/page.tsx
 msgid "Flag: what a ticket that needs a feature flag gets in flags.gg when it arrives. Automatic promotes from Testing or QA columns, and to production from the Dev complete column."
 msgstr "Flag : ce qu’un ticket ayant besoin d’un feature flag reçoit dans flags.gg à son arrivée. Automatique promeut depuis les colonnes Testing ou QA, et en production depuis la colonne Dev complete."
@@ -4834,6 +4858,10 @@ msgstr "L’import n’est pas encore activé pour votre organisation."
 #: lib/org/audit.ts
 msgid "Imports"
 msgstr "Importations"
+
+#: components/flags/flags.tsx
+msgid "In flags.gg, create a company webhook with this URL and select flag.created, flag.state_changed and flag.archived. Paste its signing secret below to record flag changes in ticket history."
+msgstr "Dans flags.gg, créez un webhook d’entreprise avec cette URL et sélectionnez flag.created, flag.state_changed et flag.archived. Collez son secret de signature ci-dessous pour enregistrer les changements dans l’historique du ticket."
 
 #: components/settings/google-calendar.tsx
 msgid "In Google, as a Workspace admin, open <0>Security → Access and data control → API controls → Manage Domain Wide Delegation</0> (you need to be a super admin), choose <1>Add new</1> and paste:"
@@ -6374,6 +6402,10 @@ msgstr "Aucun."
 #: lib/api/error-codes.ts
 msgid "not a browser push subscription"
 msgstr "pas un abonnement push de navigateur"
+
+#: components/flags/flags.tsx
+msgid "Not configured"
+msgstr "Non configuré"
 
 #: lib/api/error-codes.ts
 msgid "not connected"
@@ -8500,6 +8532,10 @@ msgstr "le compte connecté doit avoir l’adresse e-mail vérifiée invitée"
 msgid "Signed-in members of your organization"
 msgstr "Membres connectés de votre organisation"
 
+#: components/flags/flags.tsx
+msgid "Signing secret"
+msgstr "Secret de signature"
+
 #: components/ticket/similar-tickets.tsx
 msgid "Similar tickets in this project:"
 msgstr "Tickets similaires dans ce projet :"
@@ -9320,6 +9356,10 @@ msgstr "Le robot indique la colonne où le ticket terminé d’un agent attend l
 #: components/reports/rollup-view.tsx
 msgid "the same as the period before"
 msgstr "identique à la période précédente"
+
+#: components/flags/flags.tsx
+msgid "The secret is stored encrypted and never shown again. Saving a new secret replaces the existing one."
+msgstr "Le secret est stocké chiffré et ne sera plus affiché. Un nouveau secret remplace le précédent."
 
 #: components/settings/mcp-connect.tsx
 msgid "The server is stateless and answers with JSON, so no session handling is needed. Tools mirror the REST API, with the same permissions."
@@ -10217,6 +10257,15 @@ msgstr "Nous avons été prévenus."
 msgid "We’ve been told about it. Try again, or go back to your projects."
 msgstr "Nous avons été prévenus. Réessayez, ou revenez à vos projets."
 
+#: components/flags/flags.tsx
+msgid "Webhook disabled."
+msgstr "Webhook désactivé."
+
+#: components/flags/flags.tsx
+msgid "Webhook signing secret saved."
+msgstr "Secret de signature du webhook enregistré."
+
+#: components/flags/flags.tsx
 #: components/settings/google-chat.tsx
 msgid "Webhook URL"
 msgstr "URL du webhook"
