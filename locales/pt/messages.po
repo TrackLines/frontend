@@ -1420,6 +1420,10 @@ msgstr "Quadros arquivados →"
 msgid "Archived the board {name}"
 msgstr "Arquivou o quadro {name}"
 
+#: components/ticket/history-panel.tsx
+msgid "archived the feature flag in {environment} in flags.gg"
+msgstr "arquivou a feature flag em {environment} no flags.gg"
+
 #: components/billing/launch-offer.tsx
 msgid "Ask an organization admin to claim it."
 msgstr "Peça a um administrador da organização para resgatá-lo."
@@ -3296,6 +3300,10 @@ msgstr "Criou o quadro {name}"
 #: lib/org/audit.ts
 msgid "Created the embed key “{label}”"
 msgstr "Criou a chave de incorporação “{label}”"
+
+#: components/ticket/history-panel.tsx
+msgid "created the feature flag in {environment} in flags.gg"
+msgstr "criou a feature flag em {environment} no flags.gg"
 
 #: lib/org/audit.ts
 msgid "Created the project {name}"
@@ -10014,6 +10022,14 @@ msgstr "Atualizado"
 #: app/tickets/[id]/page.tsx
 msgid "updated <0/>"
 msgstr "atualizado <0/>"
+
+#: components/ticket/history-panel.tsx
+msgid "updated the feature flag to off in {environment} in flags.gg"
+msgstr "desativou a feature flag em {environment} no flags.gg"
+
+#: components/ticket/history-panel.tsx
+msgid "updated the feature flag to on in {environment} in flags.gg"
+msgstr "ativou a feature flag em {environment} no flags.gg"
 
 #: app/r/[id]/page.tsx
 #: components/roadmap/updates.tsx

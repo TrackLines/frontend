@@ -1420,6 +1420,10 @@ msgstr "Tableaux archivés →"
 msgid "Archived the board {name}"
 msgstr "A archivé le tableau {name}"
 
+#: components/ticket/history-panel.tsx
+msgid "archived the feature flag in {environment} in flags.gg"
+msgstr "a archivé le feature flag dans {environment} sur flags.gg"
+
 #: components/billing/launch-offer.tsx
 msgid "Ask an organization admin to claim it."
 msgstr "Demandez à un administrateur de l’organisation de l’activer."
@@ -3296,6 +3300,10 @@ msgstr "A créé le tableau {name}"
 #: lib/org/audit.ts
 msgid "Created the embed key “{label}”"
 msgstr "A créé la clé d’intégration « {label} »"
+
+#: components/ticket/history-panel.tsx
+msgid "created the feature flag in {environment} in flags.gg"
+msgstr "a créé le feature flag dans {environment} sur flags.gg"
 
 #: lib/org/audit.ts
 msgid "Created the project {name}"
@@ -10014,6 +10022,14 @@ msgstr "Mis à jour"
 #: app/tickets/[id]/page.tsx
 msgid "updated <0/>"
 msgstr "mis à jour <0/>"
+
+#: components/ticket/history-panel.tsx
+msgid "updated the feature flag to off in {environment} in flags.gg"
+msgstr "a désactivé le feature flag dans {environment} sur flags.gg"
+
+#: components/ticket/history-panel.tsx
+msgid "updated the feature flag to on in {environment} in flags.gg"
+msgstr "a activé le feature flag dans {environment} sur flags.gg"
 
 #: app/r/[id]/page.tsx
 #: components/roadmap/updates.tsx
