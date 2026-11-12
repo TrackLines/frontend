@@ -6,7 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { MentionTextarea } from '@/components/common/mention-textarea';
 import { Textarea } from '@/components/ui/textarea';
-import { UPLOADS_HOST } from '@/lib/ticket/attachment-limits';
+import { UPLOADS_HOST } from '@/lib/ticket/uploads-host';
 
 type HastNode = { type: string; tagName?: string; properties?: Record<string, unknown>; children?: HastNode[] };
 

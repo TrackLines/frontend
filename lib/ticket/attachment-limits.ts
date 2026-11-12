@@ -24,7 +24,3 @@ export function attachProblem(i18n: I18n, existing: number, files: readonly { na
   }
   return null;
 }
-
-// UPLOADS_HOST: our own UploadThing storage (<appId>.ufs.sh). Every other *.ufs.sh host, and utfs.io,
-// is some other UploadThing customer's files, so they don't count as ours.
-export const UPLOADS_HOST = process.env.NEXT_PUBLIC_UPLOADS_HOST ?? 'k8bqxukiql.ufs.sh';

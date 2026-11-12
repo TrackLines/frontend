@@ -1,4 +1,4 @@
-import { UPLOADS_HOST } from '@/lib/ticket/attachment-limits';
+import { UPLOADS_HOST } from '../ticket/uploads-host';
 
 // Security headers on every page (TL-164, TL-255).
 //
