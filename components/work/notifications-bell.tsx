@@ -10,7 +10,7 @@ import { When } from '@/components/common/when';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { notifications, tickets, type AppNotification, type Assignee } from '@/lib/api';
-import { newSince, newest, notificationHref, notificationLine } from '@/lib/work/notifications';
+import { newSince, newest, notificationHref, notificationLine, urgentToOpen } from '@/lib/work/notifications';
 import { useAutoRefresh } from '@/lib/hooks/use-auto-refresh';
 import { useToken } from '@/lib/hooks/use-token';
 import { disablePush, enablePush, pushFailure, pushState, type PushState } from '@/lib/org/push';
@@ -28,6 +28,7 @@ export function NotificationsBell() {
   const [people, setPeople] = useState<Assignee[]>([]);
   const [failed, setFailed] = useState(false);
   const [showRead, setShowRead] = useState(false); // read ones are hidden unless asked for
+  const [menuOpen, setMenuOpen] = useState(false); // an urgent notification opens it for you (TL-883)
   const [permission, setPermission] = useState<NotificationPermission | 'unsupported'>('unsupported');
   const [pushOn, setPushOn] = useState<PushState>('unsupported'); // Web Push on this device (works with the tab closed)
   const [pushBusy, setPushBusy] = useState(false);
@@ -45,8 +46,17 @@ export function NotificationsBell() {
     const { count: n } = await notifications.unreadCount(token);
     setCount(n);
     // with Web Push on, the service worker shows them; in-tab popups would double up
-    if (n > lastCount.current && pushOn !== 'on' && canNotify() && Notification.permission === 'granted') {
-      const list = await notifications.list(token);
+    const popups = n > lastCount.current && pushOn !== 'on' && canNotify() && Notification.permission === 'granted';
+    const urgentCheck = n > 0 && n !== lastCount.current; // the first poll too (lastCount starts at 0)
+    const list = popups || urgentCheck ? await notifications.list(token) : [];
+    const urgent = urgentToOpen(list);
+    if (urgent) { // opens the bell once, then never again for it, here or in the apps (TL-883)
+      await notifications.shown(urgent.id, token);
+      setShowRead(false);
+      setMenuOpen(true);
+      void load();
+    }
+    if (popups) {
       const fresh = newSince(list, since.current).slice(-3); // a burst shows its latest three
       if (fresh.length) {
         const names = people.length ? people : await tickets.assignees(token).catch(() => []);
@@ -130,7 +140,7 @@ export function NotificationsBell() {
 
   if (!token) return null;
   return (
-    <DropdownMenu onOpenChange={(o) => { if (o) { setShowRead(false); void load(); } }}>
+    <DropdownMenu open={menuOpen} onOpenChange={(o) => { setMenuOpen(o); if (o) { setShowRead(false); void load(); } }}>
       <DropdownMenuTrigger render={<Button type="button" variant="ghost" size="icon" className="relative" aria-label={count ? t`Notifications, ${count} unread` : t`Notifications`} />}>
         <BellIcon aria-hidden />
         {count > 0 && (
@@ -187,7 +197,8 @@ export function NotificationsList({ items, people, failed, unread, showRead = fa
         : (
           <ul className="max-h-96 divide-y overflow-y-auto">
             {shown.map((n) => (
-              <li key={n.id} className="group flex items-start hover:bg-muted">
+              <li key={n.id} data-urgent={n.urgent && !n.read_at ? '' : undefined}
+                className={`group flex items-start hover:bg-muted ${n.urgent && !n.read_at ? 'bg-amber-50 dark:bg-amber-950/40' : ''}`}>
                 <button type="button" onClick={() => onOpen(n)} className={`flex min-w-0 flex-1 gap-2 py-2.5 pl-3 text-left text-sm ${n.read_at ? 'text-muted-foreground' : ''}`}>
                   <span aria-label={n.read_at ? undefined : t`Unread`} className={`mt-1.5 size-2 shrink-0 rounded-full ${n.read_at ? '' : 'bg-primary'}`} />
                   <NotificationIcon kind={n.kind} />

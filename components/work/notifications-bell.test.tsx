@@ -73,3 +73,9 @@ test('settings are a cog by the heading, not a line at the bottom', () => {
   expect(html.indexOf('Notification settings')).toBeLessThan(html.indexOf('all caught up'));
   expect(view({})).not.toContain('href="/account"'); // the list on its own has no cog
 });
+
+test('an unread urgent notification stands out; read, it doesn\'t (TL-883)', () => {
+  const offer = n({ id: 'o', kind: 'billing', urgent: true, actor: 'TrackLin.es', text: 'is giving your organization a free year of Pro.' });
+  expect(view({ items: [offer, n({})], unread: 2 }).match(/data-urgent/g)?.length).toBe(1);
+  expect(view({ items: [{ ...offer, read_at: '2026-10-11T11:00:00Z' }], showRead: true })).not.toContain('data-urgent');
+});

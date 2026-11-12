@@ -1,7 +1,7 @@
 import { expect, test } from 'bun:test';
 import type { AppNotification } from '../api';
 import { i18nFor } from '../i18n';
-import { actorName, newSince, newest, notificationHref, notificationLine } from './notifications';
+import { actorName, newSince, newest, notificationHref, notificationLine, urgentToOpen } from './notifications';
 
 const en = i18nFor('en');
 const n = (over: Partial<AppNotification>): AppNotification => ({
@@ -42,4 +42,12 @@ test('notices from TrackLin.es itself read as written, with no "Someone" in fron
   const offer = n({ kind: 'billing', actor: '', ticket_id: null, ticket_key: null, text: 'Your organization has been offered a free year of Pro. Claim it from the plan card in Settings.' });
   expect(notificationLine(en, offer, people)).toBe('Your organization has been offered a free year of Pro. Claim it from the plan card in Settings.');
   expect(notificationLine(en, n({ kind: 'legal', actor: '', text: "We've updated our Terms of service" }), people)).toBe("We've updated our Terms of service");
+});
+
+test('an unread urgent notification opens the bell until a client has; read or normal ones never (TL-883)', () => {
+  const offer = n({ id: 'offer', kind: 'billing', urgent: true, ticket_id: null, ticket_key: null, link: '/settings?offer=1' });
+  expect(urgentToOpen([n({}), offer])).toBe(offer);
+  expect(urgentToOpen([{ ...offer, shown_at: '2026-10-11T10:30:00Z' }])).toBeUndefined(); // here, another browser or an app
+  expect(urgentToOpen([{ ...offer, read_at: '2026-10-11T11:00:00Z' }])).toBeUndefined();
+  expect(urgentToOpen([n({ kind: 'approval' })])).toBeUndefined(); // amber, but not urgent
 });
