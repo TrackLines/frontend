@@ -77,6 +77,7 @@ Routine releases must not change the guide version. A newer guide never repeats 
 |-----|---------|
 | `NEXT_PUBLIC_API_URL` | API base (defaults to `/api` via the proxy) |
 | `NEXT_PUBLIC_FLAGS_PROJECT_ID` / `_AGENT_ID` / `_ENV_ID` | Flags.gg |
+| `NEXT_PUBLIC_UPLOADS_HOST` | This UploadThing app's storage host (defaults to `k8bqxukiql.ufs.sh`); set it at build time when using another app |
 | Clerk publishable/secret keys | authentication (see `.env.example`) |
 
 ## Tests
