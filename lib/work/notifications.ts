@@ -37,3 +37,9 @@ export function newSince(list: AppNotification[], since: string | null): AppNoti
 export function newest(list: AppNotification[], fallback: string | null): string | null {
   return list.reduce<string | null>((m, n) => (m === null || n.created_at > m ? n.created_at : m), fallback);
 }
+
+// urgentToOpen: the urgent notification to open the bell for (TL-883): unread, and no client (this
+// browser, another, or an app) has opened the notifications for it yet.
+export function urgentToOpen(list: AppNotification[]): AppNotification | undefined {
+  return list.find((n) => n.urgent && !n.read_at && !n.shown_at);
+}

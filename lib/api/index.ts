@@ -828,6 +828,7 @@ export type AppNotification = {
   id: string; kind: NotificationKind; text: string; actor: string;
   ticket_id: string | null; ticket_key: string | null; board_id: string | null; link?: string | null; // link: a page, e.g. a new Terms version (TL-424)
   created_at: string; read_at: string | null;
+  urgent?: boolean; shown_at?: string | null; // urgent: opens the bell for you until shown_at is set (TL-883); policy2 decides which
 };
 // A ticket that @mentions the caller, as of its latest mention (GET /api/mentions).
 export type Mention = {
@@ -851,6 +852,7 @@ export const notifications = {
   list: (token: T, page = 1, perPage = 20) => api<AppNotification[]>(`/notifications?page=${page}&per_page=${perPage}`, { token }),
   unreadCount: (token: T) => api<{ count: number }>('/notifications/unread-count', { token }),
   read: (id: string, token: T) => api<void>(`/notifications/${id}/read`, { method: 'POST', token }),
+  shown: (id: string, token: T) => api<void>(`/notifications/${id}/shown`, { method: 'POST', token }), // an urgent one opened the bell (TL-883)
   readAll: (token: T) => api<void>('/notifications/read-all', { method: 'POST', token }),
   dismiss: (id: string, token: T) => api<void>(`/notifications/${id}`, { method: 'DELETE', token }),
   clearRead: (token: T) => api<void>('/notifications/read', { method: 'DELETE', token }),
