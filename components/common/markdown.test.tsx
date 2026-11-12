@@ -64,12 +64,14 @@ test('task lists render as checkboxes, clickable only when ticking can be saved'
 });
 
 test('images show only from our own uploads; anyone else’s is a link, so it can’t track readers (TL-252)', () => {
-  const html = renderToStaticMarkup(<Markdown>{'![shot](https://abc.ufs.sh/f/key) ![pixel](https://attacker.example/p.png?id=1)'}</Markdown>);
-  expect(html).toContain('<img src="https://abc.ufs.sh/f/key" alt="shot"');
+  const html = renderToStaticMarkup(<Markdown>{'![shot](https://k8bqxukiql.ufs.sh/f/key) ![pixel](https://attacker.example/p.png?id=1)'}</Markdown>);
+  expect(html).toContain('<img src="https://k8bqxukiql.ufs.sh/f/key" alt="shot"');
   expect(html).not.toContain('<img src="https://attacker.example');
   expect(html).toContain('href="https://attacker.example/p.png?id=1"');
-  expect(ownImage('https://utfs.io/f/x')).toBe(true);
-  expect(ownImage('http://utfs.io/f/x')).toBe(false);
+  expect(ownImage('http://k8bqxukiql.ufs.sh/f/x')).toBe(false);
+  // audit: another UploadThing customer's storage isn't ours
+  expect(ownImage('https://other.ufs.sh/f/x')).toBe(false);
+  expect(ownImage('https://utfs.io/f/x')).toBe(false);
   expect(ownImage('https://ufs.sh.attacker.example/x')).toBe(false);
   expect(ownImage('https://evilufs.sh/x')).toBe(false);
 });

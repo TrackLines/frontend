@@ -1,9 +1,12 @@
+import { UPLOADS_HOST } from '@/lib/ticket/attachment-limits';
+
 // Security headers on every page (TL-164, TL-255).
 //
 // Enforced: nobody may frame us (clickjacking: tricking a signed-in user into clicking Delete, Invite
 // or Make admin inside a hidden iframe), no MIME sniffing, a tight referrer, no camera, mic or location.
 //
-const uploads = ['https://utfs.io', 'https://*.ufs.sh', 'https://*.uploadthing.com', 'https://api.uploadthing.com'];
+// Files are read from our own storage only; uploading goes through uploadthing.com.
+const uploads = [`https://${UPLOADS_HOST}`, 'https://*.uploadthing.com', 'https://api.uploadthing.com'];
 
 // Clerk's strict CSP middleware creates a per-request nonce and merges these with
 // its defaults for Clerk, Stripe and Cloudflare challenge flows.

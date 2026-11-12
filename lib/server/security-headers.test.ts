@@ -18,14 +18,15 @@ test('strict CSP directives allow the app integrations and deny framing and plug
     'https://clerk.tracklin.es',
     'https://*.clerk.accounts.dev',
     'https://api.flags.gg',
-    'https://utfs.io',
-    'https://*.ufs.sh',
+    'https://k8bqxukiql.ufs.sh',
     'https://*.uploadthing.com',
     'https://api.uploadthing.com',
   ]));
   expect(CSP_DIRECTIVES['img-src']).toEqual(expect.arrayContaining([
-    'data:', 'blob:', 'https://img.clerk.com', 'https://utfs.io', 'https://*.ufs.sh',
+    'data:', 'blob:', 'https://img.clerk.com', 'https://k8bqxukiql.ufs.sh',
   ]));
+  // audit: not every UploadThing customer's storage, only ours
+  expect([...CSP_DIRECTIVES['img-src'], ...CSP_DIRECTIVES['connect-src']].join(' ')).not.toMatch(/\*\.ufs\.sh|utfs\.io/);
   expect(CSP_DIRECTIVES['frame-ancestors']).toEqual(['none']);
   expect(CSP_DIRECTIVES['object-src']).toEqual(['none']);
   expect(SECURITY_HEADERS.some(({ key }) => key.startsWith('Content-Security-Policy'))).toBe(false);

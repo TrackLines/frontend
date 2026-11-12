@@ -4363,8 +4363,8 @@ msgid "File clean-up"
 msgstr "Dateibereinigung"
 
 #: lib/api/error-codes.ts
-msgid "file must be an UploadThing upload (https, *.ufs.sh or utfs.io) with a key and name"
-msgstr "Die Datei muss ein UploadThing-Upload (https, *.ufs.sh oder utfs.io) mit key und name sein."
+msgid "file must be an upload in this service's file store, with a key and name"
+msgstr "Die Datei muss ein Upload im Dateispeicher dieses Dienstes sein, mit key und name."
 
 #: lib/api/error-codes.ts
 msgid "files can be up to 10 MB"

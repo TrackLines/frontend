@@ -62,7 +62,7 @@ export const ERROR_MESSAGES: Record<string, MessageDescriptor> = {
   bad_estimate: msg`estimate isn't on this board's scale`,
   bad_estimate_scale: msg`estimate_scale must be none, fibonacci, tshirt, powers or linear`,
   bad_external: msg`external needs source (bugfixes), project and id; url must be http(s)`,
-  bad_file: msg`file must be an UploadThing upload (https, *.ufs.sh or utfs.io) with a key and name`,
+  bad_file: msg`file must be an upload in this service's file store, with a key and name`,
   bad_intake_request: msg`a title (up to 200 characters) and a type (bug or feature) are required`,
   bad_intake_status: msg`status must be pending, promoted or dismissed`,
   bad_invite_email: msg`email_address must be a valid email address`,

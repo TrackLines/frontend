@@ -6,6 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { MentionTextarea } from '@/components/common/mention-textarea';
 import { Textarea } from '@/components/ui/textarea';
+import { UPLOADS_HOST } from '@/lib/ticket/attachment-limits';
 
 type HastNode = { type: string; tagName?: string; properties?: Record<string, unknown>; children?: HastNode[] };
 
@@ -104,11 +105,11 @@ export function MarkdownTextarea({ value, mentions, ...props }: ComponentProps<t
   );
 }
 
-// ownImage: an image stored with our uploads (UploadThing), the only images shown inline.
+// ownImage: an image in our own upload storage, the only images shown inline.
 export function ownImage(src: string): boolean {
   try {
     const { protocol, hostname } = new URL(src);
-    return protocol === 'https:' && (hostname === 'utfs.io' || hostname.endsWith('.ufs.sh'));
+    return protocol === 'https:' && hostname === UPLOADS_HOST;
   } catch {
     return false;
   }
