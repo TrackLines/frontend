@@ -1017,6 +1017,7 @@ export type OfferStatus = 'not_sent' | 'sent' | 'claimed' | 'converted' | 'ended
 export type OfferOrg = {
   org_id: string; name: string; created_at: string; members: number; plan: PlanId; status: OfferStatus;
   offered_at: string | null; claimed_at: string | null; claimed_by: string | null; trial_ends_at: string | null;
+  last_active: string | null;
 };
 export type OfferSendResult = { sent: string[]; skipped: { org_id: string; reason: 'already_sent' | 'paid' | 'failed' }[] };
 

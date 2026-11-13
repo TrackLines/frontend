@@ -5210,6 +5210,10 @@ msgstr "Last 30 days"
 msgid "Last 90 days"
 msgstr "Last 90 days"
 
+#: components/staff/launch-offers.tsx
+msgid "Last active"
+msgstr "Last active"
+
 #: components/board/import-review.tsx
 msgid "last changed <0/>"
 msgstr "last changed <0/>"
@@ -5952,6 +5956,10 @@ msgstr "Needs your approval"
 #: components/work/notification-icon.tsx
 msgid "Needs your review"
 msgstr "Needs your review"
+
+#: components/staff/launch-offers.tsx
+msgid "Never"
+msgstr "Never"
 
 #: components/settings/api-keys.tsx
 msgid "never used"
