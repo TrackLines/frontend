@@ -5,7 +5,7 @@
 import { ERROR_MESSAGES } from './error-codes';
 import { i18nFor, type Locale } from '../i18n';
 import { isLocale, LANG_COOKIE } from '../i18n/locale';
-import { reportClient, reportServer } from '../server/report';
+import { backendAnswered, backendFailed, reportClient, reportServer } from '../server/report';
 import type { EstimateScale } from '../board/estimates';
 import type { HelpEntry, PageKind } from '../site/help';
 
@@ -320,12 +320,15 @@ export async function api<T>(path: string, { method = 'GET', body, token }: Opti
   let res: Response;
   try {
     res = await send(false);
+    if (typeof window === 'undefined') backendAnswered();
     // a token that expired in flight (or clock skew): force a fresh one and retry once
     if (res.status === 401 && token && typeof window !== 'undefined') res = await send(true);
   } catch (cause) {
     // from the server, an unreachable backend is worth knowing about; from a browser it's usually its own network
-    if (typeof window === 'undefined' || !isNetworkFailure(cause)) {
-      await reportBackendFailure('backend request failed', `${method} ${path}: ${cause instanceof Error ? cause.message : String(cause)}`);
+    // the server reports only an outage over 2 minutes (deploys blip); the browser only what isn't its network
+    if (typeof window === 'undefined' ? backendFailed() : !isNetworkFailure(cause)) {
+      // no path: Bugfixes groups by message, and an outage hits every path (one report, not one each)
+      await reportBackendFailure('backend request failed', cause instanceof Error ? cause.message : String(cause));
     }
     throw cause;
   }

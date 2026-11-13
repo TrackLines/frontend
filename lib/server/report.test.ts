@@ -3,7 +3,7 @@ import { beforeEach, expect, mock, test } from 'bun:test';
 // Bugfixes' SDK, recorded: what the frontend reports (TL-292)
 const reported: unknown[][] = [];
 mock.module('bugfixes', () => ({ error: (...a: unknown[]) => { reported.push(a); return new Error(String(a[0])); }, loadConfigFromEnv: () => ({}), setDefaultConfig: () => {} }));
-const { allowReport, cleanReport, endedClerkSession, reportClient, resetReportLimits } = await import('./report');
+const { allowReport, backendAnswered, backendFailed, cleanReport, endedClerkSession, OUTAGE_MS, reportClient, resetReportLimits } = await import('./report');
 const { POST } = await import('@/app/api/client-errors/route');
 const { closedStream, onRequestError } = await import('@/instrumentation');
 const proxy = await import('@/app/api/[...path]/route');
@@ -55,9 +55,15 @@ test('the /api proxy reports a backend it can\'t reach, and answers 502', async 
   globalThis.fetch = (() => Promise.reject(new Error('ECONNREFUSED'))) as unknown as typeof fetch;
   try {
     const { NextRequest } = await import('next/server');
-    const res = await proxy.GET(new NextRequest('http://x/api/boards'), { params: Promise.resolve({ path: ['boards'] }) });
-    expect(res.status).toBe(502);
-    expect(reported).toEqual([['backend unreachable from the /api proxy', 'GET /api/boards: ECONNREFUSED']]);
+    const get = () => proxy.GET(new NextRequest('http://x/api/boards'), { params: Promise.resolve({ path: ['boards'] }) });
+    backendAnswered();
+    expect((await get()).status).toBe(502);
+    expect(reported).toEqual([]); // a blip (a deploy): not reported
+    backendAnswered();
+    backendFailed(Date.now() - OUTAGE_MS); // down for 2 minutes already
+    expect((await get()).status).toBe(502);
+    expect(reported).toEqual([['backend unreachable from the /api proxy', 'for over 2 minutes: ECONNREFUSED']]);
+    backendAnswered();
   } finally {
     globalThis.fetch = realFetch;
   }
@@ -131,4 +137,16 @@ test('a Clerk error for an ended session or missing organization is not reported
     delete g.window;
     delete g.navigator;
   }
+});
+
+test('backend outage breaker: quiet for 2 minutes, then one report per outage; an answer resets it (TL-896)', () => {
+  backendAnswered();
+  const t = 1_000_000;
+  expect(backendFailed(t)).toBe(false); // a deploy blip
+  expect(backendFailed(t + OUTAGE_MS - 1)).toBe(false);
+  expect(backendFailed(t + OUTAGE_MS)).toBe(true); // down 2 minutes: report
+  expect(backendFailed(t + OUTAGE_MS + 5_000)).toBe(false); // once per outage
+  backendAnswered();
+  expect(backendFailed(t + 10 * OUTAGE_MS)).toBe(false); // a new outage starts the clock again
+  backendAnswered();
 });
