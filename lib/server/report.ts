@@ -85,3 +85,25 @@ export function reportClient(kind: ClientReport['kind'], err: unknown, fallback 
     // never let reporting break the page
   }
 }
+
+// Backend outage breaker (TL-896): a deploy makes the backend unreachable for a few seconds, which isn't
+// worth a report. Report only once it's been unreachable for over 2 minutes, then once per outage; any
+// answer from the backend closes it again.
+// ponytail: per-instance memory, like allowReport; fine while the frontend runs one instance.
+export const OUTAGE_MS = 2 * 60_000;
+let downSince: number | null = null;
+let outageReported = false;
+
+// backendFailed records a failed call; true when this one should be reported.
+export function backendFailed(now = Date.now()): boolean {
+  downSince ??= now;
+  if (outageReported || now - downSince < OUTAGE_MS) return false;
+  outageReported = true;
+  return true;
+}
+
+// backendAnswered: the backend replied (any status), so the outage is over.
+export function backendAnswered(): void {
+  downSince = null;
+  outageReported = false;
+}

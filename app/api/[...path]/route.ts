@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { backendURL, MAX_PROXY_BODY, readCapped, requestHeaders, responseHeaders } from '@/lib/api/proxy';
-import { reportServer } from '@/lib/server/report';
+import { backendAnswered, backendFailed, reportServer } from '@/lib/server/report';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -38,9 +38,10 @@ async function forward(request: NextRequest, context: RouteContext): Promise<Res
     // its message, or (when it has none) its name and cause, so a report never ends in nothing
     const why = !(err instanceof Error) ? String(err) : err.message || [err.name, err.cause instanceof Error ? err.cause.message : ''].filter(Boolean).join(': ');
     // no path in the report: one deploy blip hits every endpoint, and Bugfixes groups by message
-    await reportServer('backend unreachable from the /api proxy', why);
+    if (backendFailed()) await reportServer('backend unreachable from the /api proxy', `for over 2 minutes: ${why}`);
     return new Response('backend unavailable', { status: 502 });
   }
+  backendAnswered();
   return new Response(upstream.body, {
     status: upstream.status,
     statusText: upstream.statusText,

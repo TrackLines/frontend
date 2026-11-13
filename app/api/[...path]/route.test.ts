@@ -20,6 +20,7 @@ const realReport = await import('@/lib/server/report'); // module mocks reach ev
 mock.module('@/lib/server/report', () => ({ ...realReport, reportServer: async (message: string, detail: string) => { reported.push(`${message} | ${detail}`); } }));
 afterAll(() => backend.stop());
 const { GET, POST } = await import('./route');
+const { backendAnswered, backendFailed, OUTAGE_MS } = realReport;
 
 const ctx = (path: string[]) => ({ params: Promise.resolve({ path }) });
 
@@ -78,6 +79,7 @@ test('the browser leaving before the backend answers is not "backend unreachable
 
   const backendURL = process.env.BACKEND_URL;
   process.env.BACKEND_URL = 'http://localhost:1'; // nothing listening
+  backendFailed(Date.now() - OUTAGE_MS); // and hasn't been for 2 minutes
   try {
     const down = await GET(new NextRequest('https://tracklin.es/api/projects/p1/live'), ctx(['projects', 'p1', 'live']));
     expect(down.status).toBe(502);
@@ -85,7 +87,8 @@ test('the browser leaving before the backend answers is not "backend unreachable
     process.env.BACKEND_URL = backendURL;
   }
   expect(reported).toHaveLength(1);
-  expect(reported[0]).toStartWith('backend unreachable from the /api proxy | ');
+  backendAnswered();
+  expect(reported[0]).toStartWith('backend unreachable from the /api proxy | for over 2 minutes: ');
   expect(reported[0]).not.toContain('/api/projects'); // no path: one outage is one Bugfixes report, not one per endpoint
   expect(reported[0]).not.toEndWith('| '); // says what went wrong
 });
