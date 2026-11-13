@@ -9,11 +9,11 @@ import type { OfferOrg } from '@/lib/api';
 
 const org = (o: Partial<OfferOrg> = {}): OfferOrg => ({
   org_id: 'org_new', name: 'New Co', created_at: '2026-11-01T10:00:00Z', members: 3, plan: 'free', status: 'not_sent',
-  offered_at: null, claimed_at: null, claimed_by: null, trial_ends_at: null, ...o,
+  offered_at: null, claimed_at: null, claimed_by: null, trial_ends_at: null, last_active: null, ...o,
 });
 const orgs: OfferOrg[] = [
   org(),
-  org({ org_id: 'org_paid', name: 'Paying Ltd', plan: 'pro', status: 'paid' }),
+  org({ org_id: 'org_paid', name: 'Paying Ltd', plan: 'pro', status: 'paid', last_active: '2026-11-10T09:00:00Z' }),
   org({ org_id: 'org_sent', name: 'Sent Inc', status: 'sent', offered_at: '2026-11-02T09:00:00Z' }),
   org({ org_id: 'org_claimed', name: 'Claimed plc', plan: 'pro', status: 'claimed', offered_at: '2026-11-02T09:00:00Z', claimed_at: '2026-11-03T09:00:00Z', claimed_by: 'user_a', trial_ends_at: '2027-11-03T09:00:00Z' }),
   org({ org_id: 'org_conv', name: 'Converted', plan: 'pro', status: 'converted', claimed_at: '2025-11-03T09:00:00Z' }),
@@ -28,6 +28,13 @@ test('every organization: name, created date, members, plan and where it is with
   for (const s of ['New Co', 'org_new', '1 Nov 2026', 'Paying Ltd', 'Already paying', 'Sent Inc', 'on 2 Nov 2026', 'Claimed plc', 'Claimed',
     'on 3 Nov 2026, free until 3 Nov 2027', 'Now paying', 'Ended', 'claimed on 3 Nov 2025', 'Not sent']) expect(html).toContain(s);
   expect(html).toContain('data-status="claimed"');
+});
+
+test('shows when each organization was last active, or never', () => {
+  const html = view();
+  expect(html).toContain('Last active');
+  expect(html).toContain('10 Nov 2026');
+  expect(html).toContain('Never');
 });
 
 test('only orgs not yet sent and not paying can be picked', () => {

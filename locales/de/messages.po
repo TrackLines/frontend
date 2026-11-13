@@ -5210,6 +5210,10 @@ msgstr "Letzte 30 Tage"
 msgid "Last 90 days"
 msgstr "Letzte 90 Tage"
 
+#: components/staff/launch-offers.tsx
+msgid "Last active"
+msgstr "{'de': 'Zuletzt aktiv', 'es': 'Última actividad', 'fr': 'Dernière activité', 'nl': 'Laatst actief', 'pt': 'Última atividade', 'tlh': \"Qu' Qav\"}"
+
 #: components/board/import-review.tsx
 msgid "last changed <0/>"
 msgstr "zuletzt geändert <0/>"
@@ -5952,6 +5956,10 @@ msgstr "Wartet auf deine Genehmigung"
 #: components/work/notification-icon.tsx
 msgid "Needs your review"
 msgstr "Wartet auf deine Prüfung"
+
+#: components/staff/launch-offers.tsx
+msgid "Never"
+msgstr "{'de': 'Nie', 'es': 'Nunca', 'fr': 'Jamais', 'nl': 'Nooit', 'pt': 'Nunca', 'tlh': 'not'}"
 
 #: components/settings/api-keys.tsx
 msgid "never used"

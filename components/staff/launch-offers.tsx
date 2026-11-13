@@ -110,6 +110,7 @@ export function LaunchOffersView({ orgs, flagOn, onSend, initialSelected = [], i
               <TableHead className="w-8"><Checkbox aria-label={t`Select all that can be sent`} checked={allPicked} disabled={pickable.length === 0} onCheckedChange={(v) => toggleAll(v === true)} /></TableHead>
               <TableHead><Trans>Organization</Trans></TableHead>
               <TableHead><Trans>Created</Trans></TableHead>
+              <TableHead><Trans>Last active</Trans></TableHead>
               <TableHead className="text-right"><Trans>Members</Trans></TableHead>
               <TableHead><Trans>Plan</Trans></TableHead>
               <TableHead><Trans>Offer</Trans></TableHead>
@@ -124,6 +125,7 @@ export function LaunchOffersView({ orgs, flagOn, onSend, initialSelected = [], i
                 </TableCell>
                 <TableCell><span className="font-medium">{o.name || o.org_id}</span><span className="block font-mono text-xs text-muted-foreground">{o.org_id}</span></TableCell>
                 <TableCell>{day(i18n, o.created_at)}</TableCell>
+                <TableCell>{o.last_active ? day(i18n, o.last_active) : <span className="text-muted-foreground"><Trans>Never</Trans></span>}</TableCell>
                 <TableCell className="text-right tabular-nums">{o.members}</TableCell>
                 <TableCell>{PLAN_NAMES[o.plan]}</TableCell>
                 <TableCell>
