@@ -325,7 +325,8 @@ export async function api<T>(path: string, { method = 'GET', body, token }: Opti
   } catch (cause) {
     // from the server, an unreachable backend is worth knowing about; from a browser it's usually its own network
     if (typeof window === 'undefined' || !isNetworkFailure(cause)) {
-      await reportBackendFailure('backend request failed', `${method} ${path}: ${cause instanceof Error ? cause.message : String(cause)}`);
+      // no path: Bugfixes groups by message, and an outage hits every path (one report, not one each)
+      await reportBackendFailure('backend request failed', cause instanceof Error ? cause.message : String(cause));
     }
     throw cause;
   }

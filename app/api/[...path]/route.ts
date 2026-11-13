@@ -37,7 +37,8 @@ async function forward(request: NextRequest, context: RouteContext): Promise<Res
     // the backend is down or unreachable: Bugfixes hears it from here, since the backend can't say (TL-292)
     // its message, or (when it has none) its name and cause, so a report never ends in nothing
     const why = !(err instanceof Error) ? String(err) : err.message || [err.name, err.cause instanceof Error ? err.cause.message : ''].filter(Boolean).join(': ');
-    await reportServer('backend unreachable from the /api proxy', `${request.method} /api/${path.join('/')}: ${why}`);
+    // no path in the report: one deploy blip hits every endpoint, and Bugfixes groups by message
+    await reportServer('backend unreachable from the /api proxy', why);
     return new Response('backend unavailable', { status: 502 });
   }
   return new Response(upstream.body, {

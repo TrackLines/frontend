@@ -57,7 +57,7 @@ test('the /api proxy reports a backend it can\'t reach, and answers 502', async 
     const { NextRequest } = await import('next/server');
     const res = await proxy.GET(new NextRequest('http://x/api/boards'), { params: Promise.resolve({ path: ['boards'] }) });
     expect(res.status).toBe(502);
-    expect(reported).toEqual([['backend unreachable from the /api proxy', 'GET /api/boards: ECONNREFUSED']]);
+    expect(reported).toEqual([['backend unreachable from the /api proxy', 'ECONNREFUSED']]);
   } finally {
     globalThis.fetch = realFetch;
   }

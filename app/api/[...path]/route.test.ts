@@ -85,6 +85,7 @@ test('the browser leaving before the backend answers is not "backend unreachable
     process.env.BACKEND_URL = backendURL;
   }
   expect(reported).toHaveLength(1);
-  expect(reported[0]).toStartWith('backend unreachable from the /api proxy | GET /api/projects/p1/live: ');
-  expect(reported[0]).not.toEndWith(': '); // says what went wrong
+  expect(reported[0]).toStartWith('backend unreachable from the /api proxy | ');
+  expect(reported[0]).not.toContain('/api/projects'); // no path: one outage is one Bugfixes report, not one per endpoint
+  expect(reported[0]).not.toEndWith('| '); // says what went wrong
 });
