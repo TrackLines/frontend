@@ -9341,10 +9341,6 @@ msgstr "das Audit-Log kann gerade nicht geladen werden: versuche es gleich noch 
 msgid "The audit log comes with the Pro and Enterprise plans. <0>Change your plan</0> to use it."
 msgstr "Das Audit-Log ist im Pro- und Enterprise-Tarif enthalten. <0>Ändere deinen Tarif</0>, um es zu nutzen."
 
-#: app/settings/audit/page.tsx
-msgid "The audit log isn’t turned on for your organization yet."
-msgstr "Das Audit-Log ist für deine Organisation noch nicht eingeschaltet."
-
 #: lib/api/error-codes.ts
 msgid "the audit log needs the Pro or Enterprise plan"
 msgstr "das Audit-Log braucht den Pro- oder Enterprise-Tarif"

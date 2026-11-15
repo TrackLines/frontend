@@ -9341,10 +9341,6 @@ msgstr "DaH nuD ghItlh laDlaHbe': tugh yInIDqa'"
 msgid "The audit log comes with the Pro and Enterprise plans. <0>Change your plan</0> to use it."
 msgstr "Pro Enterprise nab je nuD ghItlh ghaj. <0>nablIj yIchoH</0> lo'meH."
 
-#: app/settings/audit/page.tsx
-msgid "The audit log isn’t turned on for your organization yet."
-msgstr "DIvI'lIjvaD nuD ghItlh chu'be'lu'."
-
 #: lib/api/error-codes.ts
 msgid "the audit log needs the Pro or Enterprise plan"
 msgstr "Pro pagh Enterprise nab poQ nuD ghItlh"

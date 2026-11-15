@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { Trans, useLingui } from '@lingui/react/macro';
-import { useFlags } from '@flags-gg/react-library';
 import { Suspense, useEffect, useState } from 'react';
 import { ListPageSkeleton } from '@/components/layout/page-skeletons';
 import { AuditLog } from '@/components/settings/audit-log';
@@ -14,7 +13,6 @@ import { useToken } from '@/lib/hooks/use-token';
 export default function AuditLogPage() {
   const token = useToken();
   const { t } = useLingui();
-  const { is } = useFlags();
   const people = usePeople(token);
   const [admin, setAdmin] = useState<boolean | null>(null);
   const [plan, setPlan] = useState<Subscription | null>(null);
@@ -39,8 +37,6 @@ export default function AuditLogPage() {
         <p className="text-sm text-muted-foreground" data-audit-plan>
           <Trans>The audit log comes with the Pro and Enterprise plans. <Link href="/settings" className="font-medium text-foreground underline">Change your plan</Link> to use it.</Trans>
         </p>
-      ) : !is('audit-service').enabled() ? (
-        <p className="text-sm text-muted-foreground"><Trans>The audit log isn’t turned on for your organization yet.</Trans></p>
       ) : (
         <section className="rounded-xl border p-5">
           {/* useSearchParams (the filters) needs a Suspense boundary for static rendering */}
