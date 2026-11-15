@@ -607,6 +607,10 @@ msgstr "{used} / {cap} pointmey"
 msgid "{used} / {cap} tickets"
 msgstr "{used} / {cap} ticketmey"
 
+#: components/settings/agent-instructions.tsx
+msgid "{used} of {limit} characters"
+msgstr "{limit} ngutlh veH: {used} ngutlh"
+
 #: lib/org/audit.ts
 msgid "{user} joined the organization"
 msgstr "{user} DIvI' muv"
@@ -1084,6 +1088,16 @@ msgstr "backlogDaq <0>{0}</0> chellu'pu'."
 msgid "Adding…"
 msgstr "chellI'…"
 
+#: app/settings/agent-instructions/page.tsx
+#: app/settings/page.tsx
+#: components/settings/agent-instructions.tsx
+msgid "Additional agent instructions"
+msgstr "vumwI' ra'meH mu'mey chellu'bogh"
+
+#: lib/api/error-codes.ts
+msgid "additional instructions can be up to 4000 characters"
+msgstr "ra'meH mu'mey chellu'bogh: 4000 ngutlh veH"
+
 #: app/settings/organization/page.tsx
 msgid "Admin"
 msgstr "loHwI'"
@@ -1124,6 +1138,14 @@ msgstr "AI Qu' nuDnIS"
 #: lib/api/error-codes.ts
 msgid "agents cannot bypass human review"
 msgstr "ghot nuDghach Dojlaw'be'laH AI"
+
+#: components/settings/agent-instructions.tsx
+msgid "Agents keep getting the saved instructions until you save this draft."
+msgstr "ghItlh cha'DIch Dapolpa', ra'meH mu'mey pollu'pu'bogh HevtaH vumwI'pu'."
+
+#: components/settings/agent-instructions.tsx
+msgid "Agents read instructions when they connect, so an agent that’s already connected may need to reconnect to get a change."
+msgstr "rarDI' vumwI'pu', ra'meH mu'mey laD. vaj choH HevmeH, rarqa'nIS rarta'bogh vumwI' 'e' DuH."
 
 #: components/board/column-list.tsx
 msgid "Agents’ finished work waits here for review"
@@ -1233,6 +1255,10 @@ msgstr "rInDaq AI ticket vIHmoHlu'DI', ghot chaw' loS."
 #: lib/api/error-codes.ts
 msgid "an epic can't be inside another epic"
 msgstr "latlh lut'a' qoDDaq lut'a' tu'lu'laHbe'"
+
+#: components/settings/agent-instructions.tsx
+msgid "An example"
+msgstr "chovnatlh"
 
 #: components/staff/downtime.tsx
 msgid "An hour or less"
@@ -2048,6 +2074,7 @@ msgstr "lajlI'…"
 msgid "cleanup_days must be 1–365"
 msgstr "cleanup_days 1–365 net poQ"
 
+#: components/settings/agent-instructions.tsx
 #: components/work/notifications-bell.tsx
 msgid "Clear"
 msgstr "yIteq"
@@ -2091,6 +2118,10 @@ msgstr "DaH jaj yIteq"
 #: components/work/notifications-bell.tsx
 msgid "Clear: {0}"
 msgstr "yIteq: {0}"
+
+#: components/settings/agent-instructions.tsx
+msgid "Cleared. Agents get the standard instructions only."
+msgstr "teqlu'pu'. ra'meH mu'mey motlh neH Hev vumwI'pu'."
 
 #: lib/api/error-codes.ts
 msgid "Clerk invitation is no longer valid"
@@ -2490,9 +2521,17 @@ msgstr "wa'DIchDaq QInmey tIvelqa'moH"
 msgid "Copy embed key"
 msgstr "embed ngaQHa'moHwI' yIvelqa'moH"
 
+#: components/settings/agent-instructions.tsx
+msgid "Copy example"
+msgstr "chovnatlh yIvelqa'moH"
+
 #: app/projects/[id]/page.tsx
 msgid "Copy ID"
 msgstr "ID yIvelqa'moH"
+
+#: components/settings/agent-instructions.tsx
+msgid "Copy it and paste it above if you want it. It’s never added for you."
+msgstr "DaneHchugh, yIvelqa'moH 'ej Dung yIlan. not SoHvaD chellu'."
 
 #: components/settings/embedding.tsx
 #: components/ticket/ticket-key.tsx
@@ -2823,6 +2862,10 @@ msgstr "mIlloghmey Hevlu'laHbe'; Simple mIw lo' 'echlet."
 msgid "Couldn’t load that board. Please try again."
 msgstr "'echletvetlh Hevlu'laHbe'. yInIDqa'."
 
+#: components/settings/agent-instructions.tsx
+msgid "Couldn’t load the agent instructions. Please refresh to try again."
+msgstr "vumwI' ra'meH mu'mey laDlaHbe'. yInIDqa'meH navDu' yIchu'qa'."
+
 #: components/settings/audit-log.tsx
 msgid "Couldn’t load the audit log. Please try again."
 msgstr "nuD ghItlh laDlaHbe'. yInIDqa'."
@@ -3092,6 +3135,10 @@ msgstr "choHghachvetlh pollu'laHbe'. yInIDqa'."
 #: components/intake/triage.tsx
 msgid "Couldn’t save that. Please try again."
 msgstr "pollu'laHbe'. yInIDqa'."
+
+#: components/settings/agent-instructions.tsx
+msgid "Couldn’t save the agent instructions. Please try again."
+msgstr "vumwI' ra'meH mu'mey pollaHbe'. yInIDqa'."
 
 #: app/boards/[id]/edit/page.tsx
 msgid "Couldn’t save the board. Please try again."
@@ -4529,6 +4576,10 @@ msgstr "He ja'"
 msgid "Follow host"
 msgstr "pa' DevwI' yItlha'"
 
+#: components/settings/agent-instructions.tsx
+msgid "Follow the Boy Scout rule: leave code you touch clearer and easier to maintain. Make small, relevant improvements alongside the ticket work, and avoid unrelated refactoring."
+msgstr "Boy Scout chut yIpab: ngoq DaHotbogh yIleghlaH 'ej yIleHlaH law' moH. ticket Qu' DataHvIS, choHmey mach potlh tIchel, 'ej Qu'vaD potlhbe'bogh choHmey tIjun."
+
 #: components/live/hosted-bar.tsx
 msgid "Following"
 msgstr "tlha'lI'"
@@ -5411,6 +5462,10 @@ msgstr "chu'ghachmey yIn tu'lu'be'"
 msgid "Load more"
 msgstr "latlh yIHev"
 
+#: app/settings/agent-instructions/page.tsx
+msgid "Loading agent instructions…"
+msgstr "vumwI' ra'meH mu'mey laDlI'…"
+
 #: app/account/api-keys/page.tsx
 #: app/settings/api-keys/loading.tsx
 #: app/settings/api-keys/page.tsx
@@ -5561,6 +5616,7 @@ msgstr "Qu'meylIj Hevlu'lI'…"
 #: components/project/move-to-board.tsx
 #: components/project/refinement.tsx
 #: components/project/repositories.tsx
+#: components/settings/agent-instructions.tsx
 #: components/settings/audit-log.tsx
 #: components/settings/embedding.tsx
 #: components/settings/jira-import.tsx
@@ -5797,6 +5853,10 @@ msgstr "latlh"
 #: app/boards/[id]/page.tsx
 msgid "More board actions"
 msgstr "latlh 'echlet ta'"
+
+#: components/settings/agent-instructions.tsx
+msgid "More instructions mean more tokens on every connection, and can mean agents do more work on each ticket."
+msgstr "ra'meH mu'mey law' = Hoch rarghachDaq token law', 'ej Hoch ticketDaq Qu' law' ta'laH vumwI'pu'."
 
 #: components/ticket/labels.tsx
 msgid "More labels"
@@ -6584,6 +6644,10 @@ msgstr "pa' loSbe' vay'."
 msgid "Nothing was finished in this sprint."
 msgstr "sprintvamDaq pagh rIn."
 
+#: components/settings/agent-instructions.tsx
+msgid "Nothing: agents get the standard instructions only."
+msgstr "pagh: ra'meH mu'mey motlh neH Hev vumwI'pu'."
+
 #: components/ticket/dependencies.tsx
 msgid "Nothing."
 msgstr "pagh."
@@ -6875,6 +6939,10 @@ msgstr "pong choHlaH DevwI'pu' neH."
 msgid "Only organization admins can save templates."
 msgstr "ghom'a' loHwI'pu' neH mIlloghmey pollaH."
 
+#: app/settings/agent-instructions/page.tsx
+msgid "Only organization admins can see or change the additional agent instructions."
+msgstr "vumwI' ra'meH mu'mey chellu'bogh leghlaH pagh choHlaH DIvI' loHwI'pu' neH."
+
 #: app/settings/audit/page.tsx
 msgid "Only organization admins can see the audit log."
 msgstr "DIvI' loHwI'pu' neH nuD ghItlh leghlaH."
@@ -6894,6 +6962,10 @@ msgstr "ghom'a' loHwI'pu' pagh jInmolvam 'echletmey beq DevwI' neH Dubghach Devl
 #: lib/api/error-codes.ts
 msgid "only organization admins or this board's team leaders can do this"
 msgstr "ghom'a' loHwI'pu' pagh 'echletvam beq DevwI'pu' neH ta'laH"
+
+#: lib/api/error-codes.ts
+msgid "only organization admins, signed in, can see or change the additional agent instructions"
+msgstr "vumwI' ra'meH mu'mey chellu'bogh leghlaH pagh choHlaH DIvI' loHwI'pu' neH, 'elpu'DI'"
 
 #: lib/api/error-codes.ts
 msgid "only pending invitations can be revoked"
@@ -8036,6 +8108,7 @@ msgstr "Qam ghom Dev"
 
 #: app/boards/[id]/edit/page.tsx
 #: components/flags/flags.tsx
+#: components/settings/agent-instructions.tsx
 #: components/settings/google-chat.tsx
 #: components/settings/organization.tsx
 #: components/settings/working-week.tsx
@@ -8096,11 +8169,19 @@ msgstr "mIllogh yIpol"
 msgid "Save the board first to pick a new column"
 msgstr "tut chu' DawIvmeH Hoch yIpol wa'DIch"
 
+#: components/settings/agent-instructions.tsx
+msgid "Saved"
+msgstr "pollu'pu'"
+
 #: components/flags/flags.tsx
 #: components/settings/google-chat.tsx
 #: components/settings/working-week.tsx
 msgid "Saved."
 msgstr "pollu'pu'. Qapla'!"
+
+#: components/settings/agent-instructions.tsx
+msgid "Saved. New agent connections get it from now on."
+msgstr "pollu'pu'. DaHjaj vo' Hev vumwI' rarghachmey chu'."
 
 #: app/boards/[id]/edit/page.tsx
 msgid "Saving clears {estimated, plural, one {# estimate} other {# estimates}} on open tickets."
@@ -8122,6 +8203,7 @@ msgstr "permey pollI'…"
 #: components/project/key-prefix.tsx
 #: components/roadmap/item-editor.tsx
 #: components/roadmap/roadmap-editor-form.tsx
+#: components/settings/agent-instructions.tsx
 #: components/settings/google-chat.tsx
 #: components/settings/integrations.tsx
 #: components/settings/working-week.tsx
@@ -8415,6 +8497,7 @@ msgstr "ghomlIj 'echlet wa'DIch yIcher. bImejlaH; pIq bItaHlaH."
 
 #: app/boards/[id]/edit/page.tsx
 #: app/dashboard/page.tsx
+#: app/settings/agent-instructions/page.tsx
 #: app/settings/api-keys/page.tsx
 #: app/settings/audit/page.tsx
 #: app/settings/file-cleanup/page.tsx
@@ -8775,6 +8858,19 @@ msgstr "ngoQ ghajbogh sprintmey: chav'a' pagh chavbe'?"
 #: app/boards/[id]/edit/page.tsx
 msgid "Sprints: time boxes. Kanban: continuous flow."
 msgstr "sprintmey: poH veHmey. Kanban: reH vIH."
+
+#: components/settings/agent-instructions.tsx
+msgid "Standard instructions"
+msgstr "ra'meH mu'mey motlh"
+
+#. placeholder {0}: saved.global_version
+#: components/settings/agent-instructions.tsx
+msgid "Standard instructions (version {0}), for every organization"
+msgstr "ra'meH mu'mey motlh (Segh {0}), Hoch DIvI'vaD"
+
+#: components/settings/agent-instructions.tsx
+msgid "Standard instructions, for every organization"
+msgstr "ra'meH mu'mey motlh, Hoch DIvI'vaD"
 
 #: app/boards/[id]/page.tsx
 #: components/live/standup.tsx
@@ -9174,6 +9270,10 @@ msgstr "latlh jInmol ticket moHaqvetlh lo'pu'."
 #: lib/api/error-codes.ts
 msgid "that would make tickets block each other in a loop"
 msgstr "rIntaHvIS ticketmey bot'eghchuq ghet"
+
+#: components/settings/agent-instructions.tsx
+msgid "That’s too long: additional instructions can be up to {limit} characters."
+msgstr "tIqqu': ra'meH mu'mey chellu'bogh: {limit} ngutlh veH."
 
 #: lib/org/audit.ts
 msgid "The {kind} “{name}” expired"
@@ -9598,6 +9698,10 @@ msgstr "sprint {by, plural, one {# ticket} other {# ticketmey}} 'Iq law'qu'moH D
 #: lib/ticket/move-to-board.ts
 msgid "This takes the sprint {by, plural, one {# ticket} other {# tickets}} over capacity ({after} / {cap}): it will need approval before it can start."
 msgstr "sprint {by, plural, one {# ticket} other {# ticketmey}} 'Iq law'qu'moH Dochvam ({after} / {cap}): taghpa' chaw' poQ."
+
+#: components/settings/agent-instructions.tsx
+msgid "This text is added after TrackLin.es’ standard instructions whenever an AI agent connects to this organization over MCP. It applies to this organization only, and it’s empty unless you write something."
+msgstr "MCP lo'taHvIS DIvI'vam rarDI' AI vumwI', TrackLin.es ra'meH mu'mey motlh tlha' ghItlhvam. DIvI'vamvaD neH lo'lu', 'ej chIm vay' DaghItlhbe'chugh."
 
 #: lib/api/error-codes.ts
 msgid "this ticket already has as many files as it can hold: remove one to add another"
@@ -10033,6 +10137,10 @@ msgstr "nablu'be'"
 msgid "Unread"
 msgstr "laDlu'be'"
 
+#: components/settings/agent-instructions.tsx
+msgid "Unsaved draft"
+msgstr "ghItlh cha'DIch pollu'be'bogh"
+
 #: lib/work/away.ts
 msgid "until {day}"
 msgstr "{day} ghoS"
@@ -10316,6 +10424,10 @@ msgstr "TrackLin.esDaq yI'el"
 #: components/settings/audit-log.tsx
 msgid "What"
 msgstr "nuq"
+
+#: components/settings/agent-instructions.tsx
+msgid "What agents are told"
+msgstr "vumwI'pu'vaD ja'lu'bogh"
 
 #: components/staff/mcp-prompt.tsx
 msgid "What agents are told when they connect"
@@ -10668,9 +10780,21 @@ msgstr "ghom'a'lIj {name} nab ngaS {projects}"
 msgid "Your organization’s admins can create projects. They’ll appear here."
 msgstr "jInmolmey chenmoH DevwI'pu'. naDev Dalegh."
 
+#: components/settings/agent-instructions.tsx
+msgid "Your organization’s instructions"
+msgstr "DIvI'lIj ra'meH mu'mey"
+
+#: app/settings/agent-instructions/page.tsx
+msgid "Your organization’s own instructions for AI agents working on its tickets."
+msgstr "DIvI'lIj ticketmeyDaq vumbogh AI vumwI'pu'vaD, DIvI'lIj ra'meH mu'mey."
+
 #: app/settings/page.tsx
 msgid "Your organization’s plan, people and connections."
 msgstr "ghom'a'lIj nab, ghotpu', rarghachmey je."
+
+#: app/settings/page.tsx
+msgid "Your own instructions for AI agents working on your organization’s tickets, added to the standard ones."
+msgstr "DIvI'lIj ticketmeyDaq vumbogh AI vumwI'pu'vaD ra'meH mu'meylIj, motlhDaq chellu'bogh."
 
 #: app/settings/api-keys/page.tsx
 msgid "Your own keys and AI agents are in <0>Your settings</0>."

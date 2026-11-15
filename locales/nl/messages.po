@@ -607,6 +607,10 @@ msgstr "{used} / {cap} punten"
 msgid "{used} / {cap} tickets"
 msgstr "{used} / {cap} tickets"
 
+#: components/settings/agent-instructions.tsx
+msgid "{used} of {limit} characters"
+msgstr "{used} van {limit} tekens"
+
 #: lib/org/audit.ts
 msgid "{user} joined the organization"
 msgstr "{user} is lid geworden van de organisatie"
@@ -1084,6 +1088,16 @@ msgstr "Toegevoegd aan de backlog als <0>{0}</0>."
 msgid "Adding…"
 msgstr "Toevoegen…"
 
+#: app/settings/agent-instructions/page.tsx
+#: app/settings/page.tsx
+#: components/settings/agent-instructions.tsx
+msgid "Additional agent instructions"
+msgstr "Aanvullende agentinstructies"
+
+#: lib/api/error-codes.ts
+msgid "additional instructions can be up to 4000 characters"
+msgstr "aanvullende instructies mogen maximaal 4000 tekens lang zijn"
+
 #: app/settings/organization/page.tsx
 msgid "Admin"
 msgstr "Beheerder"
@@ -1124,6 +1138,14 @@ msgstr "Werk van agent moet beoordeeld worden"
 #: lib/api/error-codes.ts
 msgid "agents cannot bypass human review"
 msgstr "Agents kunnen menselijke review niet omzeilen."
+
+#: components/settings/agent-instructions.tsx
+msgid "Agents keep getting the saved instructions until you save this draft."
+msgstr "Agents blijven de opgeslagen instructies krijgen totdat je dit concept opslaat."
+
+#: components/settings/agent-instructions.tsx
+msgid "Agents read instructions when they connect, so an agent that’s already connected may need to reconnect to get a change."
+msgstr "Agents lezen de instructies wanneer ze verbinden. Een agent die al verbonden is, moet daarom mogelijk opnieuw verbinden om een wijziging te krijgen."
 
 #: components/board/column-list.tsx
 msgid "Agents’ finished work waits here for review"
@@ -1233,6 +1255,10 @@ msgstr "Een ticket van een AI-agent dat naar Klaar is verplaatst, wacht tot een 
 #: lib/api/error-codes.ts
 msgid "an epic can't be inside another epic"
 msgstr "Een epic kan niet in een andere epic zitten."
+
+#: components/settings/agent-instructions.tsx
+msgid "An example"
+msgstr "Een voorbeeld"
 
 #: components/staff/downtime.tsx
 msgid "An hour or less"
@@ -2048,6 +2074,7 @@ msgstr "Bezig met claimen…"
 msgid "cleanup_days must be 1–365"
 msgstr "cleanup_days moet 1–365 zijn"
 
+#: components/settings/agent-instructions.tsx
 #: components/work/notifications-bell.tsx
 msgid "Clear"
 msgstr "Wissen"
@@ -2091,6 +2118,10 @@ msgstr "Vervaldatum wissen"
 #: components/work/notifications-bell.tsx
 msgid "Clear: {0}"
 msgstr "Wissen: {0}"
+
+#: components/settings/agent-instructions.tsx
+msgid "Cleared. Agents get the standard instructions only."
+msgstr "Gewist. Agents krijgen alleen de standaardinstructies."
 
 #: lib/api/error-codes.ts
 msgid "Clerk invitation is no longer valid"
@@ -2490,9 +2521,17 @@ msgstr "Opmerkingen naar het origineel kopiëren"
 msgid "Copy embed key"
 msgstr "Embedsleutel kopiëren"
 
+#: components/settings/agent-instructions.tsx
+msgid "Copy example"
+msgstr "Voorbeeld kopiëren"
+
 #: app/projects/[id]/page.tsx
 msgid "Copy ID"
 msgstr "ID kopiëren"
+
+#: components/settings/agent-instructions.tsx
+msgid "Copy it and paste it above if you want it. It’s never added for you."
+msgstr "Kopieer het en plak het hierboven als je het wilt. Het wordt nooit voor je toegevoegd."
 
 #: components/settings/embedding.tsx
 #: components/ticket/ticket-key.tsx
@@ -2823,6 +2862,10 @@ msgstr "Kan sjablonen niet laden; het bord gebruikt de indeling Eenvoudig."
 msgid "Couldn’t load that board. Please try again."
 msgstr "Kan dat bord niet laden. Probeer het opnieuw."
 
+#: components/settings/agent-instructions.tsx
+msgid "Couldn’t load the agent instructions. Please refresh to try again."
+msgstr "Kon de agentinstructies niet laden. Vernieuw de pagina om het opnieuw te proberen."
+
 #: components/settings/audit-log.tsx
 msgid "Couldn’t load the audit log. Please try again."
 msgstr "Kon de auditlog niet laden. Probeer het opnieuw."
@@ -3092,6 +3135,10 @@ msgstr "Kan die wijziging niet opslaan. Probeer het opnieuw."
 #: components/intake/triage.tsx
 msgid "Couldn’t save that. Please try again."
 msgstr "Kan dat niet opslaan. Probeer het opnieuw."
+
+#: components/settings/agent-instructions.tsx
+msgid "Couldn’t save the agent instructions. Please try again."
+msgstr "Kon de agentinstructies niet opslaan. Probeer het opnieuw."
 
 #: app/boards/[id]/edit/page.tsx
 msgid "Couldn’t save the board. Please try again."
@@ -4529,6 +4576,10 @@ msgstr "Flowrapport"
 msgid "Follow host"
 msgstr "Host volgen"
 
+#: components/settings/agent-instructions.tsx
+msgid "Follow the Boy Scout rule: leave code you touch clearer and easier to maintain. Make small, relevant improvements alongside the ticket work, and avoid unrelated refactoring."
+msgstr "Volg de padvindersregel: laat code die je aanraakt duidelijker en beter onderhoudbaar achter. Breng naast het ticketwerk kleine, relevante verbeteringen aan en vermijd refactoring die er niets mee te maken heeft."
+
 #: components/live/hosted-bar.tsx
 msgid "Following"
 msgstr "Volgend"
@@ -5411,6 +5462,10 @@ msgstr "Live updates niet beschikbaar"
 msgid "Load more"
 msgstr "Meer laden"
 
+#: app/settings/agent-instructions/page.tsx
+msgid "Loading agent instructions…"
+msgstr "Agentinstructies laden…"
+
 #: app/account/api-keys/page.tsx
 #: app/settings/api-keys/loading.tsx
 #: app/settings/api-keys/page.tsx
@@ -5561,6 +5616,7 @@ msgstr "Je werk laden…"
 #: components/project/move-to-board.tsx
 #: components/project/refinement.tsx
 #: components/project/repositories.tsx
+#: components/settings/agent-instructions.tsx
 #: components/settings/audit-log.tsx
 #: components/settings/embedding.tsx
 #: components/settings/jira-import.tsx
@@ -5797,6 +5853,10 @@ msgstr "Meer"
 #: app/boards/[id]/page.tsx
 msgid "More board actions"
 msgstr "Meer bordacties"
+
+#: components/settings/agent-instructions.tsx
+msgid "More instructions mean more tokens on every connection, and can mean agents do more work on each ticket."
+msgstr "Meer instructies betekent meer tokens bij elke verbinding, en kan betekenen dat agents meer werk doen per ticket."
 
 #: components/ticket/labels.tsx
 msgid "More labels"
@@ -6584,6 +6644,10 @@ msgstr "Niets wacht hierop."
 msgid "Nothing was finished in this sprint."
 msgstr "Er is niets afgerond in deze sprint."
 
+#: components/settings/agent-instructions.tsx
+msgid "Nothing: agents get the standard instructions only."
+msgstr "Niets: agents krijgen alleen de standaardinstructies."
+
 #: components/ticket/dependencies.tsx
 msgid "Nothing."
 msgstr "Niets."
@@ -6875,6 +6939,10 @@ msgstr "Alleen organisatiebeheerders kunnen de naam wijzigen."
 msgid "Only organization admins can save templates."
 msgstr "Alleen beheerders van de organisatie kunnen sjablonen opslaan."
 
+#: app/settings/agent-instructions/page.tsx
+msgid "Only organization admins can see or change the additional agent instructions."
+msgstr "Alleen organisatiebeheerders kunnen de aanvullende agentinstructies bekijken of wijzigen."
+
 #: app/settings/audit/page.tsx
 msgid "Only organization admins can see the audit log."
 msgstr "Alleen organisatiebeheerders kunnen de auditlog zien."
@@ -6894,6 +6962,10 @@ msgstr "Alleen beheerders van de organisatie of een teamleider van de borden van
 #: lib/api/error-codes.ts
 msgid "only organization admins or this board's team leaders can do this"
 msgstr "Alleen beheerders van de organisatie of de teamleiders van dit bord kunnen dit doen."
+
+#: lib/api/error-codes.ts
+msgid "only organization admins, signed in, can see or change the additional agent instructions"
+msgstr "alleen ingelogde organisatiebeheerders kunnen de aanvullende agentinstructies bekijken of wijzigen"
 
 #: lib/api/error-codes.ts
 msgid "only pending invitations can be revoked"
@@ -8036,6 +8108,7 @@ msgstr "De stand-up leiden"
 
 #: app/boards/[id]/edit/page.tsx
 #: components/flags/flags.tsx
+#: components/settings/agent-instructions.tsx
 #: components/settings/google-chat.tsx
 #: components/settings/organization.tsx
 #: components/settings/working-week.tsx
@@ -8096,11 +8169,19 @@ msgstr "Sjabloon opslaan"
 msgid "Save the board first to pick a new column"
 msgstr "Sla het bord eerst op om een nieuwe kolom te kiezen"
 
+#: components/settings/agent-instructions.tsx
+msgid "Saved"
+msgstr "Opgeslagen"
+
 #: components/flags/flags.tsx
 #: components/settings/google-chat.tsx
 #: components/settings/working-week.tsx
 msgid "Saved."
 msgstr "Opgeslagen."
+
+#: components/settings/agent-instructions.tsx
+msgid "Saved. New agent connections get it from now on."
+msgstr "Opgeslagen. Nieuwe agentverbindingen krijgen ze vanaf nu."
 
 #: app/boards/[id]/edit/page.tsx
 msgid "Saving clears {estimated, plural, one {# estimate} other {# estimates}} on open tickets."
@@ -8122,6 +8203,7 @@ msgstr "Labels opslaan…"
 #: components/project/key-prefix.tsx
 #: components/roadmap/item-editor.tsx
 #: components/roadmap/roadmap-editor-form.tsx
+#: components/settings/agent-instructions.tsx
 #: components/settings/google-chat.tsx
 #: components/settings/integrations.tsx
 #: components/settings/working-week.tsx
@@ -8415,6 +8497,7 @@ msgstr "Stel het eerste bord van je team in. Je kunt stoppen en later verdergaan
 
 #: app/boards/[id]/edit/page.tsx
 #: app/dashboard/page.tsx
+#: app/settings/agent-instructions/page.tsx
 #: app/settings/api-keys/page.tsx
 #: app/settings/audit/page.tsx
 #: app/settings/file-cleanup/page.tsx
@@ -8775,6 +8858,19 @@ msgstr "Sprints met een doel: gehaald of niet."
 #: app/boards/[id]/edit/page.tsx
 msgid "Sprints: time boxes. Kanban: continuous flow."
 msgstr "Sprints: timeboxes. Kanban: continue flow."
+
+#: components/settings/agent-instructions.tsx
+msgid "Standard instructions"
+msgstr "Standaardinstructies"
+
+#. placeholder {0}: saved.global_version
+#: components/settings/agent-instructions.tsx
+msgid "Standard instructions (version {0}), for every organization"
+msgstr "Standaardinstructies (versie {0}), voor elke organisatie"
+
+#: components/settings/agent-instructions.tsx
+msgid "Standard instructions, for every organization"
+msgstr "Standaardinstructies, voor elke organisatie"
 
 #: app/boards/[id]/page.tsx
 #: components/live/standup.tsx
@@ -9174,6 +9270,10 @@ msgstr "Dat ticketprefix wordt al door een ander project gebruikt."
 #: lib/api/error-codes.ts
 msgid "that would make tickets block each other in a loop"
 msgstr "Daardoor zouden tickets elkaar in een kringloop blokkeren."
+
+#: components/settings/agent-instructions.tsx
+msgid "That’s too long: additional instructions can be up to {limit} characters."
+msgstr "Dat is te lang: aanvullende instructies mogen maximaal {limit} tekens lang zijn."
 
 #: lib/org/audit.ts
 msgid "The {kind} “{name}” expired"
@@ -9598,6 +9698,10 @@ msgstr "Hierdoor gaat de sprint {by, plural, one {# ticket} other {# tickets}} b
 #: lib/ticket/move-to-board.ts
 msgid "This takes the sprint {by, plural, one {# ticket} other {# tickets}} over capacity ({after} / {cap}): it will need approval before it can start."
 msgstr "Hierdoor gaat de sprint {by, plural, one {# ticket} other {# tickets}} boven de capaciteit ({after} / {cap}): er is goedkeuring nodig voordat hij kan starten."
+
+#: components/settings/agent-instructions.tsx
+msgid "This text is added after TrackLin.es’ standard instructions whenever an AI agent connects to this organization over MCP. It applies to this organization only, and it’s empty unless you write something."
+msgstr "Deze tekst wordt na de standaardinstructies van TrackLin.es toegevoegd wanneer een AI-agent via MCP met deze organisatie verbindt. Hij geldt alleen voor deze organisatie en is leeg tenzij je iets schrijft."
 
 #: lib/api/error-codes.ts
 msgid "this ticket already has as many files as it can hold: remove one to add another"
@@ -10033,6 +10137,10 @@ msgstr "Ongepland"
 msgid "Unread"
 msgstr "Ongelezen"
 
+#: components/settings/agent-instructions.tsx
+msgid "Unsaved draft"
+msgstr "Niet-opgeslagen concept"
+
 #: lib/work/away.ts
 msgid "until {day}"
 msgstr "tot {day}"
@@ -10316,6 +10424,10 @@ msgstr "Welkom bij TrackLin.es"
 #: components/settings/audit-log.tsx
 msgid "What"
 msgstr "Wat"
+
+#: components/settings/agent-instructions.tsx
+msgid "What agents are told"
+msgstr "Wat agents te horen krijgen"
 
 #: components/staff/mcp-prompt.tsx
 msgid "What agents are told when they connect"
@@ -10668,9 +10780,21 @@ msgstr "Het {name}-abonnement van je organisatie bevat {projects}"
 msgid "Your organization’s admins can create projects. They’ll appear here."
 msgstr "De beheerders van je organisatie kunnen projecten aanmaken. Ze verschijnen hier."
 
+#: components/settings/agent-instructions.tsx
+msgid "Your organization’s instructions"
+msgstr "Instructies van je organisatie"
+
+#: app/settings/agent-instructions/page.tsx
+msgid "Your organization’s own instructions for AI agents working on its tickets."
+msgstr "De eigen instructies van je organisatie voor AI-agents die aan haar tickets werken."
+
 #: app/settings/page.tsx
 msgid "Your organization’s plan, people and connections."
 msgstr "Het abonnement, de mensen en de koppelingen van je organisatie."
+
+#: app/settings/page.tsx
+msgid "Your own instructions for AI agents working on your organization’s tickets, added to the standard ones."
+msgstr "Je eigen instructies voor AI-agents die aan de tickets van je organisatie werken, toegevoegd aan de standaardinstructies."
 
 #: app/settings/api-keys/page.tsx
 msgid "Your own keys and AI agents are in <0>Your settings</0>."
