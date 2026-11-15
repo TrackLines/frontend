@@ -8,7 +8,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { LaunchOfferCard } from '@/components/billing/launch-offer';
 import { PlanCard } from '@/components/billing/plan-card';
 import { useFlags } from '@flags-gg/react-library';
-import { CalendarClockIcon, KeyRoundIcon, PlugIcon, UploadIcon, WebhookIcon } from 'lucide-react';
+import { BotIcon, CalendarClockIcon, KeyRoundIcon, PlugIcon, UploadIcon, WebhookIcon } from 'lucide-react';
 import { McpConnect } from '@/components/settings/mcp-connect';
 import { Button } from '@/components/ui/button';
 import { SettingsCard } from '@/components/settings/settings-card';
@@ -58,6 +58,7 @@ export default function SettingsPage() {
             />
           )}
         </SettingsCard>
+        {admin && <SettingsCard icon={BotIcon} title={t`Additional agent instructions`} href="/settings/agent-instructions" description={t`Your own instructions for AI agents working on your organization’s tickets, added to the standard ones.`} />}
         {admin && <FileCleanupLink report={cleanup} />}
         {admin && is('audit-service').enabled() && <AuditLogCard plan={plan} token={token} />}
       </ul>

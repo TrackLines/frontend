@@ -18,6 +18,8 @@ export const ERROR_MESSAGES: Record<string, MessageDescriptor> = {
   bad_flag_toggle: msg`environment_id and one of enabled, rollout (0–100) or rules are required; a rule needs an attribute, an operator (in, not_in, contains, starts_with, ends_with) and 1–1000 values (at most 50 rules)`,
   layout_bad_flag_action: msg`a column's flag action is none, promote, promote_to_production or archive`,
   bad_org_ids: msg`choose between 1 and 500 organizations`,
+  admins_mcp_instructions: msg`only organization admins, signed in, can see or change the additional agent instructions`,
+  mcp_instructions_too_long: msg`additional instructions can be up to 4000 characters`,
   guide_organization: msg`refresh after switching organizations`,
   launch_offer_claimed: msg`this organization has already claimed its free year`,
   launch_offer_off: msg`turn on the launch-offer flag before sending the offer`,

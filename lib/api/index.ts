@@ -416,6 +416,14 @@ export const workingWeek = {
   resetProject: (project: string, token: T) => api<void>(`/projects/${encodeURIComponent(project)}/working-week`, { method: 'DELETE', token }),
 };
 
+// AgentInstructions (TL-899): an organization's own additions to what the MCP server tells its agents, with the
+// standard (global) instructions and the heading that introduces the organization's section. Org admins only.
+export type AgentInstructions = { instructions: string; max_length: number; global: string; global_version?: number; heading: string; effective: string };
+export const agentInstructions = {
+  get: (token: T) => api<AgentInstructions>('/org/mcp-instructions', { token }),
+  set: (instructions: string, token: T) => api<AgentInstructions>('/org/mcp-instructions', { method: 'PUT', body: { instructions }, token }),
+};
+
 export const projects = {
   list: (token: T) => api<Project[]>('/projects', { token }),
   get: (id: string, token: T) => api<Project>(`/projects/${id}`, { token }),

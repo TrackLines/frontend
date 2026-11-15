@@ -607,6 +607,10 @@ msgstr "{used} / {cap} puntos"
 msgid "{used} / {cap} tickets"
 msgstr "{used} / {cap} tickets"
 
+#: components/settings/agent-instructions.tsx
+msgid "{used} of {limit} characters"
+msgstr "{used} de {limit} caracteres"
+
 #: lib/org/audit.ts
 msgid "{user} joined the organization"
 msgstr "{user} se unió a la organización"
@@ -1084,6 +1088,16 @@ msgstr "Añadido al backlog como <0>{0}</0>."
 msgid "Adding…"
 msgstr "Añadiendo…"
 
+#: app/settings/agent-instructions/page.tsx
+#: app/settings/page.tsx
+#: components/settings/agent-instructions.tsx
+msgid "Additional agent instructions"
+msgstr "Instrucciones adicionales para agentes"
+
+#: lib/api/error-codes.ts
+msgid "additional instructions can be up to 4000 characters"
+msgstr "las instrucciones adicionales pueden tener hasta 4000 caracteres"
+
 #: app/settings/organization/page.tsx
 msgid "Admin"
 msgstr "Administrador"
@@ -1124,6 +1138,14 @@ msgstr "El trabajo del agente necesita revisión"
 #: lib/api/error-codes.ts
 msgid "agents cannot bypass human review"
 msgstr "los agentes no pueden saltarse la revisión humana"
+
+#: components/settings/agent-instructions.tsx
+msgid "Agents keep getting the saved instructions until you save this draft."
+msgstr "Los agentes siguen recibiendo las instrucciones guardadas hasta que guardes este borrador."
+
+#: components/settings/agent-instructions.tsx
+msgid "Agents read instructions when they connect, so an agent that’s already connected may need to reconnect to get a change."
+msgstr "Los agentes leen las instrucciones al conectarse, así que un agente ya conectado puede tener que volver a conectarse para recibir un cambio."
 
 #: components/board/column-list.tsx
 msgid "Agents’ finished work waits here for review"
@@ -1233,6 +1255,10 @@ msgstr "Un ticket de un agente de IA movido a Hecho espera a que una persona lo 
 #: lib/api/error-codes.ts
 msgid "an epic can't be inside another epic"
 msgstr "una épica no puede estar dentro de otra épica"
+
+#: components/settings/agent-instructions.tsx
+msgid "An example"
+msgstr "Un ejemplo"
 
 #: components/staff/downtime.tsx
 msgid "An hour or less"
@@ -2048,6 +2074,7 @@ msgstr "Reclamando…"
 msgid "cleanup_days must be 1–365"
 msgstr "cleanup_days debe ser de 1 a 365"
 
+#: components/settings/agent-instructions.tsx
 #: components/work/notifications-bell.tsx
 msgid "Clear"
 msgstr "Borrar"
@@ -2091,6 +2118,10 @@ msgstr "Quitar la fecha límite"
 #: components/work/notifications-bell.tsx
 msgid "Clear: {0}"
 msgstr "Quitar: {0}"
+
+#: components/settings/agent-instructions.tsx
+msgid "Cleared. Agents get the standard instructions only."
+msgstr "Borradas. Los agentes solo reciben las instrucciones estándar."
 
 #: lib/api/error-codes.ts
 msgid "Clerk invitation is no longer valid"
@@ -2490,9 +2521,17 @@ msgstr "Copiar comentarios al original"
 msgid "Copy embed key"
 msgstr "Copiar clave de inserción"
 
+#: components/settings/agent-instructions.tsx
+msgid "Copy example"
+msgstr "Copiar ejemplo"
+
 #: app/projects/[id]/page.tsx
 msgid "Copy ID"
 msgstr "Copiar ID"
+
+#: components/settings/agent-instructions.tsx
+msgid "Copy it and paste it above if you want it. It’s never added for you."
+msgstr "Cópialo y pégalo arriba si lo quieres. Nunca se añade por ti."
 
 #: components/settings/embedding.tsx
 #: components/ticket/ticket-key.tsx
@@ -2823,6 +2862,10 @@ msgstr "No se pudieron cargar las plantillas; el tablero usará el diseño Simpl
 msgid "Couldn’t load that board. Please try again."
 msgstr "No se pudo cargar ese tablero. Inténtalo de nuevo."
 
+#: components/settings/agent-instructions.tsx
+msgid "Couldn’t load the agent instructions. Please refresh to try again."
+msgstr "No se pudieron cargar las instrucciones para agentes. Actualiza la página para intentarlo de nuevo."
+
 #: components/settings/audit-log.tsx
 msgid "Couldn’t load the audit log. Please try again."
 msgstr "No se pudo cargar el registro de auditoría. Inténtalo de nuevo."
@@ -3092,6 +3135,10 @@ msgstr "No se pudo guardar ese cambio. Inténtalo de nuevo."
 #: components/intake/triage.tsx
 msgid "Couldn’t save that. Please try again."
 msgstr "No se pudo guardar. Inténtalo de nuevo."
+
+#: components/settings/agent-instructions.tsx
+msgid "Couldn’t save the agent instructions. Please try again."
+msgstr "No se pudieron guardar las instrucciones para agentes. Inténtalo de nuevo."
 
 #: app/boards/[id]/edit/page.tsx
 msgid "Couldn’t save the board. Please try again."
@@ -4529,6 +4576,10 @@ msgstr "Informe de flujo"
 msgid "Follow host"
 msgstr "Seguir al anfitrión"
 
+#: components/settings/agent-instructions.tsx
+msgid "Follow the Boy Scout rule: leave code you touch clearer and easier to maintain. Make small, relevant improvements alongside the ticket work, and avoid unrelated refactoring."
+msgstr "Sigue la regla del Boy Scout: deja el código que toques más claro y fácil de mantener. Haz mejoras pequeñas y pertinentes junto con el trabajo del ticket y evita refactorizaciones no relacionadas."
+
 #: components/live/hosted-bar.tsx
 msgid "Following"
 msgstr "Siguiendo"
@@ -5411,6 +5462,10 @@ msgstr "Actualizaciones en vivo no disponibles"
 msgid "Load more"
 msgstr "Cargar más"
 
+#: app/settings/agent-instructions/page.tsx
+msgid "Loading agent instructions…"
+msgstr "Cargando las instrucciones para agentes…"
+
 #: app/account/api-keys/page.tsx
 #: app/settings/api-keys/loading.tsx
 #: app/settings/api-keys/page.tsx
@@ -5561,6 +5616,7 @@ msgstr "Cargando tu trabajo…"
 #: components/project/move-to-board.tsx
 #: components/project/refinement.tsx
 #: components/project/repositories.tsx
+#: components/settings/agent-instructions.tsx
 #: components/settings/audit-log.tsx
 #: components/settings/embedding.tsx
 #: components/settings/jira-import.tsx
@@ -5797,6 +5853,10 @@ msgstr "Más"
 #: app/boards/[id]/page.tsx
 msgid "More board actions"
 msgstr "Más acciones del tablero"
+
+#: components/settings/agent-instructions.tsx
+msgid "More instructions mean more tokens on every connection, and can mean agents do more work on each ticket."
+msgstr "Más instrucciones significan más tokens en cada conexión, y pueden hacer que los agentes trabajen más en cada ticket."
 
 #: components/ticket/labels.tsx
 msgid "More labels"
@@ -6584,6 +6644,10 @@ msgstr "Nada espera por él."
 msgid "Nothing was finished in this sprint."
 msgstr "No se terminó nada en este sprint."
 
+#: components/settings/agent-instructions.tsx
+msgid "Nothing: agents get the standard instructions only."
+msgstr "Nada: los agentes solo reciben las instrucciones estándar."
+
 #: components/ticket/dependencies.tsx
 msgid "Nothing."
 msgstr "Nada."
@@ -6875,6 +6939,10 @@ msgstr "Solo los administradores de la organización pueden cambiarle el nombre.
 msgid "Only organization admins can save templates."
 msgstr "Solo los administradores de la organización pueden guardar plantillas."
 
+#: app/settings/agent-instructions/page.tsx
+msgid "Only organization admins can see or change the additional agent instructions."
+msgstr "Solo los administradores de la organización pueden ver o cambiar las instrucciones adicionales para agentes."
+
 #: app/settings/audit/page.tsx
 msgid "Only organization admins can see the audit log."
 msgstr "Solo los administradores de la organización pueden ver el registro de auditoría."
@@ -6894,6 +6962,10 @@ msgstr "solo los administradores de la organización o un líder de equipo de lo
 #: lib/api/error-codes.ts
 msgid "only organization admins or this board's team leaders can do this"
 msgstr "solo los administradores de la organización o los líderes de equipo de este tablero pueden hacer esto"
+
+#: lib/api/error-codes.ts
+msgid "only organization admins, signed in, can see or change the additional agent instructions"
+msgstr "solo los administradores de la organización, con sesión iniciada, pueden ver o cambiar las instrucciones adicionales para agentes"
 
 #: lib/api/error-codes.ts
 msgid "only pending invitations can be revoked"
@@ -8036,6 +8108,7 @@ msgstr "Cómo llevar el standup"
 
 #: app/boards/[id]/edit/page.tsx
 #: components/flags/flags.tsx
+#: components/settings/agent-instructions.tsx
 #: components/settings/google-chat.tsx
 #: components/settings/organization.tsx
 #: components/settings/working-week.tsx
@@ -8096,11 +8169,19 @@ msgstr "Guardar plantilla"
 msgid "Save the board first to pick a new column"
 msgstr "Guarda el tablero primero para elegir una columna nueva"
 
+#: components/settings/agent-instructions.tsx
+msgid "Saved"
+msgstr "Guardado"
+
 #: components/flags/flags.tsx
 #: components/settings/google-chat.tsx
 #: components/settings/working-week.tsx
 msgid "Saved."
 msgstr "Guardado."
+
+#: components/settings/agent-instructions.tsx
+msgid "Saved. New agent connections get it from now on."
+msgstr "Guardado. Las nuevas conexiones de agentes las reciben desde ahora."
 
 #: app/boards/[id]/edit/page.tsx
 msgid "Saving clears {estimated, plural, one {# estimate} other {# estimates}} on open tickets."
@@ -8122,6 +8203,7 @@ msgstr "Guardando etiquetas…"
 #: components/project/key-prefix.tsx
 #: components/roadmap/item-editor.tsx
 #: components/roadmap/roadmap-editor-form.tsx
+#: components/settings/agent-instructions.tsx
 #: components/settings/google-chat.tsx
 #: components/settings/integrations.tsx
 #: components/settings/working-week.tsx
@@ -8415,6 +8497,7 @@ msgstr "Configura el primer tablero de tu equipo. Puedes salir y continuar más 
 
 #: app/boards/[id]/edit/page.tsx
 #: app/dashboard/page.tsx
+#: app/settings/agent-instructions/page.tsx
 #: app/settings/api-keys/page.tsx
 #: app/settings/audit/page.tsx
 #: app/settings/file-cleanup/page.tsx
@@ -8775,6 +8858,19 @@ msgstr "Sprints con objetivo: cumplido o no."
 #: app/boards/[id]/edit/page.tsx
 msgid "Sprints: time boxes. Kanban: continuous flow."
 msgstr "Sprints: bloques de tiempo. Kanban: flujo continuo."
+
+#: components/settings/agent-instructions.tsx
+msgid "Standard instructions"
+msgstr "Instrucciones estándar"
+
+#. placeholder {0}: saved.global_version
+#: components/settings/agent-instructions.tsx
+msgid "Standard instructions (version {0}), for every organization"
+msgstr "Instrucciones estándar (versión {0}), para todas las organizaciones"
+
+#: components/settings/agent-instructions.tsx
+msgid "Standard instructions, for every organization"
+msgstr "Instrucciones estándar, para todas las organizaciones"
 
 #: app/boards/[id]/page.tsx
 #: components/live/standup.tsx
@@ -9174,6 +9270,10 @@ msgstr "Ese prefijo de ticket ya lo usa otro proyecto."
 #: lib/api/error-codes.ts
 msgid "that would make tickets block each other in a loop"
 msgstr "eso haría que los tickets se bloquearan entre sí en un bucle"
+
+#: components/settings/agent-instructions.tsx
+msgid "That’s too long: additional instructions can be up to {limit} characters."
+msgstr "Es demasiado largo: las instrucciones adicionales pueden tener hasta {limit} caracteres."
 
 #: lib/org/audit.ts
 msgid "The {kind} “{name}” expired"
@@ -9598,6 +9698,10 @@ msgstr "Esto deja el sprint {by, plural, one {# ticket} other {# tickets}} por e
 #: lib/ticket/move-to-board.ts
 msgid "This takes the sprint {by, plural, one {# ticket} other {# tickets}} over capacity ({after} / {cap}): it will need approval before it can start."
 msgstr "Esto deja el sprint {by, plural, one {# ticket} other {# tickets}} por encima de la capacidad ({after} / {cap}): necesitará aprobación antes de poder empezar."
+
+#: components/settings/agent-instructions.tsx
+msgid "This text is added after TrackLin.es’ standard instructions whenever an AI agent connects to this organization over MCP. It applies to this organization only, and it’s empty unless you write something."
+msgstr "Este texto se añade después de las instrucciones estándar de TrackLin.es cada vez que un agente de IA se conecta a esta organización por MCP. Solo se aplica a esta organización, y está vacío salvo que escribas algo."
 
 #: lib/api/error-codes.ts
 msgid "this ticket already has as many files as it can hold: remove one to add another"
@@ -10033,6 +10137,10 @@ msgstr "Sin planificar"
 msgid "Unread"
 msgstr "No leídas"
 
+#: components/settings/agent-instructions.tsx
+msgid "Unsaved draft"
+msgstr "Borrador sin guardar"
+
 #: lib/work/away.ts
 msgid "until {day}"
 msgstr "hasta {day}"
@@ -10316,6 +10424,10 @@ msgstr "Te damos la bienvenida a TrackLin.es"
 #: components/settings/audit-log.tsx
 msgid "What"
 msgstr "Qué"
+
+#: components/settings/agent-instructions.tsx
+msgid "What agents are told"
+msgstr "Lo que se les dice a los agentes"
 
 #: components/staff/mcp-prompt.tsx
 msgid "What agents are told when they connect"
@@ -10668,9 +10780,21 @@ msgstr "El plan {name} de tu organización incluye {projects}"
 msgid "Your organization’s admins can create projects. They’ll appear here."
 msgstr "Los administradores de tu organización pueden crear proyectos. Aparecerán aquí."
 
+#: components/settings/agent-instructions.tsx
+msgid "Your organization’s instructions"
+msgstr "Instrucciones de tu organización"
+
+#: app/settings/agent-instructions/page.tsx
+msgid "Your organization’s own instructions for AI agents working on its tickets."
+msgstr "Las instrucciones propias de tu organización para los agentes de IA que trabajan en sus tickets."
+
 #: app/settings/page.tsx
 msgid "Your organization’s plan, people and connections."
 msgstr "El plan, las personas y las conexiones de tu organización."
+
+#: app/settings/page.tsx
+msgid "Your own instructions for AI agents working on your organization’s tickets, added to the standard ones."
+msgstr "Tus propias instrucciones para los agentes de IA que trabajan en los tickets de tu organización, añadidas a las estándar."
 
 #: app/settings/api-keys/page.tsx
 msgid "Your own keys and AI agents are in <0>Your settings</0>."
