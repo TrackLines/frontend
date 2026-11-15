@@ -9341,10 +9341,6 @@ msgstr "le journal d’audit ne peut pas être chargé pour l’instant : réess
 msgid "The audit log comes with the Pro and Enterprise plans. <0>Change your plan</0> to use it."
 msgstr "Le journal d’audit est inclus dans les offres Pro et Enterprise. <0>Changez d’offre</0> pour l’utiliser."
 
-#: app/settings/audit/page.tsx
-msgid "The audit log isn’t turned on for your organization yet."
-msgstr "Le journal d’audit n’est pas encore activé pour votre organisation."
-
 #: lib/api/error-codes.ts
 msgid "the audit log needs the Pro or Enterprise plan"
 msgstr "le journal d’audit nécessite l’offre Pro ou Enterprise"

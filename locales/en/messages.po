@@ -9341,10 +9341,6 @@ msgstr "the audit log can’t be loaded right now: try again shortly"
 msgid "The audit log comes with the Pro and Enterprise plans. <0>Change your plan</0> to use it."
 msgstr "The audit log comes with the Pro and Enterprise plans. <0>Change your plan</0> to use it."
 
-#: app/settings/audit/page.tsx
-msgid "The audit log isn’t turned on for your organization yet."
-msgstr "The audit log isn’t turned on for your organization yet."
-
 #: lib/api/error-codes.ts
 msgid "the audit log needs the Pro or Enterprise plan"
 msgstr "the audit log needs the Pro or Enterprise plan"

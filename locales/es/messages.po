@@ -9341,10 +9341,6 @@ msgstr "el registro de auditoría no se puede cargar ahora: inténtalo en un mom
 msgid "The audit log comes with the Pro and Enterprise plans. <0>Change your plan</0> to use it."
 msgstr "El registro de auditoría viene con los planes Pro y Enterprise. <0>Cambia tu plan</0> para usarlo."
 
-#: app/settings/audit/page.tsx
-msgid "The audit log isn’t turned on for your organization yet."
-msgstr "El registro de auditoría aún no está activado para tu organización."
-
 #: lib/api/error-codes.ts
 msgid "the audit log needs the Pro or Enterprise plan"
 msgstr "el registro de auditoría necesita el plan Pro o Enterprise"

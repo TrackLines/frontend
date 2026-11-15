@@ -33,13 +33,13 @@ test('the card opens the log on Pro and Enterprise; Free sees what it takes, wit
   expect(free).not.toContain('/settings/audit');
 });
 
-// the page and its wiring (it needs the router, so read its source): admins only, the plan, the flag;
+// the page and its wiring (it needs the router, so read its source): admins only, the plan;
 // filters in the URL; load more on the cursor; the retention note by plan
 test('the page: admins only, paid plans, filters in the URL, load more', async () => {
   const page = await Bun.file(new URL('../../app/settings/audit/page.tsx', import.meta.url)).text();
   expect(page).toContain('data-audit-admins');
   expect(page).toContain('!plan.paid');
-  expect(page).toContain("is('audit-service').enabled()");
+  expect(page).not.toContain('audit-service'); // the flag went with the cutover (TL-668)
   expect(page).toContain("enterprise={plan.plan === 'enterprise'}");
   const log = await Bun.file(new URL('./audit-log.tsx', import.meta.url)).text();
   expect(log).toContain('router.replace(q ? `${pathname}?${q}` : pathname, { scroll: false })');
@@ -48,5 +48,5 @@ test('the page: admins only, paid plans, filters in the URL, load more', async (
   expect(log).toContain('Kept for a year on Pro.');
   expect(log).toContain('Kept while your organization exists on Enterprise.');
   const settings = await Bun.file(new URL('../../app/settings/page.tsx', import.meta.url)).text();
-  expect(settings).toContain("{admin && is('audit-service').enabled() && <AuditLogCard plan={plan} token={token} />}");
+  expect(settings).toContain('{admin && <AuditLogCard plan={plan} token={token} />}');
 });

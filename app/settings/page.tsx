@@ -60,7 +60,7 @@ export default function SettingsPage() {
         </SettingsCard>
         {admin && <SettingsCard icon={BotIcon} title={t`Additional agent instructions`} href="/settings/agent-instructions" description={t`Your own instructions for AI agents working on your organization’s tickets, added to the standard ones.`} />}
         {admin && <FileCleanupLink report={cleanup} />}
-        {admin && is('audit-service').enabled() && <AuditLogCard plan={plan} token={token} />}
+        {admin && <AuditLogCard plan={plan} token={token} />}
       </ul>
     </main>
   );

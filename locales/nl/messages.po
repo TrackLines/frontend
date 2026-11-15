@@ -9341,10 +9341,6 @@ msgstr "de auditlog kan nu niet worden geladen: probeer het zo opnieuw"
 msgid "The audit log comes with the Pro and Enterprise plans. <0>Change your plan</0> to use it."
 msgstr "De auditlog hoort bij de Pro- en Enterprise-abonnementen. <0>Wijzig je abonnement</0> om hem te gebruiken."
 
-#: app/settings/audit/page.tsx
-msgid "The audit log isn’t turned on for your organization yet."
-msgstr "De auditlog staat nog niet aan voor je organisatie."
-
 #: lib/api/error-codes.ts
 msgid "the audit log needs the Pro or Enterprise plan"
 msgstr "de auditlog vereist het Pro- of Enterprise-abonnement"
