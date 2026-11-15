@@ -11,6 +11,7 @@ import { isRoadmapId, ownerOnly, readRoadmap } from '@/lib/site/public-roadmap';
 import { Timeline } from '@/components/roadmap/timeline';
 import { HealthBadge, UpdatesTimeline } from '@/components/roadmap/updates';
 import { RoadmapReport } from '@/components/roadmap/report';
+import { SubscribeForm } from '@/components/roadmap/subscribe';
 import { Locked } from './locked';
 
 type Props = { params: Promise<{ id: string }> };
@@ -74,6 +75,7 @@ export default async function RoadmapPage({ params }: Props) {
           <UpdatesTimeline updates={updates} />
         </section>
       )}
+      {r.can_subscribe && <SubscribeForm roadmapId={r.id} />}
     </main>
   );
 }

@@ -1934,6 +1934,10 @@ msgstr "Diagramme"
 msgid "Check it with <0>/mcp</0> in a new session."
 msgstr "Prüfe es mit <0>/mcp</0> in einer neuen Sitzung."
 
+#: components/roadmap/subscribe.tsx
+msgid "Check your inbox: we’ve sent a link to {email} to confirm."
+msgstr "Schau in dein Postfach: Wir haben einen Bestätigungslink an {email} gesendet."
+
 #: components/settings/chat-dm.tsx
 msgid "Checking the link…"
 msgstr "Link wird geprüft…"
@@ -2324,6 +2328,14 @@ msgstr "Abgeschlossene Tickets nach Abschlussdatum und Durchlaufzeit"
 #: components/flags/flags.tsx
 msgid "Configured"
 msgstr "Konfiguriert"
+
+#: components/roadmap/subscribe.tsx
+msgid "Confirm subscription"
+msgstr "Abonnement bestätigen"
+
+#: components/roadmap/subscribe.tsx
+msgid "Confirm your subscription"
+msgstr "Bestätige dein Abonnement"
 
 #: components/flags/flags.tsx
 #: components/settings/google-calendar.tsx
@@ -3177,6 +3189,10 @@ msgstr "Speichern fehlgeschlagen. Bitte versuch es noch einmal."
 #: components/ticket/ticket-search.tsx
 msgid "Couldn’t search tickets. Please try again."
 msgstr "Die Ticketsuche ist fehlgeschlagen. Bitte versuch es noch einmal."
+
+#: components/roadmap/subscribe.tsx
+msgid "Couldn’t send the confirmation email. Please try again."
+msgstr "Die Bestätigungs-E-Mail konnte nicht gesendet werden. Bitte versuche es erneut."
 
 #: components/settings/google-chat.tsx
 msgid "Couldn’t send the test message."
@@ -4035,6 +4051,7 @@ msgstr "E-Mail"
 
 #: app/settings/organization/page.tsx
 #: components/onboarding/setup.tsx
+#: components/roadmap/subscribe.tsx
 msgid "Email address"
 msgstr "E-Mail-Adresse"
 
@@ -4126,6 +4143,14 @@ msgstr "Gib eine https-Adresse ein, z. B. https://example.com/hooks/tracklines."
 #: components/settings/embedding.tsx
 msgid "Enter an origin like https://example.com."
 msgstr "Gib einen Origin wie https://example.com ein."
+
+#: lib/api/error-codes.ts
+msgid "enter one email address"
+msgstr "Gib eine E-Mail-Adresse ein"
+
+#: components/roadmap/subscribe.tsx
+msgid "Enter one email address."
+msgstr "Gib eine E-Mail-Adresse ein."
 
 #: lib/api/error-codes.ts
 msgid "enter your Google Workspace domain, e.g. example.com"
@@ -4668,6 +4693,14 @@ msgstr "Benachrichtigungen auch erhalten, wenn TrackLin.es geschlossen ist"
 #: components/settings/device-push.tsx
 msgid "Get notifications on this device, even when TrackLin.es is closed."
 msgstr "Erhalte Benachrichtigungen auf diesem Gerät, auch wenn TrackLin.es geschlossen ist."
+
+#: components/roadmap/subscribe.tsx
+msgid "Get this roadmap’s updates by email."
+msgstr "Erhalte die Updates dieser Roadmap per E-Mail."
+
+#: components/roadmap/subscribe.tsx
+msgid "Get updates by email"
+msgstr "Updates per E-Mail erhalten"
 
 #: components/settings/chat-dm.tsx
 msgid "Get your notifications in Google Chat: find “TrackLin.es” in Google Chat, send it a message, and open the link it sends you."
@@ -8667,6 +8700,7 @@ msgstr "Etwas ist schiefgelaufen"
 #: components/common/name-dialog.tsx
 #: components/onboarding/setup.tsx
 #: components/roadmap/roadmap-editor-form.tsx
+#: components/roadmap/subscribe.tsx
 msgid "Something went wrong. Please try again."
 msgstr "Etwas ist schiefgelaufen. Bitte versuch es noch einmal."
 
@@ -9003,6 +9037,10 @@ msgstr "Bleibt, wo es ist"
 msgid "Stop following"
 msgstr "Nicht mehr folgen"
 
+#: components/roadmap/subscribe.tsx
+msgid "Stop getting this roadmap’s updates by email."
+msgstr "Erhalte keine Updates dieser Roadmap mehr per E-Mail."
+
 #: components/settings/chat-dm.tsx
 msgid "Stop getting your notifications in Google Chat?"
 msgstr "Keine Benachrichtigungen mehr in Google Chat erhalten?"
@@ -9042,6 +9080,10 @@ msgstr "style muss sprints oder kanban sein."
 #: components/ticket/ticket-links.tsx
 msgid "Sub-tickets ({subs})"
 msgstr "Untertickets ({subs})"
+
+#: components/roadmap/subscribe.tsx
+msgid "Subscribe"
+msgstr "Abonnieren"
 
 #: components/ticket/labels.tsx
 msgid "Suggested labels"
@@ -9618,6 +9660,10 @@ msgstr "Dieser Link ist abgelaufen oder wurde bereits verwendet: Schreib der Tra
 msgid "This link has expired or was already used. Send the TrackLin.es app a message in Google Chat for a new one."
 msgstr "Dieser Link ist abgelaufen oder wurde bereits verwendet. Schreib der TrackLin.es-App in Google Chat eine Nachricht, um einen neuen zu bekommen."
 
+#: components/roadmap/subscribe.tsx
+msgid "This link no longer works. Subscribe again from the roadmap."
+msgstr "Dieser Link funktioniert nicht mehr. Abonniere die Roadmap erneut."
+
 #. placeholder {0}: job.planned.projects
 #. placeholder {1}: job.planned.boards
 #. placeholder {2}: job.planned.tickets
@@ -9960,6 +10006,10 @@ msgid "Today"
 msgstr "Heute"
 
 #: lib/api/error-codes.ts
+msgid "token is required"
+msgstr "Token ist erforderlich"
+
+#: lib/api/error-codes.ts
 msgid "token is required; base_url must be an https address like https://bugfix.es"
 msgstr "token ist erforderlich; base_url muss eine https-Adresse sein, z. B. https://bugfix.es."
 
@@ -9970,6 +10020,10 @@ msgstr "zu viele Einbettungs-Origins für dieses Projekt"
 #: lib/api/error-codes.ts
 msgid "too many requests from you; please try again later"
 msgstr "Zu viele Anfragen von dir; bitte versuch es später noch einmal."
+
+#: components/roadmap/subscribe.tsx
+msgid "Too many tries. Please wait a minute and try again."
+msgstr "Zu viele Versuche. Bitte warte eine Minute und versuche es erneut."
 
 #: components/ticket/history-panel.tsx
 msgid "took it out of a planned sprint"
@@ -10140,6 +10194,14 @@ msgstr "Ungelesen"
 #: components/settings/agent-instructions.tsx
 msgid "Unsaved draft"
 msgstr "Ungespeicherter Entwurf"
+
+#: components/roadmap/subscribe.tsx
+msgid "Unsubscribe"
+msgstr "Abbestellen"
+
+#: components/roadmap/subscribe.tsx
+msgid "Unsubscribe from this roadmap"
+msgstr "Diese Roadmap abbestellen"
 
 #: lib/work/away.ts
 msgid "until {day}"
@@ -10321,6 +10383,10 @@ msgstr "Organisation ansehen"
 msgid "View organization members, teams, and who can manage them."
 msgstr "Sieh dir Organisationsmitglieder, Teams und die Personen an, die sie verwalten können."
 
+#: components/roadmap/subscribe.tsx
+msgid "View roadmap"
+msgstr "Roadmap ansehen"
+
 #: components/settings/embedding.tsx
 msgid "View sites"
 msgstr "Sites ansehen"
@@ -10364,6 +10430,10 @@ msgstr "Nicht erlaubt: {route} ({why})"
 #: components/work/mentions.tsx
 msgid "Watch again"
 msgstr "Wieder beobachten"
+
+#: components/roadmap/subscribe.tsx
+msgid "We’ll email you when this roadmap has a new update. You can unsubscribe from any email."
+msgstr "Wir schreiben dir, wenn diese Roadmap ein neues Update hat. Du kannst dich in jeder E-Mail abmelden."
 
 #: app/global-error.tsx
 msgid "We’ve been told about it."
@@ -10731,6 +10801,14 @@ msgstr "Du moderierst das Standup"
 msgid "You’re linked. The TrackLin.es app will message you in Google Chat when you’re assigned a ticket, mentioned, or something needs your review."
 msgstr "Du bist verknüpft. Die TrackLin.es-App schreibt dir in Google Chat, wenn dir ein Ticket zugewiesen wird, du erwähnt wirst oder etwas deine Prüfung braucht."
 
+#: components/roadmap/subscribe.tsx
+msgid "You’re subscribed. We’ll email you when this roadmap has a new update."
+msgstr "Du bist angemeldet. Wir schreiben dir, wenn diese Roadmap ein neues Update hat."
+
+#: components/roadmap/subscribe.tsx
+msgid "You’re unsubscribed. You won’t get any more emails about this roadmap."
+msgstr "Du bist abgemeldet. Du erhältst keine E-Mails mehr zu dieser Roadmap."
+
 #: components/ticket/other-org.tsx
 msgid "You're working in a different organization right now. Switch to {orgName} to open it."
 msgstr "Du arbeitest gerade in einer anderen Organisation. Wechsle zu {orgName}, um es zu öffnen."
@@ -10746,6 +10824,10 @@ msgstr "Du hast die Projektanzahl deines Tarifs erreicht"
 #: components/intake/request-form.tsx
 msgid "You’ve sent a few requests already. Please try again in an hour."
 msgstr "Du hast schon einige Anfragen gesendet. Bitte versuch es in einer Stunde noch einmal."
+
+#: components/roadmap/subscribe.tsx
+msgid "you@example.com"
+msgstr "du@beispiel.de"
 
 #: components/billing/launch-offer.tsx
 msgid "Your free year of Pro"

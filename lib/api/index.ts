@@ -102,6 +102,7 @@ export type Roadmap = {
   id: string; project_id: string; title: string; description: string; visibility: Visibility;
   created_at: string; updated_at: string; progress?: { done: number; total: number }; items?: RoadmapItem[];
   can_manage?: boolean; // you can change it: an org admin or one of its project's team leaders (TL-413)
+  can_subscribe?: boolean; // readers can ask for its updates by email: public, and email subscriptions are on (TL-902)
 };
 // A roadmap update (TL-87): dated, with a health; permanent once posted. author: by name (TL-413).
 export type RoadmapHealth = 'on_track' | 'at_risk' | 'off_track';
@@ -620,6 +621,10 @@ export const roadmaps = {
   // the report (TL-616), for those who manage it: the burn-up for the PDF, or the whole thing as Markdown
   report: (id: string, token: T) => api<{ burnup: RoadmapBurnup[] }>(`/roadmaps/${id}/report`, { token }),
   reportMarkdown: (id: string, token: T) => api<string>(`/roadmaps/${id}/report?format=md`, { token }),
+  // email subscriptions to a public roadmap's updates (TL-902); no token: readers aren't signed in
+  subscribe: (id: string, email: string) => api<void>(`/roadmaps/${id}/subscriptions`, { method: 'POST', body: { email } }),
+  confirmSubscription: (token: string) => api<{ roadmap_id: string }>('/roadmap-subscriptions/confirm', { method: 'POST', body: { token } }),
+  unsubscribe: (token: string) => api<void>('/roadmap-subscriptions/unsubscribe', { method: 'POST', body: { token } }),
 };
 
 export const billing = {
