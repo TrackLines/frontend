@@ -114,6 +114,8 @@ export type Project = {
   id: string; name: string; description: string; key_prefix?: string; created_at: string; updated_at: string;
   boards?: Board[]; roadmaps?: Roadmap[];
   stats?: ProjectStats; // list only
+  archived_at?: string | null; // archived: off the project list, history kept (TL-907)
+  deletable?: boolean; // never used (no tickets, no sprints): deleted rather than archived
 };
 // open/done: board tickets (done = last column); urgent: open urgent tickets anywhere; active: latest change
 export type ProjectStats = { boards: number; roadmaps: number; open: number; done: number; backlog: number; urgent: number; active: string };
@@ -431,6 +433,9 @@ export const projects = {
   create: (p: { name: string; description?: string }, token: T) => api<Project>('/projects', { method: 'POST', body: p, token }),
   update: (id: string, p: { name: string; description: string; key_prefix?: string }, token: T) => api<void>(`/projects/${id}`, { method: 'PATCH', body: p, token }),
   remove: (id: string, token: T) => api<void>(`/projects/${id}`, { method: 'DELETE', token }),
+  archived: (token: T) => api<Project[]>('/projects?archived=true', { token }), // org admins
+  archive: (id: string, token: T) => api<void>(`/projects/${id}/archive`, { method: 'POST', token }),
+  restore: (id: string, token: T) => api<void>(`/projects/${id}/restore`, { method: 'POST', token }),
   labels: (id: string, token: T) => api<ProjectLabel[]>(`/projects/${id}/labels`, { token }),
 };
 

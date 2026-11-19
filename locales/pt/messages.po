@@ -256,6 +256,12 @@ msgstr "{0} de {1} tickets…"
 msgid "{0} open"
 msgstr "{0} abertos"
 
+#. placeholder {0}: p.stats.open + p.stats.backlog
+#. placeholder {1}: p.stats.done
+#: components/settings/manage-projects.tsx
+msgid "{0} open · {1} done"
+msgstr "{0} abertos · {1} concluídos"
+
 #. placeholder {0}: n(stats.open_sprints)
 #: components/staff/stats.tsx
 msgid "{0} open sprints"
@@ -894,6 +900,10 @@ msgstr "Conta"
 msgid "action must be next, previous, jump, pause, resume or end"
 msgstr "action deve ser next, previous, jump, pause, resume ou end"
 
+#: components/settings/manage-projects.tsx
+msgid "Actions"
+msgstr "Ações"
+
 #. placeholder {0}: ago(i18n, st.active)
 #: components/project/board-card.tsx
 #: components/project/project-card.tsx
@@ -1418,6 +1428,14 @@ msgstr "Aprovar {0} tickets"
 msgid "Approved"
 msgstr "Aprovado"
 
+#: components/settings/manage-projects.tsx
+msgid "Archive"
+msgstr "Arquivar"
+
+#: components/settings/manage-projects.tsx
+msgid "Archive “{name}”? It leaves the project list and its sprints close, but its history is kept and you can restore it here."
+msgstr "Arquivar “{name}”? Ele sai da lista de projetos e os sprints são encerrados, mas o histórico é mantido e você pode restaurá-lo aqui."
+
 #: components/board/board-lifecycle.tsx
 msgid "Archive “{name}”? It leaves the project page but keeps its history, and you can restore it from Edit project → Archived boards."
 msgstr "Arquivar “{name}”? Ele sai da página do projeto, mas mantém o histórico, e você pode restaurá-lo em Editar projeto → Quadros arquivados."
@@ -1426,11 +1444,24 @@ msgstr "Arquivar “{name}”? Ele sai da página do projeto, mas mantém o hist
 msgid "Archive board"
 msgstr "Arquivar quadro"
 
+#: app/settings/projects/page.tsx
+msgid "Archive projects you’ve finished with, delete ones that were never used, and choose which teams own each."
+msgstr "Arquive projetos concluídos, exclua os que nunca foram usados e escolha quais equipes são donas de cada um."
+
 #: components/flags/flags.tsx
 msgid "Archive the flag"
 msgstr "Arquivar a flag"
 
+#: app/settings/page.tsx
+msgid "Archive, restore or delete projects, and choose which teams own them."
+msgstr "Arquive, restaure ou exclua projetos e escolha quais equipes são donas deles."
+
+#: components/settings/manage-projects.tsx
+msgid "Archived"
+msgstr "Arquivados"
+
 #: components/project/archived-boards.tsx
+#: components/settings/manage-projects.tsx
 msgid "Archived <0/>"
 msgstr "Arquivado <0/>"
 
@@ -2665,6 +2696,10 @@ msgstr "Não foi possível adicionar o ticket. Tente novamente."
 msgid "Couldn’t approve. Please try again."
 msgstr "Não foi possível aprovar. Tente novamente."
 
+#: components/settings/manage-projects.tsx
+msgid "Couldn’t archive {name}. Please try again."
+msgstr "Não foi possível arquivar {name}. Tente novamente."
+
 #: components/board/board-lifecycle.tsx
 msgid "Couldn’t archive the board. Please try again."
 msgstr "Não foi possível arquivar o quadro. Tente novamente."
@@ -2684,6 +2719,10 @@ msgstr "Não foi possível alterar o responsável. Tente novamente."
 #: components/flags/flags.tsx
 msgid "Couldn’t change the flag."
 msgstr "Não foi possível alterar a flag."
+
+#: components/settings/manage-projects.tsx
+msgid "Couldn’t change the project’s teams. Please try again."
+msgstr "Não foi possível alterar as equipes do projeto. Tente novamente."
 
 #: components/intake/intake-settings.tsx
 msgid "Couldn’t change the request form. Please try again."
@@ -2753,6 +2792,10 @@ msgstr "Não foi possível criar o roadmap. Tente novamente."
 #: components/project/backlog.tsx
 msgid "Couldn’t delete “{0}”. Please try again."
 msgstr "Não foi possível excluir “{0}”. Tente novamente."
+
+#: components/settings/manage-projects.tsx
+msgid "Couldn’t delete {name}. Please try again."
+msgstr "Não foi possível excluir {name}. Tente novamente."
 
 #: components/settings/embedding.tsx
 msgid "Couldn’t delete that key. Please try again."
@@ -2857,6 +2900,10 @@ msgstr "Não foi possível carregar as configurações da organização. Tente n
 #: components/sprint/past-sprints.tsx
 msgid "Couldn't load past sprints. Please try again."
 msgstr "Não foi possível carregar as sprints anteriores. Tente novamente."
+
+#: components/settings/manage-projects.tsx
+msgid "Couldn’t load projects."
+msgstr "Não foi possível carregar os projetos."
 
 #: components/intake/triage.tsx
 msgid "Couldn’t load requests. Please try again."
@@ -3127,6 +3174,10 @@ msgstr "Não foi possível redefinir o guia. Tente novamente."
 #: components/project/archived-boards.tsx
 msgid "Couldn’t restore {0}. Only organization admins and the board’s team leaders can."
 msgstr "Não foi possível restaurar {0}. Só admins da organização e líderes da equipe do quadro podem fazer isso."
+
+#: components/settings/manage-projects.tsx
+msgid "Couldn’t restore {name}. Please try again."
+msgstr "Não foi possível restaurar {name}. Tente novamente."
 
 #: components/board/board-lifecycle.tsx
 msgid "Couldn’t restore the board. Please try again."
@@ -3487,6 +3538,7 @@ msgstr "Dias"
 #: components/settings/embedding.tsx
 #: components/settings/jira-import.tsx
 #: components/settings/linear-import.tsx
+#: components/settings/manage-projects.tsx
 #: components/settings/organization.tsx
 #: components/settings/webhooks.tsx
 #: components/staff/downtime.tsx
@@ -3505,6 +3557,7 @@ msgid "Delete “{0}”? It’s gone from the help panel at once."
 msgstr "Excluir “{0}”? Some da ajuda na hora."
 
 #: components/board/board-lifecycle.tsx
+#: components/settings/manage-projects.tsx
 msgid "Delete “{name}”? It has never been used, so nothing is lost."
 msgstr "Excluir “{name}”? Ele nunca foi usado, então nada se perde."
 
@@ -5232,6 +5285,10 @@ msgstr "Mantido por um ano no Pro."
 msgid "Kept while your organization exists on Enterprise."
 msgstr "Mantido enquanto sua organização existir no Enterprise."
 
+#: components/settings/manage-projects.tsx
+msgid "Key"
+msgstr "Chave"
+
 #: components/settings/csv-import.tsx
 msgid "Key prefix"
 msgstr "Prefixo da chave"
@@ -5565,6 +5622,7 @@ msgid "Loading project…"
 msgstr "Carregando projeto…"
 
 #: app/dashboard/page.tsx
+#: app/settings/projects/page.tsx
 msgid "Loading projects…"
 msgstr "Carregando projetos…"
 
@@ -5654,6 +5712,7 @@ msgstr "Carregando seu trabalho…"
 #: components/settings/embedding.tsx
 #: components/settings/jira-import.tsx
 #: components/settings/linear-import.tsx
+#: components/settings/manage-projects.tsx
 #: components/settings/webhooks.tsx
 #: components/settings/working-week.tsx
 #: components/sprint/next-sprints.tsx
@@ -5761,6 +5820,11 @@ msgstr "Gerenciar cobrança"
 #: components/settings/organization-card.tsx
 msgid "Manage organization"
 msgstr "Gerenciar organização"
+
+#: app/settings/page.tsx
+#: app/settings/projects/page.tsx
+msgid "Manage projects"
+msgstr "Gerenciar projetos"
 
 #: components/project/backlog-sort.tsx
 msgid "Manual order"
@@ -6160,6 +6224,10 @@ msgstr "Nenhuma resposta ainda."
 msgid "No archived boards."
 msgstr "Nenhum quadro arquivado."
 
+#: components/settings/manage-projects.tsx
+msgid "No archived projects."
+msgstr "Nenhum projeto arquivado."
+
 #: components/reports/rollup-view.tsx
 msgid "no boards estimate"
 msgstr "nenhum quadro estima"
@@ -6314,6 +6382,10 @@ msgstr "Nenhuma chave pessoal ainda."
 msgid "No projects yet"
 msgstr "Ainda não há projetos"
 
+#: components/settings/manage-projects.tsx
+msgid "No projects yet."
+msgstr "Nenhum projeto ainda."
+
 #: components/project/repositories.tsx
 msgid "No repositories linked yet."
 msgstr "Nenhum repositório vinculado ainda."
@@ -6406,9 +6478,17 @@ msgstr "ainda sem assinatura — faça upgrade primeiro"
 msgid "No target date"
 msgstr "Sem data-alvo"
 
+#: components/settings/manage-projects.tsx
+msgid "No team"
+msgstr "Sem equipe"
+
 #: components/settings/jira-import.tsx
 msgid "No team yet"
 msgstr "Ainda sem equipa"
+
+#: components/settings/manage-projects.tsx
+msgid "No teams yet"
+msgstr "Nenhuma equipe ainda"
 
 #: app/settings/organization/page.tsx
 msgid "No teams yet."
@@ -6956,6 +7036,10 @@ msgstr "Só admins da organização podem fazer esta alteração."
 msgid "Only organization admins can manage integrations."
 msgstr "Só admins da organização podem gerenciar integrações."
 
+#: app/settings/projects/page.tsx
+msgid "Only organization admins can manage projects."
+msgstr "Somente administradores da organização podem gerenciar projetos."
+
 #: lib/api/error-codes.ts
 msgid "only organization admins can manage the plan"
 msgstr "só admins da organização podem gerenciar o plano"
@@ -7214,6 +7298,14 @@ msgstr "atrasado em {late, plural, one {# dia} other {# dias}}"
 #: components/roadmap/timeline.tsx
 msgid "overdue, was due {due}"
 msgstr "atrasado, o prazo era {due}"
+
+#: components/settings/manage-projects.tsx
+msgid "Owning teams"
+msgstr "Equipes donas"
+
+#: components/settings/manage-projects.tsx
+msgid "Owning teams of {name}"
+msgstr "Equipes donas de {name}"
 
 #: lib/api/error-codes.ts
 msgid "page must be 1 or more"
@@ -7552,6 +7644,7 @@ msgstr "projeto"
 #: app/settings/organization/page.tsx
 #: components/reports/rollup-view.tsx
 #: components/settings/audit-log.tsx
+#: components/settings/manage-projects.tsx
 #: components/staff/help-editor.tsx
 #: components/ticket/quick-add-ticket.tsx
 msgid "Project"
@@ -7582,6 +7675,7 @@ msgstr "Projeto do bloqueio"
 #: app/error.tsx
 #: app/settings/page.tsx
 #: components/reports/rollup-view.tsx
+#: components/settings/manage-projects.tsx
 #: components/staff/stats.tsx
 #: lib/org/audit.ts
 msgid "Projects"
@@ -7977,6 +8071,7 @@ msgid "Restart Claude Desktop; TrackLin.es appears in the tools menu."
 msgstr "Reinicie o Claude Desktop; o TrackLin.es aparece no menu de ferramentas."
 
 #: components/project/archived-boards.tsx
+#: components/settings/manage-projects.tsx
 msgid "Restore"
 msgstr "Restaurar"
 
@@ -8537,6 +8632,7 @@ msgstr "Configure o primeiro quadro da sua equipe. Você pode sair e continuar d
 #: app/settings/integrations/page.tsx
 #: app/settings/organization/page.tsx
 #: app/settings/page.tsx
+#: app/settings/projects/page.tsx
 #: app/settings/webhooks/page.tsx
 #: app/settings/working-week/page.tsx
 #: components/settings/import-page.tsx
@@ -9845,6 +9941,7 @@ msgstr "Resultados da pesquisa de tickets"
 
 #: components/board/column.tsx
 #: components/reports/rollup-view.tsx
+#: components/settings/manage-projects.tsx
 #: components/sprint/velocity.tsx
 #: components/staff/stats.tsx
 msgid "Tickets"
