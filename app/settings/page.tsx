@@ -8,7 +8,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { LaunchOfferCard } from '@/components/billing/launch-offer';
 import { PlanCard } from '@/components/billing/plan-card';
 import { useFlags } from '@flags-gg/react-library';
-import { BotIcon, CalendarClockIcon, KeyRoundIcon, PlugIcon, UploadIcon, WebhookIcon } from 'lucide-react';
+import { BotIcon, CalendarClockIcon, FolderKanbanIcon, KeyRoundIcon, PlugIcon, UploadIcon, WebhookIcon } from 'lucide-react';
 import { McpConnect } from '@/components/settings/mcp-connect';
 import { Button } from '@/components/ui/button';
 import { SettingsCard } from '@/components/settings/settings-card';
@@ -44,6 +44,7 @@ export default function SettingsPage() {
         <Plan />
         <OrganizationCard admin={admin} />
         {admin && <OrgReportCard />}
+        {admin && <SettingsCard icon={FolderKanbanIcon} title={t`Manage projects`} href="/settings/projects" description={t`Archive, restore or delete projects, and choose which teams own them.`} />}
         <SettingsCard icon={CalendarClockIcon} title={t`Working week`} href="/settings/working-week" description={t`Which days and hours your organization works: spike timeboxes, sprint planning and sprint ends follow it.`} />
         {admin && <SettingsCard icon={PlugIcon} title={t`Integrations`} href="/settings/integrations" description={t`Connect GitHub, Bitbucket, Google Chat and Bugfixes.`} />}
         {admin && is('imports').enabled() && <SettingsCard icon={UploadIcon} title={t`Import`} href="/settings/import" description={t`Bring work in from Jira, or from a CSV (Trello, Asana, Linear, spreadsheets), as new projects.`} />}
