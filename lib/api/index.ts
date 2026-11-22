@@ -881,9 +881,10 @@ export const notifications = {
 
 // Request intake: a project's public, unlisted form (no account) and the team's triage of what comes in.
 export type IntakeSettings = { open: boolean; token: string | null; can_manage?: boolean }; // can_manage: a signed-in org admin (TL-432)
-export type IntakeRequest = { type: 'bug' | 'feature'; title: string; details?: string; contact?: string; website?: string };
+export type IntakeType = 'bug' | 'feature' | 'account_deletion'; // account_deletion: GDPR erasure, needs a contact
+export type IntakeRequest = { type: IntakeType; title: string; details?: string; contact?: string; website?: string };
 export type IntakeSubmission = {
-  id: string; project_id: string; type: 'bug' | 'feature'; title: string; details: string; contact: string;
+  id: string; project_id: string; type: IntakeType; title: string; details: string; contact: string;
   status: 'pending' | 'promoted' | 'dismissed'; ticket_id: string | null; ticket_key: string | null;
   decided_by: string | null; decided_at: string | null; created_at: string;
 };

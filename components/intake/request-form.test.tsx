@@ -10,7 +10,7 @@ const form = (state: Parameters<typeof RequestFormView>[0]['state']) =>
 
 test('the public form: bug or feature, title, optional details and contact, a hidden honeypot', () => {
   const html = form('open');
-  for (const s of ['Send a request', 'Bug report', 'Feature request', '>Title<', 'Details', 'How can we reach you?', 'Send request']) expect(html).toContain(s);
+  for (const s of ['Send a request', 'Bug report', 'Feature request', 'Account deletion', '>Title<', 'Details', 'How can we reach you?', 'Send request']) expect(html).toContain(s);
   expect(html).toMatch(/aria-hidden="true"[^>]*>.*name="website"/);
   expect(html).toMatch(/name="website"[^>]*tabindex="-1"|tabindex="-1"[^>]*name="website"/i);
 });

@@ -896,6 +896,14 @@ msgstr "Token de acceso"
 msgid "Account"
 msgstr "Cuenta"
 
+#: components/intake/triage.tsx
+msgid "account deletion"
+msgstr "eliminación de cuenta"
+
+#: components/intake/request-form.tsx
+msgid "Account deletion"
+msgstr "Eliminación de cuenta"
+
 #: lib/api/error-codes.ts
 msgid "action must be next, previous, jump, pause, resume or end"
 msgstr "action debe ser next, previous, jump, pause, resume o end"
@@ -922,6 +930,10 @@ msgstr "¿Añadir “{title}” al backlog como bug sin asignar?"
 #: components/intake/triage.tsx
 msgid "Add “{title}” to the backlog as an unassigned feature?"
 msgstr "¿Añadir “{title}” al backlog como función sin asignar?"
+
+#: components/intake/triage.tsx
+msgid "Add “{title}” to the backlog as an unassigned task? Deleting the account is up to you."
+msgstr "¿Añadir «{title}» al backlog como tarea sin asignar? Eliminar la cuenta depende de ti."
 
 #: components/ticket/dependencies.tsx
 msgid "Add a blocker…"
@@ -1365,6 +1377,10 @@ msgstr "Cualquiera con el enlace puede enviar un informe de bug o una solicitud 
 #: components/roadmap/visibility.tsx
 msgid "Anyone with the link, no sign-in"
 msgstr "Cualquiera con el enlace, sin iniciar sesión"
+
+#: components/intake/request-form.tsx
+msgid "Anything that helps the team find your account, like your username."
+msgstr "Cualquier dato que ayude al equipo a encontrar tu cuenta, como tu nombre de usuario."
 
 #: components/settings/linear-import.tsx
 msgid "API key"
@@ -3772,6 +3788,7 @@ msgstr "Desconectada."
 
 #: app/boards/[id]/page.tsx
 #: components/intake/triage.tsx
+#: components/layout/android-app-banner.tsx
 msgid "Dismiss"
 msgstr "Descartar"
 
@@ -3999,6 +4016,10 @@ msgid "e.g. Our delivery flow"
 msgstr "p. ej. Nuestro flujo de entrega"
 
 #: components/intake/request-form.tsx
+msgid "e.g. Please delete my account"
+msgstr "p. ej. Por favor, eliminad mi cuenta"
+
+#: components/intake/request-form.tsx
 msgid "e.g. The save button does nothing"
 msgstr "p. ej. El botón de guardar no hace nada"
 
@@ -4107,6 +4128,10 @@ msgstr "Correo electrónico"
 #: components/roadmap/subscribe.tsx
 msgid "Email address"
 msgstr "Correo electrónico"
+
+#: components/intake/request-form.tsx
+msgid "Email on your account <0>(required, seen by the team only)</0>"
+msgstr "Correo de tu cuenta <0>(obligatorio, solo lo ve el equipo)</0>"
 
 #: components/intake/request-form.tsx
 msgid "Email or name"
@@ -4746,6 +4771,10 @@ msgstr "Recibe notificaciones incluso cuando TrackLin.es está cerrado"
 #: components/settings/device-push.tsx
 msgid "Get notifications on this device, even when TrackLin.es is closed."
 msgstr "Recibe notificaciones en este dispositivo, incluso cuando TrackLin.es está cerrado."
+
+#: components/layout/android-app-banner.tsx
+msgid "Get the app"
+msgstr "Descargar la app"
 
 #: components/roadmap/subscribe.tsx
 msgid "Get this roadmap’s updates by email."
@@ -7454,12 +7483,16 @@ msgid "Planned vs delivered"
 msgstr "Planificado frente a entregado"
 
 #: components/intake/request-form.tsx
-msgid "Please add a title (up to 200 characters) and choose bug or feature."
-msgstr "Añade un título (hasta 200 caracteres) y elige bug o funcionalidad."
+msgid "Please add a title (up to 200 characters), choose what it is, and for account deletion say how to reach you."
+msgstr "Añade un título (hasta 200 caracteres), elige qué es y, si es una eliminación de cuenta, indica cómo contactarte."
 
 #: components/intake/request-form.tsx
 msgid "Please add a title."
 msgstr "Añade un título."
+
+#: components/intake/request-form.tsx
+msgid "Please add the email on your account so the team can find and delete it."
+msgstr "Añade el correo de tu cuenta para que el equipo pueda encontrarla y eliminarla."
 
 #: app/roadmaps/page.tsx
 #: components/layout/load-error.tsx
@@ -8010,8 +8043,8 @@ msgid "Replying to <0>{0}</0>"
 msgstr "Respondiendo a <0>{0}</0>"
 
 #: components/intake/request-form.tsx
-msgid "Report a bug or suggest a feature. You don't need an account."
-msgstr "Informa de un bug o sugiere una funcionalidad. No necesitas una cuenta."
+msgid "Report a bug, suggest a feature or ask for your account to be deleted. You don't need to sign in."
+msgstr "Informa de un error, sugiere una función o pide que se elimine tu cuenta. No necesitas iniciar sesión."
 
 #: components/board/ticket-card.tsx
 msgid "Reported by Bugfixes"
@@ -10138,6 +10171,10 @@ msgstr "Total: {0}"
 #: components/settings/mcp-connect.tsx
 msgid "TrackLin.es has a built-in MCP server, so agents can read boards, claim tickets, move them and comment."
 msgstr "TrackLin.es tiene un servidor MCP integrado, así que los agentes pueden leer tableros, reclamar tickets, moverlos y comentar."
+
+#: components/layout/android-app-banner.tsx
+msgid "TrackLin.es is on Android"
+msgstr "TrackLin.es está en Android"
 
 #: components/layout/site-footer.tsx
 msgid "TrackLin.es is run by {company}."

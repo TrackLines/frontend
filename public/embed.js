@@ -74,12 +74,13 @@
       '<fieldset class="tl-embed-types"><legend>What is it?</legend>' +
       '<label><input type="radio" name="type" value="bug" checked> Bug report</label>' +
       '<label><input type="radio" name="type" value="feature"> Feature request</label>' +
+      '<label><input type="radio" name="type" value="account_deletion"> Account deletion</label>' +
       '</fieldset>' +
       '<label class="tl-embed-field"><span>Title</span>' +
       '<input type="text" name="title" maxlength="200" required></label>' +
       '<label class="tl-embed-field"><span>Details <em>(optional)</em></span>' +
       '<textarea name="details" maxlength="5000" rows="5"></textarea></label>' +
-      '<label class="tl-embed-field"><span>How can we reach you? <em>(optional)</em></span>' +
+      '<label class="tl-embed-field"><span>How can we reach you? <em>(optional; for account deletion, the email on your account)</em></span>' +
       '<input type="text" name="contact" maxlength="200" autocomplete="email"></label>' +
       // honeypot: hidden from people; a bot that fills it is dropped
       '<div class="tl-embed-hp" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>' +
@@ -90,7 +91,7 @@
   }
 
   function submitError(status) {
-    if (status === 400) return 'Please add a title and choose bug or feature.';
+    if (status === 400) return 'Please add a title, choose what it is, and for account deletion say how to reach you.';
     if (status === 404) return 'This form isn’t taking requests any more.';
     if (status === 429) return 'You’ve sent a few requests already. Please try again in an hour.';
     return 'Couldn’t send your request. Please try again.';
@@ -164,6 +165,10 @@
       msg.className = 'tl-embed-msg';
       if (!title) {
         msg.textContent = 'Please add a title.';
+        return;
+      }
+      if (data.get('type') === 'account_deletion' && !String(data.get('contact') || '').trim()) {
+        msg.textContent = 'Please add the email on your account so the team can find and delete it.';
         return;
       }
       btn.disabled = true;

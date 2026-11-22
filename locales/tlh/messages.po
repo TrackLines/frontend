@@ -896,6 +896,14 @@ msgstr "'elmeH token"
 msgid "Account"
 msgstr "mab"
 
+#: components/intake/triage.tsx
+msgid "account deletion"
+msgstr "mI' Qaw'"
+
+#: components/intake/request-form.tsx
+msgid "Account deletion"
+msgstr "mI' Qaw'"
+
 #: lib/api/error-codes.ts
 msgid "action must be next, previous, jump, pause, resume or end"
 msgstr "veb, vorgh, Supchu', yev, taH, Qav ghap Daq wIv ta'nIS"
@@ -922,6 +930,10 @@ msgstr "“{title}” backlogDaq yIchel, ghew ta'wI' Hutlhbogh?"
 #: components/intake/triage.tsx
 msgid "Add “{title}” to the backlog as an unassigned feature?"
 msgstr "“{title}” backlogDaq yIchel, laH ta'wI' Hutlhbogh?"
+
+#: components/intake/triage.tsx
+msgid "Add “{title}” to the backlog as an unassigned task? Deleting the account is up to you."
+msgstr "“{title}” yIchel, Qu' nob pagh? mI' Qaw'meH SoH yIwuq."
 
 #: components/ticket/dependencies.tsx
 msgid "Add a blocker…"
@@ -1365,6 +1377,10 @@ msgstr "rarwI' ghajbogh Hoch ghewmey pagh laHmey tlhoblaH, mab Hutlhbogh. jInmol
 #: components/roadmap/visibility.tsx
 msgid "Anyone with the link, no sign-in"
 msgstr "rarwI' ghajbogh Hoch, 'elbe'lu'"
+
+#: components/intake/request-form.tsx
+msgid "Anything that helps the team find your account, like your username."
+msgstr "mI' tu'meH ghom QaHbogh De' yInob, pong rur."
 
 #: components/settings/linear-import.tsx
 msgid "API key"
@@ -3772,6 +3788,7 @@ msgstr "rarHa'lu'pu'."
 
 #: app/boards/[id]/page.tsx
 #: components/intake/triage.tsx
+#: components/layout/android-app-banner.tsx
 msgid "Dismiss"
 msgstr "yIwoD"
 
@@ -3999,6 +4016,10 @@ msgid "e.g. Our delivery flow"
 msgstr "rur: ngeHmeH mIwmaj"
 
 #: components/intake/request-form.tsx
+msgid "e.g. Please delete my account"
+msgstr "mI'wIj yIQaw'"
+
+#: components/intake/request-form.tsx
 msgid "e.g. The save button does nothing"
 msgstr "rur: pol leQ ta'be' pagh"
 
@@ -4107,6 +4128,10 @@ msgstr "QIn"
 #: components/roadmap/subscribe.tsx
 msgid "Email address"
 msgstr "email Daq"
+
+#: components/intake/request-form.tsx
+msgid "Email on your account <0>(required, seen by the team only)</0>"
+msgstr "mI'lIj QIn pa' <0>(poQlu', ghom neH legh)</0>"
 
 #: components/intake/request-form.tsx
 msgid "Email or name"
@@ -4746,6 +4771,10 @@ msgstr "TrackLin.es SoQDI' ghuHmey yIHev"
 #: components/settings/device-push.tsx
 msgid "Get notifications on this device, even when TrackLin.es is closed."
 msgstr "De'wI'vamDaq ghuHmey yIHev, TrackLin.es SoQDI' je."
+
+#: components/layout/android-app-banner.tsx
+msgid "Get the app"
+msgstr "ghun yItlhap"
 
 #: components/roadmap/subscribe.tsx
 msgid "Get this roadmap’s updates by email."
@@ -7454,12 +7483,16 @@ msgid "Planned vs delivered"
 msgstr "nablu'pu'bogh ngeHlu'pu'bogh je"
 
 #: components/intake/request-form.tsx
-msgid "Please add a title (up to 200 characters) and choose bug or feature."
-msgstr "pong yIchel (200 ngutlhmey veH) 'ej ghew pagh laH yIwIv."
+msgid "Please add a title (up to 200 characters), choose what it is, and for account deletion say how to reach you."
+msgstr "per yInob (200 tu'qom), nuq 'oH yIwuq, mI' Qaw'meH chay' DurI'laH yIja'."
 
 #: components/intake/request-form.tsx
 msgid "Please add a title."
 msgstr "pong yIchel."
+
+#: components/intake/request-form.tsx
+msgid "Please add the email on your account so the team can find and delete it."
+msgstr "mI'lIj QIn pa' yInob; vaj ghom tu'laH, Qaw'laH."
 
 #: app/roadmaps/page.tsx
 #: components/layout/load-error.tsx
@@ -8010,8 +8043,8 @@ msgid "Replying to <0>{0}</0>"
 msgstr "<0>{0}</0> Dajang"
 
 #: components/intake/request-form.tsx
-msgid "Report a bug or suggest a feature. You don't need an account."
-msgstr "ghew yIja' pagh laH yIchup. mab DapoQbe'."
+msgid "Report a bug, suggest a feature or ask for your account to be deleted. You don't need to sign in."
+msgstr "Qagh yIja', laH yIchup, pagh mI'lIj Qaw'meH yItlhob. yI'el'eghQo'."
 
 #: components/board/ticket-card.tsx
 msgid "Reported by Bugfixes"
@@ -10138,6 +10171,10 @@ msgstr "Hoch: {0}"
 #: components/settings/mcp-connect.tsx
 msgid "TrackLin.es has a built-in MCP server, so agents can read boards, claim tickets, move them and comment."
 msgstr "MCP server ghaj TrackLin.es, vaj 'echletmey laDlaH, ticketmey tlhaplaH, vIHmoHlaH, QIn ngeHlaH je AI vumwI'pu'."
+
+#: components/layout/android-app-banner.tsx
+msgid "TrackLin.es is on Android"
+msgstr "Android Daq TrackLin.es tu'lu'"
 
 #: components/layout/site-footer.tsx
 msgid "TrackLin.es is run by {company}."

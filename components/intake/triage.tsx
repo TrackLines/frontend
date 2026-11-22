@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { TypeBadge } from '@/components/ticket/ticket-type';
 import { When } from '@/components/common/when';
 import { Markdown } from '@/components/common/markdown';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ApiError, intake, type IntakeSubmission } from '@/lib/api';
@@ -39,7 +40,7 @@ export function Triage({ projectId, token }: { projectId: string; token: string 
   async function decide(s: IntakeSubmission, promote: boolean) {
     const title = s.title;
     const ok = promote
-      ? confirm(s.type === 'bug' ? t`Add “${title}” to the backlog as an unassigned bug?` : t`Add “${title}” to the backlog as an unassigned feature?`)
+      ? confirm(s.type === 'bug' ? t`Add “${title}” to the backlog as an unassigned bug?` : s.type === 'account_deletion' ? t`Add “${title}” to the backlog as an unassigned task? Deleting the account is up to you.` : t`Add “${title}” to the backlog as an unassigned feature?`)
       : confirm(t`Dismiss “${title}”? It won't become a ticket.`);
     if (!ok) return;
     setBusy(s.id);
@@ -92,7 +93,7 @@ export function TriageView({ items, status, error, busy, onPromote, onDismiss }:
           {items.map((s) => (
             <li key={s.id} className="grid gap-2 p-4">
               <div className="flex flex-wrap items-center gap-2">
-                <TypeBadge type={s.type} />
+                {s.type === 'account_deletion' ? <Badge variant="outline" className="border-destructive/50 text-destructive"><Trans>account deletion</Trans></Badge> : <TypeBadge type={s.type} />}
                 <span className="min-w-0 flex-1 font-medium break-words">{s.title}</span>
                 <span className="text-xs text-muted-foreground"><Trans>Received <When iso={s.created_at} /></Trans></span>
               </div>

@@ -3,6 +3,7 @@ import { SiteFooter } from '@/components/layout/site-footer';
 import { HelpBot } from '@/components/layout/help-bot';
 import { OnboardingGuide } from '@/components/onboarding/guide';
 import { ScrollToTop } from '@/components/layout/scroll-to-top';
+import { AndroidAppBanner } from '@/components/layout/android-app-banner';
 import Image from 'next/image';
 import Link from 'next/link';
 import { headers } from 'next/headers';
@@ -56,6 +57,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <I18n locale={locale}>
           <LanguageSync current={locale} />
           <CacheGuard />
+          <AndroidAppBanner />
           {/* on phones: 16px gutters, tighter gaps, and the name and buttons' words drop to icons (TL-471) */}
           <header className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 sm:px-6 py-4 print:hidden">
             <div className="flex min-w-0 items-center gap-2 sm:gap-4">
