@@ -8,14 +8,14 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { ApiError, intake, type IntakeRequest } from '@/lib/api';
+import { ApiError, intake, type IntakeRequest, type IntakeType } from '@/lib/api';
 
 export type FormState = 'loading' | 'closed' | 'open' | 'sent';
 
 // sendError says what went wrong sending a request, in words a visitor can act on.
 export function sendError(i18n: I18n, err: unknown): string {
   if (err instanceof ApiError) {
-    if (err.status === 400) return i18n._(msg`Please add a title (up to 200 characters) and choose bug or feature.`);
+    if (err.status === 400) return i18n._(msg`Please add a title (up to 200 characters), choose what it is, and for account deletion say how to reach you.`);
     if (err.status === 404) return i18n._(msg`This form isn’t taking requests any more.`);
     if (err.status === 429) return i18n._(msg`You’ve sent a few requests already. Please try again in an hour.`);
   }
@@ -34,7 +34,8 @@ export function RequestPage({ token }: { token: string }) {
 // RequestFormView: the form and its states (pure, for tests).
 export function RequestFormView({ state, onSend, onAnother }: { state: FormState; onSend: (req: IntakeRequest) => Promise<void>; onAnother: () => void }) {
   const { t, i18n } = useLingui();
-  const [type, setType] = useState<'bug' | 'feature'>('bug');
+  const [type, setType] = useState<IntakeType>('bug');
+  const deletion = type === 'account_deletion';
   const [title, setTitle] = useState('');
   const [details, setDetails] = useState('');
   const [contact, setContact] = useState('');
@@ -67,6 +68,10 @@ export function RequestFormView({ state, onSend, onAnother }: { state: FormState
       setError(t`Please add a title.`);
       return;
     }
+    if (deletion && !contact.trim()) {
+      setError(t`Please add the email on your account so the team can find and delete it.`);
+      return;
+    }
     setSending(true);
     setError('');
     try {
@@ -82,28 +87,31 @@ export function RequestFormView({ state, onSend, onAnother }: { state: FormState
     <form onSubmit={submit} className="grid gap-5" noValidate>
       <div className="grid gap-1">
         <h1 className="text-2xl font-bold tracking-tight"><Trans>Send a request</Trans></h1>
-        <p className="text-muted-foreground"><Trans>Report a bug or suggest a feature. You don&apos;t need an account.</Trans></p>
+        <p className="text-muted-foreground"><Trans>Report a bug, suggest a feature or ask for your account to be deleted. You don&apos;t need to sign in.</Trans></p>
       </div>
       <div className="grid gap-1.5 text-sm font-medium">
         <span id="request-type"><Trans>What is it?</Trans></span>
-        <ToggleGroup variant="outline" aria-labelledby="request-type" value={[type]} onValueChange={(v) => v[0] && setType(v[0] as 'bug' | 'feature')}>
+        <ToggleGroup variant="outline" aria-labelledby="request-type" value={[type]} onValueChange={(v) => v[0] && setType(v[0] as IntakeType)}>
           <ToggleGroupItem value="bug"><Trans>Bug report</Trans></ToggleGroupItem>
           <ToggleGroupItem value="feature"><Trans>Feature request</Trans></ToggleGroupItem>
+          <ToggleGroupItem value="account_deletion"><Trans>Account deletion</Trans></ToggleGroupItem>
         </ToggleGroup>
       </div>
       <label className="grid gap-1.5 text-sm font-medium">
         <span><Trans>Title</Trans></span>
         <Input value={title} maxLength={200} required aria-invalid={error === t`Please add a title.`} onChange={(e) => setTitle(e.target.value)}
-          placeholder={type === 'bug' ? t`e.g. The save button does nothing` : t`e.g. Export to CSV`} />
+          placeholder={deletion ? t`e.g. Please delete my account` : type === 'bug' ? t`e.g. The save button does nothing` : t`e.g. Export to CSV`} />
       </label>
       <label className="grid gap-1.5 text-sm font-medium">
         <span><Trans>Details <span className="font-normal text-muted-foreground">(optional)</span></Trans></span>
         <MarkdownTextarea value={details} maxLength={5000} rows={6} onChange={(e) => setDetails(e.target.value)}
-          placeholder={type === 'bug' ? t`What happened, what you expected, and how to make it happen again.` : t`What would it help you do?`} />
+          placeholder={deletion ? t`Anything that helps the team find your account, like your username.` : type === 'bug' ? t`What happened, what you expected, and how to make it happen again.` : t`What would it help you do?`} />
       </label>
       <label className="grid gap-1.5 text-sm font-medium">
-        <span><Trans>How can we reach you? <span className="font-normal text-muted-foreground">(optional, seen by the team only)</span></Trans></span>
-        <Input value={contact} maxLength={200} autoComplete="email" onChange={(e) => setContact(e.target.value)} placeholder={t`Email or name`} />
+        <span>{deletion
+          ? <Trans>Email on your account <span className="font-normal text-muted-foreground">(required, seen by the team only)</span></Trans>
+          : <Trans>How can we reach you? <span className="font-normal text-muted-foreground">(optional, seen by the team only)</span></Trans>}</span>
+        <Input value={contact} maxLength={200} autoComplete="email" required={deletion} aria-invalid={deletion && error !== '' && !contact.trim()} onChange={(e) => setContact(e.target.value)} placeholder={t`Email or name`} />
       </label>
       {/* honeypot: hidden from people and screen readers; bots that fill it are dropped */}
       <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">

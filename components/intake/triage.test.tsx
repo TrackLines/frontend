@@ -30,3 +30,9 @@ test('loading, empty, error and no access', () => {
   expect(view({ items: null, error: 'You don’t have access to this project’s requests.' })).toContain('don’t have access');
   expect(view({ items: [s({})], error: 'Someone has already dealt with that request.' })).toContain('already dealt with');
 });
+
+test('an account deletion request shows its own badge, not a ticket type', () => {
+  const html = view({ items: [s({ type: 'account_deletion', title: 'Delete me' })] });
+  expect(html).toContain('account deletion');
+});
+
