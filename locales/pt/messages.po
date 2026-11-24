@@ -3250,6 +3250,7 @@ msgstr "Não foi possível salvar seu idioma. Tente novamente."
 
 #: components/flags/flags.tsx
 #: components/settings/google-chat.tsx
+#: components/settings/latest-tickets.tsx
 msgid "Couldn’t save. Please try again."
 msgstr "Não foi possível salvar. Tente novamente."
 
@@ -4963,6 +4964,10 @@ msgstr "Como podemos falar com você? <0>(opcional, visto apenas pela equipe)</0
 msgid "How every project’s sprints went, to share with leadership."
 msgstr "Como foram as sprints de cada projeto, para compartilhar com a liderança."
 
+#: components/settings/latest-tickets.tsx
+msgid "How many"
+msgstr "Quantos"
+
 #: components/board/estimate.tsx
 msgid "How much work the team thinks this is, on this board's {scaleName} scale."
 msgstr "Quanto trabalho a equipa acha que isto é, na escala {scaleName} deste quadro."
@@ -5420,6 +5425,14 @@ msgstr "Atrasado: passou da data-alvo e não está concluído."
 #: components/roadmap/group.ts
 msgid "Later"
 msgstr "Depois"
+
+#: components/work/dashboard-work.tsx
+msgid "Latest"
+msgstr "Recentes"
+
+#: components/settings/latest-tickets.tsx
+msgid "Latest tickets"
+msgstr "Tickets recentes"
 
 #: components/staff/staff-shell.tsx
 msgid "Launch offer"
@@ -6553,6 +6566,7 @@ msgid "No tickets planned yet. Add some from the backlog."
 msgstr "Nenhum ticket planejado ainda. Adicione alguns do backlog."
 
 #: components/project/board-card.tsx
+#: components/work/dashboard-work.tsx
 msgid "No tickets yet."
 msgstr "Nenhum ticket ainda."
 
@@ -7386,6 +7400,10 @@ msgstr "Pendente"
 #: components/settings/jira-import.tsx
 msgid "People"
 msgstr "Pessoas"
+
+#: components/settings/latest-tickets.tsx
+msgid "Per project"
+msgstr "Por projeto"
 
 #: app/reports/page.tsx
 msgid "Period"
@@ -8271,6 +8289,7 @@ msgstr "Conduzindo o standup"
 #: components/flags/flags.tsx
 #: components/settings/agent-instructions.tsx
 #: components/settings/google-chat.tsx
+#: components/settings/latest-tickets.tsx
 #: components/settings/organization.tsx
 #: components/settings/working-week.tsx
 #: components/staff/help-editor.tsx
@@ -8336,6 +8355,7 @@ msgstr "Salvo"
 
 #: components/flags/flags.tsx
 #: components/settings/google-chat.tsx
+#: components/settings/latest-tickets.tsx
 #: components/settings/working-week.tsx
 msgid "Saved."
 msgstr "Salvo."
@@ -9582,6 +9602,10 @@ msgstr "A flag launch-offer está desativada, então nada pode ser enviado ainda
 #: app/global-not-found.tsx
 msgid "The link may be old, or the address mistyped."
 msgstr "O link pode ser antigo, ou o endereço foi digitado errado."
+
+#: components/settings/latest-tickets.tsx
+msgid "The newest tickets across every project, as a tab on your home Mentions card. 0 hides it; more than 5 pages."
+msgstr "Os tickets mais novos de todos os projetos, como uma aba no seu cartão de Menções na página inicial. 0 a esconde; mais de 5 são paginados."
 
 #: app/boards/[id]/edit/page.tsx
 msgid "The next sprint starts straight away, with unfinished tickets carried over."

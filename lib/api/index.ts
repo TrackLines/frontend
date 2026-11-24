@@ -570,6 +570,8 @@ export const tickets = {
   search: (q: SearchQuery, token: T) => api<TicketSearchResult[]>(`/search?${searchParams(q)}`, { token }),
   // searchPage: one page plus how many tickets match in all, for "5 of 9" (TL-548)
   searchPage: (q: SearchQuery, token: T) => api<{ tickets: TicketSearchResult[]; total: number }>(`/search?${searchParams(q)}&total=1`, { token }),
+  // latest: the newest tickets across every project, at most perProject from any one
+  latest: (limit: number, perProject: number, token: T) => api<TicketSearchResult[]>(`/tickets/latest?limit=${limit}&per_project=${perProject}`, { token }),
   // review settles an agent's finished ticket: approve → Done, else back to the first column (comment added)
   review: (id: string, approve: boolean, comment: string, token: T) =>
     api<void>(`/tickets/${id}/review`, { method: 'POST', body: { approve, ...(comment.trim() && { comment: comment.trim() }) }, token }),
@@ -1160,4 +1162,9 @@ export const me = {
   // language (TL-553): null follows the browser
   language: (token: T) => api<{ language: string | null }>('/me/language', { token }),
   setLanguage: (language: string | null, token: T) => api<void>('/me/language', { method: 'PUT', body: { language }, token }),
+  // the home Mentions card's Latest tickets tab: limit 0 hides it, else 1–20 (5 a page), per_project 1–20
+  latestTickets: (token: T) => api<LatestTicketsSettings>('/me/latest-tickets', { token }),
+  setLatestTickets: (s: LatestTicketsSettings, token: T) => api<void>('/me/latest-tickets', { method: 'PUT', body: s, token }),
 };
+
+export type LatestTicketsSettings = { limit: number; per_project: number };

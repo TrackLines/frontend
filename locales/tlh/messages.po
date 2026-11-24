@@ -3250,6 +3250,7 @@ msgstr "HollIj pollu'laHbe'. yInIDqa'."
 
 #: components/flags/flags.tsx
 #: components/settings/google-chat.tsx
+#: components/settings/latest-tickets.tsx
 msgid "Couldn’t save. Please try again."
 msgstr "pollu'laHbe'. yInIDqa'."
 
@@ -4963,6 +4964,10 @@ msgstr "chay' SoH wISuchlaH? <0>(DaneHchugh, beq neH legh)</0>"
 msgid "How every project’s sprints went, to share with leadership."
 msgstr "Hoch jInmol sprintmey chay' qaS, DevwI'pu'vaD DangeHmeH."
 
+#: components/settings/latest-tickets.tsx
+msgid "How many"
+msgstr "'ar"
+
 #: components/board/estimate.tsx
 msgid "How much work the team thinks this is, on this board's {scaleName} scale."
 msgstr "Qu' 'ar 'oH, ghom wuqmeH; DIr {scaleName} Daq."
@@ -5420,6 +5425,14 @@ msgstr "QIt: DaH jaj ngoQ veb Dalpu' 'ej rInbe'."
 #: components/roadmap/group.ts
 msgid "Later"
 msgstr "ghIq"
+
+#: components/work/dashboard-work.tsx
+msgid "Latest"
+msgstr "chu'"
+
+#: components/settings/latest-tickets.tsx
+msgid "Latest tickets"
+msgstr "ticketmey chu'"
 
 #: components/staff/staff-shell.tsx
 msgid "Launch offer"
@@ -6553,6 +6566,7 @@ msgid "No tickets planned yet. Add some from the backlog."
 msgstr "ticketmey nablu'be' DaH. backlog vo' 'op tIchel."
 
 #: components/project/board-card.tsx
+#: components/work/dashboard-work.tsx
 msgid "No tickets yet."
 msgstr "ticketmey tu'lu'be' DaH."
 
@@ -7386,6 +7400,10 @@ msgstr "loS"
 #: components/settings/jira-import.tsx
 msgid "People"
 msgstr "ghotpu'"
+
+#: components/settings/latest-tickets.tsx
+msgid "Per project"
+msgstr "jInmol wa'"
 
 #: app/reports/page.tsx
 msgid "Period"
@@ -8271,6 +8289,7 @@ msgstr "Qam ghom Dev"
 #: components/flags/flags.tsx
 #: components/settings/agent-instructions.tsx
 #: components/settings/google-chat.tsx
+#: components/settings/latest-tickets.tsx
 #: components/settings/organization.tsx
 #: components/settings/working-week.tsx
 #: components/staff/help-editor.tsx
@@ -8336,6 +8355,7 @@ msgstr "pollu'pu'"
 
 #: components/flags/flags.tsx
 #: components/settings/google-chat.tsx
+#: components/settings/latest-tickets.tsx
 #: components/settings/working-week.tsx
 msgid "Saved."
 msgstr "pollu'pu'. Qapla'!"
@@ -9582,6 +9602,10 @@ msgstr "launch-offer joqwI' chu'be'lu', vaj pagh ngeHlaHlu'. flags.gg Daq wa'DIc
 #: app/global-not-found.tsx
 msgid "The link may be old, or the address mistyped."
 msgstr "ngo' rarwI' net Sov, pagh Daq ghItlhlu'pu'bogh lughbe'."
+
+#: components/settings/latest-tickets.tsx
+msgid "The newest tickets across every project, as a tab on your home Mentions card. 0 hides it; more than 5 pages."
+msgstr "jInmolmey Hoch ticketmey chu'qu', pongmey Daq. 0: So'. 5 law': nav."
 
 #: app/boards/[id]/edit/page.tsx
 msgid "The next sprint starts straight away, with unfinished tickets carried over."
