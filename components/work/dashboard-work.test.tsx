@@ -88,3 +88,17 @@ test('the phone panel leaves out tabs with nothing in them', () => {
   expect(panel).toContain('href="/mentions"');
   expect(panel).not.toContain('>Assigned<');
 });
+
+test('the Latest tab shows on the Mentions card only when switched on, and pages past 5', () => {
+  const off = renderToStaticMarkup(<DashboardWorkView assigned={[]} created={[]} mentioned={[mention]} people={[]} />);
+  expect(off).not.toContain('Latest');
+  const seven = Array.from({ length: 7 }, (_, i) => ({ ...mine, id: `l${i}`, key: `TL-${200 + i}`, title: `New ${i}` }));
+  const on = renderToStaticMarkup(<DashboardWorkView assigned={[]} created={[]} mentioned={[]} latest={seven} people={[]} />);
+  expect(on).toContain('Latest');
+  expect(on).toContain('Mentions'); // the card stays for the tab, even with no mentions
+  expect(on).toContain('TL-204');
+  expect(on).not.toContain('TL-205'); // page 2
+  expect(on).toContain('href="#latest-tickets"');
+  const few = renderToStaticMarkup(<DashboardWorkView assigned={[]} created={[]} mentioned={[]} latest={seven.slice(0, 5)} people={[]} />);
+  expect(few).not.toContain('href="#latest-tickets"'); // one page: no pager
+});

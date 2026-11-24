@@ -3250,6 +3250,7 @@ msgstr "Kan je taal niet opslaan. Probeer het opnieuw."
 
 #: components/flags/flags.tsx
 #: components/settings/google-chat.tsx
+#: components/settings/latest-tickets.tsx
 msgid "Couldn’t save. Please try again."
 msgstr "Opslaan mislukt. Probeer het opnieuw."
 
@@ -4963,6 +4964,10 @@ msgstr "Hoe kunnen we je bereiken? <0>(optioneel, alleen zichtbaar voor het team
 msgid "How every project’s sprints went, to share with leadership."
 msgstr "Hoe de sprints van elk project zijn verlopen, om te delen met het management."
 
+#: components/settings/latest-tickets.tsx
+msgid "How many"
+msgstr "Hoeveel"
+
 #: components/board/estimate.tsx
 msgid "How much work the team thinks this is, on this board's {scaleName} scale."
 msgstr "Hoeveel werk het team denkt dat dit is, op de {scaleName}-schaal van dit bord."
@@ -5420,6 +5425,14 @@ msgstr "Te laat: voorbij de streefdatum en niet klaar."
 #: components/roadmap/group.ts
 msgid "Later"
 msgstr "Later"
+
+#: components/work/dashboard-work.tsx
+msgid "Latest"
+msgstr "Nieuwste"
+
+#: components/settings/latest-tickets.tsx
+msgid "Latest tickets"
+msgstr "Nieuwste tickets"
 
 #: components/staff/staff-shell.tsx
 msgid "Launch offer"
@@ -6553,6 +6566,7 @@ msgid "No tickets planned yet. Add some from the backlog."
 msgstr "Nog geen tickets gepland. Voeg er een paar toe vanuit de backlog."
 
 #: components/project/board-card.tsx
+#: components/work/dashboard-work.tsx
 msgid "No tickets yet."
 msgstr "Nog geen tickets."
 
@@ -7386,6 +7400,10 @@ msgstr "In de wacht"
 #: components/settings/jira-import.tsx
 msgid "People"
 msgstr "Mensen"
+
+#: components/settings/latest-tickets.tsx
+msgid "Per project"
+msgstr "Per project"
 
 #: app/reports/page.tsx
 msgid "Period"
@@ -8271,6 +8289,7 @@ msgstr "De stand-up leiden"
 #: components/flags/flags.tsx
 #: components/settings/agent-instructions.tsx
 #: components/settings/google-chat.tsx
+#: components/settings/latest-tickets.tsx
 #: components/settings/organization.tsx
 #: components/settings/working-week.tsx
 #: components/staff/help-editor.tsx
@@ -8336,6 +8355,7 @@ msgstr "Opgeslagen"
 
 #: components/flags/flags.tsx
 #: components/settings/google-chat.tsx
+#: components/settings/latest-tickets.tsx
 #: components/settings/working-week.tsx
 msgid "Saved."
 msgstr "Opgeslagen."
@@ -9582,6 +9602,10 @@ msgstr "De launch-offer-flag staat uit, dus er kan nog niets worden verstuurd. Z
 #: app/global-not-found.tsx
 msgid "The link may be old, or the address mistyped."
 msgstr "De link is misschien oud, of het adres is verkeerd getypt."
+
+#: components/settings/latest-tickets.tsx
+msgid "The newest tickets across every project, as a tab on your home Mentions card. 0 hides it; more than 5 pages."
+msgstr "De nieuwste tickets uit elk project, als tabblad op je Vermeldingen-kaart op de startpagina. 0 verbergt het; meer dan 5 krijgt pagina's."
 
 #: app/boards/[id]/edit/page.tsx
 msgid "The next sprint starts straight away, with unfinished tickets carried over."

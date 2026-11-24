@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Plural, Trans, useLingui } from '@lingui/react/macro';
 import { useEffect, useState, type ReactNode } from 'react';
+import { Pager } from '@/components/common/pager';
 import { DueBadge } from '@/components/ticket/due-badge';
 import { PriorityBadge } from '@/components/board/priority-badge';
 import { BlockedBadge } from '@/components/ticket/blocked-badge';
@@ -14,7 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TimeboxCountdown } from '@/components/ticket/timebox-countdown';
 import { PlannedBadge } from '@/components/ticket/planned-badge';
 import { WatchToggle } from '@/components/work/mentions';
-import { mentions, tickets, type Assignee, type Mention, type TicketSearchResult } from '@/lib/api';
+import { me, mentions, tickets, type Assignee, type Mention, type TicketSearchResult } from '@/lib/api';
 import { actorName } from '@/lib/work/notifications';
 
 export const SHOW = 5;
@@ -33,6 +34,7 @@ export function DashboardWork({ token }: { token: string }) {
   const [assigned, setAssigned] = useState<Load<TicketSearchResult>>(null);
   const [created, setCreated] = useState<Load<TicketSearchResult>>(null);
   const [mentioned, setMentioned] = useState<Load<Mention>>(null);
+  const [latest, setLatest] = useState<Load<TicketSearchResult> | undefined>(undefined); // undefined: the Latest tab is off
   const [people, setPeople] = useState<Assignee[]>([]);
   const [totals, setTotals] = useState<Totals>({});
   useEffect(() => {
@@ -41,18 +43,24 @@ export function DashboardWork({ token }: { token: string }) {
     tickets.searchPage({ creator: 'me', status: 'open', limit: SHOW_CREATED }, token)
       .then((r) => { setCreated(r.tickets); setTotals((t) => ({ ...t, created: r.total })); }, () => setCreated('failed'));
     mentions.list(token, SHOW, 'open').then(setMentioned, () => setMentioned('failed')); // done ones are on /mentions (TL-590)
+    me.latestTickets(token).then((s) => {
+      if (s.limit < 1) return;
+      setLatest(null);
+      tickets.latest(s.limit, s.per_project, token).then(setLatest, () => setLatest('failed'));
+    }, () => {}); // no setting: no Latest tab
     tickets.assignees(token).then(setPeople, () => {});
   }, []); // load once; token refreshes must not refetch
-  return <DashboardWorkView assigned={assigned} created={created} mentioned={mentioned} people={people} totals={totals} token={token} />;
+  return <DashboardWorkView assigned={assigned} created={created} mentioned={mentioned} latest={latest} people={people} totals={totals} token={token} />;
 }
 
 // Totals: how many open tickets each My work tab has in all, when it shows only some (TL-548)
 type Totals = { assigned?: number; created?: number };
 
 // DashboardWorkView: the cards (pure, for tests). The "My work" card is hidden once nothing is
-// assigned and nothing was created by me; "Mentions" is hidden once nobody has mentioned me.
-export function DashboardWorkView({ assigned, created, mentioned, people, totals = {}, token = '' }: {
-  assigned: Load<TicketSearchResult>; created: Load<TicketSearchResult>; mentioned: Load<Mention>; people: Assignee[]; totals?: Totals; token?: string;
+// assigned and nothing was created by me; "Mentions" is hidden once nobody has mentioned me, unless it
+// has the Latest tab (latest given: switched on in Your settings).
+export function DashboardWorkView({ assigned, created, mentioned, latest, people, totals = {}, token = '' }: {
+  assigned: Load<TicketSearchResult>; created: Load<TicketSearchResult>; mentioned: Load<Mention>; latest?: Load<TicketSearchResult>; people: Assignee[]; totals?: Totals; token?: string;
 }) {
   const { t, i18n } = useLingui();
   const ticketRow = (tk: TicketSearchResult) => (
@@ -102,8 +110,25 @@ export function DashboardWorkView({ assigned, created, mentioned, people, totals
       <span className="truncate">{m.project_name}</span>
     </Row>
   );
-  const showMentions = pending(mentioned) || has(mentioned);
-  const mentionsPanel = !showMentions ? null : (
+  const showLatest = latest !== undefined;
+  const showMentions = pending(mentioned) || has(mentioned) || showLatest;
+  const mentionsList = <Items items={mentioned} empty={t`Nobody has mentioned you yet.`}>{mentionRow}</Items>;
+  const latestList = (id: string) => <Paged id={id} items={latest ?? null} empty={t`No tickets yet.`}>{ticketRow}</Paged>;
+  const mentionsPanel = !showMentions ? null : showLatest ? (
+    <Card className="gap-0 py-0">
+      <Tabs defaultValue="mentions" className="gap-0">
+        <div className="flex items-center justify-between border-b px-4 py-3">
+          <TabsList>
+            <TabsTrigger value="mentions"><Trans>Mentions</Trans></TabsTrigger>
+            <TabsTrigger value="latest"><Trans>Latest</Trans></TabsTrigger>
+          </TabsList>
+          <Link href="/mentions" className="text-sm text-muted-foreground hover:text-foreground hover:underline"><Trans>All mentions</Trans></Link>
+        </div>
+        <TabsContent value="mentions" keepMounted>{mentionsList}</TabsContent>
+        <TabsContent value="latest" keepMounted>{latestList('latest-tickets')}</TabsContent>
+      </Tabs>
+    </Card>
+  ) : (
     <Panel title={t`Mentions`} more={{ href: '/mentions', label: t`All mentions` }} items={mentioned} empty={t`Nobody has mentioned you yet.`}>{mentionRow}</Panel>
   );
 
@@ -114,7 +139,8 @@ export function DashboardWorkView({ assigned, created, mentioned, people, totals
     showCreated && { value: 'created', label: t`Created`, more: { href: '/my-work?tab=created', label: t`All my work` },
       body: <><Items items={created} empty={t`You haven’t created any tickets.`}>{ticketRow}</Items><More items={created} total={totals.created} href="/my-work?tab=created" /></> },
     showMentions && { value: 'mentions', label: t`Mentions`, more: { href: '/mentions', label: t`All mentions` },
-      body: <Items items={mentioned} empty={t`Nobody has mentioned you yet.`}>{mentionRow}</Items> },
+      body: mentionsList },
+    showLatest && { value: 'latest', label: t`Latest`, body: latestList('latest-tickets-mobile') },
   ].filter((x) => !!x);
   return (
     <>
@@ -127,7 +153,7 @@ export function DashboardWorkView({ assigned, created, mentioned, people, totals
   );
 }
 
-type WorkTab = { value: string; label: string; more: { href: string; label: string }; body: ReactNode };
+type WorkTab = { value: string; label: string; more?: { href: string; label: string }; body: ReactNode };
 
 // MobileWork: My work and Mentions as tabs of one card; the link at the top follows the tab.
 function MobileWork({ tabs }: { tabs: WorkTab[] }) {
@@ -141,7 +167,7 @@ function MobileWork({ tabs }: { tabs: WorkTab[] }) {
           <TabsList>
             {tabs.map((x) => <TabsTrigger key={x.value} value={x.value}>{x.label}</TabsTrigger>)}
           </TabsList>
-          <Link href={current.more.href} className="shrink-0 text-sm text-muted-foreground hover:text-foreground hover:underline">{current.more.label}</Link>
+          {current.more && <Link href={current.more.href} className="shrink-0 text-sm text-muted-foreground hover:text-foreground hover:underline">{current.more.label}</Link>}
         </div>
         {tabs.map((x) => <TabsContent key={x.value} value={x.value}>{x.body}</TabsContent>)}
       </Tabs>
@@ -155,6 +181,19 @@ function Items<I>({ items, empty, children }: { items: Load<I>; empty: string; c
   if (items === null) return <p role="status" className="px-4 py-6 text-sm text-muted-foreground"><Trans>Loading…</Trans></p>;
   if (items.length === 0) return <p className="px-4 py-6 text-sm text-muted-foreground">{empty}</p>;
   return <ul className="divide-y">{items.map(children)}</ul>;
+}
+
+// Paged: a list SHOW at a time, with a pager under it once there's more than one page.
+export function Paged<I>({ id, items, empty, children }: { id: string; items: Load<I>; empty: string; children: (item: I) => ReactNode }) {
+  const [page, setPage] = useState(1);
+  const all = Array.isArray(items) ? items : [];
+  const shown = Array.isArray(items) ? items.slice((page - 1) * SHOW, page * SHOW) : items;
+  return (
+    <div id={id}>
+      <Items items={shown} empty={empty}>{children}</Items>
+      <Pager page={page} lastPage={Math.ceil(all.length / SHOW)} onPage={setPage} anchor={`#${id}`} className="border-t py-2" />
+    </div>
+  );
 }
 
 // More: "5 of 9 tickets · See all" under a list that shows only part of what there is.

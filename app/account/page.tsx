@@ -9,6 +9,7 @@ import { McpConnect } from '@/components/settings/mcp-connect';
 import { Button } from '@/components/ui/button';
 import { DevicePushCard } from '@/components/settings/device-push';
 import { LanguageCard } from '@/components/settings/language';
+import { LatestTicketsCard } from '@/components/settings/latest-tickets';
 import { SettingsCard } from '@/components/settings/settings-card';
 import { GuideSettings } from '@/components/settings/guide';
 import { useToken } from '@/lib/hooks/use-token';
@@ -30,6 +31,7 @@ export default function AccountPage() {
           <>
             <LanguageCard token={token} />
             <GuideSettings token={token} />
+            <LatestTicketsCard token={token} />
             <DevicePushCard token={token} />
             <ChatDmCard token={token} />
             <SettingsCard icon={KeyRoundIcon} title={t`API keys`} href="/account/api-keys"
